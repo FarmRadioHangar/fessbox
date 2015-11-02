@@ -1,0 +1,8 @@
+bower_components
+static
+node_modules
+test
+pipes
+config/*.json
+*.log
+.*.m.swp

@@ -1,0 +1,5 @@
+{
+	"smtpHost": "smtp.example.com",
+	"username": "me@example.com",
+	"password": "mypassword"
+}
