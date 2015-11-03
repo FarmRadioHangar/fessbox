@@ -3,15 +3,19 @@ import Host   from './Host'
 import Mixer  from './Mixer'
 import Stream from './Stream'
 
+import { connect } 
+  from 'react-redux'
+
 class Ui extends React.Component {
   constructor(props) {
     super(props)
   }
   render() {
+    const MixerComponent = connect(state => state.mixer)(Mixer)
     return (
       <div>
         <Host />
-        <Mixer />
+        <MixerComponent />
         <Stream />
       </div>
     )

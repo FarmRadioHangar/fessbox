@@ -2,19 +2,12 @@ import React   from 'react'
 import _       from 'lodash'
 import Channel from './Channel'
 
-// temp
-const channels = {
-  'chan_1' : {},
-  'chan_2' : {},
-  'chan_3' : {},
-  'chan_4' : {}
-}
-
 class Mixer extends React.Component {
   constructor(props) {
     super(props)
   }
   render() {
+    const { channels } = this.props
     return (
       <div>
         {_.pairs(channels).map(pair => {

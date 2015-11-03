@@ -221,13 +221,6 @@ var _Channel = require('./Channel');
 
 var _Channel2 = _interopRequireDefault(_Channel);
 
-var channels = {
-  'chan_1': {},
-  'chan_2': {},
-  'chan_3': {},
-  'chan_4': {}
-};
-
 var Mixer = (function (_React$Component) {
   _inherits(Mixer, _React$Component);
 
@@ -240,6 +233,8 @@ var Mixer = (function (_React$Component) {
   _createClass(Mixer, [{
     key: 'render',
     value: function render() {
+      var channels = this.props.channels;
+
       return _react2['default'].createElement(
         'div',
         null,
@@ -343,6 +338,8 @@ var _Stream = require('./Stream');
 
 var _Stream2 = _interopRequireDefault(_Stream);
 
+var _reactRedux = require('react-redux');
+
 var Ui = (function (_React$Component) {
   _inherits(Ui, _React$Component);
 
@@ -355,11 +352,14 @@ var Ui = (function (_React$Component) {
   _createClass(Ui, [{
     key: 'render',
     value: function render() {
+      var MixerComponent = (0, _reactRedux.connect)(function (state) {
+        return state.mixer;
+      })(_Mixer2['default']);
       return _react2['default'].createElement(
         'div',
         null,
         _react2['default'].createElement(_Host2['default'], null),
-        _react2['default'].createElement(_Mixer2['default'], null),
+        _react2['default'].createElement(MixerComponent, null),
         _react2['default'].createElement(_Stream2['default'], null)
       );
     }
@@ -371,7 +371,7 @@ var Ui = (function (_React$Component) {
 exports['default'] = Ui;
 module.exports = exports['default'];
 
-},{"./Host":4,"./Mixer":5,"./Stream":6,"react":173}],8:[function(require,module,exports){
+},{"./Host":4,"./Mixer":5,"./Stream":6,"react":173,"react-redux":12}],8:[function(require,module,exports){
 (function (global){
 /**
  * @license
