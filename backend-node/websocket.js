@@ -58,4 +58,4 @@ var broadcast = function (event, data) {
 
 
 exports.broadcast = broadcast;
-exports.dispatch = dispatch;
+//exports.bind = bind;

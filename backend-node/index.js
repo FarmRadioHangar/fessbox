@@ -6,6 +6,7 @@ var readline = require("readline");
 var wss = require("./websocket");
 var apiHandler = require("./api");
 var router = require("./router");
+var myLib = requuire("./myLib");
 
 //https://github.com/websockets/ws
 //var WebSocket = require('ws');
@@ -91,3 +92,18 @@ function startAPI(route, apiHandler) {
 
 startAPI(router.route, apiHandler);
 
+process.on("SIGTERM", function () {
+        console.log("SIGTERM received");
+//        s.saveSnapshot(process.exit);
+      process.exit();
+});
+
+process.on('uncaughtException', function (err) {
+        console.error("EXCEPTION::" + err.stack);
+        myLib.mail2admin('uncaughtException on ' + new Date().toLocaleString(), err.stack);
+});
+
+//s.loadSnapshot();
+
+console.log("==============================================");
+console.log("FessBox Node Server has started on " + new Date().toLocaleString());

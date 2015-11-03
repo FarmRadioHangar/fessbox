@@ -2,6 +2,8 @@ bower_components
 static
 node_modules
 test
+run
+log
 pipes
 config/*.json
 *.log
