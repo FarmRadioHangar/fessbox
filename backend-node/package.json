@@ -1,20 +1,22 @@
 {
-  "name": "Fessbox-node",
-  "version": "0.0.1",
-  "author": "Damjan Janevski <miopa>",
-  "description": "FessBox control interface",
-  "contributors": [
-    {
-      "name": "Johannes Hilden",
-      "github": "johanneshilden"
-    }
-  ],
-  "dependencies": {
-	"emailjs": "^1.0.0",
-	"asterisk-manager": "^0.1.15"
-  },
-  "scripts": {
-  },
-  "devDependencies": {
-  }
+	"name": "Fessbox-node",
+	"version": "0.0.1",
+	"author": "Damjan Janevski <miopa>",
+	"description": "FessBox control interface",
+	"contributors": [
+		{
+			"name": "Johannes Hilden",
+			"github": "johanneshilden"
+		}
+	],
+	"dependencies": {
+		"emailjs": "^1.0.0",
+		"asterisk-manager": "^0.1.15",
+		"ws": "^0.8.0",
+		"i18n": "^0.5.0"
+	},
+	"scripts": {
+	},
+	"devDependencies": {
+	}
 }

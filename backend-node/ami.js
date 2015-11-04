@@ -6,24 +6,9 @@ var ami = new require('asterisk-manager')(config.port, config.host, config.usern
 //https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+AMI+Actions
 ami.keepConnected();
 
-var mainConference = {};
-
-/*
-ami.action({
-  'action':'agi',
-  'variable':{
-    'name1':'value1',
-    'name2':'value2'
-  },
-  'command':'checkoperator.php 
-}, function(err, res) {
-        console.log(JSON.stringify(res));
-});
-*/
-
 ami.on('fullybooted', function(evt) {
-	console.log(new Date().toLocaleString(), "connected to asterisk!");
-	s.ui.asterisk = {};
+	console.log(new Date().toLocaleString(), " - connected to asterisk!");
+	s.ui.mixer = {};
 });
 
 ami.on('managerevent', function(evt) {
@@ -45,55 +30,45 @@ ami.on('newchannel', function(evt) {
 
 // {"event":"ConfbridgeJoin","privilege":"call,all","channel":"SIP/703-00000000","uniqueid":"1444910756.0","conference":"2663","calleridnum":"703","calleridname":"Damjan Laptop"}
 ami.on('confbridgejoin', function(evt) {
-        console.log(JSON.stringify(evt));
+	console.log(JSON.stringify(evt));
 	mainConference[evt.calleridnum] = {
 		calleridname: evt.calleridname,
 		channel: evt.channel,
 		levelTX: null,
 		levelRX: null
 	};
-/*
-	getVar(evt.channel, "VOLUME(TX)", function (value) {
-        	console.log("TX", JSON.stringify(value));
-		mainConference[evt.calleridnum].levelTX = value;
-	});
-	getVar(evt.channel, "VOLUME(RX)", function (value) {
-        	console.log("RX", JSON.stringify(value));
-                mainConference[evt.calleridnum].levelRX = value;
-        });
-*/
 });
 
 // helper functions
 
 function setVar(channel, variable, value) {
 	ami.action({
-                action: 'Setvar',
-                channel: channel,
-                variable: variable,
-                value: value
-        }, function(err, res) {
-                if (!err) {
-                        console.log(JSON.stringify(res));
-                } else {
-                        console.log(err.toString());
-                }
-        });
+		action: 'Setvar',
+		channel: channel,
+		variable: variable,
+		value: value
+	}, function(err, res) {
+		if (!err) {
+			console.log(JSON.stringify(res));
+		} else {
+			console.log(err.toString());
+		}
+	});
 }
 
 function getVar(channel, variable, cb) {
 	ami.action({
-                action: 'Getvar',
-                channel: channel,
-                variable: variable
-        }, function(err, res) {
-                if (!err) {
-                        cb(res.value);
-                        console.log(JSON.stringify(res));
-                } else {
-                        console.log(err.toString());
-                }
-        });
+		action: 'Getvar',
+		channel: channel,
+		variable: variable
+	}, function(err, res) {
+		if (!err) {
+			cb(res.value);
+			console.log(JSON.stringify(res));
+		} else {
+			console.log(err.toString());
+		}
+	});
 }
 
 
@@ -134,11 +109,8 @@ function setChannelVolume(channel, level, direction) {
 	}, function(err, res) {
 		if (!err) {
 			console.log(JSON.stringify(res));
-//			getVar(channel, variable, function (value) {
-//				console.log(variable, value);
-//			});
 		} else {
-			console.log(err.toString());
+			console.error(err.toString());
 		}
 	});
 }

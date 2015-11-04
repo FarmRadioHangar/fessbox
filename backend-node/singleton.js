@@ -1,7 +1,4 @@
-module.exports = {
-	ui = {}
-};
-
+var fs = require("fs");
 var stateFile = __dirname + "/state/snapshot.json";
 function saveSnapshot(exit) {
         //todo
@@ -36,4 +33,4 @@ function loadSnapshot() {
 
 exports.saveSnapshot = saveSnapshot;
 exports.loadSnapshot = loadSnapshot;
-
+exports.ui = {};

@@ -1,11 +1,7 @@
-//var eventHandler = require("./eventHandler");
-
 var s = require("./singleton");
 var ami = require("./ami");
 var WebSocketServer = require('ws').Server
   , wss = new WebSocketServer({ port: 19998 });
-
-//var sms_buffer = [];
 
 wss.on('connection', function connection(ws) {
 	var fromUrl = ws.upgradeReq.url.substr(1);
@@ -30,14 +26,8 @@ wss.on('connection', function connection(ws) {
 				}
 			}
 		}
-//	eventHandler(message.event, message.data);
 	});
 	ws.send(createObject("initialize", s.ui));
-/*
-  for (var i in sms_buffer) {
-        ws.send(sms_buffer[i]);
-  }
-*/
 });
 
 wss.broadcast = function broadcast(data) {
