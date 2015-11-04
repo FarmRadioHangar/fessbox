@@ -5,9 +5,10 @@ class Channel extends React.Component {
     super(props)
   }
   render() {
+    const { channelId } = this.props
     return (
       <div>
-        Chan
+        {channelId}
       </div>
     )
   }

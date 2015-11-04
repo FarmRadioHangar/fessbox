@@ -127,10 +127,12 @@ var Channel = (function (_React$Component) {
   _createClass(Channel, [{
     key: 'render',
     value: function render() {
+      var channelId = this.props.channelId;
+
       return _react2['default'].createElement(
         'div',
         null,
-        'Chan'
+        channelId
       );
     }
   }]);
@@ -241,12 +243,12 @@ var Mixer = (function (_React$Component) {
         _lodash2['default'].pairs(channels).map(function (pair) {
           var _pair = _slicedToArray(pair, 2);
 
-          var key = _pair[0];
+          var id = _pair[0];
           var chan = _pair[1];
 
           return _react2['default'].createElement(_Channel2['default'], _extends({}, chan, {
-            key: key,
-            index: key }));
+            key: id,
+            channelId: id }));
         })
       );
     }
@@ -358,7 +360,11 @@ var Ui = (function (_React$Component) {
       return _react2['default'].createElement(
         'div',
         null,
-        _react2['default'].createElement(_Host2['default'], null),
+        _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(_Host2['default'], null)
+        ),
         _react2['default'].createElement(MixerComponent, null),
         _react2['default'].createElement(_Stream2['default'], null)
       );

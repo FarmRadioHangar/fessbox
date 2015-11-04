@@ -11,11 +11,11 @@ class Mixer extends React.Component {
     return (
       <div>
         {_.pairs(channels).map(pair => {
-          const [key, chan] = pair
+          const [id, chan] = pair
           return (
             <Channel {...chan}
-              key   = {key}
-              index = {key} />
+              key       = {id}
+              channelId = {id} />
           )
         })}
       </div>
