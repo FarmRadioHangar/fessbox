@@ -21,17 +21,41 @@ class Channel extends React.Component {
         [channelId] : !muted
       }
     }))
-    dispatch(muted ? unmute(channelId) : mute(channelId))
+    //dispatch(muted ? unmute(channelId) : mute(channelId))
   }
   updateLevel(event) {
     const { dispatch, channelId, ws } = this.props
-    //ws.send(JSON.stringify({
-    //  event : 'channelMuted',
-    //  data  : {
-    //    [channelId] : !muted
-    //  }
-    //}))
-    dispatch(updateLevel(channelId, event.target.value))
+    ws.send(JSON.stringify({
+      event : 'channelVolume',
+      data  : {
+        [channelId] : event.target.value
+      }
+    }))
+    //dispatch(updateLevel(channelId, event.target.value))
+  }
+  updateMode(mode) {
+    const { dispatch, channelId, ws } = this.props
+    switch (mode) {
+      case 'host':
+        ws.send(JSON.stringify({
+          event : 'channelMode',
+          data  : {
+            [channelId] : '702'                // @TODO: replace with actual host id
+          }
+        }))
+        break
+      case 'master':
+      case 'on_hold':
+      case 'ivr':
+        ws.send(JSON.stringify({
+          event : 'channelMode',
+          data  : {
+            [channelId] : mode
+          }
+        }))
+        break
+      default:
+    }
   }
   renderChannelMode() {
     const { mode, contact } = this.props
@@ -102,20 +126,20 @@ class Channel extends React.Component {
             </div>
           </div>
           <div style={{border: '1px solid #ddd'}}> 
-            <button selected='selected'>
-              <i className='material-icons'>headset</i>
+            <button onClick={() => { this.updateMode('host') }}>
+              Host
+            </button>
+            <button onClick={() => { this.updateMode('master') }}>
+              Master
+            </button>
+            <button onClick={() => { this.updateMode('on_hold') }}>
+              Hold
+            </button>
+            <button onClick={() => { this.updateMode('ivr') }}>
+              IVR
             </button>
             <button>
-              <i className='material-icons'>radio</i>
-            </button>
-            <button>
-              <i className='material-icons'>pause</i>
-            </button>
-            <button>
-              <i className='material-icons'>voicemail</i>
-            </button>
-            <button>
-              <i className='material-icons'>radio_button_checked</i>
+              ??
             </button>
           </div>
         </div>

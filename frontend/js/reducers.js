@@ -3,6 +3,12 @@ import _ from 'lodash'
 import { combineReducers } 
   from 'redux'
 
+//const initialMixerState = {
+//  channels : {},
+//  master   : {},
+//  host     : {}
+//}
+
 const initialMixerState = {
   channels : {
     'chan_1' : {

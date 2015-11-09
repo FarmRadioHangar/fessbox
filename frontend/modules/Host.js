@@ -30,7 +30,7 @@ class Host extends React.Component {
           <Slider icon='mic' />
         </div>
         <div style={{flex: 1, border: '1px solid #ddd'}}> 
-          <Slider icon='headset' />
+          <Slider icon='hs' />
         </div>
       </div>
     )

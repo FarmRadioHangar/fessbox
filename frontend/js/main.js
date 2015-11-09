@@ -42,6 +42,10 @@ ws.onmessage = e => {
     const msg = JSON.parse(e.data)
     console.log(msg.event)
     switch (msg.event) {
+      case 'echo': 
+        // For testing
+        console.log(msg.data)
+        break
       case 'initialize':
         console.log(msg.data)
         store.dispatch(initializeMixer(msg.data.mixer))

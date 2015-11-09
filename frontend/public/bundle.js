@@ -121,6 +121,10 @@ ws.onmessage = function (e) {
     var msg = JSON.parse(e.data);
     console.log(msg.event);
     switch (msg.event) {
+      case 'echo':
+        // For testing
+        console.log(msg.data);
+        break;
       case 'initialize':
         console.log(msg.data);
         store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
@@ -157,6 +161,12 @@ var _lodash = require('lodash');
 var _lodash2 = _interopRequireDefault(_lodash);
 
 var _redux = require('redux');
+
+//const initialMixerState = {
+//  channels : {},
+//  master   : {},
+//  host     : {}
+//}
 
 var initialMixerState = {
   channels: {
@@ -317,30 +327,55 @@ var Channel = (function (_React$Component) {
         event: 'channelMuted',
         data: _defineProperty({}, channelId, !muted)
       }));
-      dispatch(muted ? (0, _jsActions.unmute)(channelId) : (0, _jsActions.mute)(channelId));
+      //dispatch(muted ? unmute(channelId) : mute(channelId))
     }
   }, {
     key: 'updateLevel',
     value: function updateLevel(event) {
       var _props2 = this.props;
-
-      //ws.send(JSON.stringify({
-      //  event : 'channelMuted',
-      //  data  : {
-      //    [channelId] : !muted
-      //  }
-      //}))
       var dispatch = _props2.dispatch;
       var channelId = _props2.channelId;
       var ws = _props2.ws;
-      dispatch((0, _jsActions.updateLevel)(channelId, event.target.value));
+
+      ws.send(JSON.stringify({
+        event: 'channelVolume',
+        data: _defineProperty({}, channelId, event.target.value)
+      }));
+      //dispatch(updateLevel(channelId, event.target.value))
+    }
+  }, {
+    key: 'updateMode',
+    value: function updateMode(mode) {
+      var _props3 = this.props;
+      var dispatch = _props3.dispatch;
+      var channelId = _props3.channelId;
+      var ws = _props3.ws;
+
+      switch (mode) {
+        case 'host':
+          ws.send(JSON.stringify({
+            event: 'channelMode',
+            data: _defineProperty({}, channelId, '702')
+          }));
+          // @TODO: replace with actual host id
+          break;
+        case 'master':
+        case 'on_hold':
+        case 'ivr':
+          ws.send(JSON.stringify({
+            event: 'channelMode',
+            data: _defineProperty({}, channelId, mode)
+          }));
+          break;
+        default:
+      }
     }
   }, {
     key: 'renderChannelMode',
     value: function renderChannelMode() {
-      var _props3 = this.props;
-      var mode = _props3.mode;
-      var contact = _props3.contact;
+      var _props4 = this.props;
+      var mode = _props4.mode;
+      var contact = _props4.contact;
 
       if ('free' === mode) {
         return _react2['default'].createElement(
@@ -387,13 +422,15 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props4 = this.props;
-      var channelId = _props4.channelId;
-      var number = _props4.number;
-      var contact = _props4.contact;
-      var mode = _props4.mode;
-      var level = _props4.level;
-      var muted = _props4.muted;
+      var _this = this;
+
+      var _props5 = this.props;
+      var channelId = _props5.channelId;
+      var number = _props5.number;
+      var contact = _props5.contact;
+      var mode = _props5.mode;
+      var level = _props5.level;
+      var muted = _props5.muted;
 
       return _react2['default'].createElement(
         'div',
@@ -462,48 +499,36 @@ var Channel = (function (_React$Component) {
             { style: { border: '1px solid #ddd' } },
             _react2['default'].createElement(
               'button',
-              { selected: 'selected' },
-              _react2['default'].createElement(
-                'i',
-                { className: 'material-icons' },
-                'headset'
-              )
+              { onClick: function () {
+                  _this.updateMode('host');
+                } },
+              'Host'
+            ),
+            _react2['default'].createElement(
+              'button',
+              { onClick: function () {
+                  _this.updateMode('master');
+                } },
+              'Master'
+            ),
+            _react2['default'].createElement(
+              'button',
+              { onClick: function () {
+                  _this.updateMode('on_hold');
+                } },
+              'Hold'
+            ),
+            _react2['default'].createElement(
+              'button',
+              { onClick: function () {
+                  _this.updateMode('ivr');
+                } },
+              'IVR'
             ),
             _react2['default'].createElement(
               'button',
               null,
-              _react2['default'].createElement(
-                'i',
-                { className: 'material-icons' },
-                'radio'
-              )
-            ),
-            _react2['default'].createElement(
-              'button',
-              null,
-              _react2['default'].createElement(
-                'i',
-                { className: 'material-icons' },
-                'pause'
-              )
-            ),
-            _react2['default'].createElement(
-              'button',
-              null,
-              _react2['default'].createElement(
-                'i',
-                { className: 'material-icons' },
-                'voicemail'
-              )
-            ),
-            _react2['default'].createElement(
-              'button',
-              null,
-              _react2['default'].createElement(
-                'i',
-                { className: 'material-icons' },
-                'radio_button_checked'
-              )
+              '??'
             )
           )
         )
@@ -724,7 +749,7 @@ var Host = (function (_React$Component2) {
         _react2['default'].createElement(
           'div',
           { style: { flex: 1, border: '1px solid #ddd' } },
-          _react2['default'].createElement(Slider, { icon: 'headset' })
+          _react2['default'].createElement(Slider, { icon: 'hs' })
         )
       );
     }
@@ -868,7 +893,11 @@ var Mixer = (function (_React$Component) {
               var id = _pair[0];
               var chan = _pair[1];
 
-              return _react2['default'].createElement(_Channel2['default'], _extends({ key: id }, chan, { channelId: id, dispatch: dispatch, ws: ws }));
+              return _react2['default'].createElement(_Channel2['default'], _extends({}, chan, {
+                key: id,
+                channelId: id,
+                dispatch: dispatch,
+                ws: ws }));
             })
           )
         ),
