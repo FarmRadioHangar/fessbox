@@ -1177,11 +1177,12 @@ var Ui = (function (_React$Component) {
     _classCallCheck(this, Ui);
 
     _get(Object.getPrototypeOf(Ui.prototype), 'constructor', this).call(this, props);
-
     this.state = {
       sidebarOpen: false,
-      sidebarDocked: false
+      sidebarDocked: false,
+      mql: null
     };
+    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
   }
 
   _createClass(Ui, [{
@@ -1194,7 +1195,10 @@ var Ui = (function (_React$Component) {
     value: function componentWillMount() {
       var mql = window.matchMedia('(min-width: 800px)');
       mql.addListener(this.mediaQueryChanged);
-      this.setState({ mql: mql, sidebarDocked: mql.matches });
+      this.setState({
+        mql: mql,
+        sidebarDocked: mql.matches
+      });
     }
   }, {
     key: 'componentWillUnmount',
@@ -1204,7 +1208,9 @@ var Ui = (function (_React$Component) {
   }, {
     key: 'mediaQueryChanged',
     value: function mediaQueryChanged() {
-      this.setState({ sidebarDocked: this.state.mql.matches });
+      this.setState({
+        sidebarDocked: this.state.mql.matches
+      });
     }
   }, {
     key: 'render',

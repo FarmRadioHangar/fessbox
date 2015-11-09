@@ -12,11 +12,12 @@ import { connect }
 class Ui extends React.Component {
   constructor(props) {
     super(props)
-
     this.state = {
       sidebarOpen   : false,
-      sidebarDocked : false
+      sidebarDocked : false,
+      mql           : null
     }
+    this.mediaQueryChanged = this.mediaQueryChanged.bind(this)
   }
   onSetSidebarOpen(open) {
     this.setState({sidebarOpen: open})
