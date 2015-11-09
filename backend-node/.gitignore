@@ -1,5 +1,6 @@
 bower_components
 static
+state
 node_modules
 test
 run

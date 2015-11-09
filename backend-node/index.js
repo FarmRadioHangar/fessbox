@@ -94,7 +94,7 @@ startAPI(router.route, apiHandler);
 
 process.on("SIGTERM", function () {
         console.log("SIGTERM received");
-//        s.saveSnapshot(process.exit);
+        s.saveSnapshot(process.exit);
       process.exit();
 });
 
@@ -103,7 +103,7 @@ process.on('uncaughtException', function (err) {
         myLib.mail2admin('uncaughtException on ' + new Date().toLocaleString(), err.stack);
 });
 
-//s.loadSnapshot();
+s.loadSnapshot();
 
 console.log("==============================================");
-console.log("FessBox Node Server has started on " + new Date().toLocaleString());
+console.log(new Date().toLocaleString()) + " - FessBox Node Server has started!");

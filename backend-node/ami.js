@@ -23,8 +23,7 @@ ami.action({
 
 ami.on('fullybooted', function(evt) {
 	console.log(new Date().toLocaleString(), "connected to asterisk!");
-	s.mainConference = {};
-	s.channels = {};
+	s.ui.asterisk = {};
 });
 
 ami.on('managerevent', function(evt) {
