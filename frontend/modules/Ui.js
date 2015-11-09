@@ -2,7 +2,6 @@ import React   from 'react'
 import Host    from './Host'
 import mixer   from './Mixer'
 import Stream  from './Stream'
-import Drawer  from './Drawer'
 
 import Sidebar from 'react-sidebar'
 
@@ -13,9 +12,9 @@ class Ui extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      sidebarOpen   : false,
-      sidebarDocked : false,
-      mql           : null
+      sidebarOpen    : false,
+      sidebarDocked  : false,
+      mediaQueryList : null
     }
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this)
   }
@@ -23,15 +22,15 @@ class Ui extends React.Component {
     this.setState({sidebarOpen: open})
   }
   componentWillMount() {
-    const mql = window.matchMedia(`(min-width: 800px)`)
-    mql.addListener(this.mediaQueryChanged)
-    this.setState({ mql, sidebarDocked : mql.matches })
+    const mediaQueryList = window.matchMedia(`(min-width: 800px)`)
+    mediaQueryList.addListener(this.mediaQueryChanged)
+    this.setState({ mediaQueryList, sidebarDocked : mediaQueryList.matches })
   }
   componentWillUnmount() {
-    this.state.mql.removeListener(this.mediaQueryChanged)
+    this.state.mediaQueryList.removeListener(this.mediaQueryChanged)
   }
   mediaQueryChanged() {
-    this.setState({ sidebarDocked : this.state.mql.matches })
+    this.setState({ sidebarDocked : this.state.mediaQueryList.matches })
   }
   render() {
     const Mixer = connect(state => state.mixer)(mixer)
