@@ -3,6 +3,7 @@ import ReactDOM             from 'react-dom'
 import app                  from './reducers'
 import Ui                   from '../modules/Ui'
 import injectTapEventPlugin from 'react-tap-event-plugin'
+import thunk                from 'redux-thunk'
 
 import { createStore } 
   from 'redux'
@@ -11,7 +12,8 @@ import { Provider }
 import { initializeMixer, updateMixer }
   from './actions'
 
-const store = createStore(app)
+const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
+const store = createStoreWithMiddleware(app)
 const ws = new WebSocket('ws://192.168.1.38:19998') 
 
 class App extends React.Component {
