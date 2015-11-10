@@ -544,6 +544,12 @@ var Channel = (function (_React$Component) {
           _react2['default'].createElement(
             'div',
             { style: { border: '1px solid #ddd' } },
+            _react2['default'].createElement(
+              'div',
+              { style: { float: 'right', width: '150px' } },
+              _react2['default'].createElement('input', { type: 'checkbox' }),
+              'Auto-answer'
+            ),
             this.renderModeSwitch()
           )
         )

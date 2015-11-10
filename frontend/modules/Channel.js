@@ -124,6 +124,10 @@ class Channel extends React.Component {
             </div>
           </div>
           <div style={{border: '1px solid #ddd'}}> 
+            <div style={{float: 'right', width: '150px'}}>
+              <input type='checkbox' />
+              Auto-answer
+            </div>
             {this.renderModeSwitch()}
           </div>
         </div>
