@@ -33,8 +33,12 @@ class Ui extends React.Component {
     this.setState({ sidebarDocked : this.state.mediaQueryList.matches })
   }
   render() {
-    const Mixer = connect(state => state.mixer)(mixer)
-
+    const Mixer = connect(state => {
+      return {
+        mixer  : state.mixer,
+        client : state.client
+      }
+    })(mixer)
     return (
       <Sidebar 
         sidebar = {(

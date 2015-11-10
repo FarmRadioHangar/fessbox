@@ -102,8 +102,30 @@ function mixer(state = initialMixerState, action) {
   }
 }
 
+function client(state = {}, action) {
+  switch (action.type) {
+    case 'update-mode':
+      switch (action.mode) {
+        case 'host':
+        case 'master':
+        case 'on_hold':
+        case 'ivr':
+          return { ...state, mode : action.mode }
+        default:
+          return state
+      }
+    case 'assign-host-id':
+      return {
+        ...state,
+        host_id : action.host_id
+      }
+    default:
+      return state
+  }
+}
+
 const reducers = {
-  mixer
+  mixer, client
 }
 
 export default combineReducers(reducers)

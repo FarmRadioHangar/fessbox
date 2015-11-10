@@ -11,7 +11,7 @@ class Mixer extends React.Component {
     super(props)
   }
   render() {
-    const { channels, dispatch, ws } = this.props
+    const { mixer : { channels }, client, dispatch, ws } = this.props
     return (
       <div style={{display: 'flex'}}>
         <div style={{flex: 11}}> 
@@ -22,6 +22,7 @@ class Mixer extends React.Component {
                 <Channel {...chan} 
                   key       = {id}
                   channelId = {id}
+                  client    = {client}
                   dispatch  = {dispatch}
                   ws        = {ws} />
               )

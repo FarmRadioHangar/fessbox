@@ -1,7 +1,7 @@
 import React       from 'react'
 import PhoneLookup from './PhoneLookup'
 
-import { mute, unmute, updateLevel } 
+import { updateMode } 
   from '../js/actions'
 import { ListGroupItem } 
   from 'react-bootstrap'
@@ -34,28 +34,8 @@ class Channel extends React.Component {
     //dispatch(updateLevel(channelId, event.target.value))
   }
   updateMode(mode) {
-    const { dispatch, channelId, ws } = this.props
-    switch (mode) {
-      case 'host':
-        ws.send(JSON.stringify({
-          event : 'channelMode',
-          data  : {
-            [channelId] : '702'                // @TODO: replace with actual host id
-          }
-        }))
-        break
-      case 'master':
-      case 'on_hold':
-      case 'ivr':
-        ws.send(JSON.stringify({
-          event : 'channelMode',
-          data  : {
-            [channelId] : mode
-          }
-        }))
-        break
-      default:
-    }
+    const { dispatch, ws } = this.props
+    dispatch(updateMode(mode))
   }
   renderChannelMode() {
     const { mode, contact } = this.props
@@ -88,6 +68,25 @@ class Channel extends React.Component {
         </div>
       )
     }
+  }
+  renderModeSwitch() {
+    const modes = ['host', 'master', 'on_hold', 'ivr']
+    const { client : { mode } } = this.props
+    return (
+      <div>
+        {modes.map((item, i) => {
+          return (
+            <span key={i}>
+              {mode == item ? item : (
+                <button onClick={() => { this.updateMode(item) }}>
+                  {item}
+                </button>
+              )}
+            </span>
+          )
+        })}
+      </div>
+    )
   }
   render() {
     const { channelId, number, contact, mode, level, muted } = this.props
@@ -126,21 +125,7 @@ class Channel extends React.Component {
             </div>
           </div>
           <div style={{border: '1px solid #ddd'}}> 
-            <button onClick={() => { this.updateMode('host') }}>
-              Host
-            </button>
-            <button onClick={() => { this.updateMode('master') }}>
-              Master
-            </button>
-            <button onClick={() => { this.updateMode('on_hold') }}>
-              Hold
-            </button>
-            <button onClick={() => { this.updateMode('ivr') }}>
-              IVR
-            </button>
-            <button>
-              ??
-            </button>
+            {this.renderModeSwitch()}
           </div>
         </div>
       </div>

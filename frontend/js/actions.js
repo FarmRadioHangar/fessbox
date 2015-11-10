@@ -28,3 +28,8 @@ export function updateMixer(state) {
   }
 }
 
+export function updateMode(mode) {
+  return {
+    type : 'update-mode', mode
+  }
+}
