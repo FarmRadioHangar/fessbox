@@ -14,9 +14,8 @@ import { initializeMixer, updateMixer }
 
 const hostId = 702
 
-const createPersistentStore = compose(persistState('client', { key : `__fessbox_client_${hostId}` }))(createStore)
+const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${hostId}`}))(createStore)
 const store = createPersistentStore(app, {client: {host_id: hostId, mode: 'host'}})
-//const store = createStore(app)
 const ws = new WebSocket('ws://192.168.1.38:19998') 
 
 class App extends React.Component {
