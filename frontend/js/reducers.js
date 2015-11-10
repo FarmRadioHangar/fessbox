@@ -110,7 +110,15 @@ function client(state = {}, action) {
         case 'master':
         case 'on_hold':
         case 'ivr':
-          return { ...state, mode : action.mode }
+          return {
+            ...state,
+            channels : {
+              ...state.channels,
+              [action.channel]: {
+                mode: action.mode
+              }
+            }
+          }
         default:
           return state
       }

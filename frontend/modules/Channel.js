@@ -21,7 +21,6 @@ class Channel extends React.Component {
         [channelId] : !muted
       }
     }))
-    //dispatch(muted ? unmute(channelId) : mute(channelId))
   }
   updateLevel(event) {
     const { dispatch, channelId, ws } = this.props
@@ -31,11 +30,10 @@ class Channel extends React.Component {
         [channelId] : event.target.value
       }
     }))
-    //dispatch(updateLevel(channelId, event.target.value))
   }
   updateMode(mode) {
-    const { dispatch, ws } = this.props
-    dispatch(updateMode(mode))
+    const { channelId, dispatch, ws } = this.props
+    dispatch(updateMode(channelId, mode))
   }
   renderChannelMode() {
     const { mode, contact } = this.props
@@ -71,15 +69,16 @@ class Channel extends React.Component {
   }
   renderModeSwitch() {
     const modes = ['host', 'master', 'on_hold', 'ivr']
-    const { client : { mode } } = this.props
+    const { channelId, client : { channels } } = this.props
+    const chan = channels[channelId] || {mode: 'free'}
     return (
       <div>
-        {modes.map((item, i) => {
+        {modes.map((mode, i) => {
           return (
             <span key={i}>
-              {mode == item ? item : (
-                <button onClick={() => { this.updateMode(item) }}>
-                  {item}
+              {chan.mode == mode ? mode : (
+                <button onClick={() => { this.updateMode(mode) }}>
+                  {mode}
                 </button>
               )}
             </span>

@@ -41,9 +41,9 @@ function updateMixer(state) {
   };
 }
 
-function updateMode(mode) {
+function updateMode(channel, mode) {
   return {
-    type: 'update-mode', mode: mode
+    type: 'update-mode', channel: channel, mode: mode
   };
 }
 
@@ -93,8 +93,7 @@ var _actions = require('./actions');
 var hostId = 702;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2['default'])('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
-var store = createPersistentStore(_reducers2['default'], { client: { host_id: hostId, mode: 'host' } });
-//const store = createStore(app)
+var store = createPersistentStore(_reducers2['default'], { client: { channels: {} } });
 var ws = new WebSocket('ws://192.168.1.38:19998');
 
 var App = (function (_React$Component) {
@@ -280,7 +279,11 @@ function client(state, action) {
         case 'master':
         case 'on_hold':
         case 'ivr':
-          return _extends({}, state, { mode: action.mode });
+          return _extends({}, state, {
+            channels: _extends({}, state.channels, _defineProperty({}, action.channel, {
+              mode: action.mode
+            }))
+          });
         default:
           return state;
       }
@@ -363,7 +366,6 @@ var Channel = (function (_React$Component) {
         event: 'channelMuted',
         data: _defineProperty({}, channelId, !muted)
       }));
-      //dispatch(muted ? unmute(channelId) : mute(channelId))
     }
   }, {
     key: 'updateLevel',
@@ -377,16 +379,16 @@ var Channel = (function (_React$Component) {
         event: 'channelVolume',
         data: _defineProperty({}, channelId, event.target.value)
       }));
-      //dispatch(updateLevel(channelId, event.target.value))
     }
   }, {
     key: 'updateMode',
     value: function updateMode(mode) {
       var _props3 = this.props;
+      var channelId = _props3.channelId;
       var dispatch = _props3.dispatch;
       var ws = _props3.ws;
 
-      dispatch((0, _jsActions.updateMode)(mode));
+      dispatch((0, _jsActions.updateMode)(channelId, mode));
     }
   }, {
     key: 'renderChannelMode',
@@ -443,21 +445,24 @@ var Channel = (function (_React$Component) {
       var _this = this;
 
       var modes = ['host', 'master', 'on_hold', 'ivr'];
-      var mode = this.props.client.mode;
+      var _props5 = this.props;
+      var channelId = _props5.channelId;
+      var channels = _props5.client.channels;
 
+      var chan = channels[channelId] || { mode: 'free' };
       return _react2['default'].createElement(
         'div',
         null,
-        modes.map(function (item, i) {
+        modes.map(function (mode, i) {
           return _react2['default'].createElement(
             'span',
             { key: i },
-            mode == item ? item : _react2['default'].createElement(
+            chan.mode == mode ? mode : _react2['default'].createElement(
               'button',
               { onClick: function () {
-                  _this.updateMode(item);
+                  _this.updateMode(mode);
                 } },
-              item
+              mode
             )
           );
         })
@@ -466,13 +471,13 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props5 = this.props;
-      var channelId = _props5.channelId;
-      var number = _props5.number;
-      var contact = _props5.contact;
-      var mode = _props5.mode;
-      var level = _props5.level;
-      var muted = _props5.muted;
+      var _props6 = this.props;
+      var channelId = _props6.channelId;
+      var number = _props6.number;
+      var contact = _props6.contact;
+      var mode = _props6.mode;
+      var level = _props6.level;
+      var muted = _props6.muted;
 
       return _react2['default'].createElement(
         'div',
