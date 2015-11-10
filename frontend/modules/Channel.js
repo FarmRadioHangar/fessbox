@@ -59,6 +59,10 @@ class Channel extends React.Component {
           </h2>
         </div>
       )
+    } else if ('defunct' === mode) {
+      return (
+        <span>DEFUNCT</span>
+      )
     } else {
       return (
         <div>
@@ -90,21 +94,21 @@ class Channel extends React.Component {
   render() {
     const { channelId, number, contact, mode, level, muted } = this.props
     return (
-      <div style={{background: '#fff', border: '1px solid #ddd'}}>
+      <div style={{background: '#fff', __border: '1px solid #ddd'}}>
         <div>
-          <div style={{border: '1px solid #ddd'}}> 
+          <div style={{__border: '1px solid #ddd'}}> 
             <div style={{display: 'flex'}}>
-              <div style={{flex: 11, border: '1px solid #ddd'}}>
+              <div style={{flex: 11, __border: '1px solid #ddd'}}>
                 {channelId}
                 {number}
               </div>
-              <div style={{flex: 1, border: '1px solid #ddd'}}>
+              <div style={{flex: 1, __border: '1px solid #ddd'}}>
                 00:00
               </div>
             </div>
           </div>
-          <div style={{border: '1px solid #ddd'}}> 
-            <div style={{flex: 6, border: '1px solid #ddd'}}>
+          <div style={{__border: '1px solid #ddd'}}> 
+            <div style={{flex: 6, __border: '1px solid #ddd'}}>
               <div style={{float: 'left', width: '50px'}}>
                 Icon
               </div>
@@ -113,17 +117,17 @@ class Channel extends React.Component {
               </div>
             </div>
           </div>
-          <div style={{border: '1px solid #ddd'}}> 
+          <div style={{__border: '1px solid #ddd'}}> 
             <div style={{display: 'flex'}}>
-              <div style={{flex: 1, border: '1px solid #ddd'}}>
+              <div style={{flex: 1, __border: '1px solid #ddd'}}>
                 <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
               </div>
-              <div style={{flex: 11, border: '1px solid #ddd'}}>
+              <div style={{flex: 11, __border: '1px solid #ddd'}}>
                 <input style={{width: '100%'}} type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} value={level} />
               </div>
             </div>
           </div>
-          <div style={{border: '1px solid #ddd'}}> 
+          <div style={{__border: '1px solid #ddd'}}> 
             <div style={{float: 'right', width: '150px'}}>
               <input type='checkbox' />
               Auto-answer

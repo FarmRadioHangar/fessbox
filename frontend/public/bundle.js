@@ -431,6 +431,12 @@ var Channel = (function (_React$Component) {
             contact.number
           )
         );
+      } else if ('defunct' === mode) {
+        return _react2['default'].createElement(
+          'span',
+          null,
+          'DEFUNCT'
+        );
       } else {
         return _react2['default'].createElement(
           'div',
@@ -481,35 +487,35 @@ var Channel = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'div',
-        { style: { background: '#fff', border: '1px solid #ddd' } },
+        { style: { background: '#fff', __border: '1px solid #ddd' } },
         _react2['default'].createElement(
           'div',
           null,
           _react2['default'].createElement(
             'div',
-            { style: { border: '1px solid #ddd' } },
+            { style: { __border: '1px solid #ddd' } },
             _react2['default'].createElement(
               'div',
               { style: { display: 'flex' } },
               _react2['default'].createElement(
                 'div',
-                { style: { flex: 11, border: '1px solid #ddd' } },
+                { style: { flex: 11, __border: '1px solid #ddd' } },
                 channelId,
                 number
               ),
               _react2['default'].createElement(
                 'div',
-                { style: { flex: 1, border: '1px solid #ddd' } },
+                { style: { flex: 1, __border: '1px solid #ddd' } },
                 '00:00'
               )
             )
           ),
           _react2['default'].createElement(
             'div',
-            { style: { border: '1px solid #ddd' } },
+            { style: { __border: '1px solid #ddd' } },
             _react2['default'].createElement(
               'div',
-              { style: { flex: 6, border: '1px solid #ddd' } },
+              { style: { flex: 6, __border: '1px solid #ddd' } },
               _react2['default'].createElement(
                 'div',
                 { style: { float: 'left', width: '50px' } },
@@ -524,26 +530,26 @@ var Channel = (function (_React$Component) {
           ),
           _react2['default'].createElement(
             'div',
-            { style: { border: '1px solid #ddd' } },
+            { style: { __border: '1px solid #ddd' } },
             _react2['default'].createElement(
               'div',
               { style: { display: 'flex' } },
               _react2['default'].createElement(
                 'div',
-                { style: { flex: 1, border: '1px solid #ddd' } },
+                { style: { flex: 1, __border: '1px solid #ddd' } },
                 _react2['default'].createElement('input', { onChange: this.toggleMuted.bind(this), type: 'checkbox', checked: !!muted }),
                 'Mute'
               ),
               _react2['default'].createElement(
                 'div',
-                { style: { flex: 11, border: '1px solid #ddd' } },
+                { style: { flex: 11, __border: '1px solid #ddd' } },
                 _react2['default'].createElement('input', { style: { width: '100%' }, type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, value: level })
               )
             )
           ),
           _react2['default'].createElement(
             'div',
-            { style: { border: '1px solid #ddd' } },
+            { style: { __border: '1px solid #ddd' } },
             _react2['default'].createElement(
               'div',
               { style: { float: 'right', width: '150px' } },
@@ -603,12 +609,12 @@ var Slider = (function (_React$Component) {
         null,
         _react2['default'].createElement(
           'div',
-          { style: { border: '1px solid #ddd', textAlign: 'center' } },
+          { style: { textAlign: 'center' } },
           _react2['default'].createElement('input', { type: 'range', orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' } })
         ),
         _react2['default'].createElement(
           'div',
-          { style: { border: '1px solid #ddd', textAlign: 'center', padding: '.7em' } },
+          { style: { textAlign: 'center', padding: '.7em' } },
           _react2['default'].createElement(
             'i',
             { className: 'material-icons', style: { fontSize: '36px' } },
@@ -639,12 +645,12 @@ var Host = (function (_React$Component2) {
         { style: { display: 'flex' } },
         _react2['default'].createElement(
           'div',
-          { style: { flex: 1, border: '1px solid #ddd' } },
+          { style: { flex: 1 } },
           _react2['default'].createElement(Slider, { icon: 'mic' })
         ),
         _react2['default'].createElement(
           'div',
-          { style: { flex: 1, border: '1px solid #ddd' } },
+          { style: { flex: 1 } },
           _react2['default'].createElement(Slider, { icon: 'hs' })
         )
       );
@@ -695,17 +701,17 @@ var Master = (function (_React$Component) {
         null,
         _react2['default'].createElement(
           'div',
-          { style: { border: '1px solid #ddd', textAlign: 'center' } },
+          { style: { textAlign: 'center' } },
           '12:12'
         ),
         _react2['default'].createElement(
           'div',
-          { style: { border: '1px solid #ddd', textAlign: 'center' } },
+          { style: { textAlign: 'center' } },
           _react2['default'].createElement('input', { type: 'range', orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' } })
         ),
         _react2['default'].createElement(
           'div',
-          { style: { border: '1px solid #ddd', textAlign: 'center' } },
+          { style: { textAlign: 'center' } },
           'Icon'
         )
       );
