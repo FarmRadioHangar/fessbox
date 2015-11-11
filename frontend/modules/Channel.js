@@ -40,7 +40,7 @@ class Channel extends React.Component {
     if ('free' === mode) {
       return (
         <div>
-          Free: <PhoneLookup entries={entries.map(entry => ({ ...entry, phone : randomize() }))} />
+          <PhoneLookup entries={entries.map(entry => ({ ...entry, phone : randomize() }))} />
         </div>
       )
     } else if ('ring' === mode) {

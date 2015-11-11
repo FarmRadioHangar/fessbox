@@ -909,7 +909,7 @@ var PhoneLookup = (function (_React$Component) {
   }, {
     key: 'reset',
     value: function reset() {
-      this.selectEntry(null);
+      this.selectEntry();
     }
   }, {
     key: 'render',
@@ -950,7 +950,7 @@ var PhoneLookup = (function (_React$Component) {
         ),
         !!keys.length && _react2['default'].createElement(
           'ul',
-          { style: { position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0 } },
+          { style: { position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0, zIndex: 4 } },
           keys.slice(0, maxResults ? maxResults : -1).map(function (key) {
             var result = results[key];
             return _react2['default'].createElement(
