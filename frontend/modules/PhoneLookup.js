@@ -48,7 +48,7 @@ class PhoneLookup extends React.Component {
     })
   }
   reset() {
-    this.selectEntry(null)
+    this.selectEntry()
   }
   render() {
     const { value, results, entry, isNumber } = this.state
@@ -74,7 +74,7 @@ class PhoneLookup extends React.Component {
           </span>
         )}
         {!!keys.length && (
-          <ul style={{position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0}}>
+          <ul style={{position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0, zIndex: 4}}>
             {keys.slice(0, maxResults ? maxResults : -1).map(key => {
               const result = results[key]
               return (
