@@ -139,9 +139,9 @@ ws.onmessage = function (e) {
       case 'echo':
         // For testing
         break;
-      case 'initialize':
-        store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
-        break;
+      //      case 'initialize':
+      //        store.dispatch(initializeMixer(msg.data.mixer))
+      //        break
       case 'channelUpdate':
         store.dispatch((0, _actions.updateMixer)(msg.data));
         break;
@@ -401,7 +401,6 @@ var Channel = (function (_React$Component) {
         return _react2['default'].createElement(
           'div',
           null,
-          'Free: ',
           _react2['default'].createElement(_PhoneLookup2['default'], { entries: _tmpEntries2['default'].map(function (entry) {
               return _extends({}, entry, { phone: (0, _tmpRandomize2['default'])() });
             }) })
@@ -860,8 +859,50 @@ function isNumber(number) {
   return /^(\+?255\-?|0)[0123456789]{9}$/.test(number.replace(/ /g, ''));
 }
 
-var PhoneLookup = (function (_React$Component) {
-  _inherits(PhoneLookup, _React$Component);
+var DefaultResults = (function (_React$Component) {
+  _inherits(DefaultResults, _React$Component);
+
+  function DefaultResults(props) {
+    _classCallCheck(this, DefaultResults);
+
+    _get(Object.getPrototypeOf(DefaultResults.prototype), 'constructor', this).call(this, props);
+  }
+
+  _createClass(DefaultResults, [{
+    key: 'render',
+    value: function render() {
+      var _this = this;
+
+      var results = this.props.results;
+
+      return _react2['default'].createElement(
+        'ul',
+        { style: { position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0, zIndex: 4 } },
+        results.map(function (result, key) {
+          return _react2['default'].createElement(
+            'li',
+            { key: key },
+            _react2['default'].createElement(
+              'a',
+              { href: '#', onClick: function () {
+                  return _this.props.onSelectionChanged(result);
+                } },
+              result.name,
+              ' (',
+              result.phone,
+              ')'
+            )
+          );
+        })
+      );
+    }
+  }]);
+
+  return DefaultResults;
+})(_react2['default'].Component);
+
+var PhoneLookup = (function (_React$Component2) {
+  _inherits(PhoneLookup, _React$Component2);
 
   function PhoneLookup(props) {
     _classCallCheck(this, PhoneLookup);
@@ -914,17 +955,18 @@ var PhoneLookup = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this = this;
-
       var _state = this.state;
       var value = _state.value;
       var results = _state.results;
       var entry = _state.entry;
       var isNumber = _state.isNumber;
-      var maxResults = this.props.maxResults;
+      var _props = this.props;
+      var maxResults = _props.maxResults;
+      var resultsComponent = _props.resultsComponent;
 
       var inputStyle = !!entry ? { backgroundColor: '#fff4a8' } : !!isNumber ? { backgroundColor: '#a8f4a8' } : {};
       var keys = _lodash2['default'].keysIn(results);
+      var Results = resultsComponent;
       return _react2['default'].createElement(
         'div',
         null,
@@ -948,27 +990,11 @@ var PhoneLookup = (function (_React$Component) {
             'Call'
           )
         ),
-        !!keys.length && _react2['default'].createElement(
-          'ul',
-          { style: { position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0, zIndex: 4 } },
-          keys.slice(0, maxResults ? maxResults : -1).map(function (key) {
-            var result = results[key];
-            return _react2['default'].createElement(
-              'li',
-              { key: key },
-              _react2['default'].createElement(
-                'a',
-                { href: '#', onClick: function () {
-                    return _this.selectEntry(result);
-                  } },
-                result.name,
-                ' (',
-                result.phone,
-                ')'
-              )
-            );
-          })
-        )
+        !!keys.length && _react2['default'].createElement(Results, {
+          onSelectionChanged: this.selectEntry.bind(this),
+          results: keys.slice(0, maxResults ? maxResults : -1).map(function (key) {
+            return results[key];
+          }) })
       );
     }
   }]);
@@ -978,7 +1004,8 @@ var PhoneLookup = (function (_React$Component) {
 
 PhoneLookup.defaultProps = {
   maxResults: 10,
-  entries: []
+  entries: [],
+  resultsComponent: DefaultResults
 };
 
 exports['default'] = PhoneLookup;

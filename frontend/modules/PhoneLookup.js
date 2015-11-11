@@ -14,6 +14,28 @@ function isNumber(number) {
   return /^(\+?255\-?|0)[0123456789]{9}$/.test(number.replace(/ /g, ''))
 }
 
+class DefaultResults extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    const { results } = this.props
+    return (
+      <ul style={{position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0, zIndex: 4}}>
+        {results.map((result, key) => {
+          return (
+            <li key={key}>
+              <a href='#' onClick={() => this.props.onSelectionChanged(result)}>
+                {result.name} ({result.phone})
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+    )
+  }
+}
+
 class PhoneLookup extends React.Component {
   constructor(props) {
     let entries = {}
@@ -52,9 +74,10 @@ class PhoneLookup extends React.Component {
   }
   render() {
     const { value, results, entry, isNumber } = this.state
-    const { maxResults } = this.props
+    const { maxResults, resultsComponent } = this.props
     const inputStyle = !!entry ? {backgroundColor: '#fff4a8'} : !!isNumber ? {backgroundColor: '#a8f4a8'} : {}
     const keys = _.keysIn(results)
+    const Results = resultsComponent
     return (
       <div>
         <input 
@@ -74,18 +97,9 @@ class PhoneLookup extends React.Component {
           </span>
         )}
         {!!keys.length && (
-          <ul style={{position: 'absolute', background: '#fff', border: '1px solid #ddd', width: '200px', listStyle: 'none', margin: 0, padding: 0, zIndex: 4}}>
-            {keys.slice(0, maxResults ? maxResults : -1).map(key => {
-              const result = results[key]
-              return (
-                <li key={key}>
-                  <a href='#' onClick={() => this.selectEntry(result)}>
-                    {result.name} ({result.phone})
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
+          <Results 
+            onSelectionChanged = {this.selectEntry.bind(this)}
+            results            = {keys.slice(0, maxResults ? maxResults : -1).map(key => results[key])} />
         )}
       </div>
     )
@@ -93,8 +107,9 @@ class PhoneLookup extends React.Component {
 }
 
 PhoneLookup.defaultProps = {
-  maxResults : 10,
-  entries    : []
+  maxResults       : 10,
+  entries          : [],
+  resultsComponent : DefaultResults
 }
 
 export default PhoneLookup
