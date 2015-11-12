@@ -25,8 +25,11 @@ class DefaultResults extends React.Component {
         {results.map((result, key) => {
           return (
             <li key={key}>
+              <span style={{float: 'right'}}>
+                {result.phone}
+              </span>
               <a href='#' onClick={() => this.props.onSelectionChanged(result)}>
-                {result.name} ({result.phone})
+                {result.name} 
               </a>
             </li>
           )
