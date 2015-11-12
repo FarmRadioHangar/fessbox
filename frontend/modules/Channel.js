@@ -31,6 +31,24 @@ class Channel extends React.Component {
       }
     }))
   }
+  answerCall() {
+    const { dispatch, channelId, ws } = this.props
+    ws.send(JSON.stringify({
+      event : 'channelMode',
+      data  : {
+        [channelId] : 'master'             // tmp
+      }
+    }))
+  }
+  rejectCall() {
+    const { dispatch, channelId, ws } = this.props
+    ws.send(JSON.stringify({
+      event : 'channelMode',
+      data  : {
+        [channelId] : 'free'
+      }
+    }))
+  }
   updateMode(mode) {
     const { channelId, dispatch, ws } = this.props
     dispatch(updateMode(channelId, mode))
@@ -47,10 +65,10 @@ class Channel extends React.Component {
       return (
         <div>
           <div style={{float: 'right'}}>
-            <button>
+            <button onClick={this.answerCall.bind(this)}>
               Answer
             </button>
-            <button>
+            <button onClick={this.rejectCall.bind(this)}>
               Reject
             </button>
           </div>
