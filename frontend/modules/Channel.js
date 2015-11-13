@@ -1,6 +1,7 @@
 import React       from 'react'
 import classNames  from 'classnames'
 import PhoneLookup from 'frh-react-phone-lookup'
+import Switch      from 'react-bootstrap-switch'
 
 import { updateMode } 
   from '../js/actions'
@@ -19,7 +20,7 @@ class LookupResults extends React.Component {
     return (
       <div 
         className = 'list-group ' 
-        style     = {{position: 'absolute', width: '500px', margin: 0, padding: 0, zIndex: 4}}>
+        style     = {{position: 'absolute', width: '500px', margin: '-1px 0 0 0', padding: 0, zIndex: 4}}>
         {results.map((result, key) => {
           return (
             <a 
@@ -229,11 +230,12 @@ class Channel extends React.Component {
             </div>
           </div>
           <div style={{__border: '1px solid #ddd'}}> 
-            <div style={{float: 'right', width: '150px'}}>
-              <input type='checkbox' />
-              Auto-answer
-            </div>
             {this.renderModeSwitch()}
+            &nbsp;<Switch 
+              labelText = 'Auto-answer'
+              onText    = 'On'
+              offText   = 'Off'
+              size      = 'mini' />
           </div>
         </div>
       </div>
