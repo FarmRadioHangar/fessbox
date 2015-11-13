@@ -4,7 +4,7 @@ import app                  from './reducers'
 import Ui                   from '../modules/Ui'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import persistState         from 'redux-localstorage'
-import AwesomeWebSocket     from 'awesome-websocket'
+import { AwesomeWebSocket } from 'awesome-websocket'
 
 import { compose, createStore } 
   from 'redux'
@@ -39,8 +39,8 @@ ReactDOM.render(
   document.getElementById('main')
 )
 
-ws.onopen  = e => { console.log('open') } 
-ws.onclose = e => { console.log('close') } 
+ws.onopen  = () => { console.log('open') } 
+ws.onclose = () => { console.log('close') } 
 
 ws.onmessage = e => { 
   if (e.data) {
@@ -65,5 +65,6 @@ ws.onmessage = e => {
 
 ws.onerror = e => { 
   console.log('error')
+  console.log(e)
 }
 

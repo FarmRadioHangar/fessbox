@@ -77,8 +77,6 @@ var _reduxLocalstorage2 = _interopRequireDefault(_reduxLocalstorage);
 
 var _awesomeWebsocket = require('awesome-websocket');
 
-var _awesomeWebsocket2 = _interopRequireDefault(_awesomeWebsocket);
-
 var _redux = require('redux');
 
 var _reactRedux = require('react-redux');
@@ -97,7 +95,7 @@ var hostId = 702;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { channels: {} } });
-var ws = new _awesomeWebsocket2.default('ws://192.168.1.38:19998');
+var ws = new _awesomeWebsocket.AwesomeWebSocket('ws://192.168.1.38:19998');
 
 var App = (function (_React$Component) {
   _inherits(App, _React$Component);
@@ -126,10 +124,10 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(App, null)
 ), document.getElementById('main'));
 
-ws.onopen = function (e) {
+ws.onopen = function () {
   console.log('open');
 };
-ws.onclose = function (e) {
+ws.onclose = function () {
   console.log('close');
 };
 
@@ -156,6 +154,7 @@ ws.onmessage = function (e) {
 
 ws.onerror = function (e) {
   console.log('error');
+  console.log(e);
 };
 
 },{"../modules/Ui":9,"./actions":1,"./reducers":3,"awesome-websocket":12,"react":427,"react-dom":256,"react-redux":259,"react-tap-event-plugin":271,"redux":434,"redux-localstorage":430}],3:[function(require,module,exports){
