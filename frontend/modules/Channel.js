@@ -1,5 +1,5 @@
 import React       from 'react'
-import PhoneLookup from './PhoneLookup'
+import PhoneLookup from 'frh-react-phone-lookup'
 
 import { updateMode } 
   from '../js/actions'
