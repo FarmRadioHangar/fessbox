@@ -695,19 +695,14 @@ var Channel = (function (_React$Component3) {
             { style: { __border: '1px solid #ddd', padding: '8px' } },
             _react2.default.createElement(
               'div',
-              { style: { display: 'flex' } },
+              { style: { float: 'left' } },
               _react2.default.createElement(
-                'div',
-                { style: { flex: 1, __border: '1px solid #ddd' } },
-                _react2.default.createElement('input', { onChange: this.toggleMuted.bind(this), type: 'checkbox', checked: !!muted }),
-                'Mute'
-              ),
-              _react2.default.createElement(
-                'div',
-                { style: { flex: 11, __border: '1px solid #ddd' } },
-                _react2.default.createElement('input', { style: { width: '100%' }, type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, defaultValue: level })
+                'a',
+                { href: '#', onClick: this.toggleMuted.bind(this) },
+                _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
               )
-            )
+            ),
+            _react2.default.createElement('input', { style: { width: '100%' }, type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, defaultValue: level })
           ),
           _react2.default.createElement(
             'div',
@@ -866,7 +861,7 @@ var Master = (function (_React$Component) {
         ),
         _react2.default.createElement(
           'div',
-          { style: { textAlign: 'center' } },
+          { style: { textAlign: 'center', width: '100%' } },
           _react2.default.createElement('input', { type: 'range', orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' } })
         ),
         _react2.default.createElement(
