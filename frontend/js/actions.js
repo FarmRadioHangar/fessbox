@@ -33,3 +33,9 @@ export function updateMode(channel, mode) {
     type : 'update-mode', channel, mode
   }
 }
+
+export function updateMasterLevel(level) {
+  return {
+    type : 'update-master-level', level
+  }
+}
