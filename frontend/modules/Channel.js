@@ -3,7 +3,7 @@ import classNames  from 'classnames'
 import PhoneLookup from 'frh-react-phone-lookup'
 import Switch      from 'react-bootstrap-switch'
 
-import { updateMode } 
+import { updateMode, updateLevel } 
   from '../js/actions'
 import { ListGroupItem } 
   from 'react-bootstrap'
@@ -106,12 +106,14 @@ class Channel extends React.Component {
   }
   updateLevel(event) {
     const { dispatch, channelId, ws } = this.props
+    const value = event.target.value
     ws.send(JSON.stringify({
       event : 'channelVolume',
       data  : {
-        [channelId] : event.target.value
+        [channelId] : value
       }
     }))
+    dispatch(updateLevel(channelId, value))
   }
   answerCall() {
     const { dispatch, channelId, ws } = this.props
@@ -228,7 +230,7 @@ class Channel extends React.Component {
                 */}
               </div>
               <div style={{flex: 11, __border: '1px solid #ddd'}}>
-                <input style={{width: '100%'}} type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} value={level} />
+              <input style={{width: '100%'}} type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
               </div>
             </div>
           </div>
