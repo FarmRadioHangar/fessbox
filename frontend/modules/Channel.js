@@ -10,6 +10,85 @@ import { ListGroupItem }
 import entries     from './testdata/entries'
 import randomize   from './testdata/randomize'
 
+class LookupResults extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    const { results, onSelectionChange } = this.props
+    return (
+      <div 
+        className = 'list-group ' 
+        style     = {{position: 'absolute', width: '500px', margin: 0, padding: 0, zIndex: 4}}>
+        {results.map((result, key) => {
+          return (
+            <a 
+              key       = {key} 
+              className = 'list-group-item' 
+              href      = '#' 
+              onClick   = {() => onSelectionChange(result)}>
+              <p className='list-group-item-text'>
+                <span style={{float: 'right', minWidth: '180px'}}>
+                  {result.phone}
+                </span>
+                <b>{result.name}</b>
+              </p>
+            </a>
+          )
+        })}
+      </div>
+    )
+  }
+}
+
+class LookupInput extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    const { 
+      hasEntry, 
+      value, 
+      onChange, 
+      onReset, 
+      onCallNumber, 
+      isValidNumber
+    } = this.props
+    const inputStyle = hasEntry ? {
+      backgroundColor: '#fff4a8'
+    } : isValidNumber ? {
+      backgroundColor: '#a8f4a8'
+    } : {}
+    return (
+      <div>
+        <div className='input-group input-group-sm'>
+          <input 
+            className = 'form-control'
+            type      = 'text'
+            style     = {inputStyle}
+            value     = {value}
+            onChange  = {onChange} />
+          <div className='input-group-btn'>
+            <button 
+              onClick   = {onReset} 
+              type      = 'button' 
+              className = 'btn btn-default'>
+              <span className='glyphicon glyphicon-remove'></span>
+            </button>
+            <button 
+              disabled  = {!hasEntry && !isValidNumber}
+              onClick   = {onCallNumber} 
+              type      = 'button' 
+              className = 'btn btn-default'>
+              <span style={{top: '2px'}} className='glyphicon glyphicon-earphone'></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
 class Channel extends React.Component {
   constructor(props) {
     super(props)
@@ -59,7 +138,10 @@ class Channel extends React.Component {
     if ('free' === mode) {
       return (
         <div>
-          <PhoneLookup entries={entries.map(entry => ({ ...entry, phone : randomize() }))} />
+          <PhoneLookup 
+            inputComponent   = {LookupInput}
+            resultsComponent = {LookupResults}
+            entries          = {entries.map(entry => ({ ...entry, phone : randomize() }))} />
         </div>
       )
     } else if ('ring' === mode) {

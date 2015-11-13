@@ -351,8 +351,128 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Channel = (function (_React$Component) {
-  _inherits(Channel, _React$Component);
+var LookupResults = (function (_React$Component) {
+  _inherits(LookupResults, _React$Component);
+
+  function LookupResults(props) {
+    _classCallCheck(this, LookupResults);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(LookupResults).call(this, props));
+  }
+
+  _createClass(LookupResults, [{
+    key: 'render',
+    value: function render() {
+      var _props = this.props;
+      var results = _props.results;
+      var onSelectionChange = _props.onSelectionChange;
+
+      return _react2.default.createElement(
+        'div',
+        {
+          className: 'list-group ',
+          style: { position: 'absolute', width: '500px', margin: 0, padding: 0, zIndex: 4 } },
+        results.map(function (result, key) {
+          return _react2.default.createElement(
+            'a',
+            {
+              key: key,
+              className: 'list-group-item',
+              href: '#',
+              onClick: function onClick() {
+                return onSelectionChange(result);
+              } },
+            _react2.default.createElement(
+              'p',
+              { className: 'list-group-item-text' },
+              _react2.default.createElement(
+                'span',
+                { style: { float: 'right', minWidth: '180px' } },
+                result.phone
+              ),
+              _react2.default.createElement(
+                'b',
+                null,
+                result.name
+              )
+            )
+          );
+        })
+      );
+    }
+  }]);
+
+  return LookupResults;
+})(_react2.default.Component);
+
+var LookupInput = (function (_React$Component2) {
+  _inherits(LookupInput, _React$Component2);
+
+  function LookupInput(props) {
+    _classCallCheck(this, LookupInput);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(LookupInput).call(this, props));
+  }
+
+  _createClass(LookupInput, [{
+    key: 'render',
+    value: function render() {
+      var _props2 = this.props;
+      var hasEntry = _props2.hasEntry;
+      var value = _props2.value;
+      var onChange = _props2.onChange;
+      var onReset = _props2.onReset;
+      var onCallNumber = _props2.onCallNumber;
+      var isValidNumber = _props2.isValidNumber;
+
+      var inputStyle = hasEntry ? {
+        backgroundColor: '#fff4a8'
+      } : isValidNumber ? {
+        backgroundColor: '#a8f4a8'
+      } : {};
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'div',
+          { className: 'input-group input-group-sm' },
+          _react2.default.createElement('input', {
+            className: 'form-control',
+            type: 'text',
+            style: inputStyle,
+            value: value,
+            onChange: onChange }),
+          _react2.default.createElement(
+            'div',
+            { className: 'input-group-btn' },
+            _react2.default.createElement(
+              'button',
+              {
+                onClick: onReset,
+                type: 'button',
+                className: 'btn btn-default' },
+              _react2.default.createElement('span', { className: 'glyphicon glyphicon-remove' })
+            ),
+            _react2.default.createElement(
+              'button',
+              {
+                disabled: !hasEntry && !isValidNumber,
+                onClick: onCallNumber,
+                type: 'button',
+                className: 'btn btn-default' },
+              _react2.default.createElement('span', { style: { top: '2px' }, className: 'glyphicon glyphicon-earphone' })
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return LookupInput;
+})(_react2.default.Component);
+
+var Channel = (function (_React$Component3) {
+  _inherits(Channel, _React$Component3);
 
   function Channel(props) {
     _classCallCheck(this, Channel);
@@ -363,11 +483,11 @@ var Channel = (function (_React$Component) {
   _createClass(Channel, [{
     key: 'toggleMuted',
     value: function toggleMuted() {
-      var _props = this.props;
-      var dispatch = _props.dispatch;
-      var muted = _props.muted;
-      var channelId = _props.channelId;
-      var ws = _props.ws;
+      var _props3 = this.props;
+      var dispatch = _props3.dispatch;
+      var muted = _props3.muted;
+      var channelId = _props3.channelId;
+      var ws = _props3.ws;
 
       ws.send(JSON.stringify({
         event: 'channelMuted',
@@ -377,10 +497,10 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'updateLevel',
     value: function updateLevel(event) {
-      var _props2 = this.props;
-      var dispatch = _props2.dispatch;
-      var channelId = _props2.channelId;
-      var ws = _props2.ws;
+      var _props4 = this.props;
+      var dispatch = _props4.dispatch;
+      var channelId = _props4.channelId;
+      var ws = _props4.ws;
 
       ws.send(JSON.stringify({
         event: 'channelVolume',
@@ -390,10 +510,10 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'answerCall',
     value: function answerCall() {
-      var _props3 = this.props;
-      var dispatch = _props3.dispatch;
-      var channelId = _props3.channelId;
-      var ws = _props3.ws;
+      var _props5 = this.props;
+      var dispatch = _props5.dispatch;
+      var channelId = _props5.channelId;
+      var ws = _props5.ws;
 
       ws.send(JSON.stringify({
         event: 'channelMode',
@@ -404,10 +524,10 @@ var Channel = (function (_React$Component) {
     key: 'rejectCall',
     // tmp
     value: function rejectCall() {
-      var _props4 = this.props;
-      var dispatch = _props4.dispatch;
-      var channelId = _props4.channelId;
-      var ws = _props4.ws;
+      var _props6 = this.props;
+      var dispatch = _props6.dispatch;
+      var channelId = _props6.channelId;
+      var ws = _props6.ws;
 
       ws.send(JSON.stringify({
         event: 'channelMode',
@@ -417,25 +537,28 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'updateMode',
     value: function updateMode(mode) {
-      var _props5 = this.props;
-      var channelId = _props5.channelId;
-      var dispatch = _props5.dispatch;
-      var ws = _props5.ws;
+      var _props7 = this.props;
+      var channelId = _props7.channelId;
+      var dispatch = _props7.dispatch;
+      var ws = _props7.ws;
 
       dispatch((0, _actions.updateMode)(channelId, mode));
     }
   }, {
     key: 'renderChannelMode',
     value: function renderChannelMode() {
-      var _props6 = this.props;
-      var mode = _props6.mode;
-      var contact = _props6.contact;
+      var _props8 = this.props;
+      var mode = _props8.mode;
+      var contact = _props8.contact;
 
       if ('free' === mode) {
         return _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(_frhReactPhoneLookup2.default, { entries: _entries2.default.map(function (entry) {
+          _react2.default.createElement(_frhReactPhoneLookup2.default, {
+            inputComponent: LookupInput,
+            resultsComponent: LookupResults,
+            entries: _entries2.default.map(function (entry) {
               return _extends({}, entry, { phone: (0, _randomize2.default)() });
             }) })
         );
@@ -481,12 +604,12 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'renderModeSwitch',
     value: function renderModeSwitch() {
-      var _this2 = this;
+      var _this4 = this;
 
       var modes = ['host', 'master', 'on_hold', 'ivr'];
-      var _props7 = this.props;
-      var channelId = _props7.channelId;
-      var channels = _props7.client.channels;
+      var _props9 = this.props;
+      var channelId = _props9.channelId;
+      var channels = _props9.client.channels;
 
       var chan = channels[channelId] || { mode: 'free' };
       return _react2.default.createElement(
@@ -500,7 +623,7 @@ var Channel = (function (_React$Component) {
               type: 'button',
               className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
               onClick: function onClick() {
-                _this2.updateMode(mode);
+                _this4.updateMode(mode);
               } },
             mode
           );
@@ -510,13 +633,13 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props8 = this.props;
-      var channelId = _props8.channelId;
-      var number = _props8.number;
-      var contact = _props8.contact;
-      var mode = _props8.mode;
-      var level = _props8.level;
-      var muted = _props8.muted;
+      var _props10 = this.props;
+      var channelId = _props10.channelId;
+      var number = _props10.number;
+      var contact = _props10.contact;
+      var mode = _props10.mode;
+      var level = _props10.level;
+      var muted = _props10.muted;
 
       return _react2.default.createElement(
         'div',
