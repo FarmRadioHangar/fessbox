@@ -452,6 +452,7 @@ var LookupInput = (function (_React$Component2) {
             _react2.default.createElement(
               'button',
               {
+                disabled: !value,
                 onClick: onReset,
                 type: 'button',
                 className: 'btn btn-default' },
@@ -656,7 +657,7 @@ var Channel = (function (_React$Component3) {
             { style: { __border: '1px solid #ddd' } },
             _react2.default.createElement(
               'div',
-              { style: { display: 'flex' } },
+              { style: { display: 'flex', padding: '8px' } },
               _react2.default.createElement(
                 'div',
                 { style: { flex: 11, __border: '1px solid #ddd' } },
@@ -675,7 +676,7 @@ var Channel = (function (_React$Component3) {
             { style: { __border: '1px solid #ddd' } },
             _react2.default.createElement(
               'div',
-              { style: { flex: 6, __border: '1px solid #ddd' } },
+              { style: { flex: 6, padding: '8px', __border: '1px solid #ddd' } },
               _react2.default.createElement(
                 'div',
                 { style: { float: 'left', width: '50px' } },
@@ -690,7 +691,7 @@ var Channel = (function (_React$Component3) {
           ),
           _react2.default.createElement(
             'div',
-            { style: { __border: '1px solid #ddd' } },
+            { style: { __border: '1px solid #ddd', padding: '8px' } },
             _react2.default.createElement(
               'div',
               { style: { display: 'flex' } },
@@ -709,7 +710,7 @@ var Channel = (function (_React$Component3) {
           ),
           _react2.default.createElement(
             'div',
-            { style: { __border: '1px solid #ddd' } },
+            { style: { __border: '1px solid #ddd', padding: '8px' } },
             this.renderModeSwitch(),
             ' ',
             _react2.default.createElement(_reactBootstrapSwitch2.default, {

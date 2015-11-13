@@ -71,6 +71,7 @@ class LookupInput extends React.Component {
             onChange  = {onChange} />
           <div className='input-group-btn'>
             <button 
+              disabled  = {!value}
               onClick   = {onReset} 
               type      = 'button' 
               className = 'btn btn-default'>
@@ -199,7 +200,7 @@ class Channel extends React.Component {
       <div style={{background: '#fff', __border: '1px solid #ddd'}}>
         <div>
           <div style={{__border: '1px solid #ddd'}}> 
-            <div style={{display: 'flex'}}>
+            <div style={{display: 'flex', padding: '8px'}}>
               <div style={{flex: 11, __border: '1px solid #ddd'}}>
                 {channelId}
                 {number}
@@ -210,7 +211,7 @@ class Channel extends React.Component {
             </div>
           </div>
           <div style={{__border: '1px solid #ddd'}}> 
-            <div style={{flex: 6, __border: '1px solid #ddd'}}>
+            <div style={{flex: 6, padding: '8px', __border: '1px solid #ddd'}}>
               <div style={{float: 'left', width: '50px'}}>
                 Icon
               </div>
@@ -219,17 +220,19 @@ class Channel extends React.Component {
               </div>
             </div>
           </div>
-          <div style={{__border: '1px solid #ddd'}}> 
+          <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
             <div style={{display: 'flex'}}>
               <div style={{flex: 1, __border: '1px solid #ddd'}}>
+                {/*
                 <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
+                */}
               </div>
               <div style={{flex: 11, __border: '1px solid #ddd'}}>
                 <input style={{width: '100%'}} type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} value={level} />
               </div>
             </div>
           </div>
-          <div style={{__border: '1px solid #ddd'}}> 
+          <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
             {this.renderModeSwitch()}
             &nbsp;<Switch 
               labelText = 'Auto-answer'
