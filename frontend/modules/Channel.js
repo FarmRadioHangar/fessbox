@@ -6,8 +6,8 @@ import { updateMode }
 import { ListGroupItem } 
   from 'react-bootstrap'
 
-import entries     from '../node_modules/frh-react-phone-lookup/testdata/entries'
-import randomize   from '../node_modules/frh-react-phone-lookup/testdata/randomize'
+import entries     from './testdata/entries'
+import randomize   from './testdata/randomize'
 
 class Channel extends React.Component {
   constructor(props) {
