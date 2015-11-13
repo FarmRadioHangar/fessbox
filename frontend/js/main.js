@@ -4,7 +4,7 @@ import app                  from './reducers'
 import Ui                   from '../modules/Ui'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import persistState         from 'redux-localstorage'
-import { AwesomeWebSocket } from 'awesome-websocket'
+import { AwesomeWebSocket, ReconnectingWebSocket } from 'awesome-websocket'
 
 import { compose, createStore } 
   from 'redux'
@@ -17,7 +17,7 @@ const hostId = 702
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${hostId}`}))(createStore)
 const store = createPersistentStore(app, {client: {channels: {}}})
-const ws = new AwesomeWebSocket('ws://192.168.1.38:19998') 
+const ws = new ReconnectingWebSocket('ws://192.168.1.38:19998') 
 
 class App extends React.Component {
   constructor(props) {
