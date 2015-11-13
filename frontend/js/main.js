@@ -49,7 +49,6 @@ ws.onmessage = e => {
     console.log(msg.data)
     switch (msg.event) {
       case 'echo': 
-        // For testing
         break
       case 'initialize':
         store.dispatch(initializeMixer(msg.data.mixer))

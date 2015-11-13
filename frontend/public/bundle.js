@@ -138,7 +138,6 @@ ws.onmessage = function (e) {
     console.log(msg.data);
     switch (msg.event) {
       case 'echo':
-        // For testing
         break;
       case 'initialize':
         store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
@@ -378,10 +377,12 @@ var Channel = (function (_React$Component) {
       var channelId = _props2.channelId;
       var ws = _props2.ws;
 
+      var value = event.target.value;
       ws.send(JSON.stringify({
         event: 'channelVolume',
-        data: _defineProperty({}, channelId, event.target.value)
+        data: _defineProperty({}, channelId, value)
       }));
+      dispatch((0, _actions.updateLevel)(channelId, value));
     }
   }, {
     key: 'answerCall',
@@ -572,7 +573,7 @@ var Channel = (function (_React$Component) {
               _react2.default.createElement(
                 'div',
                 { style: { flex: 11, __border: '1px solid #ddd' } },
-                _react2.default.createElement('input', { style: { width: '100%' }, type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, value: level })
+                _react2.default.createElement('input', { style: { width: '100%' }, type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, defaultValue: level })
               )
             )
           ),
