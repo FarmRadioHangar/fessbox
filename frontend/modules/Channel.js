@@ -96,45 +96,35 @@ class Channel extends React.Component {
     super(props)
   }
   toggleMuted() {
-    const { dispatch, muted, channelId, ws } = this.props
-    ws.send(JSON.stringify({
-      event : 'channelMuted',
-      data  : {
-        [channelId] : !muted
-      }
-    }))
+    const { dispatch, muted, channelId, sendMessage } = this.props
+    sendMessage('channelMuted', {
+      [channelId] : !muted
+    })
   }
   updateLevel(event) {
-    const { dispatch, channelId, ws } = this.props
+    const { dispatch, channelId, sendMessage } = this.props
     const value = event.target.value
-    ws.send(JSON.stringify({
-      event : 'channelVolume',
-      data  : {
-        [channelId] : value
-      }
-    }))
+    sendMessage('channelVolume', {
+      [channelId] : value
+    })
     dispatch(updateLevel(channelId, value))
   }
   answerCall() {
-    const { dispatch, channelId, ws } = this.props
-    ws.send(JSON.stringify({
-      event : 'channelMode',
-      data  : {
-        [channelId] : 'master'             // tmp
-      }
-    }))
+    const { dispatch, channelId, sendMessage, client : { channels } } = this.props
+    const chan = channels[channelId] || {mode: 'master'}
+    console.log(`answer in mode ${chan.mode}`)
+    sendMessage('channelMode', {
+      [channelId] : chan.mode
+    })
   }
   rejectCall() {
-    const { dispatch, channelId, ws } = this.props
-    ws.send(JSON.stringify({
-      event : 'channelMode',
-      data  : {
-        [channelId] : 'free'
-      }
-    }))
+    const { dispatch, channelId, sendMessage } = this.props
+    sendMessage('channelMode', {
+      [channelId] : 'free'
+    })
   }
   updateMode(mode) {
-    const { channelId, dispatch, ws } = this.props
+    const { channelId, dispatch } = this.props
     dispatch(updateMode(channelId, mode))
   }
   renderChannelMode() {

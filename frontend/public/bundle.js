@@ -116,7 +116,9 @@ var App = (function (_React$Component) {
   _createClass(App, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_Ui2.default, { ws: ws });
+      return _react2.default.createElement(_Ui2.default, { sendMessage: function sendMessage(type, data) {
+          ws.send(JSON.stringify({ event: type, data: data }));
+        } });
     }
   }]);
 
@@ -144,8 +146,6 @@ ws.onmessage = function (e) {
     console.log(msg.event);
     console.log(msg.data);
     switch (msg.event) {
-      case 'echo':
-        break;
       case 'initialize':
         store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
         break;
@@ -509,12 +509,9 @@ var Channel = (function (_React$Component3) {
       var dispatch = _props3.dispatch;
       var muted = _props3.muted;
       var channelId = _props3.channelId;
-      var ws = _props3.ws;
+      var sendMessage = _props3.sendMessage;
 
-      ws.send(JSON.stringify({
-        event: 'channelMuted',
-        data: _defineProperty({}, channelId, !muted)
-      }));
+      sendMessage('channelMuted', _defineProperty({}, channelId, !muted));
     }
   }, {
     key: 'updateLevel',
@@ -522,13 +519,10 @@ var Channel = (function (_React$Component3) {
       var _props4 = this.props;
       var dispatch = _props4.dispatch;
       var channelId = _props4.channelId;
-      var ws = _props4.ws;
+      var sendMessage = _props4.sendMessage;
 
       var value = event.target.value;
-      ws.send(JSON.stringify({
-        event: 'channelVolume',
-        data: _defineProperty({}, channelId, value)
-      }));
+      sendMessage('channelVolume', _defineProperty({}, channelId, value));
       dispatch((0, _actions.updateLevel)(channelId, value));
     }
   }, {
@@ -537,26 +531,22 @@ var Channel = (function (_React$Component3) {
       var _props5 = this.props;
       var dispatch = _props5.dispatch;
       var channelId = _props5.channelId;
-      var ws = _props5.ws;
+      var sendMessage = _props5.sendMessage;
+      var channels = _props5.client.channels;
 
-      ws.send(JSON.stringify({
-        event: 'channelMode',
-        data: _defineProperty({}, channelId, 'master')
-      }));
+      var chan = channels[channelId] || { mode: 'master' };
+      console.log('answer in mode ' + chan.mode);
+      sendMessage('channelMode', _defineProperty({}, channelId, chan.mode));
     }
   }, {
     key: 'rejectCall',
-    // tmp
     value: function rejectCall() {
       var _props6 = this.props;
       var dispatch = _props6.dispatch;
       var channelId = _props6.channelId;
-      var ws = _props6.ws;
+      var sendMessage = _props6.sendMessage;
 
-      ws.send(JSON.stringify({
-        event: 'channelMode',
-        data: _defineProperty({}, channelId, 'free')
-      }));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'free'));
     }
   }, {
     key: 'updateMode',
@@ -564,7 +554,6 @@ var Channel = (function (_React$Component3) {
       var _props7 = this.props;
       var channelId = _props7.channelId;
       var dispatch = _props7.dispatch;
-      var ws = _props7.ws;
 
       dispatch((0, _actions.updateMode)(channelId, mode));
     }
@@ -874,25 +863,19 @@ var Master = (function (_React$Component) {
       var _props = this.props;
       var dispatch = _props.dispatch;
       var muted = _props.muted;
-      var ws = _props.ws;
+      var sendMessage = _props.sendMessage;
 
-      ws.send(JSON.stringify({
-        event: 'masterMuted',
-        data: !muted
-      }));
+      sendMessage('masterMuted', !muted);
     }
   }, {
     key: 'updateLevel',
     value: function updateLevel(event) {
       var _props2 = this.props;
       var dispatch = _props2.dispatch;
-      var ws = _props2.ws;
+      var sendMessage = _props2.sendMessage;
 
       var value = event.target.value;
-      ws.send(JSON.stringify({
-        event: 'masterVolume',
-        data: value
-      }));
+      sendMessage('masterVolume', value);
       dispatch((0, _actions.updateMasterLevel)(value));
     }
   }, {
@@ -992,7 +975,7 @@ var Mixer = (function (_React$Component) {
       var master = _props$mixer.master;
       var client = _props.client;
       var dispatch = _props.dispatch;
-      var ws = _props.ws;
+      var sendMessage = _props.sendMessage;
 
       return _react2.default.createElement(
         'div',
@@ -1014,14 +997,14 @@ var Mixer = (function (_React$Component) {
                 channelId: id,
                 client: client,
                 dispatch: dispatch,
-                ws: ws }));
+                sendMessage: sendMessage }));
             })
           )
         ),
         _react2.default.createElement(
           'div',
           { style: { flex: 1, textAlign: 'center' } },
-          _react2.default.createElement(_Master2.default, _extends({}, master, { dispatch: dispatch, ws: ws }))
+          _react2.default.createElement(_Master2.default, _extends({}, master, { dispatch: dispatch, sendMessage: sendMessage }))
         )
       );
     }

@@ -8,19 +8,13 @@ class Master extends React.Component {
     super(props)
   }
   toggleMuted() {
-    const { dispatch, muted, ws } = this.props
-    ws.send(JSON.stringify({
-      event : 'masterMuted',
-      data  : !muted
-    }))
+    const { dispatch, muted, sendMessage } = this.props
+    sendMessage('masterMuted', !muted)
   }
   updateLevel(event) {
-    const { dispatch, ws } = this.props
+    const { dispatch, sendMessage } = this.props
     const value = event.target.value
-    ws.send(JSON.stringify({
-      event : 'masterVolume',
-      data  : value
-    }))
+    sendMessage('masterVolume', value)
     dispatch(updateMasterLevel(value))
   }
   render() {

@@ -25,7 +25,9 @@ class App extends React.Component {
   }
   render() {
     return (
-      <Ui ws={ws} />
+      <Ui sendMessage={(type, data) => {
+        ws.send(JSON.stringify({ event : type, data }))
+      }} />
     )
   }
 }
@@ -48,8 +50,6 @@ ws.onmessage = e => {
     console.log(msg.event)
     console.log(msg.data)
     switch (msg.event) {
-      case 'echo': 
-        break
       case 'initialize':
         store.dispatch(initializeMixer(msg.data.mixer))
         break
