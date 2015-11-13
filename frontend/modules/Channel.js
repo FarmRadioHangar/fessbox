@@ -94,16 +94,16 @@ class Channel extends React.Component {
     const { channelId, client : { channels } } = this.props
     const chan = channels[channelId] || {mode: 'free'}
     return (
-      <div>
+      <div className='btn-group btn-group-xs' role='group'>
         {modes.map((mode, i) => {
           return (
-            <span key={i}>
-              {chan.mode == mode ? mode : (
-                <button onClick={() => { this.updateMode(mode) }}>
-                  {mode}
-                </button>
-              )}
-            </span>
+            <button 
+              key       = {i}
+              type      = 'button'
+              className = {classNames('btn btn-default', { 'active' : chan.mode == mode })}
+              onClick   = {() => { this.updateMode(mode) }}>
+              {mode}
+            </button>
           )
         })}
       </div>
