@@ -193,7 +193,7 @@ var initialMixerState = {
     'chan_1': {
       level: 10,
       direction: 'incoming',
-      mode: 'ringing',
+      mode: 'ring',
       number: '+255 712 444 333',
       muted: false,
       duration: null,
@@ -208,7 +208,7 @@ var initialMixerState = {
     'chan_2': {
       level: 40,
       direction: 'outgoing',
-      mode: 'ringing',
+      mode: 'ring',
       number: '+255 712 444 333',
       muted: false,
       duration: null,
@@ -482,7 +482,7 @@ var LookupInput = (function (_React$Component2) {
                 onClick: onCallNumber,
                 type: 'button',
                 className: 'btn btn-default' },
-              _react2.default.createElement('span', { style: { top: '2px' }, className: 'glyphicon glyphicon-earphone' })
+              _react2.default.createElement('span', { style: { top: '1px' }, className: 'glyphicon glyphicon-earphone' })
             )
           )
         )
@@ -578,39 +578,52 @@ var Channel = (function (_React$Component3) {
       } else if ('ring' === mode) {
         return _react2.default.createElement(
           'div',
-          null,
+          { style: { textAlign: 'center' } },
           _react2.default.createElement(
-            'div',
-            { style: { float: 'right' } },
-            _react2.default.createElement(
-              'button',
-              { onClick: this.answerCall.bind(this) },
-              'Answer'
-            ),
-            _react2.default.createElement(
-              'button',
-              { onClick: this.rejectCall.bind(this) },
-              'Reject'
-            )
+            'h4',
+            { style: { marginBottom: '3px' } },
+            contact.number
+          ),
+          contact.name && _react2.default.createElement(
+            'p',
+            null,
+            contact.name
           ),
           _react2.default.createElement(
-            'h2',
-            null,
-            'Number: ',
-            contact.number
+            'button',
+            { onClick: this.answerCall.bind(this), type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default btn-success' },
+            _react2.default.createElement('span', { style: { top: '2px' }, className: 'glyphicon glyphicon-earphone' }),
+            ' Accept'
+          ),
+          '  ',
+          _react2.default.createElement(
+            'button',
+            { onClick: this.rejectCall.bind(this), type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default btn-danger' },
+            _react2.default.createElement('span', { style: { top: '2px' }, className: 'glyphicon glyphicon-remove' }),
+            ' Reject'
           )
         );
       } else if ('defunct' === mode) {
         return _react2.default.createElement(
-          'span',
-          null,
-          'DEFUNCT'
+          'div',
+          { style: { textAlign: 'center', fontSize: '160%' } },
+          'Defunct'
         );
       } else {
         return _react2.default.createElement(
           'div',
-          null,
-          mode
+          { style: { textAlign: 'center', fontSize: '200%' } },
+          _react2.default.createElement(
+            'span',
+            { className: 'fa-stack fa-lg' },
+            _react2.default.createElement('i', { className: 'fa fa-circle fa-stack-2x', style: { color: '#337ab7' } }),
+            _react2.default.createElement('i', { className: 'fa fa-phone fa-stack-1x fa-inverse' })
+          ),
+          _react2.default.createElement(
+            'h4',
+            null,
+            mode
+          )
         );
       }
     }
@@ -656,7 +669,7 @@ var Channel = (function (_React$Component3) {
 
       return _react2.default.createElement(
         'div',
-        { style: { background: '#fff', __border: '1px solid #ddd' } },
+        { style: { background: '#fff', border: '1px solid #ddd', margin: '11px' } },
         _react2.default.createElement(
           'div',
           null,
@@ -670,57 +683,52 @@ var Channel = (function (_React$Component3) {
                 'div',
                 { style: { flex: 11, __border: '1px solid #ddd' } },
                 channelId,
+                ' ',
                 number
               ),
               _react2.default.createElement(
                 'div',
-                { style: { flex: 1, __border: '1px solid #ddd' } },
+                { style: { flex: 1, __border: '1px solid #ddd', textAlign: 'right' } },
                 '00:00'
               )
             )
           ),
           _react2.default.createElement(
             'div',
-            { style: { __border: '1px solid #ddd' } },
+            { style: { __border: '1px solid #ddd', padding: '8px' } },
+            this.renderChannelMode()
+          ),
+          'defunct' !== mode && _react2.default.createElement(
+            'div',
+            null,
             _react2.default.createElement(
               'div',
-              { style: { flex: 6, padding: '8px', __border: '1px solid #ddd' } },
+              { style: { __border: '1px solid #ddd', display: 'flex', padding: '8px' } },
               _react2.default.createElement(
-                'div',
-                { style: { float: 'left', width: '50px' } },
-                'Icon'
+                'a',
+                { href: '#', onClick: this.toggleMuted.bind(this) },
+                _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
               ),
               _react2.default.createElement(
                 'div',
-                { style: { marginLeft: '50px' } },
-                this.renderChannelMode()
+                { style: { flex: 1, padding: '6px 0 0 6px' } },
+                _react2.default.createElement('input', { type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, defaultValue: level })
               )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { style: { __border: '1px solid #ddd', display: 'flex', padding: '8px' } },
-            _react2.default.createElement(
-              'a',
-              { href: '#', onClick: this.toggleMuted.bind(this) },
-              _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
             ),
             _react2.default.createElement(
               'div',
-              { style: { flex: 1, padding: '6px 0 0 6px' } },
-              _react2.default.createElement('input', { type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, defaultValue: level })
+              { style: { __border: '1px solid #ddd', padding: '8px' } },
+              this.renderModeSwitch(),
+              _react2.default.createElement(
+                'span',
+                { style: { marginLeft: '10px' } },
+                _react2.default.createElement(_reactBootstrapSwitch2.default, {
+                  labelText: 'Auto-answer',
+                  onText: 'On',
+                  offText: 'Off',
+                  size: 'mini' })
+              )
             )
-          ),
-          _react2.default.createElement(
-            'div',
-            { style: { __border: '1px solid #ddd', padding: '8px' } },
-            this.renderModeSwitch(),
-            ' ',
-            _react2.default.createElement(_reactBootstrapSwitch2.default, {
-              labelText: 'Auto-answer',
-              onText: 'On',
-              offText: 'Off',
-              size: 'mini' })
           )
         )
       );

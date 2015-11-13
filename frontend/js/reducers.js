@@ -14,7 +14,7 @@ const initialMixerState = {
     'chan_1' : {
       level      : 10,
       direction  : 'incoming',
-      mode       : 'ringing',
+      mode       : 'ring',
       number     : '+255 712 444 333',
       muted      : false,
       duration   : null,
@@ -29,7 +29,7 @@ const initialMixerState = {
     'chan_2' : {
       level      : 40,
       direction  : 'outgoing',
-      mode       : 'ringing',
+      mode       : 'ring',
       number     : '+255 712 444 333',
       muted      : false,
       duration   : null,

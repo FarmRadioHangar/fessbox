@@ -140,28 +140,45 @@ class Channel extends React.Component {
       )
     } else if ('ring' === mode) {
       return (
-        <div>
-          <div style={{float: 'right'}}>
-            <button onClick={this.answerCall.bind(this)}>
-              Answer
-            </button>
-            <button onClick={this.rejectCall.bind(this)}>
-              Reject
-            </button>
-          </div>
-          <h2>
-            Number: {contact.number}
-          </h2>
+        <div style={{textAlign: 'center'}}>
+          <h4 style={{marginBottom: '3px'}}>
+            {contact.number}
+          </h4>
+          {contact.name && (
+            <p>
+              {contact.name}
+            </p>
+          )}
+          <button onClick={this.answerCall.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-success'>
+            <span style={{top: '2px'}} className='glyphicon glyphicon-earphone'></span>&nbsp;Accept
+          </button>
+          &nbsp;&nbsp;<button onClick={this.rejectCall.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
+            <span style={{top: '2px'}} className='glyphicon glyphicon-remove'></span>&nbsp;Reject
+          </button>
         </div>
       )
     } else if ('defunct' === mode) {
       return (
-        <span>DEFUNCT</span>
+        <div style={{textAlign: 'center', fontSize: '160%'}}> 
+          Defunct
+          {/*
+          <span className='fa-stack fa-lg'>
+            <i className='fa fa-circle fa-stack-2x' style={{color: '#5cb85c'}} />
+            <i className='fa fa-phone fa-stack-1x fa-inverse' />
+          </span>
+          */}
+        </div>
       )
     } else {
       return (
-        <div>
-          {mode}
+        <div style={{textAlign: 'center', fontSize: '200%'}}>
+          <span className='fa-stack fa-lg'>
+            <i className='fa fa-circle fa-stack-2x' style={{color: '#337ab7'}} />
+            <i className='fa fa-phone fa-stack-1x fa-inverse' />
+          </span>
+          <h4>
+            {mode}
+          </h4>
         </div>
       )
     }
@@ -189,48 +206,46 @@ class Channel extends React.Component {
   render() {
     const { channelId, number, contact, mode, level, muted } = this.props
     return (
-      <div style={{background: '#fff', __border: '1px solid #ddd'}}>
+      <div style={{background: '#fff', border: '1px solid #ddd', margin: '11px'}}>
         <div>
           <div style={{__border: '1px solid #ddd'}}> 
             <div style={{display: 'flex', padding: '8px'}}>
               <div style={{flex: 11, __border: '1px solid #ddd'}}>
-                {channelId}
-                {number}
+                {channelId}&nbsp;{number}
               </div>
-              <div style={{flex: 1, __border: '1px solid #ddd'}}>
+              <div style={{flex: 1, __border: '1px solid #ddd', textAlign: 'right'}}>
                 00:00
               </div>
             </div>
           </div>
-          <div style={{__border: '1px solid #ddd'}}> 
-            <div style={{flex: 6, padding: '8px', __border: '1px solid #ddd'}}>
-              <div style={{float: 'left', width: '50px'}}>
-                Icon
-              </div>
-              <div style={{marginLeft: '50px'}}>
-                {this.renderChannelMode()}
-              </div>
-            </div>
-          </div>
-          <div style={{__border: '1px solid #ddd', display: 'flex', padding: '8px'}}> 
-                {/*
-                <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
-                */}
-            <a href='#' onClick={this.toggleMuted.bind(this)}>
-              <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
-            </a>
-            <div style={{flex: 1, padding: '6px 0 0 6px'}}>
-              <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
-            </div>
-          </div>
           <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
-            {this.renderModeSwitch()}
-            &nbsp;<Switch 
-              labelText = 'Auto-answer'
-              onText    = 'On'
-              offText   = 'Off'
-              size      = 'mini' />
+            {this.renderChannelMode()}
           </div>
+          {'defunct' !== mode && (
+            <div>
+              <div style={{__border: '1px solid #ddd', display: 'flex', padding: '8px'}}> 
+                    {/*
+                    <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
+                    */}
+                <a href='#' onClick={this.toggleMuted.bind(this)}>
+                  <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
+                </a>
+                <div style={{flex: 1, padding: '6px 0 0 6px'}}>
+                  <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
+                </div>
+              </div>
+              <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
+                {this.renderModeSwitch()}
+                <span style={{marginLeft: '10px'}}>
+                  <Switch 
+                    labelText = 'Auto-answer'
+                    onText    = 'On'
+                    offText   = 'Off'
+                    size      = 'mini' />
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )
