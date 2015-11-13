@@ -3,7 +3,7 @@ var http = require("http");
 var appConfig = require("./config/app.json");
 var wss = require("./websocket");
 var s = require("./singleton");
-var apiHandler = require("./api");
+var apiHandler = require("./rest");
 var router = require("./router");
 var myLib = require("./myLib");
 

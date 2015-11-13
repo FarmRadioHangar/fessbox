@@ -43,6 +43,25 @@ function httpGeneric(statusCode, message, response, label) {
 	}
 }
 
+function consoleLog(output, label, message) {
+	var logStamp = new Date().toLocaleString() + " -";
+/*
+	if (!label) {
+		//arguments.callee.name
+		//arguments.callee.caller.name
+		label = consoleLog.caller;
+	}
+*/
+	label += ":";
+	if (output === "error" || output === "log") {
+		console[output](logStamp, output, label, message);
+	} else if (output === 'debug') {
+		console.error(output, label, message);
+	} else {
+		console.error(logStamp, "undefined log output", label, message);
+	}
+}
+
 exports.checkRequiredParams = function (required, params) {
 	for (var i in required) {
 		if (!params[required[i]]) {
@@ -54,3 +73,4 @@ exports.checkRequiredParams = function (required, params) {
 
 exports.httpGeneric = httpGeneric;
 exports.mailSend = mailSend;
+exports.consoleLog = consoleLog;
