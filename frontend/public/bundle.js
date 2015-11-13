@@ -10,6 +10,7 @@ exports.updateLevel = updateLevel;
 exports.initializeMixer = initializeMixer;
 exports.updateMixer = updateMixer;
 exports.updateMode = updateMode;
+exports.updateMasterLevel = updateMasterLevel;
 function mute(channel) {
   return {
     type: 'mute', channel: channel
@@ -43,6 +44,12 @@ function updateMixer(state) {
 function updateMode(channel, mode) {
   return {
     type: 'update-mode', channel: channel, mode: mode
+  };
+}
+
+function updateMasterLevel(level) {
+  return {
+    type: 'update-master-level', level: level
   };
 }
 
@@ -234,7 +241,12 @@ var initialMixerState = {
       recording: false
     }
   },
-  master: {},
+  master: {
+    level: 0,
+    on_air: false,
+    recording: false,
+    delay: 0
+  },
   host: {}
 };
 
@@ -263,6 +275,12 @@ function mixer() {
     case 'update-level':
       return _extends({}, state, {
         channels: channelState(state.channels, action.channel, {
+          level: action.level
+        })
+      });
+    case 'update-master-level':
+      return _extends({}, state, {
+        master: _extends({}, state.master, {
           level: action.level
         })
       });
@@ -704,6 +722,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _actions = require('../js/actions');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -722,8 +742,24 @@ var Master = (function (_React$Component) {
   }
 
   _createClass(Master, [{
+    key: 'updateLevel',
+    value: function updateLevel(event) {
+      var _props = this.props;
+      var dispatch = _props.dispatch;
+      var ws = _props.ws;
+
+      var value = event.target.value;
+      ws.send(JSON.stringify({
+        event: 'masterVolume',
+        data: value
+      }));
+      dispatch((0, _actions.updateMasterLevel)(value));
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var level = this.props.level;
+
       return _react2.default.createElement(
         'div',
         null,
@@ -735,7 +771,7 @@ var Master = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement('input', { type: 'range', orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' } })
+          _react2.default.createElement('input', { type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' }, defaultValue: level })
         ),
         _react2.default.createElement(
           'div',
@@ -751,7 +787,7 @@ var Master = (function (_React$Component) {
 
 exports.default = Master;
 
-},{"react":427}],7:[function(require,module,exports){
+},{"../js/actions":1,"react":427}],7:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -803,7 +839,9 @@ var Mixer = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var _props = this.props;
-      var channels = _props.mixer.channels;
+      var _props$mixer = _props.mixer;
+      var channels = _props$mixer.channels;
+      var master = _props$mixer.master;
       var client = _props.client;
       var dispatch = _props.dispatch;
       var ws = _props.ws;
@@ -835,7 +873,7 @@ var Mixer = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { flex: 1, textAlign: 'center' } },
-          _react2.default.createElement(_Master2.default, null)
+          _react2.default.createElement(_Master2.default, _extends({}, master, { dispatch: dispatch, ws: ws }))
         )
       );
     }
