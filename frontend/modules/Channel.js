@@ -82,7 +82,7 @@ class LookupInput extends React.Component {
               onClick   = {onCallNumber} 
               type      = 'button' 
               className = 'btn btn-default'>
-              <span style={{top: '2px'}} className='glyphicon glyphicon-earphone'></span>
+              <span style={{top: '1px'}} className='glyphicon glyphicon-earphone'></span>
             </button>
           </div>
         </div>
@@ -212,16 +212,16 @@ class Channel extends React.Component {
               </div>
             </div>
           </div>
-          <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
+          <div style={{__border: '1px solid #ddd', display: 'flex', padding: '8px'}}> 
                 {/*
                 <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
                 */}
-            <div style={{float: 'left'}}>
-              <a href='#' onClick={this.toggleMuted.bind(this)}>
-                <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
-              </a>
+            <a href='#' onClick={this.toggleMuted.bind(this)}>
+              <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
+            </a>
+            <div style={{flex: 1, padding: '6px 0 0 6px'}}>
+              <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
             </div>
-            <input style={{width: '100%'}} type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
           </div>
           <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
             {this.renderModeSwitch()}

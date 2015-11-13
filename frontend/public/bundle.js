@@ -699,17 +699,17 @@ var Channel = (function (_React$Component3) {
           ),
           _react2.default.createElement(
             'div',
-            { style: { __border: '1px solid #ddd', padding: '8px' } },
+            { style: { __border: '1px solid #ddd', display: 'flex', padding: '8px' } },
+            _react2.default.createElement(
+              'a',
+              { href: '#', onClick: this.toggleMuted.bind(this) },
+              _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
+            ),
             _react2.default.createElement(
               'div',
-              { style: { float: 'left' } },
-              _react2.default.createElement(
-                'a',
-                { href: '#', onClick: this.toggleMuted.bind(this) },
-                _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
-              )
-            ),
-            _react2.default.createElement('input', { style: { width: '100%' }, type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, defaultValue: level })
+              { style: { flex: 1, padding: '6px 0 0 6px' } },
+              _react2.default.createElement('input', { type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), disabled: !!muted, defaultValue: level })
+            )
           ),
           _react2.default.createElement(
             'div',
