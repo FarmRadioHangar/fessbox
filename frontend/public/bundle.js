@@ -243,7 +243,7 @@ var initialMixerState = {
   },
   master: {
     level: 0,
-    on_air: false,
+    muted: false,
     recording: false,
     delay: 0
   },
@@ -869,11 +869,24 @@ var Master = (function (_React$Component) {
   }
 
   _createClass(Master, [{
-    key: 'updateLevel',
-    value: function updateLevel(event) {
+    key: 'toggleMuted',
+    value: function toggleMuted() {
       var _props = this.props;
       var dispatch = _props.dispatch;
+      var muted = _props.muted;
       var ws = _props.ws;
+
+      ws.send(JSON.stringify({
+        event: 'masterMuted',
+        data: !muted
+      }));
+    }
+  }, {
+    key: 'updateLevel',
+    value: function updateLevel(event) {
+      var _props2 = this.props;
+      var dispatch = _props2.dispatch;
+      var ws = _props2.ws;
 
       var value = event.target.value;
       ws.send(JSON.stringify({
@@ -885,7 +898,9 @@ var Master = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var level = this.props.level;
+      var _props3 = this.props;
+      var level = _props3.level;
+      var muted = _props3.muted;
 
       return _react2.default.createElement(
         'div',
@@ -899,6 +914,12 @@ var Master = (function (_React$Component) {
           'div',
           { style: { textAlign: 'center' } },
           _react2.default.createElement('input', { type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' }, defaultValue: level })
+        ),
+        _react2.default.createElement(
+          'div',
+          { style: { textAlign: 'center' } },
+          _react2.default.createElement('input', { type: 'checkbox', onChange: this.toggleMuted.bind(this), checked: !!muted }),
+          'Muted'
         ),
         _react2.default.createElement(
           'div',

@@ -7,6 +7,13 @@ class Master extends React.Component {
   constructor(props) {
     super(props)
   }
+  toggleMuted() {
+    const { dispatch, muted, ws } = this.props
+    ws.send(JSON.stringify({
+      event : 'masterMuted',
+      data  : !muted
+    }))
+  }
   updateLevel(event) {
     const { dispatch, ws } = this.props
     const value = event.target.value
@@ -17,7 +24,7 @@ class Master extends React.Component {
     dispatch(updateMasterLevel(value))
   }
   render() {
-    const { level } = this.props
+    const { level, muted } = this.props
     return (
       <div>
         <div style={{textAlign: 'center'}}> 
@@ -25,6 +32,10 @@ class Master extends React.Component {
         </div>
         <div style={{textAlign: 'center'}}> 
           <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} orient='vertical' style={{width: '10px', height: '400px', WebkitAppearance: 'slider-vertical'}} defaultValue={level} />
+        </div>
+        <div style={{textAlign: 'center'}}> 
+          <input type='checkbox' onChange={this.toggleMuted.bind(this)} checked={!!muted} />
+          Muted
         </div>
         <div style={{textAlign: 'center'}}> 
           Icon
