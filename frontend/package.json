@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "awesome-websocket": "0.0.25",
+    "frh-react-phone-lookup": "^0.1.1",
     "lodash": "^3.10.1",
     "react": "^0.14.2",
     "react-bootstrap": "^0.27.3",
