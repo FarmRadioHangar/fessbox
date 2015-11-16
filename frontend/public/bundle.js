@@ -770,6 +770,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Slider = require('./Slider');
+
+var _Slider2 = _interopRequireDefault(_Slider);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -778,16 +782,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Slider = (function (_React$Component) {
-  _inherits(Slider, _React$Component);
+var Placeholder = (function (_React$Component) {
+  _inherits(Placeholder, _React$Component);
 
-  function Slider(props) {
-    _classCallCheck(this, Slider);
+  function Placeholder(props) {
+    _classCallCheck(this, Placeholder);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Slider).call(this, props));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Placeholder).call(this, props));
   }
 
-  _createClass(Slider, [{
+  _createClass(Placeholder, [{
     key: 'render',
     value: function render() {
       var icon = this.props.icon;
@@ -798,7 +802,7 @@ var Slider = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement('input', { type: 'range', orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' } })
+          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', min: 0, max: 100 })
         ),
         _react2.default.createElement(
           'div',
@@ -813,7 +817,7 @@ var Slider = (function (_React$Component) {
     }
   }]);
 
-  return Slider;
+  return Placeholder;
 })(_react2.default.Component);
 
 var Host = (function (_React$Component2) {
@@ -834,12 +838,12 @@ var Host = (function (_React$Component2) {
         _react2.default.createElement(
           'div',
           { style: { flex: 1 } },
-          _react2.default.createElement(Slider, { icon: 'mic' })
+          _react2.default.createElement(Placeholder, { icon: 'mic' })
         ),
         _react2.default.createElement(
           'div',
           { style: { flex: 1 } },
-          _react2.default.createElement(Slider, { icon: 'hs' })
+          _react2.default.createElement(Placeholder, { icon: 'hs' })
         )
       );
     }
@@ -850,7 +854,7 @@ var Host = (function (_React$Component2) {
 
 exports.default = Host;
 
-},{"react":433}],6:[function(require,module,exports){
+},{"./Slider":8,"react":433}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -862,6 +866,10 @@ Object.defineProperty(exports, "__esModule", {
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _Slider = require('./Slider');
+
+var _Slider2 = _interopRequireDefault(_Slider);
 
 var _actions = require('../js/actions');
 
@@ -899,13 +907,15 @@ var Master = (function (_React$Component) {
       var dispatch = _props2.dispatch;
       var sendMessage = _props2.sendMessage;
 
-      var value = event.target.value;
+      var value = event.target ? event.target.value : event;
       sendMessage('masterVolume', value);
       dispatch((0, _actions.updateMasterLevel)(value));
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props3 = this.props;
       var level = _props3.level;
       var muted = _props3.muted;
@@ -921,7 +931,9 @@ var Master = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement('input', { type: 'range', min: 0, max: 100, onChange: this.updateLevel.bind(this), orient: 'vertical', style: { width: '10px', height: '400px', WebkitAppearance: 'slider-vertical' }, defaultValue: level })
+          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', min: 0, max: 100, onChange: function onChange(from, to) {
+              _this2.updateLevel(to);
+            } })
         ),
         _react2.default.createElement(
           'div',
@@ -943,7 +955,7 @@ var Master = (function (_React$Component) {
 
 exports.default = Master;
 
-},{"../js/actions":1,"react":433}],7:[function(require,module,exports){
+},{"../js/actions":1,"./Slider":8,"react":433}],7:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };

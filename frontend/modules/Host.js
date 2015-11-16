@@ -1,6 +1,7 @@
-import React from 'react'
+import React  from 'react'
+import Slider from './Slider'
 
-class Slider extends React.Component {
+class Placeholder extends React.Component {
   constructor(props) {
     super(props)
   }
@@ -9,7 +10,7 @@ class Slider extends React.Component {
     return (
       <div>
         <div style={{textAlign: 'center'}}> 
-          <input type='range' orient='vertical' style={{width: '10px', height: '400px', WebkitAppearance: 'slider-vertical'}} />
+          <Slider orientation='vertical' min={0} max={100} />
         </div>
         <div style={{textAlign: 'center', padding: '.7em'}}> 
           <i className='material-icons' style={{fontSize: '36px'}}>{icon}</i>
@@ -27,10 +28,10 @@ class Host extends React.Component {
     return (
       <div style={{display: 'flex'}}>
         <div style={{flex: 1}}> 
-          <Slider icon='mic' />
+          <Placeholder icon='mic' />
         </div>
         <div style={{flex: 1}}> 
-          <Slider icon='hs' />
+          <Placeholder icon='hs' />
         </div>
       </div>
     )

@@ -1,4 +1,5 @@
-import React from 'react'
+import React  from 'react'
+import Slider from './Slider'
 
 import { updateMasterLevel }
   from '../js/actions'
@@ -13,7 +14,7 @@ class Master extends React.Component {
   }
   updateLevel(event) {
     const { dispatch, sendMessage } = this.props
-    const value = event.target.value
+    const value = event.target ? event.target.value : event
     sendMessage('masterVolume', value)
     dispatch(updateMasterLevel(value))
   }
@@ -25,7 +26,10 @@ class Master extends React.Component {
           12:12
         </div>
         <div style={{textAlign: 'center'}}> 
+          {/*
           <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} orient='vertical' style={{width: '10px', height: '400px', WebkitAppearance: 'slider-vertical'}} defaultValue={level} />
+          */}
+          <Slider orientation='vertical' min={0} max={100} onChange={(from, to) => {this.updateLevel(to)}} />
         </div>
         <div style={{textAlign: 'center'}}> 
           <input type='checkbox' onChange={this.toggleMuted.bind(this)} checked={!!muted} />
