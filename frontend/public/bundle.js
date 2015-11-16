@@ -792,9 +792,16 @@ var SliderBar = (function (_React$Component) {
   }
 
   _createClass(SliderBar, [{
+    key: 'toggleMuted',
+    value: function toggleMuted() {
+      /* @todo */
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var icon = this.props.icon;
+      var _props = this.props;
+      var icon = _props.icon;
+      var muted = _props.muted;
 
       return _react2.default.createElement(
         'div',
@@ -806,12 +813,17 @@ var SliderBar = (function (_React$Component) {
         ),
         _react2.default.createElement(
           'div',
-          { style: { textAlign: 'center', padding: '.7em' } },
+          { style: { textAlign: 'center', margin: '12px 0' } },
           _react2.default.createElement(
-            'i',
-            { className: 'material-icons', style: { fontSize: '36px' } },
-            icon
+            'a',
+            { href: '#', onClick: this.toggleMuted.bind(this) },
+            _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
           )
+        ),
+        _react2.default.createElement(
+          'div',
+          { style: { textAlign: 'center', padding: '.7em' } },
+          _react2.default.createElement('i', { className: 'fa fa-' + icon })
         )
       );
     }
@@ -837,13 +849,13 @@ var Host = (function (_React$Component2) {
         { style: { display: 'flex' } },
         _react2.default.createElement(
           'div',
-          { style: { flex: 1 } },
-          _react2.default.createElement(SliderBar, { icon: 'mic' })
+          { style: { flex: 1, minWidth: '80px' } },
+          _react2.default.createElement(SliderBar, { icon: 'microphone' })
         ),
         _react2.default.createElement(
           'div',
-          { style: { flex: 1 } },
-          _react2.default.createElement(SliderBar, { icon: 'hs' })
+          { style: { flex: 1, minWidth: '80px' } },
+          _react2.default.createElement(SliderBar, { icon: 'headphones' })
         )
       );
     }
