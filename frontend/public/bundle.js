@@ -546,27 +546,39 @@ var Channel = (function (_React$Component3) {
     key: 'rejectCall',
     value: function rejectCall() {
       var _props6 = this.props;
-      var dispatch = _props6.dispatch;
       var channelId = _props6.channelId;
       var sendMessage = _props6.sendMessage;
 
       sendMessage('channelMode', _defineProperty({}, channelId, 'free'));
     }
   }, {
-    key: 'updateMode',
-    value: function updateMode(mode) {
+    key: 'hangUpCall',
+    value: function hangUpCall() {
       var _props7 = this.props;
       var channelId = _props7.channelId;
-      var dispatch = _props7.dispatch;
+      var sendMessage = _props7.sendMessage;
 
+      sendMessage('channelMode', _defineProperty({}, channelId, 'free'));
+    }
+  }, {
+    key: 'updateMode',
+    value: function updateMode(mode) {
+      var _props8 = this.props;
+      var channelId = _props8.channelId;
+      var dispatch = _props8.dispatch;
+      var sendMessage = _props8.sendMessage;
+
+      sendMessage('channelMode', _defineProperty({}, channelId, mode));
       dispatch((0, _actions.updateMode)(channelId, mode));
     }
   }, {
     key: 'renderChannelMode',
     value: function renderChannelMode() {
-      var _props8 = this.props;
-      var mode = _props8.mode;
-      var contact = _props8.contact;
+      var _this4 = this;
+
+      var _props9 = this.props;
+      var mode = _props9.mode;
+      var contact = _props9.contact;
 
       if ('free' === mode) {
         return _react2.default.createElement(
@@ -633,7 +645,9 @@ var Channel = (function (_React$Component3) {
           ),
           _react2.default.createElement(
             'button',
-            { onClick: function onClick() {}, type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default btn-danger' },
+            { onClick: function onClick() {
+                _this4.hangUpCall.bind(_this4);
+              }, type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default btn-danger' },
             _react2.default.createElement('span', { style: { top: '2px' }, className: 'glyphicon glyphicon-remove' }),
             ' Hang up'
           )
@@ -643,12 +657,12 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'renderModeSwitch',
     value: function renderModeSwitch() {
-      var _this4 = this;
+      var _this5 = this;
 
       var modes = ['host', 'master', 'on_hold', 'ivr'];
-      var _props9 = this.props;
-      var channelId = _props9.channelId;
-      var channels = _props9.client.channels;
+      var _props10 = this.props;
+      var channelId = _props10.channelId;
+      var channels = _props10.client.channels;
 
       var chan = channels[channelId] || { mode: 'free' };
       return _react2.default.createElement(
@@ -662,7 +676,7 @@ var Channel = (function (_React$Component3) {
               type: 'button',
               className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
               onClick: function onClick() {
-                _this4.updateMode(mode);
+                _this5.updateMode(mode);
               } },
             mode
           );
@@ -672,15 +686,15 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'render',
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
-      var _props10 = this.props;
-      var channelId = _props10.channelId;
-      var number = _props10.number;
-      var contact = _props10.contact;
-      var mode = _props10.mode;
-      var level = _props10.level;
-      var muted = _props10.muted;
+      var _props11 = this.props;
+      var channelId = _props11.channelId;
+      var number = _props11.number;
+      var contact = _props11.contact;
+      var mode = _props11.mode;
+      var level = _props11.level;
+      var muted = _props11.muted;
 
       return _react2.default.createElement(
         'div',
@@ -728,7 +742,7 @@ var Channel = (function (_React$Component3) {
                 'div',
                 { style: { __border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px' } },
                 _react2.default.createElement(_Slider2.default, { min: 0, max: 100, style: { width: '100%' }, defaultValue: level, onChange: function onChange(from, to) {
-                    return _this5.updateLevel(to);
+                    return _this6.updateLevel(to);
                   }, disabled: !!muted })
               ),
               _react2.default.createElement(

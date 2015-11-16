@@ -119,13 +119,22 @@ class Channel extends React.Component {
     })
   }
   rejectCall() {
-    const { dispatch, channelId, sendMessage } = this.props
+    const { channelId, sendMessage } = this.props
+    sendMessage('channelMode', {
+      [channelId] : 'free'
+    })
+  }
+  hangUpCall() {
+    const { channelId, sendMessage } = this.props
     sendMessage('channelMode', {
       [channelId] : 'free'
     })
   }
   updateMode(mode) {
-    const { channelId, dispatch } = this.props
+    const { channelId, dispatch, sendMessage } = this.props
+    sendMessage('channelMode', {
+      [channelId] : mode
+    })
     dispatch(updateMode(channelId, mode))
   }
   renderChannelMode() {
@@ -183,7 +192,7 @@ class Channel extends React.Component {
               </p>
             </div>
           )}
-          <button onClick={() => {}} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
+          <button onClick={() => {this.hangUpCall.bind(this)}} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
             <span style={{top: '2px'}} className='glyphicon glyphicon-remove'></span>&nbsp;Hang up
           </button>
           {/*
