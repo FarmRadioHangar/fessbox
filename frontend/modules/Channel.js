@@ -125,6 +125,7 @@ class Channel extends React.Component {
     })
   }
   hangUpCall() {
+    console.log('hang up')
     const { channelId, sendMessage } = this.props
     sendMessage('channelMode', {
       [channelId] : 'free'
@@ -192,7 +193,7 @@ class Channel extends React.Component {
               </p>
             </div>
           )}
-          <button onClick={() => {this.hangUpCall.bind(this)}} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
+          <button onClick={this.hangUpCall.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
             <span style={{top: '2px'}} className='glyphicon glyphicon-remove'></span>&nbsp;Hang up
           </button>
           {/*
