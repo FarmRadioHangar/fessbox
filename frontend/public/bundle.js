@@ -554,6 +554,7 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'hangUpCall',
     value: function hangUpCall() {
+      console.log('hang up');
       var _props7 = this.props;
       var channelId = _props7.channelId;
       var sendMessage = _props7.sendMessage;
@@ -574,8 +575,6 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'renderChannelMode',
     value: function renderChannelMode() {
-      var _this4 = this;
-
       var _props9 = this.props;
       var mode = _props9.mode;
       var contact = _props9.contact;
@@ -645,9 +644,7 @@ var Channel = (function (_React$Component3) {
           ),
           _react2.default.createElement(
             'button',
-            { onClick: function onClick() {
-                _this4.hangUpCall.bind(_this4);
-              }, type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default btn-danger' },
+            { onClick: this.hangUpCall.bind(this), type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default btn-danger' },
             _react2.default.createElement('span', { style: { top: '2px' }, className: 'glyphicon glyphicon-remove' }),
             ' Hang up'
           )
@@ -657,7 +654,7 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'renderModeSwitch',
     value: function renderModeSwitch() {
-      var _this5 = this;
+      var _this4 = this;
 
       var modes = ['host', 'master', 'on_hold', 'ivr'];
       var _props10 = this.props;
@@ -676,7 +673,7 @@ var Channel = (function (_React$Component3) {
               type: 'button',
               className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
               onClick: function onClick() {
-                _this5.updateMode(mode);
+                _this4.updateMode(mode);
               } },
             mode
           );
@@ -686,7 +683,7 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'render',
     value: function render() {
-      var _this6 = this;
+      var _this5 = this;
 
       var _props11 = this.props;
       var channelId = _props11.channelId;
@@ -742,7 +739,7 @@ var Channel = (function (_React$Component3) {
                 'div',
                 { style: { __border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px' } },
                 _react2.default.createElement(_Slider2.default, { min: 0, max: 100, style: { width: '100%' }, defaultValue: level, onChange: function onChange(from, to) {
-                    return _this6.updateLevel(to);
+                    return _this5.updateLevel(to);
                   }, disabled: !!muted })
               ),
               _react2.default.createElement(
