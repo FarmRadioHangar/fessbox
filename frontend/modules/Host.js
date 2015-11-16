@@ -11,7 +11,7 @@ class SliderBar extends React.Component {
   render() {
     const { icon, muted } = this.props
     return (
-      <div>
+      <div style={{marginTop: '12px'}}>
         <div style={{textAlign: 'center'}}> 
           <Slider orientation='vertical' reversed={true} min={0} max={100} />
         </div>
