@@ -727,7 +727,7 @@ var Channel = (function (_React$Component3) {
               _react2.default.createElement(
                 'div',
                 { style: { __border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px' } },
-                _react2.default.createElement(_Slider2.default, { min: 0, max: 100, style: { width: '100%' }, onChange: function onChange(from, to) {
+                _react2.default.createElement(_Slider2.default, { min: 0, max: 100, style: { width: '100%' }, defaultValue: level, onChange: function onChange(from, to) {
                     return _this5.updateLevel(to);
                   }, disabled: !!muted })
               ),
@@ -931,7 +931,7 @@ var Master = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', min: 0, max: 100, onChange: function onChange(from, to) {
+          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', min: 0, max: 100, defaultValue: level, onChange: function onChange(from, to) {
               _this2.updateLevel(to);
             } })
         ),
@@ -1140,7 +1140,9 @@ var BootstrapSlider = (function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.mountSlider(getOptions(this.props));
+      var options = getOptions(this.props);
+      options.value = Number(this.props.defaultValue) || 0;
+      this.mountSlider(options);
     }
   }, {
     key: 'componentWillUnmount',

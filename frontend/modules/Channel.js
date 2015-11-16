@@ -250,7 +250,7 @@ class Channel extends React.Component {
                   {/*
                   <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
                   */}
-                  <Slider min={0} max={100} style={{width: '100%'}} onChange={(from, to) => this.updateLevel(to)} disabled={!!muted} />
+                  <Slider min={0} max={100} style={{width: '100%'}} defaultValue={level} onChange={(from, to) => this.updateLevel(to)} disabled={!!muted} />
                 </div>
                 <div style={{__border: '1px solid #f00', padding: '6px 0 0 6px'}}>
                   {this.renderModeSwitch()}

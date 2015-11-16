@@ -44,7 +44,9 @@ class BootstrapSlider extends React.Component {
     }
   }
   componentDidMount() {
-    this.mountSlider(getOptions(this.props))
+    let options = getOptions(this.props)
+    options.value = Number(this.props.defaultValue) || 0
+    this.mountSlider(options)
   }
   componentWillUnmount() {
     let slider = this.state.slider
