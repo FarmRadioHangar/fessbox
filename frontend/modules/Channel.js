@@ -2,6 +2,7 @@ import React       from 'react'
 import classNames  from 'classnames'
 import PhoneLookup from 'frh-react-phone-lookup'
 import Switch      from 'react-bootstrap-switch'
+import Slider      from './Slider'
 
 import { updateMode, updateLevel } 
   from '../js/actions'
@@ -103,7 +104,7 @@ class Channel extends React.Component {
   }
   updateLevel(event) {
     const { dispatch, channelId, sendMessage } = this.props
-    const value = event.target.value
+    const value = event.target ? event.target.value : event
     sendMessage('channelVolume', {
       [channelId] : value
     })
@@ -171,7 +172,21 @@ class Channel extends React.Component {
       )
     } else {
       return (
-        <div style={{textAlign: 'center', fontSize: '200%'}}>
+        <div style={{textAlign: 'center'}}>
+          {contact && (
+            <div>
+              <h4 style={{marginBottom: '3px'}}>
+                {contact.number}
+              </h4>
+              <p>
+                {contact.name}
+              </p>
+            </div>
+          )}
+          <button onClick={() => {}} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
+            <span style={{top: '2px'}} className='glyphicon glyphicon-remove'></span>&nbsp;Hang up
+          </button>
+          {/*
           <span className='fa-stack fa-lg'>
             <i className='fa fa-circle fa-stack-2x' style={{color: '#337ab7'}} />
             <i className='fa fa-phone fa-stack-1x fa-inverse' />
@@ -179,6 +194,7 @@ class Channel extends React.Component {
           <h4>
             {mode}
           </h4>
+          */}
         </div>
       )
     }
@@ -223,26 +239,29 @@ class Channel extends React.Component {
           </div>
           {'defunct' !== mode && (
             <div>
-              <div style={{__border: '1px solid #ddd', display: 'flex', padding: '8px'}}> 
-                    {/*
-                    <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
-                    */}
-                <a href='#' onClick={this.toggleMuted.bind(this)}>
+              <div style={{__border: '1px solid #f00', display: 'flex', padding: '8px'}}> 
+                {/*
+                <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
+                */}
+                <a href='#' onClick={this.toggleMuted.bind(this)} style={{marginTop: '6px'}}>
                   <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
                 </a>
-                <div style={{flex: 1, padding: '6px 0 0 6px'}}>
+                <div style={{__border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px'}}>
+                  {/*
                   <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
+                  */}
+                  <Slider min={0} max={100} style={{width: '100%'}} onChange={(from, to) => this.updateLevel(to)} disabled={!!muted} />
                 </div>
-              </div>
-              <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
-                {this.renderModeSwitch()}
-                <span style={{marginLeft: '10px'}}>
-                  <Switch 
-                    labelText = 'Auto-answer'
-                    onText    = 'On'
-                    offText   = 'Off'
-                    size      = 'mini' />
-                </span>
+                <div style={{__border: '1px solid #f00', padding: '6px 0 0 6px'}}>
+                  {this.renderModeSwitch()}
+                  <span style={{marginLeft: '10px'}}>
+                    <Switch 
+                      labelText = 'Auto-answer'
+                      onText    = 'On'
+                      offText   = 'Off'
+                      size      = 'mini' />
+                  </span>
+                </div>
               </div>
             </div>
           )}
