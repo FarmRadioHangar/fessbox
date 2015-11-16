@@ -937,14 +937,17 @@ var Master = (function (_React$Component) {
         ),
         _react2.default.createElement(
           'div',
-          { style: { textAlign: 'center' } },
-          _react2.default.createElement('input', { type: 'checkbox', onChange: this.toggleMuted.bind(this), checked: !!muted }),
-          'Muted'
+          { style: { textAlign: 'center', margin: '12px 0' } },
+          _react2.default.createElement(
+            'a',
+            { href: '#', onClick: this.toggleMuted.bind(this) },
+            _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
+          )
         ),
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          'Icon'
+          'Master'
         )
       );
     }

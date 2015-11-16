@@ -31,12 +31,17 @@ class Master extends React.Component {
           */}
           <Slider orientation='vertical' reversed={true} min={0} max={100} defaultValue={level} onChange={(from, to) => {this.updateLevel(to)}} />
         </div>
-        <div style={{textAlign: 'center'}}> 
+        <div style={{textAlign: 'center', margin: '12px 0'}}> 
+          <a href='#' onClick={this.toggleMuted.bind(this)}>
+            <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
+          </a>
+          {/*
           <input type='checkbox' onChange={this.toggleMuted.bind(this)} checked={!!muted} />
           Muted
+          */}
         </div>
         <div style={{textAlign: 'center'}}> 
-          Icon
+          Master
         </div>
       </div>
     )
