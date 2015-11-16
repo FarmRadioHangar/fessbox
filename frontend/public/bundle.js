@@ -782,16 +782,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Placeholder = (function (_React$Component) {
-  _inherits(Placeholder, _React$Component);
+var SliderBar = (function (_React$Component) {
+  _inherits(SliderBar, _React$Component);
 
-  function Placeholder(props) {
-    _classCallCheck(this, Placeholder);
+  function SliderBar(props) {
+    _classCallCheck(this, SliderBar);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Placeholder).call(this, props));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SliderBar).call(this, props));
   }
 
-  _createClass(Placeholder, [{
+  _createClass(SliderBar, [{
     key: 'render',
     value: function render() {
       var icon = this.props.icon;
@@ -802,7 +802,7 @@ var Placeholder = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', min: 0, max: 100 })
+          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', reversed: true, min: 0, max: 100 })
         ),
         _react2.default.createElement(
           'div',
@@ -817,7 +817,7 @@ var Placeholder = (function (_React$Component) {
     }
   }]);
 
-  return Placeholder;
+  return SliderBar;
 })(_react2.default.Component);
 
 var Host = (function (_React$Component2) {
@@ -838,12 +838,12 @@ var Host = (function (_React$Component2) {
         _react2.default.createElement(
           'div',
           { style: { flex: 1 } },
-          _react2.default.createElement(Placeholder, { icon: 'mic' })
+          _react2.default.createElement(SliderBar, { icon: 'mic' })
         ),
         _react2.default.createElement(
           'div',
           { style: { flex: 1 } },
-          _react2.default.createElement(Placeholder, { icon: 'hs' })
+          _react2.default.createElement(SliderBar, { icon: 'hs' })
         )
       );
     }
@@ -931,7 +931,7 @@ var Master = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', min: 0, max: 100, defaultValue: level, onChange: function onChange(from, to) {
+          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', reversed: true, min: 0, max: 100, defaultValue: level, onChange: function onChange(from, to) {
               _this2.updateLevel(to);
             } })
         ),

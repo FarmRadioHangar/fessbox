@@ -1,7 +1,7 @@
 import React  from 'react'
 import Slider from './Slider'
 
-class Placeholder extends React.Component {
+class SliderBar extends React.Component {
   constructor(props) {
     super(props)
   }
@@ -10,7 +10,7 @@ class Placeholder extends React.Component {
     return (
       <div>
         <div style={{textAlign: 'center'}}> 
-          <Slider orientation='vertical' min={0} max={100} />
+          <Slider orientation='vertical' reversed={true} min={0} max={100} />
         </div>
         <div style={{textAlign: 'center', padding: '.7em'}}> 
           <i className='material-icons' style={{fontSize: '36px'}}>{icon}</i>
@@ -28,10 +28,10 @@ class Host extends React.Component {
     return (
       <div style={{display: 'flex'}}>
         <div style={{flex: 1}}> 
-          <Placeholder icon='mic' />
+          <SliderBar icon='mic' />
         </div>
         <div style={{flex: 1}}> 
-          <Placeholder icon='hs' />
+          <SliderBar icon='hs' />
         </div>
       </div>
     )
