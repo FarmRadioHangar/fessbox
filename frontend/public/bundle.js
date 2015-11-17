@@ -652,6 +652,36 @@ var Channel = (function (_React$Component3) {
       }
     }
   }, {
+    key: 'renderIcon',
+    value: function renderIcon(mode) {
+      if ('host' === mode) {
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'mic'
+        );
+      } else if ('master' === mode) {
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'radio'
+        );
+      } else if ('on_hold' === mode) {
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'pause'
+        );
+      } else if ('ivr' === mode) {
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'voicemail'
+        );
+      }
+      return _react2.default.createElement('span', null);
+    }
+  }, {
     key: 'renderModeSwitch',
     value: function renderModeSwitch() {
       var _this4 = this;
@@ -675,7 +705,7 @@ var Channel = (function (_React$Component3) {
               onClick: function onClick() {
                 _this4.updateMode(mode);
               } },
-            mode
+            _this4.renderIcon(mode)
           );
         })
       );
@@ -816,7 +846,7 @@ var SliderBar = (function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        null,
+        { style: { marginTop: '12px' } },
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },

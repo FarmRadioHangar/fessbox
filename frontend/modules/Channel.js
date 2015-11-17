@@ -209,6 +209,26 @@ class Channel extends React.Component {
       )
     }
   }
+  renderIcon(mode) {
+    if ('host' === mode) {
+      return (
+        <i className='material-icons'>mic</i>
+      )
+    } else if ('master' === mode) {
+      return (
+        <i className='material-icons'>radio</i>
+      )
+    } else if ('on_hold' === mode) {
+      return (
+        <i className='material-icons'>pause</i>
+      )
+    } else if ('ivr' === mode) {
+      return (
+        <i className='material-icons'>voicemail</i>
+      )
+    }
+    return <span />
+  }
   renderModeSwitch() {
     const modes = ['host', 'master', 'on_hold', 'ivr']
     const { channelId, client : { channels } } = this.props
@@ -222,7 +242,7 @@ class Channel extends React.Component {
               type      = 'button'
               className = {classNames('btn btn-default', { 'active' : chan.mode == mode })}
               onClick   = {() => { this.updateMode(mode) }}>
-              {mode}
+              {this.renderIcon(mode)}
             </button>
           )
         })}
