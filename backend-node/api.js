@@ -158,7 +158,34 @@ exports.setChannelMode = function(channel_id, value) {
 				break;
 			case 'ivr':
 			case 'on_hold':
+				switch (s.ui.mixer.channels[channel_id].mode) {
+					case 'on_hold':
+						errorMsg = "channel already on hold";
+						break;
+					case 'defunct':
+					case 'free':
+						errorMsg = "channel not acive";
+						break;
+					default:
+						errorMsg = provider[s.channels[channel_id].provider].putOnHold(channel_id);
+						if (!errorMsg) {
+							s.ui.mixer.channels[channel_id].mode = value;
+						}
+				}
+				break;
 			case 'free':
+				switch (s.ui.mixer.channels[channel_id].mode) {
+					case 'defunct':
+						errorMsg = "channel not active";
+					case 'free':
+						errorMsg = "channel already free";
+						break;
+					default:
+						errorMsg = provider[s.channels[channel_id].provider].hangup(channel_id);
+						if (!errorMsg) {
+							s.ui.mixer.channels[channel_id].mode = value;
+						}
+				}
 				break;
 			default:
 				if (!s.ui.mixer.hosts[value]) {

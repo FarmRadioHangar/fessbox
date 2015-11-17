@@ -134,7 +134,7 @@ function setDongleFree(dongleName) {
 	s.ui.mixer.channels[dongleName].direction = null;
 	var channel = {};
 	channel[dongleName] = s.ui.mixer.channels[dongleName];
-	wss.broadcast("channelUpdate", channel);
+	wss.broadcastEvent("channelUpdate", channel);
 	s.asterisk.channels[dongleName].internalName = null;
 }
 ami.on('donglecend', function(evt) {
@@ -183,7 +183,7 @@ ami.on('peerstatus', function(evt) {
 						conn: 'reachable',
 						mode: 'free'
 					};
-					wss.broadcast("hostUpdate", s.ui.mixer.hosts);
+					wss.broadcastEvent("hostUpdate", s.ui.mixer.hosts);
 				}
 				break;
 			case 'unregistered':
@@ -192,7 +192,7 @@ ami.on('peerstatus', function(evt) {
 					s.ui.mixer.hosts[sipPeer] = null;
 					var newObj = {};
 					newObj[sipPeer] = null;
-					wss.broadcast("hostUpdate", newObj);
+					wss.broadcastEvent("hostUpdate", newObj);
 				}
 				break;
 		}
@@ -240,7 +240,7 @@ ami.on('coreshowchannel', function (evt) {
 				number: evt.calleridnum,
 				name:  evt.calleridname
 			};
-			wss.broadcast("channelUpdate", newChannel);
+			wss.broadcastEvent("channelUpdate", newChannel);
 			break;
 		case 'SIP':
 			//todo : where is this channel dialing?
@@ -365,7 +365,7 @@ ami.on('newchannel', function(evt) {
 				number: evt.calleridnum,
 				name:  evt.calleridname
 			};
-			wss.broadcast("channelUpdate", newChannel);
+			wss.broadcastEvent("channelUpdate", newChannel);
 			break;
 		case 'SIP':
 			//todo : where is this channel dialing?
@@ -480,7 +480,7 @@ function getVar(channel, variable, cb) {
 	});
 }
 
-function connectToMaster(channel_id) {
+function amiConnectToMaster(channel) {
 /*
 	ACTION: Redirect
 	Channel: SIP/x7065558529-8f54
@@ -490,7 +490,7 @@ function connectToMaster(channel_id) {
 */
 	ami.action({
 		action: "Redirect",
-		channel: s.asterisk.channels[channel_id].internalName,
+		channel: channel,
 		context: "from-internal",
 		exten: astConf.conference,
 		priority: 1
@@ -566,6 +566,36 @@ function sendSMS(device, number, content) {
 	});
 }
 
+function amiHangup(channel) {
+	ami.action({
+		action: 'Hangup',
+		channel: channel,
+		cause: 16
+	}, function(err, res) {
+		if (!err) {
+			console.log('hangup ok', JSON.stringify(res));
+		} else {
+			console.error('hangup err', JSON.stringify(err));
+		}
+	});
+}
+
+function amiOnHold(channel) {
+	ami.action({
+		action: "Redirect",
+		channel: channel,
+		context: "from-internal",
+		exten: "196",
+		priority: 1
+	}, function(err, res) {
+		if (!err) {
+			console.log(JSON.stringify(res));
+		} else {
+			console.log(JSON.stringify(res));
+		}
+	});
+}
+
 function setAmiChannelMuted(channel, value, direction) {
 	if (channel) { // temp
 		var variable = 'VOLUME(' + direction + ')';
@@ -594,7 +624,10 @@ exports.setChannelVolume = function (channel_id, value) {
 	value = value / 2 - 25;
 	setAmiChannelVolume(s.asterisk.channels[channel_id].internalName, value, direction);
 };
-exports.connectToMaster = connectToMaster;
+exports.connectToMaster = function (channel_id) {
+	amiConnectToMaster(s.asterisk.channels[channel_id].internalName);
+};
+
 exports.setMasterVolume = function (value) {
 	var direction = "TX";
 	value = value / 2 - 25;
@@ -609,3 +642,11 @@ exports.setMasterMuted = function (value) {
 	var direction = "out";
 	setAmiChannelMuted(s.asterisk.conference.lineout, value, direction);
 };
+
+exports.hangup = function (channel_id) {
+	amiHangup(s.asterisk.channels[channel_id].internalName);
+};
+
+exports.putOnHold = function(channel_id) {
+	amiOnHold(s.asterisk.channels[channel_id].internalName);
+}

@@ -57,13 +57,14 @@ var serializeObject = function (event, data) {
 	});
 };
 
-var broadcast = function (event, data) {
+var broadcastEvent = function (event, data) {
 	var payload = serializeObject(event, data);
+	myLib.consoleLog('debug', 'broadcastEvent', payload);
 	wss.clients.forEach(function each(client) {
 		client.send(payload);
 	});
 };
 
 
-exports.broadcast = broadcast;
+exports.broadcastEvent = broadcastEvent;
 //exports.bind = bind;
