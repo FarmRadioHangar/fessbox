@@ -655,13 +655,29 @@ var Channel = (function (_React$Component3) {
     key: 'renderIcon',
     value: function renderIcon(mode) {
       if ('host' === mode) {
-        return _react2.default.createElement('i', { className: 'fa fa-microphone' });
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'mic'
+        );
       } else if ('master' === mode) {
-        return _react2.default.createElement('i', { className: 'fa fa-microphone' });
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'radio'
+        );
       } else if ('on_hold' === mode) {
-        return _react2.default.createElement('i', { className: 'fa fa-pause' });
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'pause'
+        );
       } else if ('ivr' === mode) {
-        return _react2.default.createElement('i', { className: 'fa fa-microphone' });
+        return _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'voicemail'
+        );
       }
       return _react2.default.createElement('span', null);
     }
