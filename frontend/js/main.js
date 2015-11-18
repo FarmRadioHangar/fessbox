@@ -4,8 +4,9 @@ import app                  from './reducers'
 import Ui                   from '../modules/Ui'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import persistState         from 'redux-localstorage'
-import { AwesomeWebSocket, ReconnectingWebSocket } from 'awesome-websocket'
 
+import { AwesomeWebSocket, ReconnectingWebSocket } 
+  from 'awesome-websocket'
 import { compose, createStore } 
   from 'redux'
 import { Provider } 
