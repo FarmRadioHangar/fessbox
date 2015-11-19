@@ -22,6 +22,12 @@ export function initializeMixer(state) {
   }
 }
 
+export function updateHost(state) {
+  return {
+    type : 'update-host', state
+  }
+}
+
 export function updateMixer(state) {
   return {
     type : 'update-mixer', state

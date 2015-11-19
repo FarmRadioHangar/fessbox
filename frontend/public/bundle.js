@@ -8,6 +8,7 @@ exports.mute = mute;
 exports.unmute = unmute;
 exports.updateLevel = updateLevel;
 exports.initializeMixer = initializeMixer;
+exports.updateHost = updateHost;
 exports.updateMixer = updateMixer;
 exports.updateMode = updateMode;
 exports.updateMasterLevel = updateMasterLevel;
@@ -32,6 +33,12 @@ function updateLevel(channel, level) {
 function initializeMixer(state) {
   return {
     type: 'initialize-mixer', state: state
+  };
+}
+
+function updateHost(state) {
+  return {
+    type: 'update-host', state: state
   };
 }
 
@@ -158,6 +165,9 @@ ws.onmessage = function (e) {
       case 'channelUpdate':
         store.dispatch((0, _actions.updateMixer)(msg.data));
         break;
+      case 'hostUpdate':
+        store.dispatch((0, _actions.updateHost)(msg.data));
+        break;
       default:
         break;
     }
@@ -265,6 +275,10 @@ function mixer() {
   var action = arguments[1];
 
   switch (action.type) {
+    case 'update-host':
+      return _extends({}, state, {
+        hosts: Object.assign({}, state.hosts, action.state)
+      });
     case 'initialize-mixer':
       return action.state;
     case 'update-mixer':
@@ -941,6 +955,7 @@ var Host = (function (_React$Component2) {
       var muted_in = _mixer$hosts$client$h.muted_in;
       var muted_out = _mixer$hosts$client$h.muted_out;
 
+      console.log(this.props);
       return _react2.default.createElement(
         'div',
         { style: { display: 'flex' } },

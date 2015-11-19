@@ -80,6 +80,11 @@ function channelState(channels, chan, state) {
 
 function mixer(state = initialMixerState, action) {
   switch (action.type) {
+    case 'update-host':
+      return {
+        ...state,
+        hosts : Object.assign({}, state.hosts, action.state)
+      }
     case 'initialize-mixer':
       return action.state
     case 'update-mixer':
