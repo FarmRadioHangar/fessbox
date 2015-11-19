@@ -1021,7 +1021,6 @@ var Master = (function (_React$Component) {
     key: 'toggleMuted',
     value: function toggleMuted() {
       var _props = this.props;
-      var dispatch = _props.dispatch;
       var muted = _props.muted;
       var sendMessage = _props.sendMessage;
 
@@ -1053,12 +1052,13 @@ var Master = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          '12:12'
-        ),
-        _react2.default.createElement(
-          'div',
-          { style: { textAlign: 'center' } },
-          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', reversed: true, min: 1, max: 100, defaultValue: level, onChange: function onChange(from, to) {
+          _react2.default.createElement(_Slider2.default, {
+            orientation: 'vertical',
+            reversed: true,
+            min: 1,
+            max: 100,
+            defaultValue: level,
+            onChange: function onChange(from, to) {
               _this2.updateLevel(to);
             } })
         ),
@@ -1066,9 +1066,9 @@ var Master = (function (_React$Component) {
           'div',
           { style: { textAlign: 'center', margin: '12px 0' } },
           _react2.default.createElement(
-            'a',
-            { href: '#', onClick: this.toggleMuted.bind(this) },
-            _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
+            'button',
+            { onClick: this.toggleMuted.bind(this) },
+            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
           )
         ),
         _react2.default.createElement(
