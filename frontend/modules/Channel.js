@@ -270,16 +270,10 @@ class Channel extends React.Component {
           {'defunct' !== mode && (
             <div>
               <div style={{__border: '1px solid #f00', display: 'flex', padding: '8px'}}> 
-                {/*
-                <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
-                */}
-                <button onClick={this.toggleMuted.bind(this)} style={{marginTop: '6px'}}>
+                <button className='btn btn-default btn-xs' onClick={this.toggleMuted.bind(this)} style={{marginTop: '6px'}}>
                   <i className={muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off'} />
                 </button>
                 <div style={{__border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px'}}>
-                  {/*
-                  <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} disabled={!!muted} defaultValue={level} /> 
-                  */}
                   <Slider 
                     min          = {1}
                     max          = {100}
