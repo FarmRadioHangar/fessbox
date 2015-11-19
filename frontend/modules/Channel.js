@@ -274,7 +274,9 @@ class Channel extends React.Component {
                 <input onChange={this.toggleMuted.bind(this)} type='checkbox' checked={!!muted} />Mute
                 */}
                 <a href='#' onClick={this.toggleMuted.bind(this)} style={{marginTop: '6px'}}>
-                  <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
+                  <button>
+                    <i className={muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off'} />
+                  </button>
                 </a>
                 <div style={{__border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px'}}>
                   {/*

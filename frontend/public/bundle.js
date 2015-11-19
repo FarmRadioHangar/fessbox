@@ -763,7 +763,11 @@ var Channel = (function (_React$Component3) {
               _react2.default.createElement(
                 'a',
                 { href: '#', onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
-                _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
+                _react2.default.createElement(
+                  'button',
+                  null,
+                  _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
+                )
               ),
               _react2.default.createElement(
                 'div',
