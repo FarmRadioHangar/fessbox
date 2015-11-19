@@ -98,10 +98,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var hostId = 702;
+var hostId = 701;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
-var store = createPersistentStore(_reducers2.default, { client: { channels: {} } });
+var store = createPersistentStore(_reducers2.default, { client: { hostId: hostId, channels: {} } });
 var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://192.168.1.38:19998');
 
 var App = (function (_React$Component) {
@@ -116,7 +116,13 @@ var App = (function (_React$Component) {
   _createClass(App, [{
     key: 'render',
     value: function render() {
-      return _react2.default.createElement(_Ui2.default, { sendMessage: function sendMessage(type, data) {
+      var Ui = (0, _reactRedux.connect)(function (state) {
+        return {
+          mixer: state.mixer,
+          client: state.client
+        };
+      })(_Ui2.default);
+      return _react2.default.createElement(Ui, { sendMessage: function sendMessage(type, data) {
           ws.send(JSON.stringify({ event: type, data: data }));
         } });
     }
@@ -761,20 +767,22 @@ var Channel = (function (_React$Component3) {
               'div',
               { style: { __border: '1px solid #f00', display: 'flex', padding: '8px' } },
               _react2.default.createElement(
-                'a',
-                { href: '#', onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
-                _react2.default.createElement(
-                  'button',
-                  null,
-                  _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
-                )
+                'button',
+                { onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
+                _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
               ),
               _react2.default.createElement(
                 'div',
                 { style: { __border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px' } },
-                _react2.default.createElement(_Slider2.default, { min: 0, max: 100, style: { width: '100%' }, defaultValue: level, onChange: function onChange(from, to) {
+                _react2.default.createElement(_Slider2.default, {
+                  min: 1,
+                  max: 100,
+                  style: { width: '100%' },
+                  defaultValue: level,
+                  onChange: function onChange(from, to) {
                     return _this5.updateLevel(to);
-                  }, disabled: !!muted })
+                  },
+                  disabled: !!muted })
               ),
               _react2.default.createElement(
                 'div',
@@ -821,6 +829,8 @@ var _Slider2 = _interopRequireDefault(_Slider);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -837,16 +847,14 @@ var SliderBar = (function (_React$Component) {
   }
 
   _createClass(SliderBar, [{
-    key: 'toggleMuted',
-    value: function toggleMuted() {
-      /* @todo */
-    }
-  }, {
     key: 'render',
     value: function render() {
       var _props = this.props;
       var icon = _props.icon;
       var muted = _props.muted;
+      var defaultValue = _props.defaultValue;
+      var onChange = _props.onChange;
+      var onToggleMuted = _props.onToggleMuted;
 
       return _react2.default.createElement(
         'div',
@@ -854,15 +862,22 @@ var SliderBar = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', reversed: true, min: 0, max: 100 })
+          _react2.default.createElement(_Slider2.default, {
+            defaultValue: defaultValue,
+            onChange: onChange,
+            disabled: !!muted,
+            orientation: 'vertical',
+            reversed: true,
+            min: 1,
+            max: 100 })
         ),
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center', margin: '12px 0' } },
           _react2.default.createElement(
-            'a',
-            { href: '#', onClick: this.toggleMuted.bind(this) },
-            _react2.default.createElement('i', { className: muted ? 'fa fa-volume-off' : 'fa fa-volume-up' })
+            'button',
+            { onClick: onToggleMuted },
+            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
           )
         ),
         _react2.default.createElement(
@@ -887,20 +902,75 @@ var Host = (function (_React$Component2) {
   }
 
   _createClass(Host, [{
+    key: 'setMuted',
+    value: function setMuted(direction, muted) {
+      var _props2 = this.props;
+      var sendMessage = _props2.sendMessage;
+      var client = _props2.client;
+
+      sendMessage('hostMuted', _defineProperty({}, client.hostId, { direction: direction, muted: muted }));
+    }
+  }, {
+    key: 'updateLevel',
+    value: function updateLevel(direction, level) {
+      var _props3 = this.props;
+      var sendMessage = _props3.sendMessage;
+      var client = _props3.client;
+
+      sendMessage('hostVolume', _defineProperty({}, client.hostId, { direction: direction, level: level }));
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
+      var _props4 = this.props;
+      var client = _props4.client;
+      var mixer = _props4.mixer;
+
+      if (!mixer.hosts || !mixer.hosts.hasOwnProperty(client.hostId)) {
+        return _react2.default.createElement(
+          'div',
+          null,
+          'No host'
+        );
+      }
+      var _mixer$hosts$client$h = mixer.hosts[client.hostId];
+      var level_in = _mixer$hosts$client$h.level_in;
+      var level_out = _mixer$hosts$client$h.level_out;
+      var muted_in = _mixer$hosts$client$h.muted_in;
+      var muted_out = _mixer$hosts$client$h.muted_out;
+
       return _react2.default.createElement(
         'div',
         { style: { display: 'flex' } },
         _react2.default.createElement(
           'div',
           { style: { flex: 1, minWidth: '80px' } },
-          _react2.default.createElement(SliderBar, { icon: 'microphone' })
+          _react2.default.createElement(SliderBar, {
+            icon: 'microphone',
+            defaultValue: level_in,
+            muted: muted_in,
+            onChange: function onChange(from, to) {
+              _this3.updateLevel('in', to);
+            },
+            onToggleMuted: function onToggleMuted() {
+              _this3.setMuted('in', !muted_in);
+            } })
         ),
         _react2.default.createElement(
           'div',
           { style: { flex: 1, minWidth: '80px' } },
-          _react2.default.createElement(SliderBar, { icon: 'headphones' })
+          _react2.default.createElement(SliderBar, {
+            icon: 'headphones',
+            defaultValue: level_out,
+            muted: muted_out,
+            onChange: function onChange(from, to) {
+              _this3.updateLevel('out', to);
+            },
+            onToggleMuted: function onToggleMuted() {
+              _this3.setMuted('out', !muted_out);
+            } })
         )
       );
     }
@@ -988,7 +1058,7 @@ var Master = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { textAlign: 'center' } },
-          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', reversed: true, min: 0, max: 100, defaultValue: level, onChange: function onChange(from, to) {
+          _react2.default.createElement(_Slider2.default, { orientation: 'vertical', reversed: true, min: 1, max: 100, defaultValue: level, onChange: function onChange(from, to) {
               _this2.updateLevel(to);
             } })
         ),
@@ -1308,6 +1378,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactSidebar = require('react-sidebar');
+
+var _reactSidebar2 = _interopRequireDefault(_reactSidebar);
+
 var _Host = require('./Host');
 
 var _Host2 = _interopRequireDefault(_Host);
@@ -1319,12 +1393,6 @@ var _Mixer2 = _interopRequireDefault(_Mixer);
 var _Stream = require('./Stream');
 
 var _Stream2 = _interopRequireDefault(_Stream);
-
-var _reactSidebar = require('react-sidebar');
-
-var _reactSidebar2 = _interopRequireDefault(_reactSidebar);
-
-var _reactRedux = require('react-redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1376,27 +1444,20 @@ var Ui = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var Mixer = (0, _reactRedux.connect)(function (state) {
-        return {
-          mixer: state.mixer,
-          client: state.client
-        };
-      })(_Mixer2.default);
       return _react2.default.createElement(
         _reactSidebar2.default,
-        {
-          sidebar: _react2.default.createElement(
+        { sidebar: _react2.default.createElement(
             'div',
             { style: {
                 height: '100%',
                 background: '#fff'
               } },
-            _react2.default.createElement(_Host2.default, null)
+            _react2.default.createElement(_Host2.default, this.props)
           ),
           open: this.state.sidebarOpen,
           docked: this.state.sidebarDocked,
           onSetOpen: this.onSetSidebarOpen.bind(this) },
-        _react2.default.createElement(Mixer, this.props)
+        _react2.default.createElement(_Mixer2.default, this.props)
       );
     }
   }]);
@@ -1404,36 +1465,9 @@ var Ui = (function (_React$Component) {
   return Ui;
 })(_react2.default.Component);
 
-//<Stream />
-
-//      <Drawer width='180px' style={{backgroundColor: '#fff'}} contents={<Host />}>
-//        <Mixer />
-//        <Stream />
-//      </Drawer>
-
-//      <div>
-//        <div className='demo-layout-transparent mdl-layout mdl-js-layout mdl-layout--fixed-drawer'>
-//          <header className='mdl-layout__header mdl-layout__header--transparent'>
-//            <div className='mdl-layout__header-row'></div>
-//          </header>
-//          <div className='mdl-layout__drawer'>
-//            <Host />
-//          </div>
-//          <main className='mdl-layout__content'>
-//            <Mixer />
-//            <Stream />
-//          </main>
-//        </div>
-//      </div>
-
-//        <Drawer width='180px' style={{backgroundColor: '#fff'}} contents={<Host />}>
-//          <Mixer />
-//          <Stream />
-//        </Drawer>
-
 exports.default = Ui;
 
-},{"./Host":5,"./Mixer":7,"./Stream":9,"react":433,"react-redux":265,"react-sidebar":272}],11:[function(require,module,exports){
+},{"./Host":5,"./Mixer":7,"./Stream":9,"react":433,"react-sidebar":272}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
