@@ -9,7 +9,7 @@ class Master extends React.Component {
     super(props)
   }
   toggleMuted() {
-    const { dispatch, muted, sendMessage } = this.props
+    const { muted, sendMessage } = this.props
     sendMessage('masterMuted', !muted)
   }
   updateLevel(event) {
@@ -23,22 +23,18 @@ class Master extends React.Component {
     return (
       <div>
         <div style={{textAlign: 'center'}}> 
-          12:12
-        </div>
-        <div style={{textAlign: 'center'}}> 
-          {/*
-          <input type='range' min={0} max={100} onChange={this.updateLevel.bind(this)} orient='vertical' style={{width: '10px', height: '400px', WebkitAppearance: 'slider-vertical'}} defaultValue={level} />
-          */}
-          <Slider orientation='vertical' reversed={true} min={1} max={100} defaultValue={level} onChange={(from, to) => {this.updateLevel(to)}} />
+          <Slider 
+            orientation  = 'vertical'
+            reversed     = {true}
+            min          = {1}
+            max          = {100}
+            defaultValue = {level}
+            onChange     = {(from, to) => {this.updateLevel(to)}} />
         </div>
         <div style={{textAlign: 'center', margin: '12px 0'}}> 
-          <a href='#' onClick={this.toggleMuted.bind(this)}>
-            <i className={muted ? 'fa fa-volume-off' : 'fa fa-volume-up'} />
-          </a>
-          {/*
-          <input type='checkbox' onChange={this.toggleMuted.bind(this)} checked={!!muted} />
-          Muted
-          */}
+          <button onClick={this.toggleMuted.bind(this)}>
+            <i className={muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off'} />
+          </button>
         </div>
         <div style={{textAlign: 'center'}}> 
           Master
