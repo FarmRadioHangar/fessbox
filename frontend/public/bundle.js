@@ -186,7 +186,7 @@ ws.onmessage = function (e) {
       //console.log(msg.data)
       switch (msg.event) {
         case 'initialize':
-          store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
+          //store.dispatch(initializeMixer(msg.data.mixer))
           break;
         case 'channelUpdate':
           store.dispatch((0, _actions.updateMixer)(msg.data));
@@ -940,7 +940,7 @@ var Channel = (function (_React$Component3) {
                 'div',
                 { style: { flex: 11, __border: '1px solid #ddd' } },
                 _react2.default.createElement(
-                  'h4',
+                  'h3',
                   null,
                   channelId,
                   ' ',
