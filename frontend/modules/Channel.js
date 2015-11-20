@@ -330,9 +330,9 @@ class Channel extends React.Component {
           <div style={{__border: '1px solid #ddd'}}> 
             <div style={{display: 'flex', padding: '8px'}}>
               <div style={{flex: 11, __border: '1px solid #ddd'}}>
-                <h4>
+                <h3>
                   {channelId}&nbsp;{number}
-                </h4>
+                </h3>
               </div>
               <div style={{flex: 1, __border: '1px solid #ddd', textAlign: 'right'}}>
                 00:00
