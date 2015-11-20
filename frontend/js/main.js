@@ -54,8 +54,8 @@ ws.onclose = () => { console.log('close') }
 ws.onmessage = e => { 
   if (e.data) {
     const msg = JSON.parse(e.data)
-    console.log(msg.event)
-    console.log(msg.data)
+    //console.log(msg.event)
+    //console.log(msg.data)
     switch (msg.event) {
       case 'initialize':
         store.dispatch(initializeMixer(msg.data.mixer))
