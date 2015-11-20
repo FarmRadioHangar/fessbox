@@ -14,6 +14,7 @@ exports.updateMixer = updateMixer;
 exports.updateMode = updateMode;
 exports.updateMaster = updateMaster;
 exports.updateMasterLevel = updateMasterLevel;
+exports.updateCaller = updateCaller;
 function mute(channel) {
   return {
     type: 'mute', channel: channel
@@ -74,6 +75,12 @@ function updateMasterLevel(level) {
   };
 }
 
+function updateCaller(channel, caller) {
+  return {
+    type: 'update-caller', channel: channel, caller: caller
+  };
+}
+
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -119,7 +126,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var hostId = location.hash ? location.hash.replace('#', '') : 701;
+function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  }
+  return null;
+}
+
+var hostId = getQueryVariable('hostId') || 701;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { hostId: hostId, channels: {} } });
@@ -175,7 +194,7 @@ ws.onmessage = function (e) {
       console.log(msg.data);
       switch (msg.event) {
         case 'initialize':
-          store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
+          //        store.dispatch(initializeMixer(msg.data.mixer))
           break;
         case 'channelUpdate':
           store.dispatch((0, _actions.updateMixer)(msg.data));
@@ -231,61 +250,61 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //  host     : {}
 //}
 
-//  channels : {
-//    'chan_1' : {
-//      level      : 10,
-//      direction  : 'incoming',
-//      mode       : 'ring',
-//      number     : '+255 712 444 333',
-//      muted      : false,
-//      duration   : null,
-//      contact    : {
-//        number   : '+255 712 444 333',
-//        name     : 'Manute Bol',
-//        location : {},
-//        notes    : {}
-//      },
-//      recording  : false
-//    },
-//    'chan_2' : {
-//      level      : 40,
-//      direction  : 'outgoing',
-//      mode       : 'ring',
-//      number     : '+255 712 444 333',
-//      muted      : false,
-//      duration   : null,
-//      contact    : {
-//        number   : '+255 712 155 789',
-//        name     : 'Uri Geller',
-//        location : {},
-//        notes    : {}
-//      },
-//      recording  : false
-//    },
-//    'chan_3' : {
-//      level      : 70,
-//      direction  : null,
-//      mode       : 'master',
-//      number     : '+255 712 444 333',
-//      muted      : true,
-//      duration   : null,
-//      contact    : null,
-//      recording  : false
-//    },
-//    'chan_4' : {
-//      level      : 90,
-//      direction  : null,
-//      mode       : 'free',
-//      number     : '+255 712 444 333',
-//      muted      : false,
-//      duration   : null,
-//      contact    : null,
-//      recording  : false
-//    }
-//  },
+var channels = {
+  'chan_1': {
+    level: 10,
+    direction: 'incoming',
+    mode: 'ring',
+    number: '+255 712 444 333',
+    muted: false,
+    duration: null,
+    contact: {
+      number: '+255 712 444 333',
+      name: 'Manute Bol',
+      location: '',
+      notes: {}
+    },
+    recording: false
+  },
+  'chan_2': {
+    level: 40,
+    direction: 'outgoing',
+    mode: 'ring',
+    number: '+255 712 444 333',
+    muted: false,
+    duration: null,
+    contact: {
+      number: '+255 712 155 789',
+      name: 'Uri Geller',
+      location: '',
+      notes: {}
+    },
+    recording: false
+  },
+  'chan_3': {
+    level: 70,
+    direction: null,
+    mode: 'master',
+    number: '+255 712 444 333',
+    muted: true,
+    duration: null,
+    contact: null,
+    recording: false
+  },
+  'chan_4': {
+    level: 90,
+    direction: null,
+    mode: 'free',
+    number: '+255 712 444 333',
+    muted: false,
+    duration: null,
+    contact: null,
+    recording: false
+  }
+};
 
 var initialMixerState = {
-  channels: {},
+  channels: channels,
   master: {},
   host: {}
 };
@@ -326,6 +345,12 @@ function mixer() {
         channels: channelState(state.channels, action.channel, {
           muted: 'mute' === action.type
         })
+      });
+    case 'update-caller':
+      return _extends({}, state, {
+        channels: _extends({}, state.channels, _defineProperty({}, action.channel, _extends({}, state.channels[action.channel], {
+          contact: Object.assign({}, state.channels[action.channel].contact, action.caller)
+        })))
       });
     case 'update-level':
       return _extends({}, state, {
@@ -562,7 +587,12 @@ var Channel = (function (_React$Component3) {
   function Channel(props) {
     _classCallCheck(this, Channel);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
+    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
+
+    _this3.state = {
+      editMode: false
+    };
+    return _this3;
   }
 
   _createClass(Channel, [{
@@ -633,11 +663,38 @@ var Channel = (function (_React$Component3) {
       dispatch((0, _actions.updateMode)(channelId, mode));
     }
   }, {
+    key: 'beginEditCaller',
+    value: function beginEditCaller() {
+      this.setState({
+        editMode: true
+      });
+    }
+  }, {
+    key: 'endEditCaller',
+    value: function endEditCaller() {
+      this.setState({
+        editMode: false
+      });
+    }
+  }, {
+    key: 'updateCaller',
+    value: function updateCaller() {
+      var _props9 = this.props;
+      var channelId = _props9.channelId;
+      var dispatch = _props9.dispatch;
+
+      dispatch((0, _actions.updateCaller)(channelId, {
+        name: this.refs.callerName.value,
+        location: this.refs.callerLocation.value
+      }));
+      this.endEditCaller();
+    }
+  }, {
     key: 'renderChannelMode',
     value: function renderChannelMode() {
-      var _props9 = this.props;
-      var mode = _props9.mode;
-      var contact = _props9.contact;
+      var _props10 = this.props;
+      var mode = _props10.mode;
+      var contact = _props10.contact;
 
       if ('free' === mode) {
         return _react2.default.createElement(
@@ -663,6 +720,11 @@ var Channel = (function (_React$Component3) {
             'p',
             null,
             contact.name
+          ),
+          contact.location && _react2.default.createElement(
+            'p',
+            null,
+            contact.location
           ),
           _react2.default.createElement(
             'button',
@@ -700,13 +762,66 @@ var Channel = (function (_React$Component3) {
               'p',
               null,
               contact.name
+            ),
+            contact.location && _react2.default.createElement(
+              'p',
+              null,
+              contact.location
             )
           ),
+          _react2.default.createElement(
+            'button',
+            { onClick: this.beginEditCaller.bind(this), type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default' },
+            'Edit caller details'
+          ),
+          '  ',
           _react2.default.createElement(
             'button',
             { onClick: this.hangUpCall.bind(this), type: 'button', style: { borderRadius: '22px', minWidth: '130px' }, className: 'btn btn-default btn-danger' },
             _react2.default.createElement('span', { style: { top: '2px' }, className: 'glyphicon glyphicon-remove' }),
             ' Hang up'
+          ),
+          !!this.state.editMode && _react2.default.createElement(
+            'div',
+            { style: {
+                margin: '20px 100px',
+                textAlign: 'left'
+              } },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'label',
+                null,
+                'Name'
+              ),
+              _react2.default.createElement('input', { ref: 'callerName', type: 'text', className: 'form-control', placeholder: 'Name', defaultValue: contact ? contact.name : '' })
+            ),
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'label',
+                { style: { marginTop: '8px' } },
+                'Location'
+              ),
+              _react2.default.createElement('input', { ref: 'callerLocation', type: 'text', className: 'form-control', placeholder: 'Location', defaultValue: contact ? contact.location : '' })
+            ),
+            _react2.default.createElement(
+              'div',
+              { style: { marginTop: '10px' } },
+              _react2.default.createElement(
+                'button',
+                { onClick: this.updateCaller.bind(this), type: 'button', className: 'btn btn-default btn-primary' },
+                'Save'
+              ),
+              '  ',
+              _react2.default.createElement(
+                'button',
+                { onClick: this.endEditCaller.bind(this), type: 'button', className: 'btn btn-default' },
+                'Cancel'
+              )
+            )
           )
         );
       }
@@ -747,54 +862,71 @@ var Channel = (function (_React$Component3) {
       var _this4 = this;
 
       var modes = ['host', 'master', 'on_hold', 'ivr'];
-      var _props10 = this.props;
-      var channelId = _props10.channelId;
-      var channels = _props10.client.channels;
+      var labels = {
+        host: 'Host',
+        master: 'Master',
+        on_hold: 'On hold',
+        ivr: 'IVR'
+      };
+      var _props11 = this.props;
+      var channelId = _props11.channelId;
+      var channels = _props11.client.channels;
 
       var chan = channels[channelId] || { mode: 'free' };
       return _react2.default.createElement(
         'div',
-        null,
-        chan.mode,
-        _react2.default.createElement(
-          'div',
-          { className: 'btn-group btn-group-xs', role: 'group' },
-          modes.map(function (mode, i) {
-            return _react2.default.createElement(
-              'button',
-              {
-                key: i,
-                type: 'button',
-                className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
-                onClick: function onClick() {
-                  _this4.updateMode(mode);
-                } },
-              _this4.renderIcon(mode),
-              mode
-            );
-          })
-        )
+        { className: 'btn-group btn-group-lg', role: 'group' },
+        modes.map(function (mode, i) {
+          return _react2.default.createElement(
+            'button',
+            {
+              key: i,
+              type: 'button',
+              className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
+              onClick: function onClick() {
+                _this4.updateMode(mode);
+              } },
+            labels[mode]
+          );
+        })
       );
+    }
+  }, {
+    key: 'getBgColor',
+    value: function getBgColor(mode) {
+      if ('host' === mode) {
+        return '#dfd';
+      } else if ('master' === mode) {
+        return '#ffc';
+      } else if ('on_hold' === mode) {
+        return '#fdd';
+      } else if ('ivr' === mode) {
+        return '#ddf';
+      } else if ('ring' === mode) {
+        return '#fdf';
+      } else {
+        return '#fff';
+      }
     }
   }, {
     key: 'render',
     value: function render() {
       var _this5 = this;
 
-      var _props11 = this.props;
-      var channelId = _props11.channelId;
-      var number = _props11.number;
-      var contact = _props11.contact;
-      var mode = _props11.mode;
-      var level = _props11.level;
-      var muted = _props11.muted;
+      var _props12 = this.props;
+      var channelId = _props12.channelId;
+      var number = _props12.number;
+      var contact = _props12.contact;
+      var mode = _props12.mode;
+      var level = _props12.level;
+      var muted = _props12.muted;
 
       return _react2.default.createElement(
         'div',
-        { style: { background: '#fff', border: '1px solid #ddd', margin: '11px' } },
+        null,
         _react2.default.createElement(
           'div',
-          null,
+          { style: { background: this.getBgColor(mode), border: '1px solid #ddd', margin: '11px' } },
           _react2.default.createElement(
             'div',
             { style: { __border: '1px solid #ddd' } },
@@ -804,9 +936,13 @@ var Channel = (function (_React$Component3) {
               _react2.default.createElement(
                 'div',
                 { style: { flex: 11, __border: '1px solid #ddd' } },
-                channelId,
-                ' ',
-                number
+                _react2.default.createElement(
+                  'h4',
+                  null,
+                  channelId,
+                  ' ',
+                  number
+                )
               ),
               _react2.default.createElement(
                 'div',
@@ -828,12 +964,12 @@ var Channel = (function (_React$Component3) {
               { style: { __border: '1px solid #f00', display: 'flex', padding: '8px' } },
               _react2.default.createElement(
                 'button',
-                { className: 'btn btn-default btn-xs', onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
+                { className: 'btn btn-default btn-large', onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
                 _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
               ),
               _react2.default.createElement(
                 'div',
-                { style: { __border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px' } },
+                { style: { __border: '1px solid #f00', flex: 6, padding: '18px 10px 0 16px' } },
                 _react2.default.createElement(_Slider2.default, {
                   min: 1,
                   max: 100,
@@ -848,16 +984,7 @@ var Channel = (function (_React$Component3) {
               _react2.default.createElement(
                 'div',
                 { style: { __border: '1px solid #f00', padding: '6px 0 0 6px' } },
-                this.renderModeSwitch(),
-                _react2.default.createElement(
-                  'span',
-                  { style: { marginLeft: '10px' } },
-                  _react2.default.createElement(_reactBootstrapSwitch2.default, {
-                    labelText: 'Auto-answer',
-                    onText: 'On',
-                    offText: 'Off',
-                    size: 'mini' })
-                )
+                this.renderModeSwitch()
               )
             )
           )

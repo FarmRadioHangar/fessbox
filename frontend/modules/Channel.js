@@ -4,7 +4,7 @@ import PhoneLookup from 'frh-react-phone-lookup'
 import Switch      from 'react-bootstrap-switch'
 import Slider      from './Slider'
 
-import { updateMode, updateLevel } 
+import { updateMode, updateLevel, updateCaller } 
   from '../js/actions'
 import { ListGroupItem } 
   from 'react-bootstrap'
@@ -95,6 +95,9 @@ class LookupInput extends React.Component {
 class Channel extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      editMode : false
+    }
   }
   toggleMuted() {
     const { dispatch, muted, channelId, sendMessage } = this.props
@@ -138,6 +141,24 @@ class Channel extends React.Component {
     })
     dispatch(updateMode(channelId, mode))
   }
+  beginEditCaller() {
+    this.setState({
+      editMode : true
+    })
+  }
+  endEditCaller() {
+    this.setState({
+      editMode : false
+    })
+  }
+  updateCaller() {
+    const { channelId, dispatch } = this.props
+    dispatch(updateCaller(channelId, {
+      name     : this.refs.callerName.value,
+      location : this.refs.callerLocation.value
+    }))
+    this.endEditCaller()
+  }
   renderChannelMode() {
     const { mode, contact } = this.props
     if ('free' === mode) {
@@ -158,8 +179,10 @@ class Channel extends React.Component {
           {contact.name && (
             <p>
               {contact.name}
+              {contact.location && (
+                , {contact.location}
+              )}
             </p>
-          )}
           <button onClick={this.answerCall.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-success'>
             <span style={{top: '2px'}} className='glyphicon glyphicon-earphone'></span>&nbsp;Accept
           </button>
@@ -190,12 +213,41 @@ class Channel extends React.Component {
               </h4>
               <p>
                 {contact.name}
+                {contact.location && (
+                  , {contact.location}
+                )}
               </p>
             </div>
           )}
-          <button onClick={this.hangUpCall.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
+          <button onClick={this.beginEditCaller.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default'>
+            Edit caller details
+          </button>
+          &nbsp;&nbsp;<button onClick={this.hangUpCall.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-danger'>
             <span style={{top: '2px'}} className='glyphicon glyphicon-remove'></span>&nbsp;Hang up
           </button>
+          {!!this.state.editMode && (
+            <div style={{
+              margin    : '20px 100px',
+              textAlign : 'left'
+            }}>
+              <div>
+                <label>Name</label>
+                <input ref='callerName' type='text' className='form-control' placeholder='Name' defaultValue={contact ? contact.name : ''} />
+              </div>
+              <div>
+                <label style={{marginTop: '8px'}}>Location</label>
+                <input ref='callerLocation' type='text' className='form-control' placeholder='Location' defaultValue={contact ? contact.location : ''} />
+              </div>
+              <div style={{marginTop: '10px'}}>
+                <button onClick={this.updateCaller.bind(this)} type='button' className='btn btn-default btn-primary'>
+                  Save
+                </button>
+                &nbsp;&nbsp;<button onClick={this.endEditCaller.bind(this)} type='button' className='btn btn-default'>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           {/*
           <span className='fa-stack fa-lg'>
             <i className='fa fa-circle fa-stack-2x' style={{color: '#337ab7'}} />
@@ -231,12 +283,16 @@ class Channel extends React.Component {
   }
   renderModeSwitch() {
     const modes = ['host', 'master', 'on_hold', 'ivr']
+    const labels = {
+      host    : 'Host',
+      master  : 'Master',
+      on_hold : 'On hold',
+      ivr     : 'IVR'
+    }
     const { channelId, client : { channels } } = this.props
     const chan = channels[channelId] || {mode: 'free'}
     return (
-      <div>
-      {chan.mode}
-      <div className='btn-group btn-group-xs' role='group'>
+      <div className='btn-group btn-group-lg' role='group'>
         {modes.map((mode, i) => {
           return (
             <button 
@@ -244,24 +300,40 @@ class Channel extends React.Component {
               type      = 'button'
               className = {classNames('btn btn-default', { 'active' : chan.mode == mode })}
               onClick   = {() => { this.updateMode(mode) }}>
-              {this.renderIcon(mode)}
-              {mode}
+              {/*this.renderIcon(mode)*/}
+              {labels[mode]}
             </button>
           )
         })}
       </div>
-      </div>
     )
+  }
+  getBgColor(mode) {
+    if ('host' === mode) {
+      return '#dfd'
+    } else if ('master' === mode) {
+      return '#ffc'
+    } else if ('on_hold' === mode) {
+      return '#fdd'
+    } else if ('ivr' === mode) {
+      return '#ddf'
+    } else if ('ring' === mode) {
+      return '#fdf'
+    } else {
+      return '#fff'
+    }
   }
   render() {
     const { channelId, number, contact, mode, level, muted } = this.props
     return (
-      <div style={{background: '#fff', border: '1px solid #ddd', margin: '11px'}}>
-        <div>
+      <div>
+        <div style={{background: this.getBgColor(mode), border: '1px solid #ddd', margin: '11px'}}>
           <div style={{__border: '1px solid #ddd'}}> 
             <div style={{display: 'flex', padding: '8px'}}>
               <div style={{flex: 11, __border: '1px solid #ddd'}}>
-                {channelId}&nbsp;{number}
+                <h4>
+                  {channelId}&nbsp;{number}
+                </h4>
               </div>
               <div style={{flex: 1, __border: '1px solid #ddd', textAlign: 'right'}}>
                 00:00
@@ -274,10 +346,10 @@ class Channel extends React.Component {
           {'defunct' !== mode && (
             <div>
               <div style={{__border: '1px solid #f00', display: 'flex', padding: '8px'}}> 
-                <button className='btn btn-default btn-xs' onClick={this.toggleMuted.bind(this)} style={{marginTop: '6px'}}>
+                <button className='btn btn-default btn-large' onClick={this.toggleMuted.bind(this)} style={{marginTop: '6px'}}>
                   <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
                 </button>
-                <div style={{__border: '1px solid #f00', flex: 6, padding: '6px 10px 0 16px'}}>
+                <div style={{__border: '1px solid #f00', flex: 6, padding: '18px 10px 0 16px'}}>
                   <Slider 
                     min          = {1}
                     max          = {100}
@@ -289,6 +361,7 @@ class Channel extends React.Component {
                 </div>
                 <div style={{__border: '1px solid #f00', padding: '6px 0 0 6px'}}>
                   {this.renderModeSwitch()}
+                  {/*
                   <span style={{marginLeft: '10px'}}>
                     <Switch 
                       labelText = 'Auto-answer'
@@ -296,6 +369,7 @@ class Channel extends React.Component {
                       offText   = 'Off'
                       size      = 'mini' />
                   </span>
+                  */}
                 </div>
               </div>
             </div>

@@ -20,7 +20,7 @@ const channels = {
     contact    : {
       number   : '+255 712 444 333',
       name     : 'Manute Bol',
-      location : {},
+      location : '',
       notes    : {}
     },
     recording  : false
@@ -35,7 +35,7 @@ const channels = {
     contact    : {
       number   : '+255 712 155 789',
       name     : 'Uri Geller',
-      location : {},
+      location : '',
       notes    : {}
     },
     recording  : false
@@ -111,6 +111,17 @@ function mixer(state = initialMixerState, action) {
         channels : channelState(state.channels, action.channel, {
           muted : 'mute' === action.type
         })
+      }
+    case 'update-caller':
+      return {
+        ...state, 
+        channels : {
+          ...state.channels,
+          [action.channel] : {
+            ...state.channels[action.channel],
+            contact : Object.assign({}, state.channels[action.channel].contact, action.caller)
+          }
+        }
       }
     case 'update-level':
       return {

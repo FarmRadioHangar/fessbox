@@ -11,6 +11,7 @@
     "react-bootstrap": "^0.27.3",
     "react-bootstrap-switch": "^3.4.0",
     "react-dom": "^0.14.2",
+    "react-modal": "^0.6.1",
     "react-redux": "^4.0.0",
     "react-sidebar": "^2.0.0",
     "react-tap-event-plugin": "^0.2.1",

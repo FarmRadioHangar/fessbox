@@ -57,3 +57,9 @@ export function updateMasterLevel(level) {
     type : 'update-master-level', level
   }
 }
+
+export function updateCaller(channel, caller) {
+  return {
+    type : 'update-caller', channel, caller
+  }
+}

@@ -14,7 +14,19 @@ import { Provider, connect }
 import { initializeMixer, updateMixer, updateHost, updateMaster, updateMasterLevel, updateLevel }
   from './actions'
 
-const hostId = location.hash ? location.hash.replace('#', '') : 701
+function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  } 
+  return null;
+}
+
+const hostId = getQueryVariable('hostId') || 701
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${hostId}`}))(createStore)
 const store = createPersistentStore(app, {client: {hostId, channels: {}}})
