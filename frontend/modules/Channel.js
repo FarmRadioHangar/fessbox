@@ -132,9 +132,9 @@ class Channel extends React.Component {
     })
   }
   updateMode(mode) {
-    const { channelId, dispatch, sendMessage } = this.props
+    const { channelId, dispatch, sendMessage, client } = this.props
     sendMessage('channelMode', {
-      [channelId] : mode
+      [channelId] : 'host' === mode ? client.hostId : mode
     })
     dispatch(updateMode(channelId, mode))
   }
