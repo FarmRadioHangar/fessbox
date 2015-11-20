@@ -9,63 +9,63 @@ import { combineReducers }
 //  host     : {}
 //}
 
-//  channels : {
-//    'chan_1' : {
-//      level      : 10,
-//      direction  : 'incoming',
-//      mode       : 'ring',
-//      number     : '+255 712 444 333',
-//      muted      : false,
-//      duration   : null,
-//      contact    : {
-//        number   : '+255 712 444 333',
-//        name     : 'Manute Bol',
-//        location : {},
-//        notes    : {}
-//      },
-//      recording  : false
-//    },
-//    'chan_2' : {
-//      level      : 40,
-//      direction  : 'outgoing',
-//      mode       : 'ring',
-//      number     : '+255 712 444 333',
-//      muted      : false,
-//      duration   : null,
-//      contact    : {
-//        number   : '+255 712 155 789',
-//        name     : 'Uri Geller',
-//        location : {},
-//        notes    : {}
-//      },
-//      recording  : false
-//    },
-//    'chan_3' : {
-//      level      : 70,
-//      direction  : null,
-//      mode       : 'master',
-//      number     : '+255 712 444 333',
-//      muted      : true,
-//      duration   : null,
-//      contact    : null,
-//      recording  : false
-//    },
-//    'chan_4' : {
-//      level      : 90,
-//      direction  : null,
-//      mode       : 'free',
-//      number     : '+255 712 444 333',
-//      muted      : false,
-//      duration   : null,
-//      contact    : null,
-//      recording  : false
-//    }
-//  },
+const channels = {
+  'chan_1' : {
+    level      : 10,
+    direction  : 'incoming',
+    mode       : 'ring',
+    number     : '+255 712 444 333',
+    muted      : false,
+    duration   : null,
+    contact    : {
+      number   : '+255 712 444 333',
+      name     : 'Manute Bol',
+      location : {},
+      notes    : {}
+    },
+    recording  : false
+  },
+  'chan_2' : {
+    level      : 40,
+    direction  : 'outgoing',
+    mode       : 'ring',
+    number     : '+255 712 444 333',
+    muted      : false,
+    duration   : null,
+    contact    : {
+      number   : '+255 712 155 789',
+      name     : 'Uri Geller',
+      location : {},
+      notes    : {}
+    },
+    recording  : false
+  },
+  'chan_3' : {
+    level      : 70,
+    direction  : null,
+    mode       : 'master',
+    number     : '+255 712 444 333',
+    muted      : true,
+    duration   : null,
+    contact    : null,
+    recording  : false
+  },
+  'chan_4' : {
+    level      : 90,
+    direction  : null,
+    mode       : 'free',
+    number     : '+255 712 444 333',
+    muted      : false,
+    duration   : null,
+    contact    : null,
+    recording  : false
+  }
+}
 
 const initialMixerState = {
-  channels : {},
+  channels,
   master : {},
-  host : {}
+  host   : {}
 }
 
 function channelState(channels, chan, state) {
