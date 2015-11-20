@@ -33,7 +33,7 @@ class Master extends React.Component {
         </div>
         <div style={{textAlign: 'center', margin: '12px 0'}}> 
           <button onClick={this.toggleMuted.bind(this)}>
-            <i className={muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off'} />
+            <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
           </button>
         </div>
         <div style={{textAlign: 'center'}}> 

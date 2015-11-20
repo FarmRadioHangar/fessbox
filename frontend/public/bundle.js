@@ -793,7 +793,7 @@ var Channel = (function (_React$Component3) {
               _react2.default.createElement(
                 'button',
                 { className: 'btn btn-default btn-xs', onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
-                _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
+                _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
               ),
               _react2.default.createElement(
                 'div',
@@ -901,7 +901,7 @@ var SliderBar = (function (_React$Component) {
           _react2.default.createElement(
             'button',
             { onClick: onToggleMuted },
-            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
+            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
           )
         ),
         _react2.default.createElement(
@@ -1070,8 +1070,6 @@ var Master = (function (_React$Component) {
       var level = _props3.level;
       var muted = _props3.muted;
 
-      console.log('----------');
-      console.log(muted);
       return _react2.default.createElement(
         'div',
         null,
@@ -1094,7 +1092,7 @@ var Master = (function (_React$Component) {
           _react2.default.createElement(
             'button',
             { onClick: this.toggleMuted.bind(this) },
-            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
+            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
           )
         ),
         _react2.default.createElement(
