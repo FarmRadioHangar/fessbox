@@ -115,7 +115,7 @@ class Channel extends React.Component {
     const chan = channels[channelId] || {mode: 'master'}
     console.log(`answer in mode ${chan.mode}`)
     sendMessage('channelMode', {
-      [channelId] : chan.mode
+      [channelId] : 'host' === chan.mode ? client.hostId : chan.mode
     })
   }
   rejectCall() {
