@@ -19,6 +19,7 @@ class Master extends React.Component {
     dispatch(updateMasterLevel(value))
   }
   render() {
+      console.log(this.props)
     const { level, muted } = this.props
     return (
       <div>

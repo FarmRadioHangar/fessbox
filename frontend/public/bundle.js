@@ -1056,6 +1056,7 @@ var Master = (function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
+      console.log(this.props);
       var _props3 = this.props;
       var level = _props3.level;
       var muted = _props3.muted;

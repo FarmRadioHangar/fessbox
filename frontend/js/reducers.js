@@ -107,6 +107,11 @@ function mixer(state = initialMixerState, action) {
           level : action.level
         })
       }
+    case 'update-master': 
+      return {
+        ...state,
+        master : action.state
+      }
     case 'update-master-level':
       return {
         ...state,

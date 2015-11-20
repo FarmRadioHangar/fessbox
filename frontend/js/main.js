@@ -11,7 +11,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, updateMixer, updateHost }
+import { initializeMixer, updateMixer, updateHost, updateMaster }
   from './actions'
 
 const hostId = 707
@@ -65,6 +65,10 @@ ws.onmessage = e => {
         break
       case 'hostUpdate':
         store.dispatch(updateHost(msg.data))
+        break
+      case 'masterUpdate':
+      case 'masterUpdated':
+        store.dispatch(updateMaster(msg.data))
         break
       default:
         break
