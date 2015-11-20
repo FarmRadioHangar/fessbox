@@ -306,6 +306,7 @@ class Channel extends React.Component {
     )
   }
   getBgColor(mode) {
+      console.log(`************** mode : ${mode}`)
     if ('host' === mode) {
       return '#dfd'
     } else if ('master' === mode) {
