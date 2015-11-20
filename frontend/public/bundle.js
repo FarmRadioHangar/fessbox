@@ -112,7 +112,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var hostId = 707;
+var hostId = location.hash ? location.hash.replace('#', '') : 701;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { hostId: hostId, channels: {} } });
@@ -735,7 +735,8 @@ var Channel = (function (_React$Component3) {
               onClick: function onClick() {
                 _this4.updateMode(mode);
               } },
-            _this4.renderIcon(mode)
+            _this4.renderIcon(mode),
+            mode
           );
         })
       );
