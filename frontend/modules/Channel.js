@@ -243,6 +243,7 @@ class Channel extends React.Component {
               className = {classNames('btn btn-default', { 'active' : chan.mode == mode })}
               onClick   = {() => { this.updateMode(mode) }}>
               {this.renderIcon(mode)}
+              {mode}
             </button>
           )
         })}
