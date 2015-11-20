@@ -24,10 +24,10 @@ process.on("SIGTERM", function () {
 
 process.on('uncaughtException', function (err) {
 	console.error("EXCEPTION::" + err.stack);
-	myLib.mailSend('uncaughtException on ' + new Date().toLocaleString(), err.stack, appConfig.adminEmail);
+	//myLib.mailSend('uncaughtException on ' + new Date().toLocaleString(), err.stack, appConfig.adminEmail);
 });
 
-s.loadSnapshot();
+//s.loadSnapshot();
 
 console.log("==============================================");
 console.log(new Date().toLocaleString() + " - FessBox Node Server has started!");

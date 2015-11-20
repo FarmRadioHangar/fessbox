@@ -16,7 +16,7 @@ function mailSend(subject, body, addressTo) {
 		subject: subject
 	}, function(err, message) {
 		if (err) {
-			console.error('ERROR::mailiSend - ' + JSON.stringify(err));
+			console.error('ERROR::mailSend - ' + JSON.stringify(err));
 		}
 	});
 }

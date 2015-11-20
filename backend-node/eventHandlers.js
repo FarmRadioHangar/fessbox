@@ -2,84 +2,154 @@ var api = require("./api");
 var s = require("./singleton");
 
 exports.channelVolume = function(data, cb) {
-	var changed = {};
 	for(channel_id in data) {
-		var err = api.setChannelVolume(channel_id, data[channel_id]);
-		if (err) {
-			cb("event_error", {
-				event: "channelVolume",
-				key: channel_id,
-				msg: err
-			}, 'self');
-		} else {
-			changed[channel_id] = s.ui.mixer.channels[channel_id].level;
-		}
-	}
-	if (changed.length > 0) {
-		cb("channelVolumeChanged", changed, 'others');
+		api.setChannelVolume(channel_id, data[channel_id], function (err, level) {
+			if (err) {
+				cb("event_error", {
+					event: "channelVolume",
+					key: channel_id,
+					msg: err
+				}, 'self');
+			} else {
+				var changed = {};
+				changed[channel_id] = level;
+				cb("channelVolumeChange", changed, 'others');
+			}
+		});
 	}
 };
 
 exports.channelMode = function(data, cb) {
-	var changed = {};
 	for(channel_id in data) {
-		var err = api.setChannelMode(channel_id, data[channel_id]);
-		if (err) {
-			cb("event_error", {
-				event: "channelMode",
-				key: channel_id,
-				msg: err
-			}, 'self');
-		} else {
-			changed[channel_id] = s.ui.mixer.channels[channel_id];
-		}
-	}
-	if (Object.keys(changed).length > 0) {
-		cb("channelUpdate", changed, 'all');
+		api.setChannelMode(channel_id, data[channel_id], function (err, channel) {
+			if (err) {
+				cb("event_error", {
+					event: "channelMode",
+					key: channel_id,
+					msg: err
+				}, 'self');
+			} else {
+				var changed = {};
+				changed[channel_id] = channel;
+				cb("channelUpdate", changed, 'all');
+			}
+		});
 	}
 };
 
 exports.channelMuted = function(data, cb) {
-	var changed = {};
 	for(channel_id in data) {
-		var err = api.setChannelMuted(channel_id, data[channel_id]);
+		api.setChannelMuted(channel_id, data[channel_id], function (err, channel) {
+			if (err) {
+				cb("event_error", {
+					event: "channelMuted",
+					key: channel_id,
+					msg: err
+				}, 'self');
+			} else {
+				var changed = {};
+				changed[channel_id] = channel;
+				cb("channelUpdate", changed, 'all');
+			}
+		});
+	}
+};
+/*
+exports.hostOutputMuted = function(data, cb) {
+	var changed = {};
+	for(host_id in data) {
+		var err = api.setHostOutputMuted(host_id, data[host_id]);
 		if (err) {
 			cb("event_error", {
-				event: "channelMuted",
-				key: channel_id,
+				event: "hostOutputMuted",
+				key: host_id,
 				msg: err
 			}, 'self');
 		} else {
-			changed[channel_id] = s.ui.mixer.channels[channel_id];
+			changed[host_id] = s.ui.mixer.hosts[host_id];
 		}
 	}
 	if (changed.length > 0) {
-		cb("channelUpdate", changed, 'all');
+		cb("hostUpdate", changed, 'all');
+	}
+};
+
+exports.hostInputMuted = function(data, cb) {
+	var changed = {};
+	for(host_id in data) {
+		var err = api.setHostInputMuted(host_id, data[host_id]);
+		if (err) {
+			cb("event_error", {
+				event: "hostInputMuted",
+				key: host_id,
+				msg: err
+			}, 'self');
+		} else {
+			changed[host_id] = s.ui.mixer.hosts[host_id];
+		}
+	}
+	if (changed.length > 0) {
+		cb("hostUpdate", changed, 'all');
+	}
+};
+*/
+
+exports.hostVolume = function(data, cb) {
+	for(host_id in data) {
+		api.setHostVolume(host_id, data[host_id],  function (err, host) {
+			if (err) {
+				cb("event_error", {
+					event: "hostVolume",
+					key: host_id,
+					msg: err
+				}, 'self');
+			}
+		});
+	}
+};
+
+exports.hostMuted = function(data, cb) {
+	for(host_id in data) {
+		api.setHostMuted(host_id, data[host_id],  function (err, host) {
+			if (err) {
+				cb("event_error", {
+					event: "hostMuted",
+					key: host_id,
+					msg: err
+				}, 'self');
+			} else {
+				var changed = {};
+				changed[host_id] = host;
+				cb("hostUpdate", changed, 'all');
+			}
+		});
 	}
 };
 
 exports.masterVolume = function(data, cb) {
-	var err = api.setMasterVolume(data);
+	api.setMasterVolume(data, function (err, level) {
 		if (err) {
 			cb("event_error", {
 				event: "masterVolume",
 				msg: err
 			}, 'self');
 		} else {
-			cb("masterVolumeChanged", s.ui.mixer.master.level, "others");
+			cb("masterVolumeChange", level, "others");
 		}
+	});
 };
 
 exports.masterMuted = function(data, cb) {
-	var err = api.setMasterMuted(data);
+	api.setMasterMuted(data, function (err, master) {
 		if (err) {
 			cb("event_error", {
 				event: "masterMuted",
 				msg: err
 			}, 'self');
 		} else {
-			cb("masterUpdated", s.ui.mixer.master.level, "all");
+			cb("masterUpdate", master, "all");
 		}
+	});
 };
 
 exports.masterOnAir = function(data, cb) {
@@ -90,6 +160,6 @@ exports.masterOnAir = function(data, cb) {
 				msg: err
 			}, 'self');
 		} else {
-			cb("masterUpdated", s.ui.mixer.master, "all");
+			cb("masterUpdate", s.ui.mixer.master, "all");
 		}
 };
