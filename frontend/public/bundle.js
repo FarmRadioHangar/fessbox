@@ -169,30 +169,35 @@ ws.onclose = function () {
 
 ws.onmessage = function (e) {
   if (e.data) {
-    var msg = JSON.parse(e.data);
-    console.log(msg.event);
-    console.log(msg.data);
-    switch (msg.event) {
-      case 'initialize':
-        store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
-        break;
-      case 'channelUpdate':
-        store.dispatch((0, _actions.updateMixer)(msg.data));
-        break;
-      case 'hostUpdate':
-        store.dispatch((0, _actions.updateHost)(msg.data));
-        break;
-      case 'masterUpdate':
-        //case 'masterUpdated':                         
-        store.dispatch((0, _actions.updateMaster)(msg.data));
-        break;
-      case 'masterVolumeChange':
-        //case 'masterVolumeChanged':                    
-        store.dispatch((0, _actions.updateMasterLevel)(msg.data));
-        break;
-      default:
-        break;
-    }
+    (function () {
+      var msg = JSON.parse(e.data);
+      console.log(msg.event);
+      console.log(msg.data);
+      switch (msg.event) {
+        case 'initialize':
+          store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
+          break;
+        case 'channelUpdate':
+          store.dispatch((0, _actions.updateMixer)(msg.data));
+          break;
+        case 'channelVolumeChange':
+          Object.keys(msg.data).forEach(function (chan) {
+            store.dispatch((0, _actions.updateLevel)(chan, msg.data[chan]));
+          });
+          break;
+        case 'hostUpdate':
+          store.dispatch((0, _actions.updateHost)(msg.data));
+          break;
+        case 'masterUpdate':
+          store.dispatch((0, _actions.updateMaster)(msg.data));
+          break;
+        case 'masterVolumeChange':
+          store.dispatch((0, _actions.updateMasterLevel)(msg.data));
+          break;
+        default:
+          break;
+      }
+    })();
   }
 };
 
