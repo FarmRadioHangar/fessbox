@@ -622,8 +622,9 @@ var Channel = (function (_React$Component3) {
       var channelId = _props8.channelId;
       var dispatch = _props8.dispatch;
       var sendMessage = _props8.sendMessage;
+      var client = _props8.client;
 
-      sendMessage('channelMode', _defineProperty({}, channelId, mode));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? client.hostId : mode));
       dispatch((0, _actions.updateMode)(channelId, mode));
     }
   }, {
