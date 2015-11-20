@@ -719,12 +719,7 @@ var Channel = (function (_React$Component3) {
           contact.name && _react2.default.createElement(
             'p',
             null,
-            contact.name
-          ),
-          contact.location && _react2.default.createElement(
-            'p',
-            null,
-            contact.location
+            contact.location ? contact.name + ', ' + contact.location : contact.name
           ),
           _react2.default.createElement(
             'button',
@@ -758,15 +753,10 @@ var Channel = (function (_React$Component3) {
               { style: { marginBottom: '3px' } },
               contact.number
             ),
-            _react2.default.createElement(
+            contact.name && _react2.default.createElement(
               'p',
               null,
-              contact.name
-            ),
-            contact.location && _react2.default.createElement(
-              'p',
-              null,
-              contact.location
+              contact.location ? contact.name + ', ' + contact.location : contact.name
             )
           ),
           _react2.default.createElement(

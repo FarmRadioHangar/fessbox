@@ -178,11 +178,9 @@ class Channel extends React.Component {
           </h4>
           {contact.name && (
             <p>
-              {contact.name}
-              {contact.location && (
-                , {contact.location}
-              )}
+              {contact.location ? `${contact.name}, ${contact.location}` : contact.name}
             </p>
+          )}
           <button onClick={this.answerCall.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default btn-success'>
             <span style={{top: '2px'}} className='glyphicon glyphicon-earphone'></span>&nbsp;Accept
           </button>
@@ -211,12 +209,11 @@ class Channel extends React.Component {
               <h4 style={{marginBottom: '3px'}}>
                 {contact.number}
               </h4>
-              <p>
-                {contact.name}
-                {contact.location && (
-                  , {contact.location}
-                )}
-              </p>
+              {contact.name && (
+                <p>
+                  {contact.location ? `${contact.name}, ${contact.location}` : contact.name}
+                </p>
+              )}
             </div>
           )}
           <button onClick={this.beginEditCaller.bind(this)} type='button' style={{borderRadius: '22px', minWidth: '130px'}} className='btn btn-default'>
