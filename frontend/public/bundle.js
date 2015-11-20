@@ -186,7 +186,7 @@ ws.onmessage = function (e) {
       console.log(msg.data);
       switch (msg.event) {
         case 'initialize':
-          //        store.dispatch(initializeMixer(msg.data.mixer))
+          store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
           break;
         case 'channelUpdate':
           store.dispatch((0, _actions.updateMixer)(msg.data));
