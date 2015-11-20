@@ -895,6 +895,7 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'getBgColor',
     value: function getBgColor(mode) {
+      console.log('************** mode : ' + mode);
       if ('host' === mode) {
         return '#dfd';
       } else if ('master' === mode) {

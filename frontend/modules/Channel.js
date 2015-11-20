@@ -307,8 +307,8 @@ class Channel extends React.Component {
   }
   getBgColor(mode) {
       console.log(`************** mode : ${mode}`)
-    if ('host' === mode) {
-      return '#dfd'
+    if ('free' === mode) {
+      return '#fff'
     } else if ('master' === mode) {
       return '#ffc'
     } else if ('on_hold' === mode) {
@@ -318,7 +318,8 @@ class Channel extends React.Component {
     } else if ('ring' === mode) {
       return '#fdf'
     } else {
-      return '#fff'
+      /* host */
+      return '#dfd'
     }
   }
   render() {
