@@ -40,6 +40,12 @@ export function updateMode(channel, mode) {
   }
 }
 
+export function updateMaster(state) {
+  return {
+    type : 'update-master', state
+  }
+}
+
 export function updateMasterLevel(level) {
   return {
     type : 'update-master-level', level

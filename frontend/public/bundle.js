@@ -11,6 +11,7 @@ exports.initializeMixer = initializeMixer;
 exports.updateHost = updateHost;
 exports.updateMixer = updateMixer;
 exports.updateMode = updateMode;
+exports.updateMaster = updateMaster;
 exports.updateMasterLevel = updateMasterLevel;
 function mute(channel) {
   return {
@@ -51,6 +52,12 @@ function updateMixer(state) {
 function updateMode(channel, mode) {
   return {
     type: 'update-mode', channel: channel, mode: mode
+  };
+}
+
+function updateMaster(state) {
+  return {
+    type: 'update-master', state: state
   };
 }
 
@@ -105,7 +112,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var hostId = 701;
+var hostId = 707;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { hostId: hostId, channels: {} } });
@@ -167,6 +174,10 @@ ws.onmessage = function (e) {
         break;
       case 'hostUpdate':
         store.dispatch((0, _actions.updateHost)(msg.data));
+        break;
+      case 'masterUpdate':
+      case 'masterUpdated':
+        store.dispatch((0, _actions.updateMaster)(msg.data));
         break;
       default:
         break;
@@ -257,12 +268,7 @@ var initialMixerState = {
       recording: false
     }
   },
-  master: {
-    level: 0,
-    muted: false,
-    recording: false,
-    delay: 0
-  },
+  master: {},
   host: {}
 };
 
@@ -297,6 +303,10 @@ function mixer() {
         channels: channelState(state.channels, action.channel, {
           level: action.level
         })
+      });
+    case 'update-master':
+      return _extends({}, state, {
+        master: action.state
       });
     case 'update-master-level':
       return _extends({}, state, {
@@ -783,7 +793,7 @@ var Channel = (function (_React$Component3) {
               _react2.default.createElement(
                 'button',
                 { className: 'btn btn-default btn-xs', onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
-                _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
+                _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
               ),
               _react2.default.createElement(
                 'div',
@@ -891,7 +901,7 @@ var SliderBar = (function (_React$Component) {
           _react2.default.createElement(
             'button',
             { onClick: onToggleMuted },
-            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
+            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
           )
         ),
         _react2.default.createElement(
@@ -942,7 +952,7 @@ var Host = (function (_React$Component2) {
       var client = _props4.client;
       var mixer = _props4.mixer;
 
-      if (!mixer.hosts || !mixer.hosts.hasOwnProperty(client.hostId)) {
+      if (!mixer.hosts || !mixer.hosts[client.hostId]) {
         return _react2.default.createElement(
           'div',
           null,
@@ -955,7 +965,6 @@ var Host = (function (_React$Component2) {
       var muted_in = _mixer$hosts$client$h.muted_in;
       var muted_out = _mixer$hosts$client$h.muted_out;
 
-      console.log(this.props);
       return _react2.default.createElement(
         'div',
         { style: { display: 'flex' } },
@@ -1083,7 +1092,7 @@ var Master = (function (_React$Component) {
           _react2.default.createElement(
             'button',
             { onClick: this.toggleMuted.bind(this) },
-            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off' })
+            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
           )
         ),
         _react2.default.createElement(
@@ -1186,7 +1195,9 @@ var Mixer = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { flex: 1, textAlign: 'center' } },
-          _react2.default.createElement(_Master2.default, _extends({}, master, { dispatch: dispatch, sendMessage: sendMessage }))
+          !!master && Object.keys(master).length && _react2.default.createElement(_Master2.default, _extends({}, master, {
+            dispatch: dispatch,
+            sendMessage: sendMessage }))
         )
       );
     }

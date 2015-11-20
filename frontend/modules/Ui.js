@@ -31,13 +31,13 @@ class Ui extends React.Component {
   render() {
     return (
       <Sidebar sidebar = {(
-          <div style={{
-            height     : '100%',
-            background : '#fff'
-          }}>
-            <Host {...this.props} />
-          </div>
-        )}
+        <div style={{
+          height     : '100%',
+          background : '#fff'
+        }}>
+          <Host {...this.props} />
+        </div>
+      )}
         open      = {this.state.sidebarOpen}
         docked    = {this.state.sidebarDocked}
         onSetOpen = {this.onSetSidebarOpen.bind(this)}>

@@ -30,7 +30,11 @@ class Mixer extends React.Component {
           </div>
         </div>
         <div style={{flex: 1, textAlign: 'center'}}> 
-          <Master {...master} dispatch={dispatch} sendMessage={sendMessage} />
+          {!!master && Object.keys(master).length && (
+            <Master {...master} 
+              dispatch    = {dispatch} 
+              sendMessage = {sendMessage} />
+          )}
         </div>
       </div>
     )

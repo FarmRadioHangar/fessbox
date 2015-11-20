@@ -62,12 +62,7 @@ const initialMixerState = {
       recording  : false
     }
   },
-  master : {
-    level     : 0,
-    muted     : false,
-    recording : false,
-    delay     : 0
-  },
+  master : {},
   host : {}
 }
 
@@ -106,6 +101,11 @@ function mixer(state = initialMixerState, action) {
         channels : channelState(state.channels, action.channel, {
           level : action.level
         })
+      }
+    case 'update-master': 
+      return {
+        ...state,
+        master : action.state
       }
     case 'update-master-level':
       return {

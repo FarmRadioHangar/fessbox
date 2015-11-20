@@ -27,7 +27,7 @@ class SliderBar extends React.Component {
         </div>
         <div style={{textAlign: 'center', margin: '12px 0'}}> 
           <button onClick={onToggleMuted}>
-            <i className={muted ? 'glyphicon glyphicon-volume-up' : 'glyphicon glyphicon-volume-off'} />
+            <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
           </button>
         </div>
         <div style={{textAlign: 'center', padding: '.7em'}}> 
@@ -56,7 +56,7 @@ class Host extends React.Component {
   }
   render() {
     const { client, mixer } = this.props
-    if (!mixer.hosts || !mixer.hosts.hasOwnProperty(client.hostId)) {
+    if (!mixer.hosts || !mixer.hosts[client.hostId]) {
       return (
         <div>
           No host
