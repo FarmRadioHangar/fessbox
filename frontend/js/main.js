@@ -14,7 +14,7 @@ import { Provider, connect }
 import { initializeMixer, updateMixer, updateHost }
   from './actions'
 
-const hostId = 701
+const hostId = 707
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${hostId}`}))(createStore)
 const store = createPersistentStore(app, {client: {hostId, channels: {}}})

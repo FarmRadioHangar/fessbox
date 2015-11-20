@@ -105,7 +105,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var hostId = 701;
+var hostId = 707;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { hostId: hostId, channels: {} } });
@@ -942,7 +942,7 @@ var Host = (function (_React$Component2) {
       var client = _props4.client;
       var mixer = _props4.mixer;
 
-      if (!mixer.hosts || !mixer.hosts.hasOwnProperty(client.hostId)) {
+      if (!mixer.hosts || !mixer.hosts[client.hostId]) {
         return _react2.default.createElement(
           'div',
           null,
@@ -955,7 +955,6 @@ var Host = (function (_React$Component2) {
       var muted_in = _mixer$hosts$client$h.muted_in;
       var muted_out = _mixer$hosts$client$h.muted_out;
 
-      console.log(this.props);
       return _react2.default.createElement(
         'div',
         { style: { display: 'flex' } },

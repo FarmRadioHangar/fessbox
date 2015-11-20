@@ -56,7 +56,7 @@ class Host extends React.Component {
   }
   render() {
     const { client, mixer } = this.props
-    if (!mixer.hosts || !mixer.hosts.hasOwnProperty(client.hostId)) {
+    if (!mixer.hosts || !mixer.hosts[client.hostId]) {
       return (
         <div>
           No host
