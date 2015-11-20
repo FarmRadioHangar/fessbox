@@ -1,6 +1,9 @@
 import React  from 'react'
 import Slider from './Slider'
 
+import { updateHostLevel }
+  from '../js/actions'
+
 class SliderBar extends React.Component {
   constructor(props) {
     super(props)
@@ -9,6 +12,7 @@ class SliderBar extends React.Component {
     const { 
       icon, 
       muted, 
+      value,
       defaultValue, 
       onChange, 
       onToggleMuted 
@@ -17,6 +21,7 @@ class SliderBar extends React.Component {
       <div style={{marginTop: '12px'}}>
         <div style={{textAlign: 'center'}}> 
           <Slider 
+            value        = {value} 
             defaultValue = {defaultValue} 
             onChange     = {onChange}
             disabled     = {!!muted}
@@ -49,10 +54,12 @@ class Host extends React.Component {
     })
   }
   updateLevel(direction, level) {
-    const { sendMessage, client } = this.props
+    const { sendMessage, client, dispatch } = this.props
+        console.log(this.props)
     sendMessage('hostVolume', {
       [client.hostId] : { direction, level }
     })
+    dispatch(updateHostLevel(client.hostId, direction, level))
   }
   render() {
     const { client, mixer } = this.props
@@ -74,6 +81,7 @@ class Host extends React.Component {
         <div style={{flex: 1, minWidth: '80px'}}> 
           <SliderBar 
             icon          = 'microphone' 
+            value         = {level_in}
             defaultValue  = {level_in}
             muted         = {muted_in}
             onChange      = {(from, to) => { this.updateLevel('in', to) }}
@@ -82,6 +90,7 @@ class Host extends React.Component {
         <div style={{flex: 1, minWidth: '80px'}}> 
           <SliderBar 
             icon          = 'headphones' 
+            value         = {level_out}
             defaultValue  = {level_out}
             muted         = {muted_out}
             onChange      = {(from, to) => { this.updateLevel('out', to) }}

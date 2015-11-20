@@ -29,6 +29,7 @@ class Master extends React.Component {
             min          = {1}
             max          = {100}
             defaultValue = {level}
+            value        = {level}
             onChange     = {(from, to) => {this.updateLevel(to)}} />
         </div>
         <div style={{textAlign: 'center', margin: '12px 0'}}> 

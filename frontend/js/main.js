@@ -11,7 +11,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, updateMixer, updateHost, updateMaster }
+import { initializeMixer, updateMixer, updateHost, updateMaster, updateMasterLevel, updateLevel }
   from './actions'
 
 const hostId = location.hash ? location.hash.replace('#', '') : 701
@@ -63,12 +63,19 @@ ws.onmessage = e => {
       case 'channelUpdate':
         store.dispatch(updateMixer(msg.data))
         break
+      case 'channelVolumeChange':
+        Object.keys(msg.data).forEach(chan => {
+          store.dispatch(updateLevel(chan, msg.data[chan])) 
+        })
+        break
       case 'hostUpdate':
         store.dispatch(updateHost(msg.data))
         break
       case 'masterUpdate':
-      case 'masterUpdated':
         store.dispatch(updateMaster(msg.data))
+        break
+      case 'masterVolumeChange':
+        store.dispatch(updateMasterLevel(msg.data))
         break
       default:
         break

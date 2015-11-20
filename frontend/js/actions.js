@@ -28,6 +28,12 @@ export function updateHost(state) {
   }
 }
 
+export function updateHostLevel(hostId, direction, level) {
+  return {
+    type : 'update-host-level', hostId, direction, level
+  }
+}
+
 export function updateMixer(state) {
   return {
     type : 'update-mixer', state

@@ -143,6 +143,7 @@ exports.unmute = unmute;
 exports.updateLevel = updateLevel;
 exports.initializeMixer = initializeMixer;
 exports.updateHost = updateHost;
+exports.updateHostLevel = updateHostLevel;
 exports.updateMixer = updateMixer;
 exports.updateMode = updateMode;
 exports.updateMaster = updateMaster;
@@ -174,6 +175,12 @@ function initializeMixer(state) {
 function updateHost(state) {
   return {
     type: 'update-host', state: state
+  };
+}
+
+function updateHostLevel(hostId, direction, level) {
+  return {
+    type: 'update-host-level', hostId: hostId, direction: direction, level: level
   };
 }
 
@@ -296,26 +303,35 @@ ws.onclose = function () {
 
 ws.onmessage = function (e) {
   if (e.data) {
-    var msg = JSON.parse(e.data);
-    console.log(msg.event);
-    console.log(msg.data);
-    switch (msg.event) {
-      case 'initialize':
-        store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
-        break;
-      case 'channelUpdate':
-        store.dispatch((0, _actions.updateMixer)(msg.data));
-        break;
-      case 'hostUpdate':
-        store.dispatch((0, _actions.updateHost)(msg.data));
-        break;
-      case 'masterUpdate':
-      case 'masterUpdated':
-        store.dispatch((0, _actions.updateMaster)(msg.data));
-        break;
-      default:
-        break;
-    }
+    (function () {
+      var msg = JSON.parse(e.data);
+      console.log(msg.event);
+      console.log(msg.data);
+      switch (msg.event) {
+        case 'initialize':
+          store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
+          break;
+        case 'channelUpdate':
+          store.dispatch((0, _actions.updateMixer)(msg.data));
+          break;
+        case 'channelVolumeChange':
+          Object.keys(msg.data).forEach(function (chan) {
+            store.dispatch((0, _actions.updateLevel)(chan, msg.data[chan]));
+          });
+          break;
+        case 'hostUpdate':
+          store.dispatch((0, _actions.updateHost)(msg.data));
+          break;
+        case 'masterUpdate':
+          store.dispatch((0, _actions.updateMaster)(msg.data));
+          break;
+        case 'masterVolumeChange':
+          store.dispatch((0, _actions.updateMasterLevel)(msg.data));
+          break;
+        default:
+          break;
+      }
+    })();
   }
 };
 
@@ -420,6 +436,17 @@ function mixer() {
     case 'update-host':
       return _extends({}, state, {
         hosts: Object.assign({}, state.hosts, action.state)
+      });
+    case 'update-host-level':
+      var level = {};
+      if ('in' === action.direction || 'both' === action.direction) {
+        level['level_in'] = action.level;
+      }
+      if ('out' === action.direction || 'both' === action.direction) {
+        level['level_out'] = action.level;
+      }
+      return _extends({}, state, {
+        hosts: _extends({}, state.hosts, _defineProperty({}, action.hostId, Object.assign({}, state.hosts[action.hostId], level)))
       });
     case 'initialize-mixer':
       return action.state;
@@ -945,6 +972,7 @@ var Channel = (function (_React$Component3) {
                   min: 1,
                   max: 100,
                   style: { width: '100%' },
+                  value: level,
                   defaultValue: level,
                   onChange: function onChange(from, to) {
                     return _this5.updateLevel(to);
@@ -994,6 +1022,8 @@ var _Slider = require('./Slider');
 
 var _Slider2 = _interopRequireDefault(_Slider);
 
+var _actions = require('../js/actions');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -1019,6 +1049,7 @@ var SliderBar = (function (_React$Component) {
       var _props = this.props;
       var icon = _props.icon;
       var muted = _props.muted;
+      var value = _props.value;
       var defaultValue = _props.defaultValue;
       var onChange = _props.onChange;
       var onToggleMuted = _props.onToggleMuted;
@@ -1030,6 +1061,7 @@ var SliderBar = (function (_React$Component) {
           'div',
           { style: { textAlign: 'center' } },
           _react2.default.createElement(_Slider2.default, {
+            value: value,
             defaultValue: defaultValue,
             onChange: onChange,
             disabled: !!muted,
@@ -1083,8 +1115,11 @@ var Host = (function (_React$Component2) {
       var _props3 = this.props;
       var sendMessage = _props3.sendMessage;
       var client = _props3.client;
+      var dispatch = _props3.dispatch;
 
+      console.log(this.props);
       sendMessage('hostVolume', _defineProperty({}, client.hostId, { direction: direction, level: level }));
+      dispatch((0, _actions.updateHostLevel)(client.hostId, direction, level));
     }
   }, {
     key: 'render',
@@ -1116,6 +1151,7 @@ var Host = (function (_React$Component2) {
           { style: { flex: 1, minWidth: '80px' } },
           _react2.default.createElement(SliderBar, {
             icon: 'microphone',
+            value: level_in,
             defaultValue: level_in,
             muted: muted_in,
             onChange: function onChange(from, to) {
@@ -1130,6 +1166,7 @@ var Host = (function (_React$Component2) {
           { style: { flex: 1, minWidth: '80px' } },
           _react2.default.createElement(SliderBar, {
             icon: 'headphones',
+            value: level_out,
             defaultValue: level_out,
             muted: muted_out,
             onChange: function onChange(from, to) {
@@ -1148,7 +1185,7 @@ var Host = (function (_React$Component2) {
 
 exports.default = Host;
 
-},{"./Slider":8,"react":433}],6:[function(require,module,exports){
+},{"../js/actions":1,"./Slider":8,"react":433}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1225,6 +1262,7 @@ var Master = (function (_React$Component) {
             min: 1,
             max: 100,
             defaultValue: level,
+            value: level,
             onChange: function onChange(from, to) {
               _this2.updateLevel(to);
             } })
