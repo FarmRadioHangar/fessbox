@@ -59,7 +59,7 @@ ws.onmessage = e => {
     //console.log(msg.data)
     switch (msg.event) {
       case 'initialize':
-        //store.dispatch(initializeMixer(msg.data.mixer))
+        store.dispatch(initializeMixer(msg.data.mixer))
         break
       case 'channelUpdate':
         store.dispatch(updateMixer(msg.data))
