@@ -896,8 +896,8 @@ var Channel = (function (_React$Component3) {
     key: 'getBgColor',
     value: function getBgColor(mode) {
       console.log('************** mode : ' + mode);
-      if ('host' === mode) {
-        return '#dfd';
+      if ('free' === mode) {
+        return '#fff';
       } else if ('master' === mode) {
         return '#ffc';
       } else if ('on_hold' === mode) {
@@ -907,7 +907,8 @@ var Channel = (function (_React$Component3) {
       } else if ('ring' === mode) {
         return '#fdf';
       } else {
-        return '#fff';
+        /* host */
+        return '#dfd';
       }
     }
   }, {
