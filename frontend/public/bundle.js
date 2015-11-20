@@ -11,6 +11,7 @@ exports.initializeMixer = initializeMixer;
 exports.updateHost = updateHost;
 exports.updateMixer = updateMixer;
 exports.updateMode = updateMode;
+exports.updateMaster = updateMaster;
 exports.updateMasterLevel = updateMasterLevel;
 function mute(channel) {
   return {
@@ -51,6 +52,12 @@ function updateMixer(state) {
 function updateMode(channel, mode) {
   return {
     type: 'update-mode', channel: channel, mode: mode
+  };
+}
+
+function updateMaster(state) {
+  return {
+    type: 'update-master', state: state
   };
 }
 
@@ -168,6 +175,10 @@ ws.onmessage = function (e) {
       case 'hostUpdate':
         store.dispatch((0, _actions.updateHost)(msg.data));
         break;
+      case 'masterUpdate':
+      case 'masterUpdated':
+        store.dispatch((0, _actions.updateMaster)(msg.data));
+        break;
       default:
         break;
     }
@@ -257,12 +268,7 @@ var initialMixerState = {
       recording: false
     }
   },
-  master: {
-    level: 0,
-    muted: false,
-    recording: false,
-    delay: 0
-  },
+  master: {},
   host: {}
 };
 
@@ -297,6 +303,10 @@ function mixer() {
         channels: channelState(state.channels, action.channel, {
           level: action.level
         })
+      });
+    case 'update-master':
+      return _extends({}, state, {
+        master: action.state
       });
     case 'update-master-level':
       return _extends({}, state, {
@@ -1056,11 +1066,12 @@ var Master = (function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      console.log(this.props);
       var _props3 = this.props;
       var level = _props3.level;
       var muted = _props3.muted;
 
+      console.log('----------');
+      console.log(muted);
       return _react2.default.createElement(
         'div',
         null,
@@ -1186,7 +1197,7 @@ var Mixer = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { flex: 1, textAlign: 'center' } },
-          _react2.default.createElement(_Master2.default, _extends({}, master, { dispatch: dispatch, sendMessage: sendMessage }))
+          !!master && Object.keys(master).length && _react2.default.createElement(_Master2.default, _extends({}, master, { dispatch: dispatch, sendMessage: sendMessage }))
         )
       );
     }

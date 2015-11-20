@@ -62,12 +62,7 @@ const initialMixerState = {
       recording  : false
     }
   },
-  master : {
-    level     : 0,
-    muted     : false,
-    recording : false,
-    delay     : 0
-  },
+  master : {},
   host : {}
 }
 

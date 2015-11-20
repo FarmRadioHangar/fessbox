@@ -19,8 +19,9 @@ class Master extends React.Component {
     dispatch(updateMasterLevel(value))
   }
   render() {
-      console.log(this.props)
     const { level, muted } = this.props
+      console.log('----------')
+      console.log(muted)
     return (
       <div>
         <div style={{textAlign: 'center'}}> 
