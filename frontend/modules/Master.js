@@ -20,8 +20,6 @@ class Master extends React.Component {
   }
   render() {
     const { level, muted } = this.props
-      console.log('----------')
-      console.log(muted)
     return (
       <div>
         <div style={{textAlign: 'center'}}> 

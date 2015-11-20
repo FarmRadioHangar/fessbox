@@ -1197,7 +1197,9 @@ var Mixer = (function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { flex: 1, textAlign: 'center' } },
-          !!master && Object.keys(master).length && _react2.default.createElement(_Master2.default, _extends({}, master, { dispatch: dispatch, sendMessage: sendMessage }))
+          !!master && Object.keys(master).length && _react2.default.createElement(_Master2.default, _extends({}, master, {
+            dispatch: dispatch,
+            sendMessage: sendMessage }))
         )
       );
     }
