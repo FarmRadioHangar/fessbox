@@ -234,6 +234,8 @@ class Channel extends React.Component {
     const { channelId, client : { channels } } = this.props
     const chan = channels[channelId] || {mode: 'free'}
     return (
+      <div>
+      {chan.mode}
       <div className='btn-group btn-group-xs' role='group'>
         {modes.map((mode, i) => {
           return (
@@ -247,6 +249,7 @@ class Channel extends React.Component {
             </button>
           )
         })}
+      </div>
       </div>
     )
   }

@@ -726,21 +726,26 @@ var Channel = (function (_React$Component3) {
       var chan = channels[channelId] || { mode: 'free' };
       return _react2.default.createElement(
         'div',
-        { className: 'btn-group btn-group-xs', role: 'group' },
-        modes.map(function (mode, i) {
-          return _react2.default.createElement(
-            'button',
-            {
-              key: i,
-              type: 'button',
-              className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
-              onClick: function onClick() {
-                _this4.updateMode(mode);
-              } },
-            _this4.renderIcon(mode),
-            mode
-          );
-        })
+        null,
+        chan.mode,
+        _react2.default.createElement(
+          'div',
+          { className: 'btn-group btn-group-xs', role: 'group' },
+          modes.map(function (mode, i) {
+            return _react2.default.createElement(
+              'button',
+              {
+                key: i,
+                type: 'button',
+                className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
+                onClick: function onClick() {
+                  _this4.updateMode(mode);
+                } },
+              _this4.renderIcon(mode),
+              mode
+            );
+          })
+        )
       );
     }
   }, {
