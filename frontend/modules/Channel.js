@@ -282,6 +282,7 @@ class Channel extends React.Component {
                     min          = {1}
                     max          = {100}
                     style        = {{width: '100%'}}
+                    value        = {level}
                     defaultValue = {level}
                     onChange     = {(from, to) => this.updateLevel(to)}
                     disabled     = {!!muted} />

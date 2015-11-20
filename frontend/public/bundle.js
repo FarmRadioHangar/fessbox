@@ -833,6 +833,7 @@ var Channel = (function (_React$Component3) {
                   min: 1,
                   max: 100,
                   style: { width: '100%' },
+                  value: level,
                   defaultValue: level,
                   onChange: function onChange(from, to) {
                     return _this5.updateLevel(to);
