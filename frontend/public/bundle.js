@@ -706,7 +706,7 @@ var Channel = (function (_React$Component3) {
 
       var chan = channels[channelId] || { mode: 'master' };
       console.log('answer in mode ' + chan.mode);
-      sendMessage('channelMode', _defineProperty({}, channelId, chan.mode));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.mode ? client.hostId : chan.mode));
     }
   }, {
     key: 'rejectCall',
