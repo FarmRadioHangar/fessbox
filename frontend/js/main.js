@@ -1,9 +1,10 @@
 import React                from 'react'
 import ReactDOM             from 'react-dom'
-import app                  from './reducers'
-import ui                   from '../modules/Ui'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import persistState         from 'redux-localstorage'
+import app                  from './reducers'
+import getQueryVariable     from './url-params'
+import ui                   from '../modules/Ui'
 
 import { ReconnectingWebSocket } 
   from 'awesome-websocket'
@@ -14,7 +15,7 @@ import { Provider, connect }
 import { initializeMixer, updateMixer, updateHost, updateMaster, updateMasterLevel, updateLevel }
   from './actions'
 
-const hostId = location.hash ? location.hash.replace('#', '') : 701
+const hostId = getQueryVariable('host_id') || 701
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${hostId}`}))(createStore)
 const store = createPersistentStore(app, {client: {hostId, channels: {}}})
