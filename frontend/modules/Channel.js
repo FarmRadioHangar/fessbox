@@ -114,8 +114,9 @@ class Channel extends React.Component {
     dispatch(updateLevel(channelId, value))
   }
   answerCall() {
-    const { dispatch, channelId, sendMessage, client : { channels } } = this.props
-    const chan = channels[channelId] || {mode: 'master'}
+      console.log(this.props)
+    const { dispatch, channelId, sendMessage, client } = this.props
+    const chan = client.channels[channelId] || {mode: 'master'}
     console.log(`answer in mode ${chan.mode}`)
     sendMessage('channelMode', {
       [channelId] : 'host' === chan.mode ? client.hostId : chan.mode

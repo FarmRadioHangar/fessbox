@@ -632,13 +632,14 @@ var Channel = (function (_React$Component3) {
   }, {
     key: 'answerCall',
     value: function answerCall() {
+      console.log(this.props);
       var _props5 = this.props;
       var dispatch = _props5.dispatch;
       var channelId = _props5.channelId;
       var sendMessage = _props5.sendMessage;
-      var channels = _props5.client.channels;
+      var client = _props5.client;
 
-      var chan = channels[channelId] || { mode: 'master' };
+      var chan = client.channels[channelId] || { mode: 'master' };
       console.log('answer in mode ' + chan.mode);
       sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.mode ? client.hostId : chan.mode));
     }
