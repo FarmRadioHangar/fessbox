@@ -19,7 +19,7 @@ const hostId = getQueryVariable('host_id') || 701
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${hostId}`}))(createStore)
 const store = createPersistentStore(app, {client: {hostId, channels: {}}})
-const ws = new ReconnectingWebSocket('ws://192.168.1.38:19998') 
+const ws = new ReconnectingWebSocket('ws://192.168.1.38:19998/?host_id=' + hostId) 
 
 class App extends React.Component {
   constructor(props) {

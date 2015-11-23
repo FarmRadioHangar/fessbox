@@ -134,7 +134,7 @@ var hostId = (0, _urlParams2.default)('host_id') || 701;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + hostId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { hostId: hostId, channels: {} } });
-var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://192.168.1.38:19998');
+var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://192.168.1.38:19998/?host_id=' + hostId);
 
 var App = (function (_React$Component) {
   _inherits(App, _React$Component);
