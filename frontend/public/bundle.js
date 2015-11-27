@@ -641,7 +641,7 @@ var Channel = (function (_React$Component3) {
 
       var chan = client.channels[channelId] || { mode: 'master' };
       console.log('answer in mode ' + chan.mode);
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.mode ? client.hostId : chan.mode));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.mode ? '' + client.hostId : chan.mode));
     }
   }, {
     key: 'rejectCall',
@@ -671,7 +671,7 @@ var Channel = (function (_React$Component3) {
       var sendMessage = _props8.sendMessage;
       var client = _props8.client;
 
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? client.hostId : mode));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + client.hostId : mode));
       dispatch((0, _actions.updateMode)(channelId, mode));
     }
   }, {
