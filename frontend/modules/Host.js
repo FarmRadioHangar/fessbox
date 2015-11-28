@@ -1,7 +1,7 @@
 import React  from 'react'
 import Slider from './Slider'
 
-import { updateHostLevel }
+import { updateHostLevel, updateLevel }
   from '../js/actions'
 
 class SliderBar extends React.Component {
@@ -47,54 +47,59 @@ class Host extends React.Component {
   constructor(props) {
     super(props)
   }
-  setMuted(direction, muted) {
+  setChannelMuted(muted) {
     const { sendMessage, client } = this.props
-    sendMessage('hostMuted', {
-      [client.hostId] : { direction, muted }
+    sendMessage('channelMuted', {
+      [client.hostId] : muted
     })
   }
-  updateLevel(direction, level) {
+  updateChannelLevel(level) {
     const { sendMessage, client, dispatch } = this.props
-        console.log(this.props)
-    sendMessage('hostVolume', {
-      [client.hostId] : { direction, level }
+    sendMessage('channelVolume', {
+      [client.hostId] : level
     })
-    dispatch(updateHostLevel(client.hostId, direction, level))
+    dispatch(updateLevel(client.hostId, level))
+  }
+  setHostMuted(muted) {
+    const { sendMessage, client } = this.props
+    sendMessage('hostMuted', {
+      [client.hostId] : { muted }
+    })
+  }
+  updateHostLevel(level) {
+    const { sendMessage, client, dispatch } = this.props
+    sendMessage('hostVolume', {
+      [client.hostId] : level 
+    })
+    dispatch(updateHostLevel(client.hostId, level))
   }
   render() {
     const { client, mixer } = this.props
-    if (!mixer.hosts || !mixer.hosts[client.hostId]) {
-      return (
-        <div>
-          No host
-        </div>
-      )
+    if (!mixer.hosts || !mixer.channels) {
+      return <span />
     }
-    const { 
-      level_in, 
-      level_out, 
-      muted_in, 
-      muted_out 
-    } = mixer.hosts[client.hostId]
+    const host = mixer.hosts[client.hostId]
+    const channel = mixer.channels[client.hostId]
+    const hostMuted = host.muted_out || host.muted
     return (
       <div style={{display: 'flex'}}>
         <div style={{flex: 1, minWidth: '80px'}}> 
           <SliderBar 
             icon          = 'microphone' 
-            value         = {level_in}
-            defaultValue  = {level_in}
-            muted         = {muted_in}
-            onChange      = {(from, to) => { this.updateLevel('in', to) }}
-            onToggleMuted = {() => { this.setMuted('in', !muted_in) }} />
+            value         = {channel.level}
+            defaultValue  = {channel.level}
+            muted         = {channel.muted}
+            onChange      = {(from, to) => { this.updateChannelLevel(to) }}
+            onToggleMuted = {() => { this.setChannelMuted(!channel.muted) }} />
         </div>
         <div style={{flex: 1, minWidth: '80px'}}> 
           <SliderBar 
             icon          = 'headphones' 
-            value         = {level_out}
-            defaultValue  = {level_out}
-            muted         = {muted_out}
-            onChange      = {(from, to) => { this.updateLevel('out', to) }}
-            onToggleMuted = {() => { this.setMuted('out', !muted_out) }} />
+            value         = {host.level_out || host.level}
+            defaultValue  = {host.level_out || host.level}
+            muted         = {hostMuted}
+            onChange      = {(from, to) => { this.updateHostLevel(to) }}
+            onToggleMuted = {() => { this.setHostMuted(!hostMuted) }} />
         </div>
       </div>
     )

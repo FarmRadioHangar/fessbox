@@ -29,6 +29,9 @@ class Ui extends React.Component {
     this.setState({ sidebarDocked : this.state.mediaQueryList.matches })
   }
   render() {
+
+      console.log(this.props)
+
     return (
       <Sidebar sidebar = {(
         <div style={{
