@@ -83,18 +83,11 @@ function mixer(state = initialMixerState, action) {
         hosts : Object.assign({}, state.hosts, action.state)
       }
     case 'update-host-level':
-      let level = {}
-      if ('in' === action.direction || 'both' === action.direction) {
-        level['level_in'] = action.level
-      }
-      if ('out' === action.direction || 'both' === action.direction) {
-        level['level_out'] = action.level
-      }
       return {
         ...state,
         hosts : {
           ...state.hosts,
-          [action.hostId] : Object.assign({}, state.hosts[action.hostId], level)
+          [action.hostId] : Object.assign({}, state.hosts[action.hostId], { level : action.level })
         } 
       }
     case 'initialize-mixer':

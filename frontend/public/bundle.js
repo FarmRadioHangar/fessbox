@@ -45,9 +45,9 @@ function updateHost(state) {
   };
 }
 
-function updateHostLevel(hostId, direction, level) {
+function updateHostLevel(hostId, level) {
   return {
-    type: 'update-host-level', hostId: hostId, direction: direction, level: level
+    type: 'update-host-level', hostId: hostId, level: level
   };
 }
 
@@ -315,15 +315,8 @@ function mixer() {
         hosts: Object.assign({}, state.hosts, action.state)
       });
     case 'update-host-level':
-      var level = {};
-      if ('in' === action.direction || 'both' === action.direction) {
-        level['level_in'] = action.level;
-      }
-      if ('out' === action.direction || 'both' === action.direction) {
-        level['level_out'] = action.level;
-      }
       return _extends({}, state, {
-        hosts: _extends({}, state.hosts, _defineProperty({}, action.hostId, Object.assign({}, state.hosts[action.hostId], level)))
+        hosts: _extends({}, state.hosts, _defineProperty({}, action.hostId, Object.assign({}, state.hosts[action.hostId], { level: action.level })))
       });
     case 'initialize-mixer':
       return action.state;
@@ -1098,48 +1091,60 @@ var Host = (function (_React$Component2) {
   }
 
   _createClass(Host, [{
-    key: 'setMuted',
-    value: function setMuted(direction, muted) {
+    key: 'setChannelMuted',
+    value: function setChannelMuted(muted) {
       var _props2 = this.props;
       var sendMessage = _props2.sendMessage;
       var client = _props2.client;
 
-      sendMessage('hostMuted', _defineProperty({}, client.hostId, { direction: direction, muted: muted }));
+      sendMessage('channelMuted', _defineProperty({}, client.hostId, muted));
     }
   }, {
-    key: 'updateLevel',
-    value: function updateLevel(direction, level) {
+    key: 'updateChannelLevel',
+    value: function updateChannelLevel(level) {
       var _props3 = this.props;
       var sendMessage = _props3.sendMessage;
       var client = _props3.client;
       var dispatch = _props3.dispatch;
 
-      console.log(this.props);
-      sendMessage('hostVolume', _defineProperty({}, client.hostId, { direction: direction, level: level }));
-      dispatch((0, _actions.updateHostLevel)(client.hostId, direction, level));
+      sendMessage('channelVolume', _defineProperty({}, client.hostId, level));
+      dispatch((0, _actions.updateLevel)(client.hostId, level));
+    }
+  }, {
+    key: 'setHostMuted',
+    value: function setHostMuted(muted) {
+      var _props4 = this.props;
+      var sendMessage = _props4.sendMessage;
+      var client = _props4.client;
+
+      sendMessage('hostMuted', _defineProperty({}, client.hostId, { muted: muted }));
+    }
+  }, {
+    key: 'updateHostLevel',
+    value: function updateHostLevel(level) {
+      var _props5 = this.props;
+      var sendMessage = _props5.sendMessage;
+      var client = _props5.client;
+      var dispatch = _props5.dispatch;
+
+      sendMessage('hostVolume', _defineProperty({}, client.hostId, level));
+      dispatch((0, _actions.updateHostLevel)(client.hostId, level));
     }
   }, {
     key: 'render',
     value: function render() {
       var _this3 = this;
 
-      var _props4 = this.props;
-      var client = _props4.client;
-      var mixer = _props4.mixer;
+      var _props6 = this.props;
+      var client = _props6.client;
+      var mixer = _props6.mixer;
 
-      if (!mixer.hosts || !mixer.hosts[client.hostId]) {
-        return _react2.default.createElement(
-          'div',
-          null,
-          'No host'
-        );
+      if (!mixer.hosts || !mixer.channels) {
+        return _react2.default.createElement('span', null);
       }
-      var _mixer$hosts$client$h = mixer.hosts[client.hostId];
-      var level_in = _mixer$hosts$client$h.level_in;
-      var level_out = _mixer$hosts$client$h.level_out;
-      var muted_in = _mixer$hosts$client$h.muted_in;
-      var muted_out = _mixer$hosts$client$h.muted_out;
-
+      var host = mixer.hosts[client.hostId];
+      var channel = mixer.channels[client.hostId];
+      var hostMuted = host.muted_out || host.muted;
       return _react2.default.createElement(
         'div',
         { style: { display: 'flex' } },
@@ -1148,14 +1153,14 @@ var Host = (function (_React$Component2) {
           { style: { flex: 1, minWidth: '80px' } },
           _react2.default.createElement(SliderBar, {
             icon: 'microphone',
-            value: level_in,
-            defaultValue: level_in,
-            muted: muted_in,
+            value: channel.level,
+            defaultValue: channel.level,
+            muted: channel.muted,
             onChange: function onChange(from, to) {
-              _this3.updateLevel('in', to);
+              _this3.updateChannelLevel(to);
             },
             onToggleMuted: function onToggleMuted() {
-              _this3.setMuted('in', !muted_in);
+              _this3.setChannelMuted(!channel.muted);
             } })
         ),
         _react2.default.createElement(
@@ -1163,14 +1168,14 @@ var Host = (function (_React$Component2) {
           { style: { flex: 1, minWidth: '80px' } },
           _react2.default.createElement(SliderBar, {
             icon: 'headphones',
-            value: level_out,
-            defaultValue: level_out,
-            muted: muted_out,
+            value: host.level_out || host.level,
+            defaultValue: host.level_out || host.level,
+            muted: hostMuted,
             onChange: function onChange(from, to) {
-              _this3.updateLevel('out', to);
+              _this3.updateHostLevel(to);
             },
             onToggleMuted: function onToggleMuted() {
-              _this3.setMuted('out', !muted_out);
+              _this3.setHostMuted(!hostMuted);
             } })
         )
       );
@@ -1361,12 +1366,12 @@ var Mixer = (function (_React$Component) {
               var id = _pair[0];
               var chan = _pair[1];
 
-              return _react2.default.createElement(_Channel2.default, _extends({}, chan, {
+              return id != client.hostId ? _react2.default.createElement(_Channel2.default, _extends({}, chan, {
                 key: id,
                 channelId: id,
                 client: client,
                 dispatch: dispatch,
-                sendMessage: sendMessage }));
+                sendMessage: sendMessage })) : _react2.default.createElement('span', { key: id });
             })
           )
         ),
@@ -1648,6 +1653,9 @@ var Ui = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+
+      console.log(this.props);
+
       return _react2.default.createElement(
         _reactSidebar2.default,
         { sidebar: _react2.default.createElement(

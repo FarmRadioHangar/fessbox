@@ -28,9 +28,9 @@ export function updateHost(state) {
   }
 }
 
-export function updateHostLevel(hostId, direction, level) {
+export function updateHostLevel(hostId, level) {
   return {
-    type : 'update-host-level', hostId, direction, level
+    type : 'update-host-level', hostId, level
   }
 }
 
