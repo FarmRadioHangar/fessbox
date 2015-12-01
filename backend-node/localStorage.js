@@ -1,5 +1,47 @@
 var fs = require("fs");
+var astConf = require("./config/asterisk.json");
 var stateFile = __dirname + "/state/snapshot.json";
+exports.ui = {};
+	exports.ui.mixer = {
+		channels: {},
+		master: {
+			level     : 50,
+			on_air    : true,
+			recording : false,
+			delay     : 0
+		},
+		hosts: {}
+	};
+
+	exports.ui.mixer.master = require("./state/master.json");
+	exports.ui.users = {};
+
+
+	exports.asterisk = {
+		hosts: {},
+		channels: {},
+		conference: {
+			input: null,
+			output: null,
+//			members: {},
+			on_air: null
+		},
+		master: {
+		}
+	};
+	for (var dongleName in astConf.dongles) {
+		loadChannel(dongleName);
+		exports.ui.mixer.channels[dongleName].number = astConf.dongles[dongleName].number,
+		exports.asterisk.channels[dongleName] = {};
+	}
+	exports.ui.mixer.hosts = astConf.hosts;
+	for (var i in astConf.hosts) {
+		loadChannel(astConf.hosts[i]);
+		loadUser(astConf.hosts[i]);
+		exports.asterisk.channels[astConf.hosts[i]] = {};
+	}
+	exports.ui.mixer.operators = astConf.operators;
+
 function saveSnapshot(exit) {
         //todo
 //      if (exit) {
@@ -31,13 +73,13 @@ function loadSnapshot() {
         });
 }
 
-function saveHost(host_id) {
-	var hostFile = __dirname + "/state/hosts/" + host_id + ".json";
-	fs.writeFile(hostFile, JSON.stringify(exports.ui.mixer.hosts[host_id]), "utf8", function (err) {
+function saveUser(user_id) {
+	var userFile = __dirname + "/state/users/" + user_id + ".json";
+	fs.writeFile(userFile, JSON.stringify(exports.ui.users[user_id]), "utf8", function (err) {
 		if (err) {
-				console.error("ERROR::saveHost - " + JSON.stringify(err));
+				console.error("ERROR::saveUser - " + JSON.stringify(err));
 		} else {
-				console.log("NOTICE::saveHost - data saved to disk");
+				console.log("NOTICE::saveUser - data saved to disk");
 		}
 	});
 }
@@ -47,23 +89,22 @@ function loadChannel(channel_id) {
 	if (fs.existsSync(channelFile)) {
 		var myData = require(channelFile);
 		exports.ui.mixer.channels[channel_id] = myData;
-		console.log("NOTICE::loadSnapshot - data loaded from disk");
+		console.log("NOTICE::loadChannel - data loaded from disk", channel_id);
 	} else {
-		console.log("NOTICE::loadSnapshot - " + channelFile + " not found");
+		console.log("NOTICE::loadChannel - " + channelFile + " not found");
 	}
 }
 
-function loadHost(host_id) {
-	var hostFile = __dirname + "/state/hosts/" + host_id + ".json";
-	fs.exists(hostFile, function (exists) {
-		if (exists) {
-			var myData = require(hostFile);
-			exports.ui.mixer.hosts[host_id] = myData;
-			console.log("NOTICE::loadSnapshot - data loaded from disk");
-		} else {
-			console.log("NOTICE::loadSnapshot - " + hostFile + " not found");
-		}
-	});
+function loadUser(user_id) {
+	var userFile = __dirname + "/state/users/" + user_id + ".json";
+	if (fs.existsSync(userFile)) {
+		var myData = require(userFile);
+		exports.ui.users[user_id] = myData;
+
+		console.log("NOTICE::loadUser - data loaded from disk", user_id);
+	} else {
+		console.log("NOTICE::loadUser - " + userFile + " not found");
+	}
 }
 
 function saveChannel(channel_id) {
@@ -79,10 +120,9 @@ function saveChannel(channel_id) {
 
 
 exports.saveSnapshot = saveSnapshot;
-exports.saveHost = saveHost;
+exports.saveUser = saveUser;
 exports.saveChannel = saveChannel;
 exports.loadSnapshot = loadSnapshot;
-exports.loadHost = loadHost;
+exports.loadUser = loadUser;
 exports.loadChannel = loadChannel;
 exports.loadSnapshot = loadSnapshot;
-exports.ui = {};

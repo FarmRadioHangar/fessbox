@@ -1,27 +1,8 @@
 var api = require("./api");
-var s = require("./singleton");
-
-exports.channelVolume = function(data, cb) {
+/*
+exports.channelMode = function(user_id, data, cb) {
 	for(channel_id in data) {
-		api.setChannelVolume(channel_id, data[channel_id], function (err, level) {
-			if (err) {
-				cb("event_error", {
-					event: "channelVolume",
-					key: channel_id,
-					msg: err
-				}, 'self');
-			} else {
-				var changed = {};
-				changed[channel_id] = level;
-				cb("channelVolumeChange", changed, 'others');
-			}
-		});
-	}
-};
-
-exports.channelMode = function(data, cb) {
-	for(channel_id in data) {
-		api.setChannelMode(channel_id, data[channel_id], function (err, channel) {
+		api.setChannelMode(user_id, channel_id, data[channel_id], function (err, channel) {
 			if (err) {
 				cb("event_error", {
 					event: "channelMode",
@@ -36,130 +17,127 @@ exports.channelMode = function(data, cb) {
 		});
 	}
 };
-
-exports.channelMuted = function(data, cb) {
-	for(channel_id in data) {
-		api.setChannelMuted(channel_id, data[channel_id], function (err, channel) {
-			if (err) {
-				cb("event_error", {
-					event: "channelMuted",
-					key: channel_id,
-					msg: err
-				}, 'self');
-			} else {
-				var changed = {};
-				changed[channel_id] = channel;
-				cb("channelUpdate", changed, 'all');
-			}
-		});
-	}
-};
-/*
-exports.hostOutputMuted = function(data, cb) {
-	var changed = {};
-	for(host_id in data) {
-		var err = api.setHostOutputMuted(host_id, data[host_id]);
-		if (err) {
-			cb("event_error", {
-				event: "hostOutputMuted",
-				key: host_id,
-				msg: err
-			}, 'self');
-		} else {
-			changed[host_id] = s.ui.mixer.hosts[host_id];
-		}
-	}
-	if (changed.length > 0) {
-		cb("hostUpdate", changed, 'all');
-	}
-};
-
-exports.hostInputMuted = function(data, cb) {
-	var changed = {};
-	for(host_id in data) {
-		var err = api.setHostInputMuted(host_id, data[host_id]);
-		if (err) {
-			cb("event_error", {
-				event: "hostInputMuted",
-				key: host_id,
-				msg: err
-			}, 'self');
-		} else {
-			changed[host_id] = s.ui.mixer.hosts[host_id];
-		}
-	}
-	if (changed.length > 0) {
-		cb("hostUpdate", changed, 'all');
-	}
-};
 */
 
-exports.hostVolume = function(data, cb) {
-	for(host_id in data) {
-		api.setHostVolume(host_id, data[host_id],  function (err, host) {
-			if (err) {
-				cb("event_error", {
-					event: "hostVolume",
-					key: host_id,
-					msg: err
-				}, 'self');
-			}
-		});
-	}
+// stable 
+exports.masterMuted = function(user_id, data, cb) {
+	api.setMasterMuted(data, function (err) {
+		if (err) {
+			cb("event_error", {
+				event: "masterMuted",
+				msg: err
+			}, 'self');
+		}
+	});
 };
 
-exports.hostMuted = function(data, cb) {
-	for(host_id in data) {
-		api.setHostMuted(host_id, data[host_id],  function (err, host) {
-			if (err) {
-				cb("event_error", {
-					event: "hostMuted",
-					key: host_id,
-					msg: err
-				}, 'self');
-			} else {
-				var changed = {};
-				changed[host_id] = host;
-				cb("hostUpdate", changed, 'all');
-			}
-		});
-	}
-};
-
-exports.masterVolume = function(data, cb) {
-	api.setMasterVolume(data, function (err, level) {
+exports.masterVolume = function(user_id, data, cb) {
+	api.setMasterVolume(data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "masterVolume",
 				msg: err
 			}, 'self');
 		} else {
-			cb("masterVolumeChange", level, "others");
+			cb("masterVolumeChange", data, "others");
 		}
 	});
 };
 
-exports.masterMuted = function(data, cb) {
-	api.setMasterMuted(data, function (err, master) {
-		if (err) {
-			cb("event_error", {
-				event: "masterMuted",
-				msg: err
-			}, 'self');
-		} else {
-			cb("masterUpdate", master, "all");
-		}
-	});
-};
-
-exports.masterOnAir = function(data, cb) {
-	var err = api.setMasterOnAir(data);
+exports.masterOnAir = function(user_id, data, cb) {
+	api.setMasterOnAir(data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "masterOnAir",
 				msg: err
 			}, 'self');
-		} else {
-			cb("masterUpdate", s.ui.mixer.master, "all");
 		}
+	});
 };
+
+var setChannelProperty = function(channel_id, name, value, cb) {
+	api.setChannelProperty(channel_id, name, value, function (err) {
+		if (err) {
+			cb("event_error", {
+				event: "channel::" + name,
+				key: channel_id,
+				msg: err
+			}, 'self');
+		}
+	});
+};
+
+exports.channelProperty = function(user_id, data, cb) {
+	for(channel_id in data) {
+		setChannelProperty(channel_id, data[channel_id].name,  data[channel_id].value, cb);
+	}
+}
+
+exports.channelRecording = function(user_id, data, cb) {
+	for(channel_id in data) {
+		setChannelProperty(channel_id, 'recording', data[channel_id], cb);
+	}
+};
+
+exports.channelMuted = function(user_id, data, cb) {
+	for(channel_id in data) {
+		setChannelProperty(channel_id, 'muted', data[channel_id], cb);
+	}
+};
+
+exports.channelMode = function(user_id, data, cb) {
+	for(channel_id in data) {
+		setChannelProperty(channel_id, 'mode', data[channel_id], cb);
+	}
+};
+
+exports.channelVolume = function(user_id, data, cb) {
+	for(channel_id in data) {
+		api.setChannelVolume(channel_id, data[channel_id], function (err) {
+			if (err) {
+				cb("event_error", {
+					event: "channelVolume",
+					key: channel_id,
+					msg: err
+				}, 'self');
+			} else {
+				var changed = {};
+				changed[channel_id] = data[channel_id];
+				cb("channelVolumeChange", changed, 'others');
+			}
+		});
+	}
+};
+
+exports.userMuted = function(user_id, data, cb) {
+	for(user_id in data) {
+		api.setUserMuted(user_id, data[user_id],  function (err, user) {
+			if (err) {
+				cb("event_error", {
+					event: "userMuted",
+					key: user_id,
+					msg: err
+				}, 'self');
+			} else {
+				var changed = {};
+				changed[user_id] = user;
+				cb("userUpdate", changed, 'self');
+			}
+		});
+	}
+};
+
+exports.userVolume = function(channel_id, data, cb) {
+	for(channel_id in data) {
+		api.setUserVolume(channel_id, data[channel_id],  function (err, user) {
+			if (err) {
+				cb("event_error", {
+					event: "userVolume",
+					key: channel_id,
+					msg: err
+				}, 'self');
+			}
+		});
+	}
+};
+

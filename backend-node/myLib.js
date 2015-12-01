@@ -55,6 +55,8 @@ function consoleLog(output, label, message) {
 	label += ":";
 	if (output === "error" || output === "log") {
 		console[output](logStamp, output, label, message);
+	} else if (output === 'warning') {
+		console.log(output, label, message);
 	} else if (output === 'debug') {
 		console.error(output, label, message);
 	} else {

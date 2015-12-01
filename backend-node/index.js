@@ -1,13 +1,13 @@
 var http = require("http");
 
 var appConfig = require("./config/app.json");
-var wss = require("./websocket");
-var s = require("./singleton");
-var apiHandler = require("./rest");
-var router = require("./router");
+var s = require("./localStorage");
+var ami = require("./ami");
+//var apiHandler = require("./rest");
+//var router = require("./router");
 var myLib = require("./myLib");
 
-
+/*
 function startAPI(route, apiHandler) {
 	function onApiRequest(request, response) {
 		route(apiHandler, request, response, true);
@@ -16,7 +16,7 @@ function startAPI(route, apiHandler) {
 }
 
 startAPI(router.route, apiHandler);
-
+*/
 process.on("SIGTERM", function () {
 	console.log("SIGTERM received");
 	s.saveSnapshot(process.exit);
