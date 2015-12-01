@@ -12,7 +12,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateMixer, updateMaster, updateMasterLevel, updateLevel }
+import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel }
   from './actions'
 
 const userId = getQueryVariable('user_id') || 701
@@ -72,6 +72,11 @@ ws.onmessage = e => {
       case 'channelVolumeChange':
         Object.keys(msg.data).forEach(chan => {
           store.dispatch(updateLevel(chan, msg.data[chan])) 
+        })
+        break
+      case 'userUpdate':
+        Object.keys(msg.data).forEach(user => {
+          store.dispatch(updateUser(user, msg.data[user])) 
         })
         break
       case 'masterUpdate':

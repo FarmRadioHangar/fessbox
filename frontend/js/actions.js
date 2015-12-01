@@ -28,6 +28,12 @@ export function initializeUsers(state) {
   }
 }
 
+export function updateUser(userId, state) {
+  return {
+    type : 'update-user', userId, state
+  }
+}
+
 export function updateUserLevel(userId, level) {
   return {
     type : 'update-user-level', userId, level

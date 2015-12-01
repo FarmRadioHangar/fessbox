@@ -132,6 +132,11 @@ function users(state = {}, action) {
   switch (action.type) {
     case 'initialize-users':
       return action.state
+    case 'update-user':
+      return {
+        ...state,
+        [action.userId] : action.state
+      }
     case 'update-user-level':
       return {
         ...state,

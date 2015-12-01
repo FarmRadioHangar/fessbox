@@ -9,6 +9,7 @@ exports.unmute = unmute;
 exports.updateLevel = updateLevel;
 exports.initializeMixer = initializeMixer;
 exports.initializeUsers = initializeUsers;
+exports.updateUser = updateUser;
 exports.updateUserLevel = updateUserLevel;
 exports.updateMixer = updateMixer;
 exports.updateMode = updateMode;
@@ -42,6 +43,12 @@ function initializeMixer(state) {
 function initializeUsers(state) {
   return {
     type: 'initialize-users', state: state
+  };
+}
+
+function updateUser(userId, state) {
+  return {
+    type: 'update-user', userId: userId, state: state
   };
 }
 
@@ -199,6 +206,11 @@ ws.onmessage = function (e) {
         case 'channelVolumeChange':
           Object.keys(msg.data).forEach(function (chan) {
             store.dispatch((0, _actions.updateLevel)(chan, msg.data[chan]));
+          });
+          break;
+        case 'userUpdate':
+          Object.keys(msg.data).forEach(function (user) {
+            store.dispatch((0, _actions.updateUser)(user, msg.data[user]));
           });
           break;
         case 'masterUpdate':
@@ -359,6 +371,8 @@ function users() {
   switch (action.type) {
     case 'initialize-users':
       return action.state;
+    case 'update-user':
+      return _extends({}, state, _defineProperty({}, action.userId, action.state));
     case 'update-user-level':
       return _extends({}, state, _defineProperty({}, action.userId, Object.assign({}, state[action.userId], { level: action.level })));
     default:
