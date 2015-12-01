@@ -12,7 +12,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateMixer, updateHost, updateMaster, updateMasterLevel, updateLevel }
+import { initializeMixer, initializeUsers, updateMixer, updateMaster, updateMasterLevel, updateLevel }
   from './actions'
 
 const userId = getQueryVariable('user_id') || 701
@@ -73,9 +73,6 @@ ws.onmessage = e => {
         Object.keys(msg.data).forEach(chan => {
           store.dispatch(updateLevel(chan, msg.data[chan])) 
         })
-        break
-      case 'hostUpdate':
-        store.dispatch(updateHost(msg.data))
         break
       case 'masterUpdate':
         store.dispatch(updateMaster(msg.data))

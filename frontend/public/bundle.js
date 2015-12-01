@@ -201,9 +201,6 @@ ws.onmessage = function (e) {
             store.dispatch((0, _actions.updateLevel)(chan, msg.data[chan]));
           });
           break;
-        case 'hostUpdate':
-          store.dispatch((0, _actions.updateHost)(msg.data));
-          break;
         case 'masterUpdate':
           store.dispatch((0, _actions.updateMaster)(msg.data));
           break;
@@ -1126,7 +1123,7 @@ var Host = (function (_React$Component2) {
       var sendMessage = _props4.sendMessage;
       var client = _props4.client;
 
-      sendMessage('userMuted', _defineProperty({}, client.hostId, { muted: muted }));
+      sendMessage('userMuted', _defineProperty({}, client.hostId, muted));
     }
   }, {
     key: 'updateUserLevel',

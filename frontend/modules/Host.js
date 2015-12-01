@@ -63,7 +63,7 @@ class Host extends React.Component {
   setUserMuted(muted) {
     const { sendMessage, client } = this.props
     sendMessage('userMuted', {
-      [client.hostId] : { muted }
+      [client.hostId] : muted 
     })
   }
   updateUserLevel(level) {
