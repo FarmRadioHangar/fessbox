@@ -22,15 +22,15 @@ export function initializeMixer(state) {
   }
 }
 
-export function updateHost(state) {
+export function initializeUsers(state) {
   return {
-    type : 'update-host', state
+    type : 'initialize-users', state
   }
 }
 
-export function updateHostLevel(hostId, level) {
+export function updateUserLevel(userId, level) {
   return {
-    type : 'update-host-level', hostId, level
+    type : 'update-user-level', userId, level
   }
 }
 

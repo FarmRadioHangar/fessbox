@@ -114,7 +114,6 @@ class Channel extends React.Component {
     dispatch(updateLevel(channelId, value))
   }
   answerCall() {
-      console.log(this.props)
     const { dispatch, channelId, sendMessage, client } = this.props
     const chan = client.channels[channelId] || {mode: 'master'}
     console.log(`answer in mode ${chan.mode}`)
@@ -307,7 +306,6 @@ class Channel extends React.Component {
     )
   }
   getBgColor(mode) {
-      console.log(`************** mode : ${mode}`)
     if ('free' === mode) {
       return '#fff'
     } else if ('master' === mode) {

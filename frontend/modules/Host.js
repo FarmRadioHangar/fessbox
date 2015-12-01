@@ -1,7 +1,7 @@
 import React  from 'react'
 import Slider from './Slider'
 
-import { updateHostLevel, updateLevel }
+import { updateUserLevel, updateLevel }
   from '../js/actions'
 
 class SliderBar extends React.Component {
@@ -60,27 +60,26 @@ class Host extends React.Component {
     })
     dispatch(updateLevel(client.hostId, level))
   }
-  setHostMuted(muted) {
+  setUserMuted(muted) {
     const { sendMessage, client } = this.props
-    sendMessage('hostMuted', {
+    sendMessage('userMuted', {
       [client.hostId] : { muted }
     })
   }
-  updateHostLevel(level) {
+  updateUserLevel(level) {
     const { sendMessage, client, dispatch } = this.props
-    sendMessage('hostVolume', {
+    sendMessage('userVolume', {
       [client.hostId] : level 
     })
-    dispatch(updateHostLevel(client.hostId, level))
+    dispatch(updateUserLevel(client.hostId, level))
   }
   render() {
-    const { client, mixer } = this.props
-    if (!mixer.hosts || !mixer.channels) {
+    const { client, mixer, users } = this.props
+    if (!users || !users[client.hostId] || !mixer.channels) {
       return <span />
     }
-    const host = mixer.hosts[client.hostId]
+    const user = users[client.hostId]
     const channel = mixer.channels[client.hostId]
-    const hostMuted = host.muted_out || host.muted
     return (
       <div style={{display: 'flex'}}>
         <div style={{flex: 1, minWidth: '80px'}}> 
@@ -95,11 +94,11 @@ class Host extends React.Component {
         <div style={{flex: 1, minWidth: '80px'}}> 
           <SliderBar 
             icon          = 'headphones' 
-            value         = {host.level_out || host.level}
-            defaultValue  = {host.level_out || host.level}
-            muted         = {hostMuted}
-            onChange      = {(from, to) => { this.updateHostLevel(to) }}
-            onToggleMuted = {() => { this.setHostMuted(!hostMuted) }} />
+            value         = {user.level}
+            defaultValue  = {user.level}
+            muted         = {user.muted}
+            onChange      = {(from, to) => { this.updateUserLevel(to) }}
+            onToggleMuted = {() => { this.setUserMuted(!user.muted) }} />
         </div>
       </div>
     )

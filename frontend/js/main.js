@@ -12,7 +12,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, updateMixer, updateHost, updateMaster, updateMasterLevel, updateLevel }
+import { initializeMixer, initializeUsers, updateMixer, updateHost, updateMaster, updateMasterLevel, updateLevel }
   from './actions'
 
 const userId = getQueryVariable('user_id') || 701
@@ -29,7 +29,8 @@ class App extends React.Component {
     const Ui = connect(state => {
       return {
         mixer  : state.mixer,
-        client : state.client
+        client : state.client,
+        users  : state.users
       }
     })(ui)
     return (
@@ -55,11 +56,15 @@ ws.onclose = () => { console.log('close') }
 ws.onmessage = e => { 
   if (e.data) {
     const msg = JSON.parse(e.data)
-    //console.log(msg.event)
-    //console.log(msg.data)
+    console.log('>>> Message')
+    console.log(msg)
+    console.log('<<<')
     switch (msg.event) {
       case 'initialize':
         store.dispatch(initializeMixer(msg.data.mixer))
+        if (msg.data.users) {
+          store.dispatch(initializeUsers(msg.data.users))
+        }
         break
       case 'channelUpdate':
         store.dispatch(updateMixer(msg.data))

@@ -77,19 +77,6 @@ function channelState(channels, chan, state) {
 
 function mixer(state = initialMixerState, action) {
   switch (action.type) {
-    case 'update-host':
-      return {
-        ...state,
-        hosts : Object.assign({}, state.hosts, action.state)
-      }
-    case 'update-host-level':
-      return {
-        ...state,
-        hosts : {
-          ...state.hosts,
-          [action.hostId] : Object.assign({}, state.hosts[action.hostId], { level : action.level })
-        } 
-      }
     case 'initialize-mixer':
       return action.state
     case 'update-mixer':
@@ -141,6 +128,20 @@ function mixer(state = initialMixerState, action) {
   }
 }
 
+function users(state = {}, action) {
+  switch (action.type) {
+    case 'initialize-users':
+      return action.state
+    case 'update-user-level':
+      return {
+        ...state,
+        [action.userId] : Object.assign({}, state[action.userId], { level : action.level })
+      }
+    default:
+      return state
+  }
+}
+
 function client(state = {}, action) {
   switch (action.type) {
     case 'update-mode':
@@ -172,7 +173,7 @@ function client(state = {}, action) {
 }
 
 const reducers = {
-  mixer, client
+  mixer, users, client
 }
 
 export default combineReducers(reducers)
