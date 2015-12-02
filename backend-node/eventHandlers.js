@@ -20,11 +20,12 @@ exports.channelMode = function(user_id, data, cb) {
 */
 
 // stable 
-exports.masterMuted = function(user_id, data, cb) {
-	api.setMasterMuted(data, function (err) {
+
+exports.masterProperty = function(user_id, data, cb) {
+	api.setMasterProperty(data.name,  data.value, function (err) {
 		if (err) {
 			cb("event_error", {
-				event: "masterMuted",
+				event: "master::" + name,
 				msg: err
 			}, 'self');
 		}
@@ -44,17 +45,6 @@ exports.masterVolume = function(user_id, data, cb) {
 	});
 };
 
-exports.masterOnAir = function(user_id, data, cb) {
-	api.setMasterOnAir(data, function (err) {
-		if (err) {
-			cb("event_error", {
-				event: "masterOnAir",
-				msg: err
-			}, 'self');
-		}
-	});
-};
-
 var setChannelProperty = function(channel_id, name, value, cb) {
 	api.setChannelProperty(channel_id, name, value, function (err) {
 		if (err) {
@@ -70,24 +60,6 @@ var setChannelProperty = function(channel_id, name, value, cb) {
 exports.channelProperty = function(user_id, data, cb) {
 	for(channel_id in data) {
 		setChannelProperty(channel_id, data[channel_id].name,  data[channel_id].value, cb);
-	}
-}
-
-exports.channelRecording = function(user_id, data, cb) {
-	for(channel_id in data) {
-		setChannelProperty(channel_id, 'recording', data[channel_id], cb);
-	}
-};
-
-exports.channelMuted = function(user_id, data, cb) {
-	for(channel_id in data) {
-		setChannelProperty(channel_id, 'muted', data[channel_id], cb);
-	}
-};
-
-exports.channelMode = function(user_id, data, cb) {
-	for(channel_id in data) {
-		setChannelProperty(channel_id, 'mode', data[channel_id], cb);
 	}
 };
 
@@ -139,5 +111,46 @@ exports.userVolume = function(channel_id, data, cb) {
 			}
 		});
 	}
+};
+
+// obsolete
+exports.channelRecording = function(user_id, data, cb) {
+	for(channel_id in data) {
+		setChannelProperty(channel_id, 'recording', data[channel_id], cb);
+	}
+};
+
+exports.channelMuted = function(user_id, data, cb) {
+	for(channel_id in data) {
+		setChannelProperty(channel_id, 'muted', data[channel_id], cb);
+	}
+};
+
+exports.channelMode = function(user_id, data, cb) {
+	for(channel_id in data) {
+		setChannelProperty(channel_id, 'mode', data[channel_id], cb);
+	}
+};
+
+exports.masterMuted = function(user_id, data, cb) {
+	api.setMasterProperty('muted', data, function (err) {
+		if (err) {
+			cb("event_error", {
+				event: "masterMuted",
+				msg: err
+			}, 'self');
+		}
+	});
+};
+
+exports.masterOnAir = function(user_id, data, cb) {
+	api.setMasterProperty('on_air', data, function (err) {
+		if (err) {
+			cb("event_error", {
+				event: "masterOnAir",
+				msg: err
+			}, 'self');
+		}
+	});
 };
 

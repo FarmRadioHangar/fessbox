@@ -1,20 +1,17 @@
-var provider = {};
-provider.asterisk = require("./ami");
-
-var currentProvider = 'asterisk';
+var appConfig = require("./config/app.json");
+var provider = require("./" + appConfig.provider);
 
 var myLib = require("./myLib");
 var s = require("./localStorage");
-var fessConfig = require("./config/fessbox.json");
 var wss = require("./websocket");
 
 exports.setChannelMuted = function(channel_id, value, cbErr) {
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id]) {
 		errorMsg = 'channel not found';
-	} else if (typeof value != 'boolean') {
+	} else if (typeof value !== 'boolean') {
 		errorMsg = 'invalid input value, boolean required';
-	} else if (value == s.ui.mixer.channels[channel_id].muted) {
+	} else if (value === s.ui.mixer.channels[channel_id].muted) {
 		errorMsg = 'value alredy set';
 	} else {
 			switch (s.ui.mixer.channels[channel_id].mode) {
@@ -28,7 +25,7 @@ exports.setChannelMuted = function(channel_id, value, cbErr) {
 					channelUpdate(channel_id, { muted: value });
 					break;
 				default:
-					provider[currentProvider].setChannelMuted(channel_id, value, function (err) {
+					provider.setChannelMuted(channel_id, value, function (err) {
 						if (err) {
 							cbErr(err);
 						} else {
@@ -47,9 +44,9 @@ exports.setChannelRecording = function(channel_id, value, cbErr) {
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id]) {
 		errorMsg = 'channel not found';
-	} else if (typeof value != 'boolean') {
+	} else if (typeof value !== 'boolean') {
 		errorMsg = 'invalid input value, boolean required';
-	} else if (value == s.ui.mixer.channels[channel_id].recording) {
+	} else if (value === s.ui.mixer.channels[channel_id].recording) {
 		errorMsg = 'value alredy set';
 	} else {
 			switch (s.ui.mixer.channels[channel_id].mode) {
@@ -63,7 +60,7 @@ exports.setChannelRecording = function(channel_id, value, cbErr) {
 					channelUpdate(channel_id, { recording: value });
 					break;
 				default:
-					provider[currentProvider].setChannelRecording(channel_id, value, function (err) {
+					provider.setChannelRecording(channel_id, value, function (err) {
 						if (err) {
 							cbErr(err);
 						} else {
@@ -91,7 +88,7 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 	} else {
 		var cb = function(err, res) {
 			if (err) {
-				cb(err);
+				cbErr(err);
 			} else {
 				channelUpdate(channel_id, { mode: value });
 			}
@@ -107,7 +104,7 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 				if (value !== 'free') {
 					errorMsg = "invalid mode, cannot change from " + s.ui.mixer.channels[channel_id].mode + " to " + value;
 				} else {
-					provider[currentProvider].setChanMode(channel_id, value, cb);
+					provider.setChanMode(channel_id, value, cb);
 				}
 				break;
 			case 'ring':
@@ -121,7 +118,7 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 					case 'free':
 					case 'on_hold':
 					case 'ivr':
-						provider[currentProvider].setChanMode(channel_id, value, cb);
+						provider.setChanMode(channel_id, value, cb);
 						break;
 					default:
 						if (!s.ui.mixer.channels[value]) {
@@ -135,33 +132,33 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 								case 'ring':
 								case 'master':
 								case 'on_hold':
-//									provider[currentProvider].setChanMode(value, channel_id, cb);
-//									provider[currentProvider].setChanMode(channel_id, value, cb);
+//									provider.setChanMode(value, channel_id, cb);
+//									provider.setChanMode(channel_id, value, cb);
 //									break;
 								case 'master':
-									provider[currentProvider].setChanMode2(channel_id, value, cb);
+									provider.setChanMode2(channel_id, value, cb);
 									/*
 
-									provider[currentProvider].parkCall(value, function(err, res) {
+									provider.parkCall(value, function(err, res) {
 										if (err) {
 											cbErr(err);
 										} else {
-											provider[currentProvider].setChanMode(channel_id, "71", cb);
+											provider.setChanMode(channel_id, "71", cb);
 										}
 									});
-									provider[currentProvider].setChanMode(value, 'on_hold', function(err, res) {
+									provider.setChanMode(value, 'on_hold', function(err, res) {
 										if (err) {
 											cbErr(err);
 										} else {
 											myLib.consoleLog('debug', 'parking', JSON.stringify(res));
-											provider[currentProvider].setChanMode(channel_id, value, cb);
-											//provider[currentProvider].setChanMode(channel_id, "71", cb);
+											provider.setChanMode(channel_id, value, cb);
+											//provider.setChanMode(channel_id, "71", cb);
 										}
 									});
 								   */
 									break;
 								default:
-									provider[currentProvider].setChanModes(channel_id, value, s.ui.mixer.channels[value].mode, 'on_hold', cb);
+									provider.setChanModes(channel_id, value, s.ui.mixer.channels[value].mode, 'on_hold', cb);
 							}
 						}
 				}
@@ -187,10 +184,10 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 						if (destination) {
 							if (s.ui.users[s.ui.mixer.channels[channel_id].mode]) {
 								//channel is currently connected to a host, so we redirect the host to master
-								provider[currentProvider].setChanModes(channel_id, value, s.ui.mixer.channels[channel_id].mode, 'master', cb);
+								provider.setChanModes(channel_id, value, s.ui.mixer.channels[channel_id].mode, 'master', cb);
 							} else {
 								//channel is currently connected to an operator (or audience channel)
-								provider[currentProvider].setChanMode(channel_id, value, cb);
+								provider.setChanMode(channel_id, value, cb);
 							}
 						}
 				}
@@ -219,7 +216,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 						break;
 					case 'ring':
 						if (host_id && s.ui.mixer.hosts[host_id].mode === 'free') {
-							provider[currentProvider].hostToMaster(host_id, function(err) {
+							provider.hostToMaster(host_id, function(err) {
 								if (err) {
 									cb(err);
 								} else {
@@ -232,7 +229,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 						}
 					case 'ivr':
 					case 'on_hold':
-						provider[currentProvider].channelToMaster(channel_id, function(err) {
+						provider.channelToMaster(channel_id, function(err) {
 							if (err) {
 								cb(err);
 							} else {
@@ -246,7 +243,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 					default:
 						//todo: find out why the hell mode is 'number'
 						if (s.ui.mixer.channels[channel_id].mode == host_id) {
-							provider[currentProvider].toMaster(host_id, channel_id, function(err) {
+							provider.toMaster(host_id, channel_id, function(err) {
 								if (err) {
 									cb(err);
 								} else {
@@ -276,7 +273,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 						errorMsg = "channel not acive";
 						break;
 					default:
-						provider[currentProvider].putOnHold(channel_id, function(err) {
+						provider.putOnHold(channel_id, function(err) {
 							if (err) {
 								cb(err);
 							} else {
@@ -294,7 +291,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 						errorMsg = "channel already free";
 						break;
 					default:
-						provider[currentProvider].hangup(channel_id, function(err) {
+						provider.hangup(channel_id, function(err) {
 							if (err) {
 								cb(err)
 							} else { 
@@ -310,7 +307,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 				} else {
 					switch (s.ui.mixer.hosts[value].mode) {
 						case 'master':
-							provider[currentProvider].connectToHost(channel_id, value, function(err) {
+							provider.connectToHost(channel_id, value, function(err) {
 								if (err) {
 									cb(err);
 								} else {
@@ -329,7 +326,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 							} else if (!s.ui.mixer.channels[s.ui.mixer.hosts[value].mode]) {
 								errorMsg = 'WTF';
 							} else {
-								provider[currentProvider].putOnHold(s.ui.mixer.hosts[value].mode, function (err) {
+								provider.putOnHold(s.ui.mixer.hosts[value].mode, function (err) {
 									if (err) {
 										cb(err);
 									} else {
@@ -339,7 +336,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 										modifiedChannels[s.ui.mixer.hosts[value].mode] = s.ui.mixer.channels[s.ui.mixer.hosts[value].mode];
 										wss.broadcastEvent("channelUpdate", modifiedChannels);
 
-										provider[currentProvider].connectToHost(channel_id, value, function(err) {
+										provider.connectToHost(channel_id, value, function(err) {
 											if (err) {
 												cb(err);
 											} else {
@@ -357,7 +354,7 @@ exports.setChannelMode = function(host_id, channel_id, value, cb) {
 					} else if (s.ui.mixer.hosts[value].conn === 'unreachable') {
 						errorMsg = 'host not reachable';
 					} else {
-						provider[currentProvider].connectToHost(channel_id, value, function(err) {
+						provider.connectToHost(channel_id, value, function(err) {
 							if (err) {
 								cb(err);
 							} else {
@@ -380,13 +377,13 @@ exports.setUserVolume = function (channel_id, value, cb) {
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id] || !s.ui.users[channel_id]) {
 		errorMsg = 'user not found';
-	} else if (!value || value > 100 || value < 0) {
+	} else if (value === null || value > 100 || value < 0) {
 			errorMsg = 'invalid input value';
 	} else if (s.ui.users[channel_id].level === value) {
 			errorMsg = "value already set";
 	} else {
 		if (s.ui.mixer.channels[channel_id].mode != 'free') {
-			provider[currentProvider].setUserVolume(channel_id, value, function (err) {
+			provider.setUserVolume(channel_id, value, function (err) {
 				if (err) {
 					cb(err);
 				} else {
@@ -407,13 +404,14 @@ exports.setUserMuted = function (channel_id, value, cb) {
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id]) {
 		errorMsg = 'user not found';
-	} else if (!value || typeof value !== 'boolean') {
+	} else if (value === null || typeof value !== 'boolean') {
 		errorMsg = 'invalid input value';
-	} else if (s.ui.mixer.users[channel_id].muted === value) {
+	} else if (s.ui.users[channel_id].muted === value) {
 		errorMsg = "value already set";
 	} else {
+		console.log('mode', s.ui.mixer.channels[channel_id].mode);
 		if (s.ui.mixer.channels[channel_id].mode !== 'free') {
-			provider[currentProvider].setUserMuted(channel_id, value, function (err) {
+			provider.setUserMuted(channel_id, value, function (err) {
 				if (err) {
 					cb(err);
 				} else {
@@ -448,12 +446,84 @@ exports.setChannelProperty = function(channel_id, name, value, cb) {
 		case 'recording':
 			exports.setChannelRecording(channel_id, value, cb);
 			break;
+		case 'level':
+			exports.setChannelVolume(channel_id, value, function(err) {
+				if (err) {
+					cb(err);
+				} else {
+					var changed = {};
+					changed[channel_id] = s.ui.mixer.channels[channel_id];
+					wss.broadcast("channelUpdate", changed);
+				}
+			});
+			break;
 		default:
 			var errorMsg = "Unknown channel property";
 			cb(errorMsg);
 			myLib.consoleLog('error', "setChannelProperty", errorMsg);
 	}
 };
+
+exports.setMasterProperty = function(name, value, cb) {
+	switch(name) {
+		case 'muted':
+			exports.setMasterMuted(value, cb);
+			break;
+		case 'on_air':
+			exports.setMasterOnAir(value, cb);
+			break;
+		case 'recording':
+			exports.setMasterRecording(value, cb);
+			break;
+		case 'level':
+			exports.setMasterVolume(value, function(err) {
+				if (err) {
+					cb(err);
+				} else {
+					wss.broadcast("masterUpdate", s.ui.mixer.master);
+				}
+			});
+			break;
+		default:
+			var errorMsg = "Unknown master property";
+			cb(errorMsg);
+			myLib.consoleLog('error', "setMasterProperty", errorMsg);
+	}
+};
+
+exports.setMasterRecording = function(value, cb) {
+	var errorMsg;
+	if (typeof value !== 'boolean') {
+		errorMsg = 'invalid input value, boolean required';
+	} else if (value === s.ui.mixer.master.recording) {
+		errorMsg = 'value alredy set';
+	} else {
+			switch (s.ui.mixer.master.mode) {
+				case 'ivr':
+					errorMsg = 'not applicable in IVR mode';
+					break;
+				case 'free':
+				case 'ring':
+				case 'defunct':
+				case 'on_hold':
+					masterUpdate({ recording: value });
+					break;
+				default:
+					provider.setMasterRecording(value, function (err) {
+						if (err) {
+							cbErr(err);
+						} else {
+							masterUpdate({ recording: value });
+						}
+					});
+			}
+	}
+	if (errorMsg) {
+		cbErr(errorMsg);
+		myLib.consoleLog('error', "setMasterRecording", errorMsg);
+	}
+}
+
 
 exports.setMasterMuted = function(value, cb) {
 	var errorMsg;
@@ -462,7 +532,7 @@ exports.setMasterMuted = function(value, cb) {
 	} else if (value === s.ui.mixer.master.muted) {
 		errorMsg = 'value alredy set';
 	} else {
-		provider[currentProvider].setMasterMuted(value, function(err) {
+		provider.setMasterMuted(value, function(err) {
 			if (err) {
 				cb(err);
 			} else {
@@ -482,7 +552,7 @@ exports.setMasterOnAir = function(value, cb) {
 	} else if (value === s.ui.mixer.master.on_air) {
 		errorMsg = 'value alredy set';
 	} else {
-		provider[currentProvider].setMasterOnAir(value, function(err) {
+		provider.setMasterOnAir(value, function(err) {
 			if (err) {
 				cb(err);
 			} else {
@@ -502,7 +572,7 @@ exports.setMasterVolume = function(value, cb) {
 		errorMsg = 'invalid input value';
 	} else {
 		if (s.ui.mixer.master.on_air) {
-			provider[currentProvider].setMasterVolume(value, function (err) {
+			provider.setMasterVolume(value, function (err) {
 				cb(err);
 				if (!err) {
 					s.ui.mixer.master.level = value;
@@ -535,7 +605,7 @@ exports.setChannelVolume = function(channel_id, value, cb) {
 					s.ui.mixer.channels[channel_id].level = value;
 					break;
 				default:
-					provider[currentProvider].setChannelVolume(channel_id, value, function (err) {
+					provider.setChannelVolume(channel_id, value, function (err) {
 						cb(err);
 						if (!err) {
 							s.ui.mixer.channels[channel_id].level = value;
@@ -554,7 +624,7 @@ exports.setChannelVolume = function(channel_id, value, cb) {
 function masterUpdate(data) {
 	var changed = false;
 	for (key in data) {
-		if (s.ui.mixer.master[key]) {
+		if (s.ui.mixer.master[key] !== null) {
 			if (s.ui.mixer.master[key] !== data[key]) {
 				s.ui.mixer.master[key] = data[key];
 				changed = true;
@@ -569,12 +639,10 @@ function masterUpdate(data) {
 		wss.broadcastEvent("masterUpdate", s.ui.mixer.master);
 	}
 }
-//function userUpdate(channel_id, data) {
-//}
 function channelUpdate(channel_id, data) {
 	var changed = false;
 	for (key in data) {
-		if (s.ui.mixer.channels[channel_id] && s.ui.mixer.channels[channel_id][key]) {
+		if (s.ui.mixer.channels[channel_id] && s.ui.mixer.channels[channel_id][key] !== null ) {
 			if (s.ui.mixer.channels[channel_id][key] !== data[key]) {
 				s.ui.mixer.channels[channel_id][key] = data[key];
 				changed = true;
@@ -593,5 +661,4 @@ function channelUpdate(channel_id, data) {
 }
 exports.channelUpdate = channelUpdate;
 exports.masterUpdate = masterUpdate;
-//exports.userUpdate = userUpdate;
 

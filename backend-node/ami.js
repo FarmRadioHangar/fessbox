@@ -30,8 +30,8 @@ ami.on('fullybooted', function(evt) {
 	});
 
 	ami.action({
-		//action: "SIPpeerstatus"
-		action: "SIPpeers"
+		action: "SIPpeerstatus"
+		//action: "SIPpeers"
 	}, function(err, res) {
 		if (!err && res.response === 'Success') { // 'peerstatus' events will follow
 			 myLib.consoleLog('log', 'init SIP', 'driver is talking');
@@ -67,12 +67,12 @@ ami.on('fullybooted', function(evt) {
 //			var channel = "Local/707@from-internal/n";
 			var channel = "SIP/707";
 			amiOriginate(channel, astConf.virtual.master, function (err) {
-						if (!err) {
-							s.ui.mixer.channels['707'].mode = 'master';
-						} else {
-							myLib.consoleLog('debug', 'xxx', err);
-						}
-					});
+				if (!err) {
+					s.ui.mixer.channels['707'].mode = 'master';
+				} else {
+					myLib.consoleLog('debug', 'xxx', err);
+				}
+			});
 
 		}
 	});
@@ -185,7 +185,6 @@ ami.on('hangup', function(evt) {
 
 // received after AMI action 'SIPpeers'
 ami.on('peerentry', function(evt) {
-	myLib.consoleLog('debug', 'peerentry', evt);
 //	{"event":"PeerEntry","actionid":"1447058788015","channeltype":"SIP","objectname":"701","chanobjecttype":"peer","ipaddress":"-none-","ipport":"0","dynamic":"yes","autoforcerport":"no","forcerport":"yes","autocomedia":"no","comedia":"yes","videosupport":"no","textsupport":"no","acl":"yes","status":"UNKNOWN","realtimedevice":"no","description":""}
 //	{"event":"PeerEntry","actionid":"1447058788015","channeltype":"SIP","objectname":"702","chanobjecttype":"peer","ipaddress":"192.168.1.188","ipport":"40138","dynamic":"yes","autoforcerport":"no","forcerport":"no","autocomedia":"no","comedia":"no","videosupport":"no","textsupport":"no","acl":"yes","status":"OK (200 ms)","realtimedevice":"no","description":""}
 });
@@ -238,7 +237,7 @@ ami.on('peerstatus', function(evt) {
 					s.ui.mixer.channels[sipPeer].mode = 'defunct';
 					var newObj = {};
 					newObj[sipPeer] = null;
-					wss.broadcastEvent("hostUpdate", newObj);
+					wss.broadcastEvent("userUpdate", newObj);
 				}
 				break;
 		}
@@ -415,10 +414,15 @@ ami.on('newchannel', function(evt) {
 			myLib.consoleLog('debug', "New dongle channel internal name", [channelInfo[1], evt.channel]);
 			newChannel[channelInfo[1]] = s.ui.mixer.channels[channelInfo[1]];
 			newChannel[channelInfo[1]].mode = evt.channelstatedesc.toLowerCase();
+			newChannel[channelInfo[1]].timestamp = Date.now();
 			newChannel[channelInfo[1]].contact = {
 				number: evt.calleridnum,
 				name:  evt.calleridname
 			};
+			setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
+			if (s.ui.mixer.channels[channelInfo[1]].muted) {
+				setAmiChannelMuted(evt.channel, true, 'in', function() {});
+			}
 			wss.broadcastEvent("channelUpdate", newChannel);
 			break;
 		case 'SIP':
@@ -433,10 +437,18 @@ ami.on('newchannel', function(evt) {
 
 				}
 			} else if (astConf.hosts.indexOf(channelInfo[1]) !== -1) {
-			myLib.consoleLog('debug', "New host channel internal name", [channelInfo[1], evt.channel]);
+				myLib.consoleLog('debug', "New host channel internal name", [channelInfo[1], evt.channel]);
 				s.asterisk.channels[channelInfo[1]] = {
 					internalName: evt.channel
 				};
+				setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
+				setAmiChannelVolume(evt.channel, s.ui.users[channelInfo[1]].level, 'TX', function() {});
+				if (s.ui.mixer.channels[channelInfo[1]].muted) {
+					setAmiChannelMuted(evt.channel, true, 'in', function() {});
+				}
+				if (s.ui.users[channelInfo[1]].muted) {
+					setAmiChannelMuted(evt.channel, true, 'out', function() {});
+				}
 //				s.ui.mixer.hosts[channelInfo[1]] = s.loadHostSettings(channelInfo[1]);
 //				initializeHost(channelInfo[1]);
 				
@@ -611,9 +623,10 @@ function setAmiChannelMuted(channel, value, direction, cb) {
 
 function setAmiChannelVolume(channel, level, direction, cb) {
 	if (channel) { // temp
-		level = level / 2 - 20;
+		//-33 :: 17
+		level = level / 2 - 33;
 		var variable = 'VOLUME(' + direction + ')';
-		console.log(channel, variable, level);
+		console.log("setting chan volume!",channel, variable, level);
 		// todo: use the setVar function
 		ami.action({
 			action: 'Setvar',
@@ -670,7 +683,7 @@ function amiOnHold(channel) {
 		action: "Redirect",
 		channel: channel,
 		context: "from-internal",
-		exten: "196",
+		exten: astConf.on_hold,
 		priority: 1
 	}, function(err, res) {
 		if (!err) {
@@ -681,11 +694,11 @@ function amiOnHold(channel) {
 	});
 }
 
-function amiParkCall(channel, channel2, cb) {
+function amiParkCall(channel, cb) {
 	ami.action({
 		action: "Park",
 		channel: channel,
-		channel2: channel2
+		channel2: channel,
 //		channel2: s.asterisk.channels["707"].internalName,
 	}, cb);
 }	
@@ -702,9 +715,9 @@ function amiOriginate(channel, destination, cb) {
 	}, function(err, res) {
 		if (!err) {
 			cb();
-			console.log(JSON.stringify(res));
+			console.log("originate sucess!!", JSON.stringify(res));
 		} else {
-			cb([channel, destination, res.message].join('::'));
+			cb(["originate error", channel, destination, res.message].join('::'));
 		}
 	});
 
@@ -814,9 +827,9 @@ exports.putOnHold = function(channel_id, cb) {
 
 // use this when connecting to a channel_id that is busy
 exports.setChanMode2 = function(channel_id, busy_channel_id, cb) {
-	amiParkCall(s.asterisk.channels[busy_channel_id].internalName, s.asterisk.channels[channel_id].internalName, function(err, res) {
+	amiParkCall(s.asterisk.channels[busy_channel_id].internalName, function(err, res) {
 		if (!err) {
-			amiRedirect(s.asterisk.channels[channel_id].internalName, astConf.endponts.parked, cb);
+			amiRedirect(s.asterisk.channels[channel_id].internalName, astConf.virtual.parked, cb);
 		} else {
 			cb(err);
 		}
@@ -836,9 +849,9 @@ exports.setChannelMuted = function (channel_id, value, cb) {
 	setAmiChannelMuted(s.asterisk.channels[channel_id].internalName, value, direction, cb);
 };
 
-exports.setUserMuted = function (host_id, value, cb) {
+exports.setUserMuted = function (user_id, value, cb) {
 	var direction = "out";
-	setAmiChannelMuted(s.asterisk.hosts[host_id].internalName, value, direction, cb);
+	setAmiChannelMuted(s.asterisk.channels[user_id].internalName, value, direction, cb);
 };
 
 exports.setMasterVolume = function (value, cb) {
