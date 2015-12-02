@@ -3,6 +3,7 @@ import classNames  from 'classnames'
 import PhoneLookup from 'frh-react-phone-lookup'
 import Switch      from 'react-bootstrap-switch'
 import Slider      from './Slider'
+import moment      from 'moment'
 
 import { updateMode, updateLevel, updateCaller } 
   from '../js/actions'
@@ -96,7 +97,9 @@ class Channel extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      editMode : false
+      editMode : false,
+      timer    : null,
+      now      : Date.now()
     }
   }
   toggleMuted() {
@@ -158,6 +161,25 @@ class Channel extends React.Component {
       location : this.refs.callerLocation.value
     }))
     this.endEditCaller()
+  }
+  timer() {
+    const { timestamp, client : { diff } } = this.props
+    if (timestamp) {
+      this.setState({
+        now : Date.now() - diff
+      })
+    }
+  }
+  componentDidMount() {
+    this.setState({
+      timer : window.setInterval(this.timer.bind(this), 1000)
+    })
+  }
+  componentWillUnmount() {
+    const { timer } = this.state
+    if (timer) {
+      window.clearInterval(timer) 
+    }
   }
   renderChannelMode() {
     const { mode, contact } = this.props
@@ -322,7 +344,9 @@ class Channel extends React.Component {
     }
   }
   render() {
-    const { channelId, number, contact, mode, level, muted } = this.props
+    const { channelId, number, contact, mode, level, muted, timestamp } = this.props
+    const { now } = this.state
+    const hours = moment(now).diff(timestamp, 'hours')
     return (
       <div>
         <div style={{background: this.getBgColor(mode), border: '1px solid #ddd', margin: '11px'}}>
@@ -333,9 +357,11 @@ class Channel extends React.Component {
                   {channelId}&nbsp;{number}
                 </h3>
               </div>
-              <div style={{flex: 1, __border: '1px solid #ddd', textAlign: 'right'}}>
-                00:00
-              </div>
+              {!!timestamp && (
+                <div style={{flex: 1, __border: '1px solid #ddd', textAlign: 'right'}}>
+                  {hours > 0 && <span>{hours}:</span>}{moment(moment(now).diff(timestamp)).format('mm:ss')}
+                </div>
+              )}
             </div>
           </div>
           <div style={{__border: '1px solid #ddd', padding: '8px'}}> 
