@@ -50,36 +50,40 @@ class Host extends React.Component {
   setChannelMuted(muted) {
     const { sendMessage, client } = this.props
     sendMessage('channelMuted', {
-      [client.hostId] : muted
+      [client.userId] : muted
     })
   }
   updateChannelLevel(level) {
     const { sendMessage, client, dispatch } = this.props
     sendMessage('channelVolume', {
-      [client.hostId] : level
+      [client.userId] : level
     })
-    dispatch(updateLevel(client.hostId, level))
+    dispatch(updateLevel(client.userId, level))
   }
   setUserMuted(muted) {
     const { sendMessage, client } = this.props
     sendMessage('userMuted', {
-      [client.hostId] : muted 
+      [client.userId] : muted 
     })
   }
   updateUserLevel(level) {
     const { sendMessage, client, dispatch } = this.props
     sendMessage('userVolume', {
-      [client.hostId] : level 
+      [client.userId] : level 
     })
-    dispatch(updateUserLevel(client.hostId, level))
+    dispatch(updateUserLevel(client.userId, level))
   }
   render() {
     const { client, mixer, users } = this.props
-    if (!users || !users[client.hostId] || !mixer.channels) {
-      return <span />
+    if (!users || !users[client.userId] || !mixer.channels) {
+      return (
+        <span>
+          No host?
+        </span>
+      )
     }
-    const user = users[client.hostId]
-    const channel = mixer.channels[client.hostId]
+    const user = users[client.userId]
+    const channel = mixer.channels[client.userId]
     return (
       <div style={{display: 'flex'}}>
         <div style={{flex: 1, minWidth: '80px'}}> 

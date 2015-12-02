@@ -12,7 +12,7 @@ exports.initializeUsers = initializeUsers;
 exports.updateUser = updateUser;
 exports.updateUserLevel = updateUserLevel;
 exports.updateMixer = updateMixer;
-exports.updateMode = updateMode;
+exports.updatePreset = updatePreset;
 exports.updateMaster = updateMaster;
 exports.updateMasterLevel = updateMasterLevel;
 exports.updateCaller = updateCaller;
@@ -65,9 +65,9 @@ function updateMixer(state) {
   };
 }
 
-function updateMode(channel, mode) {
+function updatePreset(channel, preset) {
   return {
-    type: 'update-mode', channel: channel, mode: mode
+    type: 'update-preset', channel: channel, preset: preset
   };
 }
 
@@ -404,15 +404,15 @@ function client() {
       return _extends({}, state, {
         diff: action.diff
       });
-    case 'update-mode':
-      switch (action.mode) {
+    case 'update-preset':
+      switch (action.preset) {
         case 'host':
         case 'master':
         case 'on_hold':
         case 'ivr':
           return _extends({}, state, {
             channels: _extends({}, state.channels, _defineProperty({}, action.channel, {
-              mode: action.mode
+              preset: action.preset
             }))
           });
         default:
@@ -678,9 +678,9 @@ var Channel = (function (_React$Component3) {
       var sendMessage = _props5.sendMessage;
       var client = _props5.client;
 
-      var chan = client.channels[channelId] || { mode: 'master' };
-      console.log('answer in mode ' + chan.mode);
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.mode ? '' + client.hostId : chan.mode));
+      var chan = client.channels[channelId] || { preset: 'master' };
+      console.log('answer in mode ' + chan.preset);
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.preset ? '' + client.userId : chan.preset));
     }
   }, {
     key: 'rejectCall',
@@ -710,8 +710,8 @@ var Channel = (function (_React$Component3) {
       var sendMessage = _props8.sendMessage;
       var client = _props8.client;
 
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + client.hostId : mode));
-      dispatch((0, _actions.updateMode)(channelId, mode));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + client.userId : mode));
+      dispatch((0, _actions.updatePreset)(channelId, mode));
     }
   }, {
     key: 'beginEditCaller',
@@ -942,7 +942,7 @@ var Channel = (function (_React$Component3) {
       var channelId = _props12.channelId;
       var channels = _props12.client.channels;
 
-      var chan = channels[channelId] || { mode: 'free' };
+      var chan = channels[channelId] || { preset: 'free' };
       return _react2.default.createElement(
         'div',
         { className: 'btn-group btn-group-lg', role: 'group' },
@@ -950,9 +950,10 @@ var Channel = (function (_React$Component3) {
           return _react2.default.createElement(
             'button',
             {
+              disabled: 'ivr' === _this4.props.mode,
               key: i,
               type: 'button',
-              className: (0, _classnames2.default)('btn btn-default', { 'active': chan.mode == mode }),
+              className: (0, _classnames2.default)('btn btn-default', { 'active': chan.preset == mode }),
               onClick: function onClick() {
                 _this4.updateMode(mode);
               } },
@@ -1180,7 +1181,7 @@ var Host = (function (_React$Component2) {
       var sendMessage = _props2.sendMessage;
       var client = _props2.client;
 
-      sendMessage('channelMuted', _defineProperty({}, client.hostId, muted));
+      sendMessage('channelMuted', _defineProperty({}, client.userId, muted));
     }
   }, {
     key: 'updateChannelLevel',
@@ -1190,8 +1191,8 @@ var Host = (function (_React$Component2) {
       var client = _props3.client;
       var dispatch = _props3.dispatch;
 
-      sendMessage('channelVolume', _defineProperty({}, client.hostId, level));
-      dispatch((0, _actions.updateLevel)(client.hostId, level));
+      sendMessage('channelVolume', _defineProperty({}, client.userId, level));
+      dispatch((0, _actions.updateLevel)(client.userId, level));
     }
   }, {
     key: 'setUserMuted',
@@ -1200,7 +1201,7 @@ var Host = (function (_React$Component2) {
       var sendMessage = _props4.sendMessage;
       var client = _props4.client;
 
-      sendMessage('userMuted', _defineProperty({}, client.hostId, muted));
+      sendMessage('userMuted', _defineProperty({}, client.userId, muted));
     }
   }, {
     key: 'updateUserLevel',
@@ -1210,8 +1211,8 @@ var Host = (function (_React$Component2) {
       var client = _props5.client;
       var dispatch = _props5.dispatch;
 
-      sendMessage('userVolume', _defineProperty({}, client.hostId, level));
-      dispatch((0, _actions.updateUserLevel)(client.hostId, level));
+      sendMessage('userVolume', _defineProperty({}, client.userId, level));
+      dispatch((0, _actions.updateUserLevel)(client.userId, level));
     }
   }, {
     key: 'render',
@@ -1223,11 +1224,15 @@ var Host = (function (_React$Component2) {
       var mixer = _props6.mixer;
       var users = _props6.users;
 
-      if (!users || !users[client.hostId] || !mixer.channels) {
-        return _react2.default.createElement('span', null);
+      if (!users || !users[client.userId] || !mixer.channels) {
+        return _react2.default.createElement(
+          'span',
+          null,
+          'No host?'
+        );
       }
-      var user = users[client.hostId];
-      var channel = mixer.channels[client.hostId];
+      var user = users[client.userId];
+      var channel = mixer.channels[client.userId];
       return _react2.default.createElement(
         'div',
         { style: { display: 'flex' } },
@@ -1442,14 +1447,14 @@ var Mixer = (function (_React$Component) {
           { style: { flex: 11 } },
           _react2.default.createElement(
             'div',
-            { ref: 'channels' },
+            null,
             _lodash2.default.pairs(channels).map(function (pair) {
               var _pair = _slicedToArray(pair, 2);
 
               var id = _pair[0];
               var chan = _pair[1];
 
-              return id != client.hostId ? _react2.default.createElement(_Channel2.default, _extends({}, chan, {
+              return id != client.userId ? _react2.default.createElement(_Channel2.default, _extends({}, chan, {
                 key: id,
                 channelId: id,
                 client: client,

@@ -158,8 +158,8 @@ function client(state = initialClientState, action) {
         ...state, 
         diff : action.diff
       }
-    case 'update-mode':
-      switch (action.mode) {
+    case 'update-preset':
+      switch (action.preset) {
         case 'host':
         case 'master':
         case 'on_hold':
@@ -169,7 +169,7 @@ function client(state = initialClientState, action) {
             channels : {
               ...state.channels,
               [action.channel]: {
-                mode: action.mode
+                preset: action.preset
               }
             }
           }

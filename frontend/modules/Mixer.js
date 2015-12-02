@@ -15,10 +15,10 @@ class Mixer extends React.Component {
     return (
       <div style={{display: 'flex'}}>
         <div style={{flex: 11}}> 
-          <div ref='channels'>
+          <div>
             {_.pairs(channels).map(pair => {
               const [id, chan] = pair
-              return (id != client.hostId) ? (
+              return (id != client.userId) ? (
                 <Channel {...chan} 
                   key         = {id}
                   channelId   = {id}

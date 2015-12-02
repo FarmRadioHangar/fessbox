@@ -5,7 +5,7 @@ import Switch      from 'react-bootstrap-switch'
 import Slider      from './Slider'
 import moment      from 'moment'
 
-import { updateMode, updateLevel, updateCaller } 
+import { updatePreset, updateLevel, updateCaller } 
   from '../js/actions'
 import { ListGroupItem } 
   from 'react-bootstrap'
@@ -118,10 +118,10 @@ class Channel extends React.Component {
   }
   answerCall() {
     const { dispatch, channelId, sendMessage, client } = this.props
-    const chan = client.channels[channelId] || {mode: 'master'}
-    console.log(`answer in mode ${chan.mode}`)
+    const chan = client.channels[channelId] || {preset: 'master'}
+    console.log(`answer in mode ${chan.preset}`)
     sendMessage('channelMode', {
-      [channelId] : 'host' === chan.mode ? ''+client.hostId : chan.mode
+      [channelId] : 'host' === chan.preset ? ''+client.userId : chan.preset
     })
   }
   rejectCall() {
@@ -140,9 +140,9 @@ class Channel extends React.Component {
   updateMode(mode) {
     const { channelId, dispatch, sendMessage, client } = this.props
     sendMessage('channelMode', {
-      [channelId] : 'host' === mode ? ''+client.hostId : mode
+      [channelId] : 'host' === mode ? ''+client.userId : mode
     })
-    dispatch(updateMode(channelId, mode))
+    dispatch(updatePreset(channelId, mode))
   }
   beginEditCaller() {
     this.setState({
@@ -309,15 +309,16 @@ class Channel extends React.Component {
       ivr     : 'IVR'
     }
     const { channelId, client : { channels } } = this.props
-    const chan = channels[channelId] || {mode: 'free'}
+    const chan = channels[channelId] || {preset: 'free'}
     return (
       <div className='btn-group btn-group-lg' role='group'>
         {modes.map((mode, i) => {
           return (
             <button 
+              disabled  = {'ivr' === this.props.mode}
               key       = {i}
               type      = 'button'
-              className = {classNames('btn btn-default', { 'active' : chan.mode == mode })}
+              className = {classNames('btn btn-default', { 'active' : chan.preset == mode })}
               onClick   = {() => { this.updateMode(mode) }}>
               {/*this.renderIcon(mode)*/}
               {labels[mode]}

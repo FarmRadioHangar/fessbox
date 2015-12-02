@@ -46,9 +46,9 @@ export function updateMixer(state) {
   }
 }
 
-export function updateMode(channel, mode) {
+export function updatePreset(channel, preset) {
   return {
-    type : 'update-mode', channel, mode
+    type : 'update-preset', channel, preset
   }
 }
 
