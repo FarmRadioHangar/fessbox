@@ -19,6 +19,10 @@ exports.channelMode = function(user_id, data, cb) {
 };
 */
 
+exports.channelContactInfo = function(user_id, data, cb) {
+	cb("channelContactInfo", data, 'others');
+};
+
 // stable 
 
 exports.masterProperty = function(user_id, data, cb) {
