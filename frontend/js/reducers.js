@@ -147,11 +147,7 @@ function users(state = {}, action) {
   }
 }
 
-const initialClientState = {
-  diff : 0
-}
-
-function client(state = initialClientState, action) {
+function client(state = {}, action) {
   switch (action.type) {
     case 'set-diff':
       return {
@@ -169,7 +165,7 @@ function client(state = initialClientState, action) {
             channels : {
               ...state.channels,
               [action.channel]: {
-                preset: action.preset
+                preset : action.preset
               }
             }
           }

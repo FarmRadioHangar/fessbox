@@ -391,12 +391,8 @@ function users() {
   }
 }
 
-var initialClientState = {
-  diff: 0
-};
-
 function client() {
-  var state = arguments.length <= 0 || arguments[0] === undefined ? initialClientState : arguments[0];
+  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
   var action = arguments[1];
 
   switch (action.type) {
