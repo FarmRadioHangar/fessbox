@@ -729,11 +729,14 @@ var Channel = (function (_React$Component3) {
       var _props9 = this.props;
       var channelId = _props9.channelId;
       var dispatch = _props9.dispatch;
+      var sendMessage = _props9.sendMessage;
 
-      dispatch((0, _actions.updateCaller)(channelId, {
-        name: this.refs.callerName.value,
-        location: this.refs.callerLocation.value
-      }));
+      var caller = {
+        'name': this.refs.callerName.value,
+        'location': this.refs.callerLocation.value
+      };
+      dispatch((0, _actions.updateCaller)(channelId, caller));
+      sendMessage('channelContactInfo', _defineProperty({}, channelId, caller));
       this.endEditCaller();
     }
   }, {

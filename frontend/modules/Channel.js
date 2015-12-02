@@ -155,11 +155,13 @@ class Channel extends React.Component {
     })
   }
   updateCaller() {
-    const { channelId, dispatch } = this.props
-    dispatch(updateCaller(channelId, {
-      name     : this.refs.callerName.value,
-      location : this.refs.callerLocation.value
-    }))
+    const { channelId, dispatch, sendMessage } = this.props
+    const caller = {
+      'name'     : this.refs.callerName.value,
+      'location' : this.refs.callerLocation.value
+    }
+    dispatch(updateCaller(channelId, caller))
+    sendMessage('channelContactInfo', { [channelId] : caller })
     this.endEditCaller()
   }
   timer() {
