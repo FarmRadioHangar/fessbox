@@ -12,7 +12,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel }
+import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff }
   from './actions'
 
 const userId = getQueryVariable('user_id') || 701
@@ -65,6 +65,10 @@ ws.onmessage = e => {
         if (msg.data.users) {
           store.dispatch(initializeUsers(msg.data.users))
         }
+        // Compute time difference between server and device
+        const diff = Date.now() - msg.data.server_time
+        console.log(`diff : ${diff}`)
+        store.dispatch(setTimeDiff(diff))
         break
       case 'channelUpdate':
         store.dispatch(updateMixer(msg.data))

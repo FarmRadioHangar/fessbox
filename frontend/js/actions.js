@@ -69,3 +69,9 @@ export function updateCaller(channel, caller) {
     type : 'update-caller', channel, caller
   }
 }
+
+export function setTimeDiff(diff) {
+  return {
+    type : 'set-diff', diff
+  }
+}

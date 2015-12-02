@@ -147,8 +147,17 @@ function users(state = {}, action) {
   }
 }
 
-function client(state = {}, action) {
+const initialClientState = {
+  diff : 0
+}
+
+function client(state = initialClientState, action) {
   switch (action.type) {
+    case 'set-diff':
+      return {
+        ...state, 
+        diff : action.diff
+      }
     case 'update-mode':
       switch (action.mode) {
         case 'host':
