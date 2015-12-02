@@ -114,6 +114,11 @@ ami.on('donglestatus', function(evt) {
 			case 'Free':
 			case 'Initialize':
 				if (s.ui.mixer.channels[evt.device].mode != 'free') {
+					api.channelUpdate(evt.device, {
+						mode: 'free',
+						timestamp: null,
+						direction: null
+					});
 					//setDongleFree(evt.device);
 				}
 				break;
@@ -409,49 +414,61 @@ ami.on('newchannel', function(evt) {
 	var newChannel = {};
 	switch (channelInfo[0]) {
 		case 'Dongle':
-			//s.asterisk.channels[channelInfo[1]].type = channelId[0];
-			s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
-			myLib.consoleLog('debug', "New dongle channel internal name", [channelInfo[1], evt.channel]);
-			newChannel[channelInfo[1]] = s.ui.mixer.channels[channelInfo[1]];
-			newChannel[channelInfo[1]].mode = evt.channelstatedesc.toLowerCase();
-			newChannel[channelInfo[1]].timestamp = Date.now();
-			newChannel[channelInfo[1]].contact = {
-				number: evt.calleridnum,
-				name:  evt.calleridname
-			};
-			setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
-			if (s.ui.mixer.channels[channelInfo[1]].muted) {
-				setAmiChannelMuted(evt.channel, true, 'in', function() {});
+			if (s.ui.mixer.channels[channelInfo[1]]) {
+				//myLib.consoleLog('debug', "New dongle channel internal name", [channelInfo[1], evt.channel]);
+				s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
+				switch (evt.channelstatedesc) {
+					case 'Ring':
+						api.channelUpdate(channelInfo[1], {
+							type: channelInfo[0],
+							mode: 'ring',
+							direction: 'incoming',
+							timestamp: Date.now(),
+							contact: {
+								number: evt.calleridnum,
+								name:  evt.calleridname
+							}
+						});
+						console.log("xxx", channelInfo[1], s.ui.mixer.channels);
+						console.log("setting initial chan volume", s.ui.mixer.channels[channelInfo[1]].level);
+						setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
+						if (s.ui.mixer.channels[channelInfo[1]].muted) {
+							setAmiChannelMuted(evt.channel, true, 'in', function() {});
+						}
+						break;
+				}
 			}
-			wss.broadcastEvent("channelUpdate", newChannel);
+
 			break;
 		case 'SIP':
-		case 'Local':
+//		case 'Local':
 			//todo : where is this channel dialing?
-			if (astConf.extensions.indexOf(channelInfo[1]) !== -1) {
-				s.asterisk.channels[channelInfo[1]] = {
-					internalName: evt.channel,
-				};
-				newChannel[channelInfo[1]] = {
-					type: channelInfo[0].toLowerCase(),
+			if (evt.exten === astConf.virtual.ring) {
+				if (astConf.extensions.indexOf(channelInfo[1]) !== -1) {
+					s.asterisk.channels[channelInfo[1]] = {
+						internalName: evt.channel,
+					};
+					newChannel[channelInfo[1]] = {
+						type: channelInfo[0].toLowerCase(),
 
+					}
+				} else if (astConf.hosts.indexOf(channelInfo[1]) !== -1) {
+					//myLib.consoleLog('debug', "New host channel internal name", [channelInfo[1], evt.channel]);
+					s.asterisk.channels[channelInfo[1]] = {
+						internalName: evt.channel
+					};
+					setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
+					setAmiChannelVolume(evt.channel, s.ui.users[channelInfo[1]].level, 'TX', function() {});
+					if (s.ui.mixer.channels[channelInfo[1]].muted) {
+						setAmiChannelMuted(evt.channel, true, 'in', function() {});
+					}
+					if (s.ui.users[channelInfo[1]].muted) {
+						setAmiChannelMuted(evt.channel, true, 'out', function() {});
+					}
+	//				s.ui.mixer.hosts[channelInfo[1]] = s.loadHostSettings(channelInfo[1]);
+	//				initializeHost(channelInfo[1]);
+					
 				}
-			} else if (astConf.hosts.indexOf(channelInfo[1]) !== -1) {
-				myLib.consoleLog('debug', "New host channel internal name", [channelInfo[1], evt.channel]);
-				s.asterisk.channels[channelInfo[1]] = {
-					internalName: evt.channel
-				};
-				setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
-				setAmiChannelVolume(evt.channel, s.ui.users[channelInfo[1]].level, 'TX', function() {});
-				if (s.ui.mixer.channels[channelInfo[1]].muted) {
-					setAmiChannelMuted(evt.channel, true, 'in', function() {});
-				}
-				if (s.ui.users[channelInfo[1]].muted) {
-					setAmiChannelMuted(evt.channel, true, 'out', function() {});
-				}
-//				s.ui.mixer.hosts[channelInfo[1]] = s.loadHostSettings(channelInfo[1]);
-//				initializeHost(channelInfo[1]);
-				
 			}
 			//s.channels[evt.calleridnum] = evt;
 			break;

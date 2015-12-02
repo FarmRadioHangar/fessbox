@@ -90,7 +90,17 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 			if (err) {
 				cbErr(err);
 			} else {
-				channelUpdate(channel_id, { mode: value });
+				var modify = {};
+				if (s.ui.mixer.channels[channel_id].mode === 'ring') {
+					modify.timestamp = Date.now();
+				}
+				if (value === 'free') {
+					modify.timestamp = null;
+					modify.direction = null;
+					modify.contact = null;
+				}
+				modify.mode = value;
+				channelUpdate(channel_id, modify);
 			}
 		};
 		switch (s.ui.mixer.channels[channel_id].mode) {
@@ -138,7 +148,6 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 								case 'master':
 									provider.setChanMode2(channel_id, value, cb);
 									/*
-
 									provider.parkCall(value, function(err, res) {
 										if (err) {
 											cbErr(err);
@@ -435,21 +444,24 @@ exports.getChannelInfo = function(channel_id) {
 }
 
 // input interface
-exports.setChannelProperty = function(channel_id, name, value, cb) {
+exports.setChannelProperty = function(channel_id, name, value, cbErr) {
 	switch(name) {
 		case 'muted':
-			exports.setChannelMuted(channel_id, value, cb);
+			exports.setChannelMuted(channel_id, value, cbErr);
 			break;
 		case 'mode':
-			exports.setChannelMode(channel_id, value, cb);
+			exports.setChannelMode(channel_id, value, cbErr);
+			break;
+		case 'autoanswer':
+			exports.setChannelAutoanswer(channel_id, value, cbErr);
 			break;
 		case 'recording':
-			exports.setChannelRecording(channel_id, value, cb);
+			exports.setChannelRecording(channel_id, value, cbErr);
 			break;
 		case 'level':
 			exports.setChannelVolume(channel_id, value, function(err) {
 				if (err) {
-					cb(err);
+					cbErr(err);
 				} else {
 					var changed = {};
 					changed[channel_id] = s.ui.mixer.channels[channel_id];
@@ -457,41 +469,42 @@ exports.setChannelProperty = function(channel_id, name, value, cb) {
 				}
 			});
 			break;
+		case 'timestamp':
+		case 'number':
+		case 'type':
+			cbErr(name + " is a read-only property");
 		default:
-			var errorMsg = "Unknown channel property";
-			cb(errorMsg);
-			myLib.consoleLog('error', "setChannelProperty", errorMsg);
+			cbErr("Unknown channel property: " + name);
 	}
 };
 
-exports.setMasterProperty = function(name, value, cb) {
+exports.setMasterProperty = function(name, value, cbErr) {
 	switch(name) {
 		case 'muted':
-			exports.setMasterMuted(value, cb);
+			exports.setMasterMuted(value, cbErr);
 			break;
 		case 'on_air':
-			exports.setMasterOnAir(value, cb);
+			exports.setMasterOnAir(value, cbErr);
 			break;
 		case 'recording':
-			exports.setMasterRecording(value, cb);
+			exports.setMasterRecording(value, cbErr);
 			break;
 		case 'level':
 			exports.setMasterVolume(value, function(err) {
 				if (err) {
-					cb(err);
+					cbErr(err);
 				} else {
 					wss.broadcast("masterUpdate", s.ui.mixer.master);
 				}
 			});
 			break;
 		default:
-			var errorMsg = "Unknown master property";
-			cb(errorMsg);
-			myLib.consoleLog('error', "setMasterProperty", errorMsg);
+			var errorMsg = "Unknown master property: " + name;
+			cbErr(errorMsg);
 	}
 };
 
-exports.setMasterRecording = function(value, cb) {
+exports.setMasterRecording = function(value, cbErr) {
 	var errorMsg;
 	if (typeof value !== 'boolean') {
 		errorMsg = 'invalid input value, boolean required';
@@ -525,7 +538,7 @@ exports.setMasterRecording = function(value, cb) {
 }
 
 
-exports.setMasterMuted = function(value, cb) {
+exports.setMasterMuted = function(value, cbErr) {
 	var errorMsg;
 	if (typeof value !== 'boolean') {
 		errorMsg = 'invalid input value, boolean required';
@@ -534,19 +547,19 @@ exports.setMasterMuted = function(value, cb) {
 	} else {
 		provider.setMasterMuted(value, function(err) {
 			if (err) {
-				cb(err);
+				cbErr(err);
 			} else {
 				masterUpdate({ muted: value });
 			}
 		});
 	}
 	if (errorMsg) {
-		cb(errorMsg);
+		cbErr(errorMsg);
 		myLib.consoleLog('error', "setMasterMuted" , errorMsg);
 	}
 }
 
-exports.setMasterOnAir = function(value, cb) {
+exports.setMasterOnAir = function(value, cbErr) {
 	if (typeof value !== 'boolean') {
 		errorMsg = 'invalid input value, boolean required';
 	} else if (value === s.ui.mixer.master.on_air) {
@@ -554,14 +567,14 @@ exports.setMasterOnAir = function(value, cb) {
 	} else {
 		provider.setMasterOnAir(value, function(err) {
 			if (err) {
-				cb(err);
+				cbErr(err);
 			} else {
 				masterUpdate({ on_air: value });
 			}
 		});
 	}
 	if (errorMsg) {
-		cb(errorMsg);
+		cbErr(errorMsg);
 		myLib.consoleLog('error', "setMasterOnAir`" , errorMsg);
 	}
 }
@@ -587,7 +600,7 @@ exports.setMasterVolume = function(value, cb) {
 		cb(errorMsg);
 		myLib.consoleLog('error', "setMasterVolume" , errorMsg);
 	}
-}
+};
 
 exports.setChannelVolume = function(channel_id, value, cb) {
 	var errorMsg;
@@ -620,6 +633,32 @@ exports.setChannelVolume = function(channel_id, value, cb) {
 	}
 };
 
+exports.setChannelAutoanswer = function (channel_id, value, cbErr) {
+	var errorMsg;
+	if (!s.ui.mixer.channels[channel_id]) {
+		errorMsg = 'channel not found';
+	} else {
+		switch (value) {
+			case null:
+			case 'ivr':
+			case 'master':
+			case 'on_hold':
+				channelUpdate(channel_id, { autoanswer: value });
+				break;
+			default:
+				if (s.ui.users[value]) {
+					channelUpdate(channel_id, { autoanswer: value });
+				} else {
+					errorMsg = "invalid autoanswer value: " + value;
+				}
+		}
+	}
+	if (errorMsg) {
+		cbErr(errorMsg);
+		myLib.consoleLog('error', "setChannelAutoanswer" , channel_id + ":" + errorMsg);
+	}
+};
+
 // output interface
 function masterUpdate(data) {
 	var changed = false;
@@ -641,16 +680,17 @@ function masterUpdate(data) {
 }
 function channelUpdate(channel_id, data) {
 	var changed = false;
-	for (key in data) {
-		if (s.ui.mixer.channels[channel_id] && s.ui.mixer.channels[channel_id][key] !== null ) {
+	if (!s.ui.mixer.channels[channel_id]) {
+		s.ui.mixer.channels[channel_id] = data;
+		changed = true;
+	} else {
+		for (key in data) {
 			if (s.ui.mixer.channels[channel_id][key] !== data[key]) {
 				s.ui.mixer.channels[channel_id][key] = data[key];
 				changed = true;
 			} else {
 				myLib.consoleLog('warning', "channelUpdate: value already set", [channel_id, key, data[key]]);
 			}
-		} else {
-			myLib.consoleLog('error', "channelUpdate: field not found", [channel_id, key, data[key]]);
 		}
 	}
 	if (changed) {
