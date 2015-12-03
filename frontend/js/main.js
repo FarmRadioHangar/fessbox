@@ -18,7 +18,8 @@ import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster
 const userId = getQueryVariable('user_id') || 701
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${userId}`}))(createStore)
-const store = createPersistentStore(app, {client: {userId, channels: {}}})
+const store = createPersistentStore(app, {client: {userId, channels: {}, $: Math.random()*1000000000|0}})
+//const store = createPersistentStore(app, {client: {userId, channels: {}}})
 const ws = new ReconnectingWebSocket('ws://192.168.1.38:19998/?user_id=' + userId) 
 
 class App extends React.Component {

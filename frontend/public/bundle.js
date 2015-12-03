@@ -147,7 +147,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var userId = (0, _urlParams2.default)('user_id') || 701;
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + userId }))(_redux.createStore);
-var store = createPersistentStore(_reducers2.default, { client: { userId: userId, channels: {} } });
+var store = createPersistentStore(_reducers2.default, { client: { userId: userId, channels: {}, $: Math.random() * 1000000000 | 0 } });
+//const store = createPersistentStore(app, {client: {userId, channels: {}}})
 var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://192.168.1.38:19998/?user_id=' + userId);
 
 var App = (function (_React$Component) {
