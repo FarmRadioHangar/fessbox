@@ -995,6 +995,10 @@ var Channel = (function (_React$Component3) {
       var timestamp = _props13.timestamp;
       var now = this.state.now;
 
+      console.log('............................: ' + channelId);
+      console.log(this.props);
+      console.log('............................');
+
       var hours = (0, _moment2.default)(now).diff(timestamp, 'hours');
       return _react2.default.createElement(
         'div',
@@ -1060,7 +1064,7 @@ var Channel = (function (_React$Component3) {
                   onChange: function onChange(from, to) {
                     return _this5.updateLevel(to);
                   },
-                  disabled: !!muted })
+                  enabled: !muted })
               ),
               _react2.default.createElement(
                 'div',
