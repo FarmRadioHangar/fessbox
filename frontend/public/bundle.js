@@ -1060,7 +1060,7 @@ var Channel = (function (_React$Component3) {
                   onChange: function onChange(from, to) {
                     return _this5.updateLevel(to);
                   },
-                  enabled: !muted })
+                  enabled: !muted && 'ivr' !== mode })
               ),
               _react2.default.createElement(
                 'div',

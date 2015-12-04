@@ -384,7 +384,7 @@ class Channel extends React.Component {
                     value        = {level}
                     defaultValue = {level}
                     onChange     = {(from, to) => this.updateLevel(to)}
-                    enabled      = {!muted} />
+                    enabled      = {!muted && 'ivr' !== mode} />
                 </div>
                 <div style={{__border: '1px solid #f00', padding: '6px 0 0 6px'}}>
                   {this.renderModeSwitch()}
