@@ -1045,7 +1045,11 @@ var Channel = (function (_React$Component3) {
               { style: { __border: '1px solid #f00', display: 'flex', padding: '8px' } },
               _react2.default.createElement(
                 'button',
-                { className: 'btn btn-default btn-large', onClick: this.toggleMuted.bind(this), style: { marginTop: '6px' } },
+                {
+                  disabled: 'ivr' === mode,
+                  className: 'btn btn-default btn-large',
+                  onClick: this.toggleMuted.bind(this),
+                  style: { marginTop: '6px' } },
                 _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
               ),
               _react2.default.createElement(
