@@ -22,7 +22,7 @@ class Master extends React.Component {
     const { level, muted } = this.props
     return (
       <div>
-        <div style={{textAlign: 'center'}}> 
+        <div style={{textAlign: 'center', marginTop: '20px'}}> 
           <Slider 
             orientation  = 'vertical'
             reversed     = {true}

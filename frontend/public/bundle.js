@@ -1345,7 +1345,7 @@ var Master = (function (_React$Component) {
         null,
         _react2.default.createElement(
           'div',
-          { style: { textAlign: 'center' } },
+          { style: { textAlign: 'center', marginTop: '20px' } },
           _react2.default.createElement(_Slider2.default, {
             orientation: 'vertical',
             reversed: true,
