@@ -231,6 +231,11 @@ ws.onmessage = function (e) {
         case 'masterVolumeChange':
           store.dispatch((0, _actions.updateMasterLevel)(msg.data));
           break;
+        case 'channelContactInfo':
+          Object.keys(msg.data).forEach(function (chan) {
+            store.dispatch((0, _actions.updateCaller)(chan, msgs.data[chan]));
+          });
+          break;
         default:
           break;
       }
