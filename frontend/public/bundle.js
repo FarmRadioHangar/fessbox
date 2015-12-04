@@ -233,7 +233,7 @@ ws.onmessage = function (e) {
           break;
         case 'channelContactInfo':
           Object.keys(msg.data).forEach(function (chan) {
-            store.dispatch((0, _actions.updateCaller)(chan, msgs.data[chan]));
+            store.dispatch((0, _actions.updateCaller)(chan, msg.data[chan]));
           });
           break;
         default:

@@ -92,7 +92,7 @@ ws.onmessage = e => {
         break
       case 'channelContactInfo':
         Object.keys(msg.data).forEach(chan => {
-          store.dispatch(updateCaller(chan, msgs.data[chan]))
+          store.dispatch(updateCaller(chan, msg.data[chan]))
         })
         break
       default:
