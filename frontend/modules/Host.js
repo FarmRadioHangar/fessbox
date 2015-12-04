@@ -24,7 +24,7 @@ class SliderBar extends React.Component {
             value        = {value} 
             defaultValue = {defaultValue} 
             onChange     = {onChange}
-            disabled     = {!!muted}
+            enabled      = {!muted}
             orientation  = 'vertical'
             reversed     = {true}
             min          = {1}

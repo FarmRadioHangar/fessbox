@@ -30,6 +30,7 @@ class Master extends React.Component {
             max          = {100}
             defaultValue = {level}
             value        = {level}
+            enabled      = {!muted}
             onChange     = {(from, to) => {this.updateLevel(to)}} />
         </div>
         <div style={{textAlign: 'center', margin: '12px 0'}}> 

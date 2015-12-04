@@ -995,10 +995,6 @@ var Channel = (function (_React$Component3) {
       var timestamp = _props13.timestamp;
       var now = this.state.now;
 
-      console.log('............................: ' + channelId);
-      console.log(this.props);
-      console.log('............................');
-
       var hours = (0, _moment2.default)(now).diff(timestamp, 'hours');
       return _react2.default.createElement(
         'div',
@@ -1142,7 +1138,7 @@ var SliderBar = (function (_React$Component) {
             value: value,
             defaultValue: defaultValue,
             onChange: onChange,
-            disabled: !!muted,
+            enabled: !muted,
             orientation: 'vertical',
             reversed: true,
             min: 1,
@@ -1357,6 +1353,7 @@ var Master = (function (_React$Component) {
             max: 100,
             defaultValue: level,
             value: level,
+            enabled: !muted,
             onChange: function onChange(from, to) {
               _this2.updateLevel(to);
             } })
