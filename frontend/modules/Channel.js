@@ -311,7 +311,7 @@ class Channel extends React.Component {
       ivr     : 'IVR'
     }
     const { channelId, client : { channels } } = this.props
-    const chan = channels[channelId] || {preset: 'free'}
+    const chan = channels[channelId] || {preset: 'master'}
     return (
       <div className='btn-group btn-group-lg' role='group'>
         {modes.map((mode, i) => {

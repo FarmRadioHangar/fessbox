@@ -942,7 +942,7 @@ var Channel = (function (_React$Component3) {
       var channelId = _props12.channelId;
       var channels = _props12.client.channels;
 
-      var chan = channels[channelId] || { preset: 'free' };
+      var chan = channels[channelId] || { preset: 'master' };
       return _react2.default.createElement(
         'div',
         { className: 'btn-group btn-group-lg', role: 'group' },
