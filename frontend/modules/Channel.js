@@ -279,7 +279,7 @@ class Channel extends React.Component {
               </button>
             </div>
           </div>
-          <Modal show={editMode}>
+          <Modal show={editMode} onHide={() => this.endEditCaller()}>
             <Modal.Header>
               Edit caller details
             </Modal.Header>

@@ -857,7 +857,9 @@ var Channel = (function (_React$Component) {
           ),
           _react2.default.createElement(
             _reactBootstrap.Modal,
-            { show: editMode },
+            { show: editMode, onHide: function onHide() {
+                return _this2.endEditCaller();
+              } },
             _react2.default.createElement(
               _reactBootstrap.Modal.Header,
               null,
