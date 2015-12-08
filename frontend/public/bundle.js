@@ -1608,6 +1608,8 @@ function modeWeight(mode) {
     return 4;
   } else if ('ivr' === mode) {
     return 5;
+  } else if ('defunct' === mode) {
+    return 6;
   } else if ('ring' === mode) {
     return 0;
   } else {
