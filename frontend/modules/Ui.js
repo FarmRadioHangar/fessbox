@@ -50,6 +50,7 @@ class Ui extends React.Component {
 
 const styles = {
   hostWrapper : {
+    minWidth   : '220px',
     height     : '100%',
     background : '#fff'
   }

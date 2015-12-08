@@ -2032,6 +2032,7 @@ var Ui = (function (_React$Component) {
 
 var styles = {
   hostWrapper: {
+    minWidth: '220px',
     height: '100%',
     background: '#fff'
   }
