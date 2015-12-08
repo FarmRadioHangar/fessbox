@@ -21,28 +21,53 @@ class Master extends React.Component {
   render() {
     const { level, muted } = this.props
     return (
-      <div>
-        <div style={{textAlign: 'center', marginTop: '20px'}}> 
-          <Slider 
-            orientation  = 'vertical'
-            reversed     = {true}
-            min          = {1}
-            max          = {100}
-            defaultValue = {level}
-            value        = {level}
-            enabled      = {!muted}
-            onChange     = {(from, to) => {this.updateLevel(to)}} />
-        </div>
-        <div style={{textAlign: 'center', margin: '12px 0'}}> 
-          <button onClick={this.toggleMuted.bind(this)}>
-            <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
-          </button>
-        </div>
-        <div style={{textAlign: 'center'}}> 
-          Master
+      <div className='panel panel-default' style={styles.panel}>
+        <div className='panel-body'>
+          <div>
+            <div style={styles.sliderWrapper}> 
+              <Slider 
+                orientation  = 'vertical'
+                reversed     = {true}
+                min          = {1}
+                max          = {100}
+                defaultValue = {level}
+                value        = {level}
+                enabled      = {!muted}
+                onChange     = {(from, to) => { this.updateLevel(to) }} />
+            </div>
+          </div>
+          <div style={styles.buttonWrapper}> 
+            <button 
+              style          = {styles.button} 
+              className      = 'btn btn-default btn-sm' 
+              onClick        = { () => this.toggleMuted() }>
+              <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
+            </button>
+          </div>
+          <div style={styles.label}>M</div>
         </div>
       </div>
     )
+  }
+}
+
+const styles = {
+  buttonWrapper : {
+    textAlign    : 'center', 
+    margin       : '12px 0'
+  },
+  button : {
+    lineHeight   : 1.9, 
+    borderRadius : '50% 50%'
+  },
+  label : {
+    textAlign    : 'center'
+  },
+  panel : {
+    margin: '11px 11px 11px 0'
+  },
+  sliderWrapper : {
+    textAlign: 'center'
   }
 }
 

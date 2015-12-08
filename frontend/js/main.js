@@ -62,10 +62,12 @@ ws.onmessage = e => {
     console.log('<<<')
     switch (msg.event) {
       case 'initialize':
+          /*
         store.dispatch(initializeMixer(msg.data.mixer))
         if (msg.data.users) {
           store.dispatch(initializeUsers(msg.data.users))
         }
+          */
         // Compute time difference between server and device
         const diff = Date.now() - msg.data.server_time
         console.log(`diff : ${diff}`)

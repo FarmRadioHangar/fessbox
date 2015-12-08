@@ -18,8 +18,8 @@ class SliderBar extends React.Component {
       onToggleMuted 
     } = this.props
     return (
-      <div style={{marginTop: '12px'}}>
-        <div style={{textAlign: 'center'}}> 
+      <div className='panel panel-default'>
+        <div className='panel-body' style={styles.panel}>
           <Slider 
             value        = {value} 
             defaultValue = {defaultValue} 
@@ -30,12 +30,15 @@ class SliderBar extends React.Component {
             min          = {1}
             max          = {100} />
         </div>
-        <div style={{textAlign: 'center', margin: '12px 0'}}> 
-          <button onClick={onToggleMuted}>
-            <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
+        <div style={styles.buttonWrapper}> 
+          <button 
+            style        = {styles.button} 
+            className    = 'btn btn-default btn-sm' 
+            onClick      = {onToggleMuted}>
+            <i className = {muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
           </button>
         </div>
-        <div style={{textAlign: 'center', padding: '.7em'}}> 
+        <div style={styles.iconWrapper}> 
           <i className={`fa fa-${icon}`} />
         </div>
       </div>
@@ -74,19 +77,11 @@ class Host extends React.Component {
     dispatch(updateUserLevel(client.userId, level))
   }
   render() {
-    const { client, mixer, users } = this.props
-    if (!users || !users[client.userId] || !mixer.channels) {
-      return (
-        <span>
-          No host?
-        </span>
-      )
-    }
     const user = users[client.userId]
     const channel = mixer.channels[client.userId]
     return (
-      <div style={{display: 'flex'}}>
-        <div style={{flex: 1, minWidth: '80px'}}> 
+      <div style={styles.wrapper}>
+        <div style={styles.bar}> 
           <SliderBar 
             icon          = 'microphone' 
             value         = {channel.level}
@@ -95,7 +90,7 @@ class Host extends React.Component {
             onChange      = {(from, to) => { this.updateChannelLevel(to) }}
             onToggleMuted = {() => { this.setChannelMuted(!channel.muted) }} />
         </div>
-        <div style={{flex: 1, minWidth: '80px'}}> 
+        <div style={styles.bar}> 
           <SliderBar 
             icon          = 'headphones' 
             value         = {user.level}
@@ -106,6 +101,33 @@ class Host extends React.Component {
         </div>
       </div>
     )
+  }
+}
+
+const styles = {
+  panel : { 
+    textAlign    : 'center'
+  },
+  button : {
+    lineHeight   : 1.9, 
+    borderRadius : '50% 50%'
+  },
+  buttonWrapper : {
+    textAlign    : 'center', 
+    margin       : '0 0 12px 0'
+  },
+  iconWrapper : {
+    textAlign    : 'center', 
+    margin       : '0 0 8px', 
+    fontSize     : '150%'
+  },
+  wrapper : {
+    display      : 'flex'
+  },
+  bar : {
+    flex         : 1, 
+    minWidth     : '80px', 
+    margin       : '11px 6px 11px 11px'
   }
 }
 

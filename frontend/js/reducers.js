@@ -3,28 +3,7 @@ import _ from 'lodash'
 import { combineReducers } 
   from 'redux'
 
-//const initialMixerState = {
-//  channels : {},
-//  master   : {},
-//  host     : {}
-//}
-
 const channels = {
-  'chan_1' : {
-    level      : 10,
-    direction  : 'incoming',
-    mode       : 'ring',
-    number     : '+255 712 444 333',
-    muted      : false,
-    duration   : null,
-    contact    : {
-      number   : '+255 712 444 333',
-      name     : 'Manute Bol',
-      location : '',
-      notes    : {}
-    },
-    recording  : false
-  },
   'chan_2' : {
     level      : 40,
     direction  : 'outgoing',
@@ -47,17 +26,37 @@ const channels = {
     number     : '+255 712 444 333',
     muted      : true,
     duration   : null,
-    contact    : null,
+    contact    : {
+      number   : '+255 712 155 789',
+      name     : 'Uri Geller',
+      location : '',
+      notes    : {}
+    },
     recording  : false
   },
   'chan_4' : {
     level      : 90,
     direction  : null,
-    mode       : 'free',
+    mode       : 'defunct',
     number     : '+255 712 444 333',
     muted      : false,
     duration   : null,
     contact    : null,
+    recording  : false
+  },
+  'chan_1' : {
+    level      : 10,
+    direction  : 'incoming',
+    mode       : 'ring',
+    number     : '+255 712 444 333',
+    muted      : false,
+    duration   : null,
+    contact    : {
+      number   : '+255 712 444 333',
+      name     : 'Manute Bol',
+      location : '',
+      notes    : {}
+    },
     recording  : false
   }
 }
@@ -182,8 +181,6 @@ function client(state = {}, action) {
   }
 }
 
-const reducers = {
-  mixer, users, client
-}
+const reducers = { mixer, users, client }
 
 export default combineReducers(reducers)

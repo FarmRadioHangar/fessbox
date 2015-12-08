@@ -2,7 +2,6 @@ import React   from 'react'
 import Sidebar from 'react-sidebar'
 import Host    from './Host'
 import Mixer   from './Mixer'
-import Stream  from './Stream'
 
 class Ui extends React.Component {
   constructor(props) {
@@ -13,6 +12,7 @@ class Ui extends React.Component {
       mediaQueryList : null
     }
     this.mediaQueryChanged = this.mediaQueryChanged.bind(this)
+    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this)
   }
   onSetSidebarOpen(open) {
     this.setState({sidebarOpen: open})
@@ -29,21 +29,28 @@ class Ui extends React.Component {
     this.setState({ sidebarDocked : this.state.mediaQueryList.matches })
   }
   render() {
-    return (
+    const { client, mixer, users } = this.props
+    return (users && users[client.userId] && mixer.channels) ? (
       <Sidebar sidebar = {(
-        <div style={{
-          height     : '100%',
-          background : '#fff'
-        }}>
+        <div style = {styles.hostWrapper}>
           <Host {...this.props} />
         </div>
       )}
-        open      = {this.state.sidebarOpen}
-        docked    = {this.state.sidebarDocked}
-        onSetOpen = {this.onSetSidebarOpen.bind(this)}>
+        open       = {this.state.sidebarOpen}
+        docked     = {this.state.sidebarDocked}
+        onSetOpen  = {this.onSetSidebarOpen}>
         <Mixer {...this.props} />
       </Sidebar>
+    ) : (
+      <Mixer {...this.props} />
     )
+  }
+}
+
+const styles = {
+  hostWrapper : {
+    height     : '100%',
+    background : '#fff'
   }
 }
 
