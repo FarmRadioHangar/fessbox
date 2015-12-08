@@ -1,4 +1,5 @@
 import React    from 'react'
+import ReactDOM from 'react-dom'
 import Channel  from './Channel'
 import Master   from './Master'
 import _        from 'lodash'
@@ -29,26 +30,34 @@ class Mixer extends React.Component {
   constructor(props) {
     super(props)
   }
-  componentDidUpdate() {
-    const { mixer, dispatch } = this.props
-    const sound = document.getElementById('sound')
-    for (let key in mixer.channels) {
-      if ('ring' === mixer.channels[key].mode) {
+  componentWillReceiveProps(props) {
+    if (!props.mixer || !props.mixer.hasOwnProperty('sound')) {
+      return
+    }
+    const sound = ReactDOM.findDOMNode(this.refs.audio)
+    if (true === props.mixer.sound) {
+      if (sound.paused) {
+        sound.currentTime = 0
         sound.play()
-        return
+      }
+    } else {
+      if (!sound.paused) {
+        sound.pause()
       }
     }
-    sound.pause()
   }
   render() {
     const { 
-      mixer : { channels, master }, 
+        mixer : { channels, master }, 
       client, 
       dispatch, 
       sendMessage 
     } = this.props
     return (
       <div style={styles.wrapper}>
+        <audio ref='audio' loop='true'>
+          <source src='wav/ring.wav' type='audio/wav' />
+        </audio>
         <div style={styles.main}> 
           <div>
             {_.pairs(channels).sort(compareChannels).map(pair => {

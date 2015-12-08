@@ -194,6 +194,71 @@ ws.onclose = function () {
   console.log('close');
 };
 
+var channels = {
+  'chan_2': {
+    level: 40,
+    direction: 'outgoing',
+    mode: 'ring',
+    number: '+255 712 444 333',
+    muted: false,
+    duration: null,
+    contact: {
+      number: '+255 712 155 789',
+      name: 'Uri Geller',
+      location: '',
+      notes: {}
+    },
+    recording: false
+  },
+  'chan_3': {
+    level: 70,
+    direction: null,
+    mode: 'master',
+    number: '+255 712 444 333',
+    muted: true,
+    duration: null,
+    contact: {
+      number: '+255 712 155 789',
+      name: 'Uri Geller',
+      location: '',
+      notes: {}
+    },
+    recording: false
+  },
+  'chan_4': {
+    level: 90,
+    direction: null,
+    mode: 'defunct',
+    number: '+255 712 444 333',
+    muted: false,
+    duration: null,
+    contact: null,
+    recording: false
+  },
+  'chan_1': {
+    level: 10,
+    direction: 'incoming',
+    mode: 'ring',
+    number: '+255 712 444 333',
+    muted: false,
+    duration: null,
+    contact: {
+      number: '+255 712 444 333',
+      name: 'Manute Bol',
+      location: '',
+      notes: {}
+    },
+    recording: false
+  }
+};
+
+var temp = {
+  channels: channels,
+  master: {},
+  host: {},
+  sound: false
+};
+
 ws.onmessage = function (e) {
   if (e.data) {
     (function () {
@@ -204,6 +269,7 @@ ws.onmessage = function (e) {
       switch (msg.event) {
         case 'initialize':
           store.dispatch((0, _actions.initializeMixer)(msg.data.mixer));
+          //store.dispatch(initializeMixer(temp))
           if (msg.data.users) {
             store.dispatch((0, _actions.initializeUsers)(msg.data.users));
           }
@@ -267,72 +333,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var channels = {
-  'chan_2': {
-    level: 40,
-    direction: 'outgoing',
-    mode: 'ring',
-    number: '+255 712 444 333',
-    muted: false,
-    duration: null,
-    contact: {
-      number: '+255 712 155 789',
-      name: 'Uri Geller',
-      location: '',
-      notes: {}
-    },
-    recording: false
-  },
-  'chan_3': {
-    level: 70,
-    direction: null,
-    mode: 'master',
-    number: '+255 712 444 333',
-    muted: true,
-    duration: null,
-    contact: {
-      number: '+255 712 155 789',
-      name: 'Uri Geller',
-      location: '',
-      notes: {}
-    },
-    recording: false
-  },
-  'chan_4': {
-    level: 90,
-    direction: null,
-    mode: 'defunct',
-    number: '+255 712 444 333',
-    muted: false,
-    duration: null,
-    contact: null,
-    recording: false
-  },
-  'chan_1': {
-    level: 10,
-    direction: 'incoming',
-    mode: 'ring',
-    number: '+255 712 444 333',
-    muted: false,
-    duration: null,
-    contact: {
-      number: '+255 712 444 333',
-      name: 'Manute Bol',
-      location: '',
-      notes: {}
-    },
-    recording: false
-  }
-};
-
 var initialMixerState = {
-  channels: channels,
+  channels: {},
   master: {},
-  host: {}
+  host: {},
+  sound: false
 };
 
 function channelState(channels, chan, state) {
   return _extends({}, channels, _defineProperty({}, chan, Object.assign({}, channels[chan], state)));
+}
+
+function shouldPlaySound(channels) {
+  for (var key in channels) {
+    if ('ring' === channels[key].mode) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function mixer() {
@@ -341,11 +359,18 @@ function mixer() {
 
   switch (action.type) {
     case 'initialize-mixer':
-      return action.state;
+      {
+        var sound = shouldPlaySound(action.state.channels);
+        return _extends({}, action.state, { sound: sound
+        });
+      }
     case 'update-mixer':
-      return _extends({}, state, {
-        channels: Object.assign({}, state.channels, action.state)
-      });
+      {
+        var channels = Object.assign({}, state.channels, action.state);
+        var sound = shouldPlaySound(channels);
+        return _extends({}, state, { sound: sound, channels: channels
+        });
+      }
     case 'mute':
     case 'unmute':
       return _extends({}, state, {
@@ -1587,6 +1612,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
 var _Channel = require('./Channel');
 
 var _Channel2 = _interopRequireDefault(_Channel);
@@ -1640,35 +1669,42 @@ var Mixer = (function (_React$Component) {
   }
 
   _createClass(Mixer, [{
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      var _props = this.props;
-      var mixer = _props.mixer;
-      var dispatch = _props.dispatch;
-
-      var sound = document.getElementById('sound');
-      for (var key in mixer.channels) {
-        if ('ring' === mixer.channels[key].mode) {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      if (!props.mixer || !props.mixer.hasOwnProperty('sound')) {
+        return;
+      }
+      var sound = _reactDom2.default.findDOMNode(this.refs.audio);
+      if (true === props.mixer.sound) {
+        if (sound.paused) {
+          sound.currentTime = 0;
           sound.play();
-          return;
+        }
+      } else {
+        if (!sound.paused) {
+          sound.pause();
         }
       }
-      sound.pause();
     }
   }, {
     key: 'render',
     value: function render() {
-      var _props2 = this.props;
-      var _props2$mixer = _props2.mixer;
-      var channels = _props2$mixer.channels;
-      var master = _props2$mixer.master;
-      var client = _props2.client;
-      var dispatch = _props2.dispatch;
-      var sendMessage = _props2.sendMessage;
+      var _props = this.props;
+      var _props$mixer = _props.mixer;
+      var channels = _props$mixer.channels;
+      var master = _props$mixer.master;
+      var client = _props.client;
+      var dispatch = _props.dispatch;
+      var sendMessage = _props.sendMessage;
 
       return _react2.default.createElement(
         'div',
         { style: styles.wrapper },
+        _react2.default.createElement(
+          'audio',
+          { ref: 'audio', loop: 'true' },
+          _react2.default.createElement('source', { src: 'wav/ring.wav', type: 'audio/wav' })
+        ),
         _react2.default.createElement(
           'div',
           { style: styles.main },
@@ -1719,7 +1755,7 @@ var styles = {
 
 exports.default = Mixer;
 
-},{"./Channel":5,"./Master":7,"lodash":21,"react":431}],9:[function(require,module,exports){
+},{"./Channel":5,"./Master":7,"lodash":21,"react":431,"react-dom":260}],9:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };

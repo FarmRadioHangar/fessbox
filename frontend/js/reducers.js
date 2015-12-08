@@ -3,68 +3,11 @@ import _ from 'lodash'
 import { combineReducers } 
   from 'redux'
 
-const channels = {
-  'chan_2' : {
-    level      : 40,
-    direction  : 'outgoing',
-    mode       : 'ring',
-    number     : '+255 712 444 333',
-    muted      : false,
-    duration   : null,
-    contact    : {
-      number   : '+255 712 155 789',
-      name     : 'Uri Geller',
-      location : '',
-      notes    : {}
-    },
-    recording  : false
-  },
-  'chan_3' : {
-    level      : 70,
-    direction  : null,
-    mode       : 'master',
-    number     : '+255 712 444 333',
-    muted      : true,
-    duration   : null,
-    contact    : {
-      number   : '+255 712 155 789',
-      name     : 'Uri Geller',
-      location : '',
-      notes    : {}
-    },
-    recording  : false
-  },
-  'chan_4' : {
-    level      : 90,
-    direction  : null,
-    mode       : 'defunct',
-    number     : '+255 712 444 333',
-    muted      : false,
-    duration   : null,
-    contact    : null,
-    recording  : false
-  },
-  'chan_1' : {
-    level      : 10,
-    direction  : 'incoming',
-    mode       : 'ring',
-    number     : '+255 712 444 333',
-    muted      : false,
-    duration   : null,
-    contact    : {
-      number   : '+255 712 444 333',
-      name     : 'Manute Bol',
-      location : '',
-      notes    : {}
-    },
-    recording  : false
-  }
-}
-
 const initialMixerState = {
-  channels,
-  master : {},
-  host   : {}
+  channels : {},
+  master   : {},
+  host     : {},
+  sound    : false
 }
 
 function channelState(channels, chan, state) {
@@ -74,15 +17,30 @@ function channelState(channels, chan, state) {
   }
 }
 
+function shouldPlaySound(channels) {
+  for (let key in channels) {
+    if ('ring' === channels[key].mode) {
+      return true
+    }
+  }
+  return false
+}
+
 function mixer(state = initialMixerState, action) {
   switch (action.type) {
-    case 'initialize-mixer':
-      return action.state
-    case 'update-mixer':
-      return { 
-        ...state,
-        channels : Object.assign({}, state.channels, action.state)
+    case 'initialize-mixer': {
+      const sound = shouldPlaySound(action.state.channels)
+      return {
+        ...action.state, sound
       }
+    }
+    case 'update-mixer': {
+      const channels = Object.assign({}, state.channels, action.state)
+      const sound = shouldPlaySound(channels)
+      return { 
+        ...state, sound, channels 
+      }
+    }
     case 'mute':
     case 'unmute':
       return {

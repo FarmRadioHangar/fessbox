@@ -54,6 +54,71 @@ ReactDOM.render(
 ws.onopen  = () => { console.log('open') } 
 ws.onclose = () => { console.log('close') } 
 
+const channels = {
+  'chan_2' : {
+    level      : 40,
+    direction  : 'outgoing',
+    mode       : 'ring',
+    number     : '+255 712 444 333',
+    muted      : false,
+    duration   : null,
+    contact    : {
+      number   : '+255 712 155 789',
+      name     : 'Uri Geller',
+      location : '',
+      notes    : {}
+    },
+    recording  : false
+  },
+  'chan_3' : {
+    level      : 70,
+    direction  : null,
+    mode       : 'master',
+    number     : '+255 712 444 333',
+    muted      : true,
+    duration   : null,
+    contact    : {
+      number   : '+255 712 155 789',
+      name     : 'Uri Geller',
+      location : '',
+      notes    : {}
+    },
+    recording  : false
+  },
+  'chan_4' : {
+    level      : 90,
+    direction  : null,
+    mode       : 'defunct',
+    number     : '+255 712 444 333',
+    muted      : false,
+    duration   : null,
+    contact    : null,
+    recording  : false
+  },
+  'chan_1' : {
+    level      : 10,
+    direction  : 'incoming',
+    mode       : 'ring',
+    number     : '+255 712 444 333',
+    muted      : false,
+    duration   : null,
+    contact    : {
+      number   : '+255 712 444 333',
+      name     : 'Manute Bol',
+      location : '',
+      notes    : {}
+    },
+    recording  : false
+  }
+}
+
+const temp = {
+  channels,
+  master : {},
+  host   : {},
+  sound  : false
+}
+
 ws.onmessage = e => { 
   if (e.data) {
     const msg = JSON.parse(e.data)
@@ -63,6 +128,7 @@ ws.onmessage = e => {
     switch (msg.event) {
       case 'initialize':
         store.dispatch(initializeMixer(msg.data.mixer))
+        //store.dispatch(initializeMixer(temp))
         if (msg.data.users) {
           store.dispatch(initializeUsers(msg.data.users))
         }
