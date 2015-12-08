@@ -129,11 +129,6 @@ function client(state = {}, action) {
         default:
           return state
       }
-    case 'assign-host-id':
-      return {
-        ...state,
-        host_id : action.host_id
-      }
     default:
       return state
   }
