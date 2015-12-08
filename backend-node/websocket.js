@@ -1,10 +1,10 @@
-var url = require("url");
+var appConfig = require("./config/app.json");
 
 var s = require("./localStorage");
-var appConfig = require("./config/app.json");
 var eventHandlers = require("./eventHandlers");
 var myLib = require("./myLib");
 
+var url = require("url");
 var WebSocketServer = require('ws').Server
   , wss = new WebSocketServer({ port: appConfig.wsPort });
 
@@ -12,20 +12,20 @@ wss.on('connection', function connection(ws) {
 	var location = url.parse(ws.upgradeReq.url, true);
 
 	ws.on('message', function incoming(message) {
+		myLib.consoleLog('debug', 'receivedEvent', message);
 		message = JSON.parse(message);
 		if (!message.event) {
-			ws.send(serializeObject("input_error", "message format error, should be { event: String, data: Object }"));
+			ws.send(serializeEvent("input_error", "message format error, should be { event: String, data: Object }"));
 		} else {
 			// debug: return to sender and print
-			ws.send(serializeObject("echo", message));
-			console.log('received %s: %s', message.event, JSON.stringify(message.data));
+			ws.send(serializeEvent("echo", message));
 
 			if (!eventHandlers[message.event]) {
-				myLib.consoleLog('debug', 'returned', "event handler not found");
-				ws.send(serializeObject("input_error", "event handler not found"));
+				myLib.consoleLog('debug', 'input_error', "event handler not found: " + message.event);
+				ws.send(serializeEvent("input_error", "event handler not found: " + message.event));
 			} else {
 				eventHandlers[message.event](location.query.user_id, message.data, function (event, data, target) {
-					data = serializeObject(event, data);
+					data = serializeEvent(event, data);
 					myLib.consoleLog('debug', 'emitEvent', data);
 					switch (target) {
 						case 'self':
@@ -45,6 +45,7 @@ wss.on('connection', function connection(ws) {
 			}
 		}
 	});
+	// todo: move this to api.js
 	if (location.query.user_id && s.ui.users[location.query.user_id]) { 
 		var users = {};
 		users[location.query.user_id] = s.ui.users[location.query.user_id];
@@ -54,7 +55,7 @@ wss.on('connection', function connection(ws) {
 		users: users,
 		server_time: Date.now()
 	};
-	ws.send(serializeObject("initialize", initState));
+	ws.send(serializeEvent("initialize", initState));
 });
 
 wss.broadcast = function broadcast(data) {
@@ -63,7 +64,7 @@ wss.broadcast = function broadcast(data) {
 	});
 };
 
-var serializeObject = function (event, data) {
+var serializeEvent = function (event, data) {
 	return JSON.stringify({
 		event: event,
 		data: data
@@ -71,7 +72,7 @@ var serializeObject = function (event, data) {
 };
 
 var broadcastEvent = function (event, data) {
-	var payload = serializeObject(event, data);
+	var payload = serializeEvent(event, data);
 	myLib.consoleLog('debug', 'broadcastEvent', payload);
 	wss.clients.forEach(function each(client) {
 		client.send(payload);
@@ -79,4 +80,3 @@ var broadcastEvent = function (event, data) {
 };
 
 exports.broadcastEvent = broadcastEvent;
-//exports.bind = bind;

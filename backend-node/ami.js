@@ -1,5 +1,3 @@
-var i18n = require("i18n");
-
 var amiConf = require("./config/ami.json");
 var astConf = require("./config/asterisk.json");
 
@@ -8,15 +6,13 @@ var s = require("./localStorage");
 var api = require("./api");
 var wss = require("./websocket"); //temp
 
-
-
 var ami = new require('asterisk-manager')(amiConf.port, amiConf.host, amiConf.username, amiConf.password, true);
-//https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+AMI+Events
-//https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+AMI+Actions
+// https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+AMI+Events
+// https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+AMI+Actions
 ami.keepConnected();
 
 ami.on('fullybooted', function(evt) {
-	myLib.consoleLog('log', 'init AMI', "Connected to asterisk! Initializing state");
+	myLib.consoleLog('log', 'init AMI', "Connected to asterisk!");
 	//these are here in order to start the web-socket after the objects are initialized. not a very clever way
 	ami.action({
 		action: "DongleShowDevices"
@@ -91,7 +87,6 @@ ami.on('managerevent', function(evt) {
 
 ami.on('donglecallstatechange', function(evt) {
 //	{"event":"DongleCallStateChange","privilege":"call,all","device":"airtel2","callidx":"1","newstate":"released"}
-
 	console.error(JSON.stringify(evt));
 });
 
@@ -100,7 +95,21 @@ ami.on('donglenewsms', function(evt) {
 });
 
 ami.on('donglenewsmsbase64', function(evt) {
+	var prefix = new RegExp('^\\' + amiConf.country_prefix); 
+	api.inboxUpdate('sms', Date.now(), evt.from.replace(prefix, '0'), new Buffer(evt.message, 'base64').toString("utf8"));
 	console.error(JSON.stringify(evt));
+});
+
+//todo: get user info via addressBook api call on newchannel event instead of using this event
+ami.on('newcallerid', function(evt) {
+//	{"event":"NewCallerid","privilege":"call,all","channel":"Dongle/airtel2-0100000004","calleridnum":"+255688755855","calleridname":"airtel2-xxx","uniqueid":"1449483797.31","cid-callingpres":"0 (Presentation Allowed, Not Screened)"}
+	var channelInfo = evt.channel.split(/[\/-]/, 3);
+	if (s.ui.mixer.channels[channelInfo[1]]) {
+		api.channelUpdate(channelInfo[1], { contact: {
+			name: evt.calleridname,
+			number: evt.calleridnum
+		}});
+	}
 });
 
 ami.on('donglestatus', function(evt) {
@@ -136,6 +145,7 @@ ami.on('donglestatus', function(evt) {
 				break;
 		}
 	}
+	// debug
 	if (evt.status != 'Register' && evt.status != 'Unregister') {
 		console.error(JSON.stringify(evt));
 	}
@@ -177,6 +187,7 @@ ami.on('musiconhold', function(evt) {
 	}	
 });
 
+// todo: catch only remote party hangup
 ami.on('hangup', function(evt) {
 //	{"event":"Hangup","privilege":"call,all","channel":"Dongle/airtel1-0100000006","uniqueid":"1448369795.17","calleridnum":"+255687754487","calleridname":"airtel1","connectedlinenum":"707","connectedlinename":"host galaxy tab","accountcode":"","cause":"17","cause-txt":"User busy"}
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
@@ -619,29 +630,26 @@ function connectNumbers(number1, number2) {
 }
 
 function setAmiChannelMuted(channel, value, direction, cb) {
-	if (channel) { // temp
-		var amiResponse = function(err, res) {
-			if (!err) {
-				cb();
-				console.log(JSON.stringify(res));
-			} else {
-				cb(JSON.stringify(res));
-				console.error(JSON.stringify(res));
-			}
-		};
-		ami.action({
-			action: 'MuteAudio',
-			channel: channel,
-			direction: direction,
-			state: value
-		}, amiResponse);
-	}
+	ami.action({
+		action: 'MuteAudio',
+		channel: channel,
+		direction: direction,
+		state: value
+	}, function(err, res) {
+		if (!err) {
+			cb();
+			console.log(JSON.stringify(res));
+		} else {
+			cb(JSON.stringify(res));
+			console.error(JSON.stringify(res));
+		}
+	});
 }
 
 function setAmiChannelVolume(channel, level, direction, cb) {
 	if (channel) { // temp
-		//-33 :: 17
-		level = level / 2 - 33;
+		//-30 :: 20
+		level = level / 2 - 30;
 		var variable = 'VOLUME(' + direction + ')';
 		console.log("setting chan volume!",channel, variable, level);
 		// todo: use the setVar function
@@ -691,22 +699,6 @@ function amiHangup(channel, cb) {
 		} else {
 			cb(JSON.stringify(err));
 			console.error('hangup err', JSON.stringify(err));
-		}
-	});
-}
-
-function amiOnHold(channel) {
-	ami.action({
-		action: "Redirect",
-		channel: channel,
-		context: "from-internal",
-		exten: astConf.on_hold,
-		priority: 1
-	}, function(err, res) {
-		if (!err) {
-			console.log(JSON.stringify(res));
-		} else {
-			console.log(JSON.stringify(res));
 		}
 	});
 }
@@ -781,25 +773,6 @@ function amiRedirectBoth(channel, destination, channel2, destination2, cb) {
 	});
 }
 
-function saveChannel(channel_id) {
-	
-}
-
-function loadChannel(channel_id) {
-}
-
-function saveHost(host_id) {
-}
-
-function loadHost(host_id) {
-}
-
-function saveMaster() {
-}
-
-function loadMaster() {
-	var master = require("./state/master.json");
-}
 
 // provider interface
 
@@ -862,13 +835,21 @@ exports.hangup = function (channel_id, cb) {
 // api interface exports
 
 exports.setChannelMuted = function (channel_id, value, cb) {
-	var direction = "in";
-	setAmiChannelMuted(s.asterisk.channels[channel_id].internalName, value, direction, cb);
+	if (s.asterisk.channels[channel_id] && s.asterisk.channels[channel_id].internalName) {
+		var direction = "in";
+		setAmiChannelMuted(s.asterisk.channels[channel_id].internalName, value, direction, cb);
+	} else {
+		cb("PANIC - channel not found: " + channel_id);
+	}
 };
 
 exports.setUserMuted = function (user_id, value, cb) {
-	var direction = "out";
-	setAmiChannelMuted(s.asterisk.channels[user_id].internalName, value, direction, cb);
+	if (s.asterisk.channels[user_id] && s.asterisk.channels[user_id].internalName) {
+		var direction = "out";
+		setAmiChannelMuted(s.asterisk.channels[user_id].internalName, value, direction, cb);
+	} else {
+		cb("PANIC - channel not found: " + user_id);
+	}
 };
 
 exports.setMasterVolume = function (value, cb) {
@@ -877,24 +858,33 @@ exports.setMasterVolume = function (value, cb) {
 };
 
 exports.setChannelVolume = function (channel_id, value, cb) {
-	var direction = "RX";
-	setAmiChannelVolume(s.asterisk.channels[channel_id].internalName, value, direction, cb);
+	if (s.asterisk.channels[channel_id] && s.asterisk.channels[channel_id].internalName) {
+		var direction = "RX";
+		setAmiChannelVolume(s.asterisk.channels[channel_id].internalName, value, direction, cb);
+	} else {
+		cb("PANIC - channel not found: " + channel_id);
+	}
 };
 
-exports.setUserVolume  = function (channel_id, value, cb) {
-	var direction = "TX";
-	setAmiChannelVolume(s.asterisk.channels[channel_id].internalName, value, direction, cb);
+exports.setUserVolume = function (channel_id, value, cb) {
+	if (s.asterisk.channels[channel_id] && s.asterisk.channels[channel_id].internalName) {
+		var direction = "TX";
+		setAmiChannelVolume(s.asterisk.channels[channel_id].internalName, value, direction, cb);
+	} else {
+		cb("PANIC - channel not found: " + channel_id);
+	}
 };
 
 exports.setChanMode = function (channel_id, destination, cb) {
-	console.log("exports.setChanMode", channel_id, destination);
-	if (astConf.virtual[destination]) {
-		destination = astConf.virtual[destination];
-//	} else {
-//		destination = "SIP/" + destination;
+	if (s.asterisk.channels[channel_id] && s.asterisk.channels[channel_id].internalName) {
+		if (astConf.virtual[destination]) {
+			destination = astConf.virtual[destination];
+		}
+		amiRedirect(s.asterisk.channels[channel_id].internalName, destination, cb);
+	} else {
+		cb("PANIC - channel not found: " + channel_id);
 	}
-	amiRedirect(s.asterisk.channels[channel_id].internalName, destination, cb);
-}
+};
 
 // channel_id and channel_id2 must be bridged for this to work
 exports.setChanModes = function (channel_id, destination, channel_id2, destination2, cb) {
@@ -906,6 +896,11 @@ exports.setChanModes = function (channel_id, destination, channel_id2, destinati
 		destination2 = astConf.virtual[destination2];
 	}
 	amiRedirectBoth(s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2, cb);
-}
+};
 
+exports.setPhoneBookEntry = function (number, label, cb) {
+	amiSimpleCommand('database put cidname ' + number + ' "' + label + '"', cb);
+};
 
+exports.setMasterRecording = function (value, cb) {
+};

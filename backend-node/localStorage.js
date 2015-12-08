@@ -1,76 +1,77 @@
 var fs = require("fs");
 var astConf = require("./config/asterisk.json");
 var stateFile = __dirname + "/state/snapshot.json";
-exports.ui = {};
-	exports.ui.mixer = {
+
+exports.ui = {
+	mixer: {
 		channels: {},
-		master: {
-			level     : 50,
-			on_air    : true,
-			recording : false,
-			delay     : 0
-		},
-		hosts: {}
-	};
+		master: null,
+		hosts: astConf.hosts,
+		operators: astConf.operators
+	},
+	users: {}
+};
 
-	exports.ui.mixer.master = require("./state/master.json");
-	exports.ui.users = {};
+exports.ui.mixer.master = require("./state/master.json");
 
-
-	exports.asterisk = {
-		hosts: {},
-		channels: {},
-		conference: {
-			input: null,
-			output: null,
+exports.asterisk = {
+	hosts: {},
+	channels: {},
+	conference: {
+		input: null,
+		output: null,
 //			members: {},
-			on_air: null
-		},
-		master: {
-		}
-	};
-	for (var dongleName in astConf.dongles) {
-		loadChannel(dongleName);
-		exports.ui.mixer.channels[dongleName].number = astConf.dongles[dongleName].number,
-		exports.asterisk.channels[dongleName] = {};
+		on_air: null
+	},
+	master: {
 	}
-	exports.ui.mixer.hosts = astConf.hosts;
-	for (var i in astConf.hosts) {
-		loadChannel(astConf.hosts[i]);
-		loadUser(astConf.hosts[i]);
-		exports.asterisk.channels[astConf.hosts[i]] = {};
-	}
-	exports.ui.mixer.operators = astConf.operators;
+};
+
+for (var dongleName in astConf.dongles) {
+	loadChannel(dongleName);
+	exports.ui.mixer.channels[dongleName].number = astConf.dongles[dongleName].number;
+	exports.ui.mixer.channels[dongleName].mode = 'defunct';
+	exports.ui.mixer.channels[dongleName].type = 'dongle';
+	exports.asterisk.channels[dongleName] = {};
+}
+
+for (var i in astConf.hosts) {
+	loadChannel(astConf.hosts[i]);
+	exports.ui.mixer.channels[astConf.hosts[i]].mode = 'defunct';
+	exports.ui.mixer.channels[astConf.hosts[i]].type = 'sip';
+	exports.asterisk.channels[astConf.hosts[i]] = {};
+	loadUser(astConf.hosts[i]);
+}
 
 function saveSnapshot(exit) {
-        //todo
+	//todo
 //      if (exit) {
-        var myData = {
-                mixer: exports.ui.mixer
-        };
-        fs.writeFile(stateFile, JSON.stringify(myData), "utf8", function (err) {
-                if (err) {
-                        console.error("ERROR::saveSnapshot - " + JSON.stringify(err));
-                } else {
-                        console.log("NOTICE::saveSnapshot - data saved to disk");
-                }
-                if (exit) {
-                        exit();
-                }
-        });
+	var myData = {
+		mixer: exports.ui.mixer
+	};
+	fs.writeFile(stateFile, JSON.stringify(myData), "utf8", function (err) {
+		if (err) {
+			console.error("ERROR::saveSnapshot - " + JSON.stringify(err));
+		} else {
+			console.log("NOTICE::saveSnapshot - data saved to disk");
+		}
+		if (exit) {
+			exit();
+		}
+	});
 //      }
 }
 
 function loadSnapshot() {
-        fs.exists(stateFile, function (exists) {
-                if (exists) {
-                        var myData = require(stateFile);
-                        exports.ui.mixer = myData.mixer;
-                        console.log("NOTICE::loadSnapshot - data loaded from disk");
-                } else {
-                        console.log("NOTICE::loadSnapshot - " + stateFile + " not found, starting with empty state");
-                }
-        });
+	fs.exists(stateFile, function (exists) {
+		if (exists) {
+			var myData = require(stateFile);
+			exports.ui.mixer = myData.mixer;
+			console.log("NOTICE::loadSnapshot - data loaded from disk");
+		} else {
+			console.log("NOTICE::loadSnapshot - " + stateFile + " not found, starting with empty state");
+		}
+	});
 }
 
 function saveUser(user_id) {
@@ -111,9 +112,9 @@ function saveChannel(channel_id) {
 	channelFile = __dirname + "/state/channels/" + channel_id + ".json";
 	fs.writeFile(channelFile, JSON.stringify(exports.ui.mixer.channels[channel_id]), "utf8", function (err) {
 		if (err) {
-				console.error("ERROR::saveChannel - " + JSON.stringify(err));
+			console.error("ERROR::saveChannel - " + JSON.stringify(err));
 		} else {
-				console.log("NOTICE::saveChannel - data saved to disk");
+			console.log("NOTICE::saveChannel - data saved to disk");
 		}
 	});
 }

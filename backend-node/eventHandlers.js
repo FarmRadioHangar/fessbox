@@ -1,26 +1,20 @@
 var api = require("./api");
-/*
-exports.channelMode = function(user_id, data, cb) {
-	for(channel_id in data) {
-		api.setChannelMode(user_id, channel_id, data[channel_id], function (err, channel) {
-			if (err) {
-				cb("event_error", {
-					event: "channelMode",
-					key: channel_id,
-					msg: err
-				}, 'self');
-			} else {
-				var changed = {};
-				changed[channel_id] = channel;
-				cb("channelUpdate", changed, 'all');
-			}
-		});
-	}
-};
-*/
+
+exports.callNumber = function () {
+}
 
 exports.channelContactInfo = function(user_id, data, cb) {
 	cb("channelContactInfo", data, 'others');
+	for (channel_id in data) {
+		api.setChannelContactInfo(channel_id, data[channel_id], function(err) {
+			if (err) {
+				cb("event_error", {
+					event: "channelContactInfo",
+					msg: err
+				}, 'self');
+			}
+		});
+	}
 };
 
 // stable 

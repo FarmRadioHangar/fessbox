@@ -44,7 +44,7 @@ function httpGeneric(statusCode, message, response, label) {
 }
 
 function consoleLog(output, label, message) {
-	var logStamp = new Date().toLocaleString() + " -";
+	var logStamp = '>>>> ' + new Date().toLocaleString() + " -";
 /*
 	if (!label) {
 		//arguments.callee.name
@@ -56,9 +56,9 @@ function consoleLog(output, label, message) {
 	if (output === "error" || output === "log") {
 		console[output](logStamp, output, label, message);
 	} else if (output === 'warning') {
-		console.log(output, label, message);
+		console.log(logStamp, output, label, message);
 	} else if (output === 'debug') {
-		console.error(output, label, message);
+		console.error('|||| ', output, label, message);
 	} else {
 		console.error(logStamp, "undefined log output", label, message);
 	}
