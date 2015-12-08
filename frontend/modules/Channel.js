@@ -356,7 +356,8 @@ class Channel extends React.Component {
     }
   }
   renderModeSwitch(color) {
-    const modes = ['host', 'master', 'on_hold', 'ivr']
+    /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
+    const modes = ['host', 'master', 'on_hold']
     const labels = {
       host    : 'Host',
       master  : 'Master',

@@ -934,7 +934,8 @@ var Channel = (function (_React$Component) {
     value: function renderModeSwitch(color) {
       var _this3 = this;
 
-      var modes = ['host', 'master', 'on_hold', 'ivr'];
+      /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
+      var modes = ['host', 'master', 'on_hold'];
       var labels = {
         host: 'Host',
         master: 'Master',
