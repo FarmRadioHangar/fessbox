@@ -1671,7 +1671,7 @@ var Mixer = (function (_React$Component) {
         { style: styles.wrapper },
         _react2.default.createElement(
           'div',
-          { style: styles.topWrapper },
+          { style: styles.main },
           _react2.default.createElement(
             'div',
             null,
@@ -1692,7 +1692,7 @@ var Mixer = (function (_React$Component) {
         ),
         _react2.default.createElement(
           'div',
-          { style: styles.bottomWrapper },
+          { style: styles.master },
           !!master && !!Object.keys(master).length && _react2.default.createElement(_Master2.default, _extends({}, master, {
             dispatch: dispatch,
             sendMessage: sendMessage }))
@@ -1708,11 +1708,11 @@ var styles = {
   wrapper: {
     display: 'flex'
   },
-  topWrapper: {
+  main: {
     flex: 11
   },
-  bottomWrapper: {
-    flex: 1,
+  master: {
+    flex: 2,
     textAlign: 'center'
   }
 };

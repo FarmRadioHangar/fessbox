@@ -49,7 +49,7 @@ class Mixer extends React.Component {
     } = this.props
     return (
       <div style={styles.wrapper}>
-        <div style={styles.topWrapper}> 
+        <div style={styles.main}> 
           <div>
             {_.pairs(channels).sort(compareChannels).map(pair => {
               const [id, chan] = pair
@@ -66,7 +66,7 @@ class Mixer extends React.Component {
             })}
           </div>
         </div>
-        <div style={styles.bottomWrapper}> 
+        <div style={styles.master}> 
           {!!master && !!Object.keys(master).length && (
             <Master {...master} 
               dispatch        = {dispatch} 
@@ -82,11 +82,11 @@ const styles = {
   wrapper : {
     display   : 'flex'
   },
-  topWrapper : {
+  main : {
     flex      : 11
   },
-  bottomWrapper : {
-    flex      : 1, 
+  master : {
+    flex      : 2, 
     textAlign : 'center'
   }
 }
