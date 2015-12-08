@@ -30,14 +30,15 @@ class Ui extends React.Component {
   }
   render() {
     const { client, mixer, users } = this.props
-    return (users && users[client.userId] && mixer.channels) ? (
+    const { sidebarOpen, sidebarDocked } = this.state
+    return !!users && users.hasOwnProperty(client.userId) && mixer.hasOwnProperty('channels') && mixer.channels.hasOwnProperty(client.userId) ? ( 
       <Sidebar sidebar = {(
         <div style = {styles.hostWrapper}>
           <Host {...this.props} />
         </div>
       )}
-        open       = {this.state.sidebarOpen}
-        docked     = {this.state.sidebarDocked}
+        open       = {sidebarOpen}
+        docked     = {sidebarDocked}
         onSetOpen  = {this.onSetSidebarOpen}>
         <Mixer {...this.props} />
       </Sidebar>

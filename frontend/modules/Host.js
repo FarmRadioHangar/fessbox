@@ -77,8 +77,12 @@ class Host extends React.Component {
     dispatch(updateUserLevel(client.userId, level))
   }
   render() {
+    const { client, mixer, users } = this.props
     const user = users[client.userId]
     const channel = mixer.channels[client.userId]
+    if (!channel || !user) {
+      return <span />
+    }
     return (
       <div style={styles.wrapper}>
         <div style={styles.bar}> 
@@ -90,7 +94,7 @@ class Host extends React.Component {
             onChange      = {(from, to) => { this.updateChannelLevel(to) }}
             onToggleMuted = {() => { this.setChannelMuted(!channel.muted) }} />
         </div>
-        <div style={styles.bar}> 
+        <div style={{...styles.bar, margin: '11px'}}> 
           <SliderBar 
             icon          = 'headphones' 
             value         = {user.level}

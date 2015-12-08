@@ -1202,6 +1202,8 @@ exports.default = Channel;
 },{"../js/actions":1,"./Slider":9,"./testdata/entries":11,"./testdata/randomize":12,"classnames":19,"moment":22,"react":431,"react-bootstrap":93}],6:[function(require,module,exports){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {
@@ -1342,8 +1344,16 @@ var Host = (function (_React$Component2) {
     value: function render() {
       var _this3 = this;
 
+      var _props6 = this.props;
+      var client = _props6.client;
+      var mixer = _props6.mixer;
+      var users = _props6.users;
+
       var user = users[client.userId];
       var channel = mixer.channels[client.userId];
+      if (!channel || !user) {
+        return _react2.default.createElement('span', null);
+      }
       return _react2.default.createElement(
         'div',
         { style: styles.wrapper },
@@ -1364,7 +1374,7 @@ var Host = (function (_React$Component2) {
         ),
         _react2.default.createElement(
           'div',
-          { style: styles.bar },
+          { style: _extends({}, styles.bar, { margin: '11px' }) },
           _react2.default.createElement(SliderBar, {
             icon: 'headphones',
             value: user.level,
@@ -1900,16 +1910,19 @@ var Ui = (function (_React$Component) {
       var client = _props.client;
       var mixer = _props.mixer;
       var users = _props.users;
+      var _state = this.state;
+      var sidebarOpen = _state.sidebarOpen;
+      var sidebarDocked = _state.sidebarDocked;
 
-      return users && users[client.userId] && mixer.channels ? _react2.default.createElement(
+      return !!users && users.hasOwnProperty(client.userId) && mixer.hasOwnProperty('channels') && mixer.channels.hasOwnProperty(client.userId) ? _react2.default.createElement(
         _reactSidebar2.default,
         { sidebar: _react2.default.createElement(
             'div',
             { style: styles.hostWrapper },
             _react2.default.createElement(_Host2.default, this.props)
           ),
-          open: this.state.sidebarOpen,
-          docked: this.state.sidebarDocked,
+          open: sidebarOpen,
+          docked: sidebarDocked,
           onSetOpen: this.onSetSidebarOpen },
         _react2.default.createElement(_Mixer2.default, this.props)
       ) : _react2.default.createElement(_Mixer2.default, this.props);
