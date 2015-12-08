@@ -234,17 +234,7 @@ class Channel extends React.Component {
         </div>
       )
     } else if ('defunct' === mode) {
-      return (
-        <div style={{textAlign: 'center', fontSize: '160%'}}> 
-          Defunct
-          {/*
-          <span className='fa-stack fa-lg'>
-            <i className='fa fa-circle fa-stack-2x' style={{color: '#5cb85c'}} />
-            <i className='fa fa-phone fa-stack-1x fa-inverse' />
-          </span>
-          */}
-        </div>
-      )
+      return <span />
     } else {
       return (
         <div>
@@ -447,32 +437,41 @@ class Channel extends React.Component {
                 {hours > 0 && <span>{hours}:</span>}{moment(moment(this.state.now).diff(timestamp)).format('mm:ss')}
               </div>
             )}
+            {'defunct' === mode && (
+              <span className='label label-danger' style={{
+                fontWeight    : 700,
+                lineHeight    : 1.6,
+                textTransform : 'uppercase'
+              }}>Defunct</span>
+            )}
           </div>
         </div>
-        <div className='panel-body' style={{backgroundColor: bg}}>
-          {this.renderChannelMode()}
-        </div>
         {'defunct' !== mode && (
-          <div className='panel-footer'>
-            <div style={styles.controls}> 
-              <button 
-                disabled       = {'ivr' === mode}
-                className      = {`btn btn-default btn-${color} btn-large`}
-                onClick        = {() => this.toggleMuted()}
-                style          = {styles.muteButton}>
-                <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
-              </button>
-              <div style={styles.sliderWrapper}>
-                <Slider 
-                  min          = {1}
-                  max          = {100}
-                  style        = {styles.slider.horizontal}
-                  value        = {level}
-                  defaultValue = {level}
-                  onChange     = {(from, to) => this.updateLevel(to)}
-                  enabled      = {!muted && 'ivr' !== mode} />
+          <div>
+            <div className='panel-body' style={{backgroundColor: bg}}>
+              {this.renderChannelMode()}
+            </div>
+            <div className='panel-footer'>
+              <div style={styles.controls}> 
+                <button 
+                  disabled       = {'ivr' === mode}
+                  className      = {`btn btn-default btn-${color} btn-large`}
+                  onClick        = {() => this.toggleMuted()}
+                  style          = {styles.muteButton}>
+                  <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
+                </button>
+                <div style={styles.sliderWrapper}>
+                  <Slider 
+                    min          = {1}
+                    max          = {100}
+                    style        = {styles.slider.horizontal}
+                    value        = {level}
+                    defaultValue = {level}
+                    onChange     = {(from, to) => this.updateLevel(to)}
+                    enabled      = {!muted && 'ivr' !== mode} />
+                </div>
+                {this.renderModeSwitch(color)}
               </div>
-              {this.renderModeSwitch(color)}
             </div>
           </div>
         )}
@@ -507,6 +506,13 @@ const styles = {
     }
   }
 }
+
+//          {/*
+//          <span className='fa-stack fa-lg'>
+//            <i className='fa fa-circle fa-stack-2x' style={{color: '#5cb85c'}} />
+//            <i className='fa fa-phone fa-stack-1x fa-inverse' />
+//          </span>
+//          */}
 
 //                  {/*
 //                  <span style={{marginLeft: '10px'}}>

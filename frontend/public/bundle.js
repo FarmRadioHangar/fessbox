@@ -818,11 +818,7 @@ var Channel = (function (_React$Component) {
           )
         );
       } else if ('defunct' === mode) {
-        return _react2.default.createElement(
-          'div',
-          { style: { textAlign: 'center', fontSize: '160%' } },
-          'Defunct'
-        );
+        return _react2.default.createElement('span', null);
       } else {
         return _react2.default.createElement(
           'div',
@@ -1090,46 +1086,59 @@ var Channel = (function (_React$Component) {
                 ':'
               ),
               (0, _moment2.default)((0, _moment2.default)(this.state.now).diff(timestamp)).format('mm:ss')
+            ),
+            'defunct' === mode && _react2.default.createElement(
+              'span',
+              { className: 'label label-danger', style: {
+                  fontWeight: 700,
+                  lineHeight: 1.6,
+                  textTransform: 'uppercase'
+                } },
+              'Defunct'
             )
           )
         ),
-        _react2.default.createElement(
-          'div',
-          { className: 'panel-body', style: { backgroundColor: bg } },
-          this.renderChannelMode()
-        ),
         'defunct' !== mode && _react2.default.createElement(
           'div',
-          { className: 'panel-footer' },
+          null,
           _react2.default.createElement(
             'div',
-            { style: styles.controls },
-            _react2.default.createElement(
-              'button',
-              {
-                disabled: 'ivr' === mode,
-                className: 'btn btn-default btn-' + color + ' btn-large',
-                onClick: function onClick() {
-                  return _this4.toggleMuted();
-                },
-                style: styles.muteButton },
-              _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
-            ),
+            { className: 'panel-body', style: { backgroundColor: bg } },
+            this.renderChannelMode()
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'panel-footer' },
             _react2.default.createElement(
               'div',
-              { style: styles.sliderWrapper },
-              _react2.default.createElement(_Slider2.default, {
-                min: 1,
-                max: 100,
-                style: styles.slider.horizontal,
-                value: level,
-                defaultValue: level,
-                onChange: function onChange(from, to) {
-                  return _this4.updateLevel(to);
-                },
-                enabled: !muted && 'ivr' !== mode })
-            ),
-            this.renderModeSwitch(color)
+              { style: styles.controls },
+              _react2.default.createElement(
+                'button',
+                {
+                  disabled: 'ivr' === mode,
+                  className: 'btn btn-default btn-' + color + ' btn-large',
+                  onClick: function onClick() {
+                    return _this4.toggleMuted();
+                  },
+                  style: styles.muteButton },
+                _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
+              ),
+              _react2.default.createElement(
+                'div',
+                { style: styles.sliderWrapper },
+                _react2.default.createElement(_Slider2.default, {
+                  min: 1,
+                  max: 100,
+                  style: styles.slider.horizontal,
+                  value: level,
+                  defaultValue: level,
+                  onChange: function onChange(from, to) {
+                    return _this4.updateLevel(to);
+                  },
+                  enabled: !muted && 'ivr' !== mode })
+              ),
+              this.renderModeSwitch(color)
+            )
           )
         )
       );
@@ -1165,6 +1174,13 @@ var styles = {
     }
   }
 };
+
+//          {/*
+//          <span className='fa-stack fa-lg'>
+//            <i className='fa fa-circle fa-stack-2x' style={{color: '#5cb85c'}} />
+//            <i className='fa fa-phone fa-stack-1x fa-inverse' />
+//          </span>
+//          */}
 
 //                  {/*
 //                  <span style={{marginLeft: '10px'}}>
