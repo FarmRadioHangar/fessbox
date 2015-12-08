@@ -815,7 +815,7 @@ var Channel = (function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   'h4',
-                  { style: { marginBottom: '3px' } },
+                  { style: { marginBottom: '8px' } },
                   contact.number
                 ),
                 contact.name && _react2.default.createElement(
