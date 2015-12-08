@@ -615,8 +615,8 @@ var Channel = (function (_React$Component) {
       var sendMessage = _props6.sendMessage;
 
       var caller = {
-        'name': this.refs.callerName.value,
-        'location': this.refs.callerLocation.value
+        'name': this.refs.callerName.value
+        //'location' : this.refs.callerLocation.value
       };
       dispatch((0, _actions.updateCaller)(channelId, caller));
       sendMessage('channelContactInfo', _defineProperty({}, channelId, caller));
@@ -819,21 +819,6 @@ var Channel = (function (_React$Component) {
                   className: 'form-control',
                   placeholder: 'Name',
                   defaultValue: contact ? contact.name : '' })
-              ),
-              _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                  'label',
-                  { style: { marginTop: '8px' } },
-                  'Location'
-                ),
-                _react2.default.createElement('input', {
-                  ref: 'callerLocation',
-                  type: 'text',
-                  className: 'form-control',
-                  placeholder: 'Location',
-                  defaultValue: contact ? contact['location'] : '' })
               ),
               _react2.default.createElement(
                 'div',
@@ -1511,6 +1496,10 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _urlParams = require('../js/url-params');
+
+var _urlParams2 = _interopRequireDefault(_urlParams);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1542,6 +1531,8 @@ function compareChannels(a, b) {
   return modeWeight(a[1].mode) - modeWeight(b[1].mode);
 }
 
+var silent = (0, _urlParams2.default)('silent') || false;
+
 var Mixer = (function (_React$Component) {
   _inherits(Mixer, _React$Component);
 
@@ -1561,7 +1552,9 @@ var Mixer = (function (_React$Component) {
       if (true === props.mixer.sound) {
         if (sound.paused) {
           sound.currentTime = 0;
-          sound.play();
+          if (!silent) {
+            sound.play();
+          }
         }
       } else {
         if (!sound.paused) {
@@ -1652,7 +1645,7 @@ var styles = {
 
 exports.default = Mixer;
 
-},{"./Channel":5,"./Master":7,"lodash":21,"react":431,"react-dom":260}],9:[function(require,module,exports){
+},{"../js/url-params":4,"./Channel":5,"./Master":7,"lodash":21,"react":431,"react-dom":260}],9:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
