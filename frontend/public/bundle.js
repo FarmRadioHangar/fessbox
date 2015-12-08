@@ -982,28 +982,33 @@ var Channel = (function (_React$Component) {
 
       if ('free' === mode) {
         return {
-          color: 'info',
-          bg: 'rgba(91, 192, 222, .2)'
-        };
-      } else if ('master' === mode) {
-        return {
-          color: 'primary',
-          bg: 'rgba(69, 130, 236, .2)'
-        };
-      } else if ('on_hold' === mode) {
-        return {
           color: 'success',
           bg: 'rgba(63, 173, 70, .2)'
         };
-      } else if ('ivr' === mode) {
+      } else if ('master' === mode) {
+        return {
+          color: 'danger',
+          bg: 'rgba(217, 83, 79, .2)'
+        };
+      } else if ('on_hold' === mode) {
         return {
           color: 'warning',
           bg: 'rgba(240, 173, 78, .2)'
         };
+      } else if ('ivr' === mode) {
+        return {
+          color: 'primary',
+          bg: 'rgba(69, 130, 236, .2)'
+        };
       } else if ('ring' === mode) {
         return {
-          color: 'danger',
-          bg: 'rgba(217, 83, 79, .2)'
+          color: 'info',
+          bg: 'rgba(91, 192, 222, .2)'
+        };
+      } else if ('defunct' === mode) {
+        return {
+          color: 'default',
+          bg: 'transparent'
         };
       } else {
         /* host */
@@ -1410,7 +1415,7 @@ var styles = {
   },
   iconWrapper: {
     textAlign: 'center',
-    margin: '0 0 8px',
+    margin: '0 0 12px',
     fontSize: '150%'
   },
   wrapper: {
@@ -1605,9 +1610,9 @@ function modeWeight(mode) {
   if ('master' === mode) {
     return 1;
   } else if ('free' === mode) {
-    return 3;
-  } else if ('on_hold' === mode) {
     return 4;
+  } else if ('on_hold' === mode) {
+    return 3;
   } else if ('ivr' === mode) {
     return 5;
   } else if ('defunct' === mode) {

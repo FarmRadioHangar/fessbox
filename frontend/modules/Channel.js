@@ -92,7 +92,6 @@ class LookupInput extends React.Component {
 }
 */
 
-
 class Channel extends React.Component {
   constructor(props) {
     super(props)
@@ -396,28 +395,33 @@ class Channel extends React.Component {
     const { mode } = this.props
     if ('free' === mode) {
       return {
-        color : 'info',
-        bg    : 'rgba(91, 192, 222, .2)'
-      }
-    } else if ('master' === mode) {
-      return {
-        color : 'primary',
-        bg    : 'rgba(69, 130, 236, .2)'
-      }
-    } else if ('on_hold' === mode) {
-      return {
         color : 'success',
         bg    : 'rgba(63, 173, 70, .2)'
       }
-    } else if ('ivr' === mode) {
+    } else if ('master' === mode) {
+      return {
+        color : 'danger',
+        bg    : 'rgba(217, 83, 79, .2)'
+      }
+    } else if ('on_hold' === mode) {
       return {
         color : 'warning',
         bg    : 'rgba(240, 173, 78, .2)'
       }
+    } else if ('ivr' === mode) {
+      return {
+        color : 'primary',
+        bg    : 'rgba(69, 130, 236, .2)'
+      }
     } else if ('ring' === mode) {
       return {
-        color : 'danger',
-        bg    : 'rgba(217, 83, 79, .2)'
+        color : 'info',
+        bg    : 'rgba(91, 192, 222, .2)'
+      }
+    } else if ('defunct' === mode) {
+      return {
+        color : 'default',
+        bg    : 'transparent'
       }
     } else { /* host */
       return {

@@ -122,7 +122,7 @@ const styles = {
   },
   iconWrapper : {
     textAlign    : 'center', 
-    margin       : '0 0 8px', 
+    margin       : '0 0 12px', 
     fontSize     : '150%'
   },
   wrapper : {

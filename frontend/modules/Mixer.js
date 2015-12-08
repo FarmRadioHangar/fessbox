@@ -7,9 +7,9 @@ function modeWeight(mode) {
   if ('master' === mode) {
     return 1
   } else if ('free' === mode) {
-    return 3
-  } else if ('on_hold' === mode) {
     return 4
+  } else if ('on_hold' === mode) {
+    return 3
   } else if ('ivr' === mode) {
     return 5
   } else if ('defunct' === mode) {
