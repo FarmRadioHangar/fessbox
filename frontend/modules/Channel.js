@@ -10,88 +10,6 @@ import { Modal }   from 'react-bootstrap'
 import entries     from './testdata/entries'
 import randomize   from './testdata/randomize'
 
-/*
-class LookupResults extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  render() {
-    const { results, onSelectionChange } = this.props
-    return (
-      <div 
-        className = 'list-group ' 
-        style     = {{position: 'absolute', width: '500px', margin: '-1px 0 0 0', padding: 0, zIndex: 4}}>
-        {results.map((result, key) => {
-          return (
-            <a 
-              key       = {key} 
-              className = 'list-group-item' 
-              href      = '#' 
-              onClick   = {() => onSelectionChange(result)}>
-              <p className='list-group-item-text'>
-                <span style={{float: 'right', minWidth: '180px'}}>
-                  {result.phone}
-                </span>
-                <b>{result.name}</b>
-              </p>
-            </a>
-          )
-        })}
-      </div>
-    )
-  }
-}
-
-class LookupInput extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  render() {
-    const { 
-      hasEntry, 
-      value, 
-      onChange, 
-      onReset, 
-      onCallNumber, 
-      isValidNumber
-    } = this.props
-    const inputStyle = hasEntry ? {
-      backgroundColor: '#fff4a8'
-    } : isValidNumber ? {
-      backgroundColor: '#a8f4a8'
-    } : {}
-    return (
-      <div>
-        <div className='input-group input-group-sm'>
-          <input 
-            className   = 'form-control'
-            type        = 'text'
-            style       = {inputStyle}
-            value       = {value}
-            onChange    = {onChange} />
-          <div className='input-group-btn'>
-            <button 
-              disabled  = {!value}
-              onClick   = {onReset} 
-              type      = 'button' 
-              className = 'btn btn-default'>
-              <span className='glyphicon glyphicon-remove'></span>
-            </button>
-            <button 
-              disabled  = {!hasEntry && !isValidNumber}
-              onClick   = {onCallNumber} 
-              type      = 'button' 
-              className = 'btn btn-default'>
-              <span style={{top: '1px'}} className='glyphicon glyphicon-earphone'></span>
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-}
-*/
-
 class Channel extends React.Component {
   constructor(props) {
     super(props)
@@ -178,15 +96,7 @@ class Channel extends React.Component {
     const { editMode } = this.state
     if ('free' === mode) {
       return (
-        <div>
-          <p style={{margin: 0}}>Free line</p>
-          {/*
-          <PhoneLookup 
-            inputComponent   = {LookupInput}
-            resultsComponent = {LookupResults}
-            entries          = {entries.map(entry => ({ ...entry, phone : randomize() }))} />
-          */}
-        </div>
+        <p style={{margin: 0}}>Free line</p>
       )
     } else if ('ring' === mode) {
       return (
@@ -307,40 +217,6 @@ class Channel extends React.Component {
               </div>
             </Modal.Body>
           </Modal>
-          {/*
-          {!!this.state.editMode && (
-            <div style={{
-              margin    : '20px 100px',
-              textAlign : 'left'
-            }}>
-              <div>
-                <label>Name</label>
-                <input ref='callerName' type='text' className='form-control' placeholder='Name' defaultValue={contact ? contact.name : ''} />
-              </div>
-              <div>
-                <label style={{marginTop: '8px'}}>Location</label>
-                <input ref='callerLocation' type='text' className='form-control' placeholder='Location' defaultValue={contact ? contact.location : ''} />
-              </div>
-              <div style={{marginTop: '10px'}}>
-                <button onClick={this.updateCaller.bind(this)} type='button' className='btn btn-default btn-primary'>
-                  Save
-                </button>
-                &nbsp;&nbsp;<button onClick={this.endEditCaller.bind(this)} type='button' className='btn btn-default'>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-          */}
-          {/*
-          <span className='fa-stack fa-lg'>
-            <i className='fa fa-circle fa-stack-2x' style={{color: '#337ab7'}} />
-            <i className='fa fa-phone fa-stack-1x fa-inverse' />
-          </span>
-          <h4>
-            {mode}
-          </h4>
-          */}
         </div>
       )
     }
@@ -513,69 +389,15 @@ const styles = {
 //            <i className='fa fa-phone fa-stack-1x fa-inverse' />
 //          </span>
 //          */}
-
-//                  {/*
-//                  <span style={{marginLeft: '10px'}}>
-//                    <Switch 
-//                      labelText = 'Auto-answer'
-//                      onText    = 'On'
-//                      offText   = 'Off'
-//                      size      = 'mini' />
-//                  </span>
-//                  */}
-
-//          <div style={{__border: '1px solid #ddd'}}> 
-//        <div style={{background: this.getBgColor(mode), border: '1px solid #ddd', margin: '11px'}}>
-//        </div>
-//            <div style={{display: 'flex', padding: '8px'}}>
-//              <div style={{flex: 11, __border: '1px solid #ddd'}}>
-//                <h4 style={{margin: 0}}>{channelId}&nbsp;{number}</h4>
-//              </div>
-//              {!!timestamp && (
-//                <div style={{flex: 1, __border: '1px solid #ddd', textAlign: 'right'}}>
-//                  {hours > 0 && <span>{hours}:</span>}{moment(moment(now).diff(timestamp)).format('mm:ss')}
-//                </div>
-//              )}
-//            </div>
-//          </div>
-//          <div> 
-//            {this.renderChannelMode()}
-//          </div>
-//          {'defunct' !== mode && (
-//            <div>
-//              <div style={{__border: '1px solid #f00', display: 'flex', padding: '8px'}}> 
-//                <button 
-//                  disabled  = {'ivr' === mode}
-//                  className = 'btn btn-default btn-large'
-//                  onClick   = {this.toggleMuted.bind(this)}
-//                  style     = {{marginTop: '6px'}}>
-//                  <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
-//                </button>
-//                <div style={{__border: '1px solid #f00', flex: 6, padding: '18px 10px 0 16px'}}>
-//                  <Slider 
-//                    min          = {1}
-//                    max          = {100}
-//                    style        = {{width: '100%'}}
-//                    value        = {level}
-//                    defaultValue = {level}
-//                    onChange     = {(from, to) => this.updateLevel(to)}
-//                    enabled      = {!muted && 'ivr' !== mode} />
-//                </div>
-//                <div style={{__border: '1px solid #f00', padding: '6px 0 0 6px'}}>
-//                  {this.renderModeSwitch()}
-//                  {/*
-//                  <span style={{marginLeft: '10px'}}>
-//                    <Switch 
-//                      labelText = 'Auto-answer'
-//                      onText    = 'On'
-//                      offText   = 'Off'
-//                      size      = 'mini' />
-//                  </span>
-//                  */}
-//                </div>
-//              </div>
-//            </div>
-//          )}
-//        </div>
+//
+//          {/*
+//          <span className='fa-stack fa-lg'>
+//            <i className='fa fa-circle fa-stack-2x' style={{color: '#337ab7'}} />
+//            <i className='fa fa-phone fa-stack-1x fa-inverse' />
+//          </span>
+//          <h4>
+//            {mode}
+//          </h4>
+//          */}
 
 export default Channel
