@@ -1,8 +1,9 @@
-import React    from 'react'
-import ReactDOM from 'react-dom'
-import Channel  from './Channel'
-import Master   from './Master'
-import _        from 'lodash'
+import React            from 'react'
+import ReactDOM         from 'react-dom'
+import Channel          from './Channel'
+import Master           from './Master'
+import _                from 'lodash'
+import getQueryVariable from '../js/url-params'
 
 function modeWeight(mode) {
   if ('master' === mode) {
@@ -26,6 +27,8 @@ function compareChannels(a, b) {
   return modeWeight(a[1].mode) - modeWeight(b[1].mode)
 }
 
+const silent = getQueryVariable('silent') || false
+
 class Mixer extends React.Component {
   constructor(props) {
     super(props)
@@ -38,7 +41,9 @@ class Mixer extends React.Component {
     if (true === props.mixer.sound) {
       if (sound.paused) {
         sound.currentTime = 0
-        sound.play()
+        if (!silent) {
+          sound.play()
+        }
       }
     } else {
       if (!sound.paused) {
