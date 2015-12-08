@@ -1640,15 +1640,31 @@ var Mixer = (function (_React$Component) {
   }
 
   _createClass(Mixer, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      var _props = this.props;
+      var mixer = _props.mixer;
+      var dispatch = _props.dispatch;
+
+      var sound = document.getElementById('sound');
+      for (var key in mixer.channels) {
+        if ('ring' === mixer.channels[key].mode) {
+          sound.play();
+          return;
+        }
+      }
+      sound.pause();
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _props = this.props;
-      var _props$mixer = _props.mixer;
-      var channels = _props$mixer.channels;
-      var master = _props$mixer.master;
-      var client = _props.client;
-      var dispatch = _props.dispatch;
-      var sendMessage = _props.sendMessage;
+      var _props2 = this.props;
+      var _props2$mixer = _props2.mixer;
+      var channels = _props2$mixer.channels;
+      var master = _props2$mixer.master;
+      var client = _props2.client;
+      var dispatch = _props2.dispatch;
+      var sendMessage = _props2.sendMessage;
 
       return _react2.default.createElement(
         'div',

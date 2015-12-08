@@ -29,6 +29,17 @@ class Mixer extends React.Component {
   constructor(props) {
     super(props)
   }
+  componentDidUpdate() {
+    const { mixer, dispatch } = this.props
+    const sound = document.getElementById('sound')
+    for (let key in mixer.channels) {
+      if ('ring' === mixer.channels[key].mode) {
+        sound.play()
+        return
+      }
+    }
+    sound.pause()
+  }
   render() {
     const { 
       mixer : { channels, master }, 
