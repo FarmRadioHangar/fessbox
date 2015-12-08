@@ -63,8 +63,8 @@ class Channel extends React.Component {
   updateCaller() {
     const { channelId, dispatch, sendMessage } = this.props
     const caller = {
-      'name'     : this.refs.callerName.value,
-      'location' : this.refs.callerLocation.value
+      'name'     : this.refs.callerName.value
+      //'location' : this.refs.callerLocation.value
     }
     dispatch(updateCaller(channelId, caller))
     sendMessage('channelContactInfo', { 
@@ -192,6 +192,7 @@ class Channel extends React.Component {
                   placeholder  = 'Name'
                   defaultValue = {contact ? contact.name : ''} />
               </div>
+              {/*
               <div>
                 <label style={{marginTop: '8px'}}>Location</label>
                 <input 
@@ -201,6 +202,7 @@ class Channel extends React.Component {
                   placeholder  = 'Location'
                   defaultValue = {contact ? contact['location'] : ''} />
               </div>
+              */}
               <div style={{marginTop: '10px'}}>
                 <button 
                   onClick      = {() => this.updateCaller()}
