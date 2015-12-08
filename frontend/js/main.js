@@ -114,7 +114,13 @@ const channels = {
 
 const temp = {
   channels,
-  master : {},
+  master : {
+    delay     : 0,
+    level     : 38,
+    muted     : false,
+    on_air    : true,
+    recording : false
+  },
   host   : {},
   sound  : false
 }

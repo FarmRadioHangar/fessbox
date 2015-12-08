@@ -254,7 +254,13 @@ var channels = {
 
 var temp = {
   channels: channels,
-  master: {},
+  master: {
+    delay: 0,
+    level: 38,
+    muted: false,
+    on_air: true,
+    recording: false
+  },
   host: {},
   sound: false
 };
@@ -444,10 +450,6 @@ function client() {
         default:
           return state;
       }
-    case 'assign-host-id':
-      return _extends({}, state, {
-        host_id: action.host_id
-      });
     default:
       return state;
   }
@@ -1475,6 +1477,8 @@ exports.default = Host;
 },{"../js/actions":1,"./Slider":9,"react":431}],7:[function(require,module,exports){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {
@@ -1536,10 +1540,13 @@ var Master = (function (_React$Component) {
       var _props3 = this.props;
       var level = _props3.level;
       var muted = _props3.muted;
+      var active = _props3.active;
 
       return _react2.default.createElement(
         'div',
-        { className: 'panel panel-default', style: styles.panel },
+        { className: 'panel panel-default', style: _extends({}, styles.panel, {
+            backgroundColor: active ? '#f04124' : 'transparent'
+          }) },
         _react2.default.createElement(
           'div',
           { className: 'panel-body' },
@@ -1703,6 +1710,18 @@ var Mixer = (function (_React$Component) {
       }
     }
   }, {
+    key: 'masterIsActive',
+    value: function masterIsActive() {
+      var channels = this.props.mixer.channels;
+
+      for (var key in channels) {
+        if ('master' === channels[key].mode) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _props = this.props;
@@ -1746,6 +1765,7 @@ var Mixer = (function (_React$Component) {
           'div',
           { style: styles.master },
           !!master && !!Object.keys(master).length && _react2.default.createElement(_Master2.default, _extends({}, master, {
+            active: this.masterIsActive(),
             dispatch: dispatch,
             sendMessage: sendMessage }))
         )

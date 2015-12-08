@@ -46,6 +46,15 @@ class Mixer extends React.Component {
       }
     }
   }
+  masterIsActive() {
+    const { mixer : { channels } } = this.props
+    for (let key in channels) {
+      if ('master' === channels[key].mode) {
+        return true
+      }
+    }
+    return false
+  }
   render() {
     const { 
         mixer : { channels, master }, 
@@ -78,6 +87,7 @@ class Mixer extends React.Component {
         <div style={styles.master}> 
           {!!master && !!Object.keys(master).length && (
             <Master {...master} 
+              active          = {this.masterIsActive()}
               dispatch        = {dispatch} 
               sendMessage     = {sendMessage} />
           )}
