@@ -1781,7 +1781,8 @@ var styles = {
     display: 'flex'
   },
   main: {
-    flex: 11
+    flex: 11,
+    marginLeft: '40px'
   },
   master: {
     flex: 2,
@@ -1976,6 +1977,7 @@ var Ui = (function (_React$Component) {
     };
     _this.mediaQueryChanged = _this.mediaQueryChanged.bind(_this);
     _this.onSetSidebarOpen = _this.onSetSidebarOpen.bind(_this);
+    _this.toggleMenu = _this.toggleMenu.bind(_this);
     return _this;
   }
 
@@ -2002,6 +2004,12 @@ var Ui = (function (_React$Component) {
       this.setState({ sidebarDocked: this.state.mediaQueryList.matches });
     }
   }, {
+    key: 'toggleMenu',
+    value: function toggleMenu() {
+      var docked = this.state.sidebarDocked;
+      this.setState({ sidebarDocked: !docked });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _props = this.props;
@@ -2013,16 +2021,46 @@ var Ui = (function (_React$Component) {
       var sidebarDocked = _state.sidebarDocked;
 
       return !!users && users.hasOwnProperty(client.userId) && mixer.hasOwnProperty('channels') && mixer.channels.hasOwnProperty(client.userId) ? _react2.default.createElement(
-        _reactSidebar2.default,
-        { sidebar: _react2.default.createElement(
-            'div',
-            { style: styles.hostWrapper },
-            _react2.default.createElement(_Host2.default, this.props)
-          ),
-          open: sidebarOpen,
-          docked: sidebarDocked,
-          onSetOpen: this.onSetSidebarOpen },
-        _react2.default.createElement(_Mixer2.default, this.props)
+        'div',
+        null,
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            _reactSidebar2.default,
+            { sidebar: _react2.default.createElement(
+                'div',
+                { style: styles.hostWrapper },
+                _react2.default.createElement(
+                  'button',
+                  {
+                    style: styles.drawer.hamburger,
+                    className: 'btn btn-default',
+                    type: 'button',
+                    onClick: this.toggleMenu },
+                  _react2.default.createElement('span', { className: 'glyphicon glyphicon-menu-hamburger' })
+                ),
+                _react2.default.createElement(_Host2.default, this.props)
+              ),
+              open: sidebarOpen,
+              docked: sidebarDocked,
+              onSetOpen: this.onSetSidebarOpen },
+            _react2.default.createElement(
+              'div',
+              null,
+              !sidebarDocked && _react2.default.createElement(
+                'button',
+                {
+                  style: styles.hamburger,
+                  className: 'btn btn-default',
+                  type: 'button',
+                  onClick: this.toggleMenu },
+                _react2.default.createElement('span', { className: 'glyphicon glyphicon-menu-hamburger' })
+              )
+            ),
+            _react2.default.createElement(_Mixer2.default, this.props)
+          )
+        )
       ) : _react2.default.createElement(_Mixer2.default, this.props);
     }
   }]);
@@ -2035,6 +2073,17 @@ var styles = {
     minWidth: '220px',
     height: '100%',
     background: '#fff'
+  },
+  hamburger: {
+    position: 'absolute',
+    float: 'left',
+    border: 'none'
+  },
+  drawer: {
+    hamburger: {
+      width: '100%',
+      border: 'none'
+    }
   }
 };
 

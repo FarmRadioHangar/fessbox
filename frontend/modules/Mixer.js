@@ -99,14 +99,15 @@ class Mixer extends React.Component {
 
 const styles = {
   wrapper : {
-    display   : 'flex'
+    display    : 'flex'
   },
   main : {
-    flex      : 11
+    flex       : 11,
+    marginLeft : '40px'
   },
   master : {
-    flex      : 2, 
-    textAlign : 'center'
+    flex       : 2, 
+    textAlign  : 'center'
   }
 }
 
