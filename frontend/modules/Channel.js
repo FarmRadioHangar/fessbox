@@ -7,9 +7,6 @@ import { updatePreset, updateLevel, updateCaller }
   from '../js/actions'
 import { Modal }   from 'react-bootstrap'
 
-import entries     from './testdata/entries'
-import randomize   from './testdata/randomize'
-
 class Channel extends React.Component {
   constructor(props) {
     super(props)
