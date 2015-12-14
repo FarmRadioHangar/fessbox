@@ -145,11 +145,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var userId = (0, _urlParams2.default)('user_id') || 701;
+var hostUrl = (0, _urlParams2.default)('host_url') || '192.168.1.38:19998';
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + userId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { userId: userId, channels: {}, $: Math.random() * 1000000000 | 0 } });
 //const store = createPersistentStore(app, {client: {userId, channels: {}}})
-var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://192.168.1.38:19998/?user_id=' + userId);
+//const ws = new ReconnectingWebSocket('ws://192.168.1.38:19998/?user_id=' + userId)
+var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://' + hostUrl + '/?user_id=' + userId);
 
 var App = (function (_React$Component) {
   _inherits(App, _React$Component);

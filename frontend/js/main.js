@@ -15,12 +15,12 @@ import { Provider, connect }
 import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller }
   from './actions'
 
-const userId = getQueryVariable('user_id') || 701
+const userId  = getQueryVariable('user_id') || 701
+const hostUrl = getQueryVariable('host_url') || '192.168.1.38:19998'
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${userId}`}))(createStore)
 const store = createPersistentStore(app, {client: {userId, channels: {}, $: Math.random()*1000000000|0}})
-//const store = createPersistentStore(app, {client: {userId, channels: {}}})
-const ws = new ReconnectingWebSocket('ws://192.168.1.38:19998/?user_id=' + userId) 
+const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
 
 class App extends React.Component {
   constructor(props) {
