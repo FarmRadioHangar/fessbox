@@ -2,6 +2,8 @@ var fs = require("fs");
 var astConf = require("./config/asterisk.json");
 var stateFile = __dirname + "/state/snapshot.json";
 
+var myLib = require("./myLib");
+
 exports.ui = {
 	mixer: {
 		channels: {},
@@ -30,16 +32,12 @@ exports.asterisk = {
 for (var dongleName in astConf.dongles) {
 	loadChannel(dongleName);
 	exports.ui.mixer.channels[dongleName].number = astConf.dongles[dongleName].number;
-	exports.ui.mixer.channels[dongleName].mode = 'defunct';
 	exports.ui.mixer.channels[dongleName].type = 'dongle';
-	exports.asterisk.channels[dongleName] = {};
 }
 
 for (var i in astConf.hosts) {
 	loadChannel(astConf.hosts[i]);
-	exports.ui.mixer.channels[astConf.hosts[i]].mode = 'defunct';
 	exports.ui.mixer.channels[astConf.hosts[i]].type = 'sip';
-	exports.asterisk.channels[astConf.hosts[i]] = {};
 	loadUser(astConf.hosts[i]);
 }
 
@@ -90,9 +88,15 @@ function loadChannel(channel_id) {
 	if (fs.existsSync(channelFile)) {
 		var myData = require(channelFile);
 		exports.ui.mixer.channels[channel_id] = myData;
-		console.log("NOTICE::loadChannel - data loaded from disk", channel_id);
+		exports.ui.mixer.channels[channel_id].mode = 'defunct';
+		exports.ui.mixer.channels[channel_id].timestamp = null;
+		exports.ui.mixer.channels[channel_id].direction = null;
+		exports.asterisk.channels[channel_id] = {};
+		myLib.consoleLog('debug', "loadChannel - data loaded from disk", channel_id);
+		return true;
 	} else {
-		console.log("NOTICE::loadChannel - " + channelFile + " not found");
+		myLib.consoleLog('error', "loadChannel - not found", channelFile);
+		return false;
 	}
 }
 
@@ -101,10 +105,11 @@ function loadUser(user_id) {
 	if (fs.existsSync(userFile)) {
 		var myData = require(userFile);
 		exports.ui.users[user_id] = myData;
-
-		console.log("NOTICE::loadUser - data loaded from disk", user_id);
+		myLib.consoleLog('debug', "loadUser - data loaded from disk", user_id);
+		return true;
 	} else {
-		console.log("NOTICE::loadUser - " + userFile + " not found");
+		myLib.consoleLog('error', "loadUser - not found", userFile);
+		return false;
 	}
 }
 

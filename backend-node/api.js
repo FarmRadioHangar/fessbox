@@ -82,7 +82,7 @@ exports.setChannelRecording = function(channel_id, value, cbErr) {
 };
 
 exports.setChannelMode = function(channel_id, value, cbErr) {
-//	myLib.consoleLog('debug', "setChannelMode", "setting " + channel_id + " from " + s.ui.mixer.channels[channel_id].mode + " to " + value);
+	myLib.consoleLog('debug', "setChannelMode", "setting " + channel_id + " from " + s.ui.mixer.channels[channel_id].mode + " to " + value);
 //	 myLib.consoleLog('debug', "setChannelMode", s.ui.mixer.channels);
 //	 myLib.consoleLog('debug', "setChannelMode", s.asterisk.channels);
 	var errorMsg;
@@ -92,25 +92,11 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 		// if channel is host, mode can't be changed from client
 		errorMsg = "host mode can't be changed from client";
 	} else {
-		var cb = function(err, res) {
+		var cb = function(err) {
 			if (err) {
 				cbErr(err);
 			} else {
-				var modify = {};
-				if (s.ui.mixer.channels[channel_id].mode === 'ring') {
-					modify.timestamp = Date.now();
-				}
-				if (value === 'free') {
-					modify.timestamp = null;
-					modify.direction = null;
-					modify.contact = null;
-					if (s.ui.mixer.channels[channel_id].contact.modified) {
-						provider.setPhoneBookEntry(s.ui.mixer.channels[channel_id].contact.number, s.ui.mixer.channels[channel_id].contact.name);
-						//addressBook.setContactInfo(s.ui.mixer.channels[channel_id].contact);
-					}
-				}
-				modify.mode = value;
-				channelUpdate(channel_id, modify);
+				changeMode(channel_id, value);
 			}
 		};
 		switch (s.ui.mixer.channels[channel_id].mode) {
@@ -148,15 +134,15 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 								case 'ivr':
 									errorMsg = "can't connect to channel in IVR mode";
 									break;
-								case 'free':
 								case 'ring':
-								case 'master':
+								case 'free':
 								case 'on_hold':
 //									provider.setChanMode(value, channel_id, cb);
 //									provider.setChanMode(channel_id, value, cb);
 //									break;
 								case 'master':
-									provider.setChanMode2(channel_id, value, cb);
+										provider.setChanMode2(channel_id, value, cb);
+										//provider.setChanMode2(value, channel_id, cb);
 									/*
 									provider.parkCall(value, function(err, res) {
 										if (err) {
@@ -532,7 +518,28 @@ function inboxUpdate(type, timestamp, source, content) {
 		content: content
 	});
 }
+
+//todo: this should be part of channelUpdate, not a separate export.
+function changeMode(channel_id, value) {
+	var modify = {};
+	if (s.ui.mixer.channels[channel_id].mode === 'ring') {
+		modify.timestamp = Date.now();
+	}
+	if (value === 'free' || value === 'defunct') {
+		modify.timestamp = null;
+		modify.direction = null;
+		modify.contact = null;
+		if (s.ui.mixer.channels[channel_id].contact && s.ui.mixer.channels[channel_id].contact.modified) {
+			provider.setPhoneBookEntry(s.ui.mixer.channels[channel_id].contact.number, s.ui.mixer.channels[channel_id].contact.name);
+			//addressBook.setContactInfo(s.ui.mixer.channels[channel_id].contact);
+		}
+	}
+	modify.mode = value;
+	channelUpdate(channel_id, modify);
+
+}
+
 exports.channelUpdate = channelUpdate;
 exports.masterUpdate = masterUpdate;
 exports.inboxUpdate = inboxUpdate;
-
+exports.changeMode = changeMode;

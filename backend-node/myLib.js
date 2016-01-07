@@ -76,3 +76,8 @@ exports.checkRequiredParams = function (required, params) {
 exports.httpGeneric = httpGeneric;
 exports.mailSend = mailSend;
 exports.consoleLog = consoleLog;
+exports.msecDuration = function(hms) {
+	// expects HH:MM:SS
+	var a = hms.split(':'); // split it at the colons
+	return ((+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2])) * 1000; 
+};

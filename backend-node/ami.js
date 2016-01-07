@@ -12,14 +12,14 @@ var ami = new require('asterisk-manager')(amiConf.port, amiConf.host, amiConf.us
 ami.keepConnected();
 
 ami.on('fullybooted', function(evt) {
-	myLib.consoleLog('log', 'init AMI', "Connected to asterisk!");
+	myLib.consoleLog('log', "Asterisk interface ready!");
 	//these are here in order to start the web-socket after the objects are initialized. not a very clever way
 	ami.action({
 		action: "DongleShowDevices"
 	}, function(err, res) {
 		//{"response":"Success","actionid":"1446811737040","eventlist":"start","message":"Device status list will follow"}
 		if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow
-			 myLib.consoleLog('log', 'init Dongle', 'driver is talking');
+			myLib.consoleLog('log', 'Dongle driver is talking');
 		} else {
 			myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
 		}
@@ -30,7 +30,7 @@ ami.on('fullybooted', function(evt) {
 		//action: "SIPpeers"
 	}, function(err, res) {
 		if (!err && res.response === 'Success') { // 'peerstatus' events will follow
-			 myLib.consoleLog('log', 'init SIP', 'driver is talking');
+			myLib.consoleLog('log', 'SIP driver is talking');
 		} else {
 			myLib.consoleLog('error', 'init SIP', JSON.stringify(err) + " " + JSON.stringify(res));
 		}
@@ -122,45 +122,24 @@ ami.on('donglestatus', function(evt) {
 		switch (evt.status) {
 			case 'Free':
 			case 'Initialize':
-				if (s.ui.mixer.channels[evt.device].mode != 'free') {
-					api.channelUpdate(evt.device, {
-						mode: 'free',
-						timestamp: null,
-						direction: null
-					});
-					//setDongleFree(evt.device);
+				if (s.ui.mixer.channels[evt.device].mode !== 'free') {
+					api.changeMode(evt.device, 'free');
 				}
 				break;
 			case 'Disconnect':
-				if (s.ui.mixer.channels[evt.device].mode != 'defunct') {
+				if (s.ui.mixer.channels[evt.device].mode !== 'defunct') {
 					s.asterisk.channels[evt.device].internalName = null;
-					
-					s.ui.mixer.channels[evt.device].mode = 'defunct';
-					s.ui.mixer.channels[evt.device].duration = null;
-					s.ui.mixer.channels[evt.device].direction = null;
-					var channel = {};
-					channel[evt.device] = s.ui.mixer.channels[evt.device];
-					wss.broadcastEvent("channelUpdate", channel);
+					api.changeMode(evt.device, 'defunct');
 				}
 				break;
 		}
 	}
 	// debug
-	if (evt.status != 'Register' && evt.status != 'Unregister') {
+//	if (evt.status != 'Register' && evt.status != 'Unregister') {
 		console.error(JSON.stringify(evt));
-	}
+//	}
 });
 
-function setDongleFree(dongleName) {
-	s.asterisk.channels[dongleName].internalName = null;
-	
-	s.ui.mixer.channels[dongleName].mode = 'free';
-	s.ui.mixer.channels[dongleName].duration = null;
-	s.ui.mixer.channels[dongleName].direction = null;
-	var channel = {};
-	channel[dongleName] = s.ui.mixer.channels[dongleName];
-	wss.broadcastEvent("channelUpdate", channel);
-}
 ami.on('donglecend', function(evt) {
 //	{"event":"DongleCEND","privilege":"call,all","device":"airtel2","callidx":"1","duration":"0","endstatus":"29","cccause":"17"}
 	console.error(JSON.stringify(evt));
@@ -187,7 +166,7 @@ ami.on('musiconhold', function(evt) {
 	}	
 });
 
-// todo: catch only remote party hangup
+// todo: catch only remote party initiated hangup
 ami.on('hangup', function(evt) {
 //	{"event":"Hangup","privilege":"call,all","channel":"Dongle/airtel1-0100000006","uniqueid":"1448369795.17","calleridnum":"+255687754487","calleridname":"airtel1","connectedlinenum":"707","connectedlinename":"host galaxy tab","accountcode":"","cause":"17","cause-txt":"User busy"}
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
@@ -205,13 +184,14 @@ ami.on('peerentry', function(evt) {
 //	{"event":"PeerEntry","actionid":"1447058788015","channeltype":"SIP","objectname":"702","chanobjecttype":"peer","ipaddress":"192.168.1.188","ipport":"40138","dynamic":"yes","autoforcerport":"no","forcerport":"no","autocomedia":"no","comedia":"no","videosupport":"no","textsupport":"no","acl":"yes","status":"OK (200 ms)","realtimedevice":"no","description":""}
 });
 
-// received after AMI action 'SIPpeerstatus'
 ami.on('peerstatus', function(evt) {
-//	{"event":"PeerStatus","privilege":"system,all","channeltype":"SIP","peer":"SIP/702","peerstatus":"Unreachable","time":"-1"}
+// received after AMI action 'SIPpeerstatus'
+//	{"event":"PeerStatus","privilege":"System","channeltype":"SIP","peer":"SIP/701","peerstatus":"Unknown","actionid":"1447147680674"}
 //	{"event":"PeerStatus","privilege":"system,all","channeltype":"SIP","peer":"SIP/702","peerstatus":"Reachable","time":"25"}
 //	{"event":"PeerStatus","privilege":"system,all","channeltype":"SIP","peer":"SIP/702","peerstatus":"Lagged","time":"148"}
 
-//	{"event":"PeerStatus","privilege":"System","channeltype":"SIP","peer":"SIP/701","peerstatus":"Unknown","actionid":"1447147680674"}
+// received on status change
+//	{"event":"PeerStatus","privilege":"system,all","channeltype":"SIP","peer":"SIP/702","peerstatus":"Unreachable","time":"-1"}
 //	{"event":"PeerStatus","privilege":"system,all","channeltype":"SIP","peer":"SIP/702","peerstatus":"Registered","address":"192.168.1.188:47441"}
 //	{"event":"PeerStatus","privilege":"system,all","channeltype":"SIP","peer":"SIP/702","peerstatus":"Unregistered","cause":"Expired"}
 
@@ -221,40 +201,9 @@ ami.on('peerstatus', function(evt) {
 		switch (peerStatus) {
 			case 'reachable':
 			case 'registered':
-/*
-   myLib.consoleLog('debug', 'xxx', s.ui.mixer.channels[sipPeer].mode);
-				if (s.ui.mixer.channels[sipPeer].mode === 'defunct') {
-					var channel = "Local/" + sipPeer + "@from-internal/n";
-					amiOriginate(channel, astConf.virtual.master, function (err) {
-						if (!err) {
-							s.ui.mixer.channels[sipPeer].mode = 'master';
-						} else {
-							myLib.consoleLog('debug', 'xxx', err);
-						}
-					});
-				}
-*/
-				if (!s.ui.mixer.hosts[sipPeer] || s.ui.mixer.hosts[sipPeer].conn != 'reachable') {
-//					s.loadHost(sipPeer);
-/*					
-					s.ui.mixer.hosts[sipPeer] = {
-						recording: false,
-						conn: 'reachable',
-						mode: 'free'
-					};
-*/
-//					wss.broadcastEvent("hostUpdate", s.ui.mixer.hosts);
-				}
 				break;
 			case 'unregistered':
 			case 'unknown':
-				if (s.ui.mixer.hosts[sipPeer]) {
-					s.ui.mixer.hosts[sipPeer] = null;
-					s.ui.mixer.channels[sipPeer].mode = 'defunct';
-					var newObj = {};
-					newObj[sipPeer] = null;
-					wss.broadcastEvent("userUpdate", newObj);
-				}
 				break;
 		}
 	}
@@ -280,7 +229,9 @@ ami.on('softhanguprequest', function(evt) {
 	console.error(JSON.stringify(evt));
 });
 
+// initialize live channels on application boot
 ami.on('coreshowchannel', function (evt) {
+//	{"event":"CoreShowChannel","actionid":"1449750312397","channel":"Dongle/airtel2-0100000002","uniqueid":"1449750295.11","context":"from-internal","extension":"198","priority":"1","channelstate":"4","channelstatedesc":"Ring","application":"Wait","applicationdata":"100","calleridnum":"+255687754487","calleridname":"airtel1 aleksandra","connectedlinenum":"","connectedlinename":"","duration":"00:00:16","accountcode":"","bridgedchannel":"","bridgeduniqueid":""}
 //	{"event":"CoreShowChannel","actionid":"1447226096522","channel":"Bridge/0x142b4a4-input","uniqueid":"1447225493.21","context":"default","extension":"s","priority":"1","channelstate":"6","channelstatedesc":"Up","application":"","applicationdata":"","calleridnum":"","calleridname":"","connectedlinenum":"","connectedlinename":"","duration":"00:10:03","accountcode":"","bridgedchannel":"","bridgeduniqueid":""}
 //	{"event":"CoreShowChannel","actionid":"1447226096522","channel":"SIP/703-0000000b","uniqueid":"1447225488.20","context":"from-internal","extension":"STARTMEETME","priority":"5","channelstate":"6","channelstatedesc":"Up","application":"ConfBridge","applicationdata":"2663,,,","calleridnum":"703","calleridname":"Damjan Laptop","connectedlinenum":"","connectedlinename":"","duration":"00:10:08","accountcode":"","bridgedchannel":"","bridgeduniqueid":""}
 //	{"event":"CoreShowChannel","actionid":"1448370162017","channel":"ALSA/hw:0,0","uniqueid":"1448348233.0","context":"from-internal","extension":"STARTMEETME","priority":"5","channelstate":"6","channelstatedesc":"Up","application":"ConfBridge","applicationdata":"2663,,,","calleridnum":"","calleridname":"","connectedlinenum":"","connectedlinename":"","duration":"06:05:28","accountcode":"","bridgedchannel":"","bridgeduniqueid":""}
@@ -294,16 +245,40 @@ ami.on('coreshowchannel', function (evt) {
 
 	switch (channelInfo[0]) {
 		case 'Dongle':
-			//s.asterisk.channels[channelInfo[1]].type = channelId[0];
-			s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
-			newChannel[channelInfo[1]] = s.ui.mixer.channels[channelInfo[1]];
-			newChannel[channelInfo[1]].mode = evt.channelstatedesc.toLowerCase();
-			newChannel[channelInfo[1]].contact = {
-				number: evt.calleridnum,
-				name:  evt.calleridname
-			};
-			wss.broadcastEvent("channelUpdate", newChannel);
-			break;
+			if (s.asterisk.channels[channelInfo[1]]) {
+				var channelState = evt.channelstatedesc.toLowerCase();
+				switch (channelState) {
+					case 'ring':
+						s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
+						api.channelUpdate({
+							mode: 'ring',
+							direction: 'incoming',
+							timestamp: Date.now() - myLib.msecDuration(evt.duration),
+							contact: {
+								number: evt.calleridnum,
+								name: evt.calleridname
+							}
+						});
+						break;
+					case 'up':
+						s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
+						if (evt.application === 'ConfBridge') {
+							var appData = evt.applicationdata.split(',', 4);
+							if (appData[0] === 'astConf.virtual.master') {
+								api.channelUpdate({
+									mode: 'master',
+									direction: 'incoming',
+									timestamp: Date.now() - myLib.msecDuration(evt.duration),
+									contact: {
+										number: evt.calleridnum,
+										name: evt.calleridname
+									}
+								});
+							}
+						}
+						break;
+				}
+			}
 //		case 'Local':
 		case 'SIP':
 			if (astConf.hosts.indexOf(channelInfo[1]) !== -1) {
@@ -369,15 +344,23 @@ ami.on('dongledeviceentry', function(evt) {
 		var dongleState = evt.state.toLowerCase();
 		switch (dongleState) {
 			case 'free':
-			case 'ring':
-			case 'dialing':
 				s.ui.mixer.channels[evt.device].mode = dongleState;
+				s.asterisk.channels[evt.device] = {};
+				break;
+			case 'ring':
+				s.ui.mixer.channels[evt.device].mode = 'ring';
+				s.ui.mixer.channels[evt.device].direction = 'incoming';
+				s.asterisk.channels[evt.device] = {};
+				break;
+			case 'dialing':
+				s.ui.mixer.channels[evt.device].direction = 'outgoing';
+				s.ui.mixer.channels[evt.device].mode = 'ring';
 				s.asterisk.channels[evt.device] = {};
 				break;
 			case 'incoming':
 			case 'outgoing':
 				// todo: find and set real mode
-				s.ui.mixer.channels[evt.device].mode = 'master';
+//				s.ui.mixer.channels[evt.device].mode = 'master';
 				s.ui.mixer.channels[evt.device].direction = dongleState;
 				s.asterisk.channels[evt.device] = {};
 				break;
@@ -385,13 +368,25 @@ ami.on('dongledeviceentry', function(evt) {
 				// todo: hm...
 				break;
 			case 'gsm not registered':
+				ami.action({
+					action: "DongleReset",
+					device: evt.device
+				}, function(err, res) {
+					if (err) {
+						myLib.consoleLog('error', "DongleReset", evt.device);
+					}
+				});
 			default:
 				myLib.consoleLog('error', 'dongleState', dongleState);
-				s.ui.mixer.channels[evt.device].number += " " + dongleState;
+				s.ui.mixer.channels[evt.device].error = dongleState;
 		}
 	} else {
-		myLib.consoleLog('error', 'number on SIM card not same as number in config');
-		s.ui.mixer.channels[evt.device].number += " number on SIM not matching: " + evt.subscribernumber ;
+		if (evt.subscribernumber) {
+			myLib.consoleLog('error', 'number on SIM card not same as number in config');
+		} else {
+			myLib.consoleLog('error', "can't read number from SIM");
+		}
+		s.ui.mixer.channels[evt.device].error = " number on SIM not matching: " + evt.subscribernumber ;
 	}
 	console.error(JSON.stringify(evt));
 });
@@ -415,11 +410,11 @@ ami.on('dongledeviceentry', function(evt) {
     DonglePortFail
 */
 
+ami.on('newchannel', function(evt) {
 //{"event":"Newchannel","privilege":"call,all","channel":"SIP/703-00000000","channelstate":"0","channelstatedesc":"Down","calleridnum":"703","calleridname":"Damjan Laptop","accountcode":"","exten":"2663","context":"from-internal","uniqueid":"1445360462.0"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-input","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.1"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-output","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.2"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Dongle/airtel2-0100000000","channelstate":"4","channelstatedesc":"Ring","calleridnum":"+255682120818","calleridname":"airtel2","accountcode":"","exten":"+255788333330","context":"from-trunk","uniqueid":"1446819272.2"}
-ami.on('newchannel', function(evt) {
 	console.log(JSON.stringify(evt));
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	var newChannel = {};
@@ -638,10 +633,8 @@ function setAmiChannelMuted(channel, value, direction, cb) {
 	}, function(err, res) {
 		if (!err) {
 			cb();
-			console.log(JSON.stringify(res));
 		} else {
 			cb(JSON.stringify(res));
-			console.error(JSON.stringify(res));
 		}
 	});
 }
@@ -651,7 +644,7 @@ function setAmiChannelVolume(channel, level, direction, cb) {
 		//-30 :: 20
 		level = level / 2 - 30;
 		var variable = 'VOLUME(' + direction + ')';
-		console.log("setting chan volume!",channel, variable, level);
+		console.log("setting chan volume!", channel, variable, level);
 		// todo: use the setVar function
 		ami.action({
 			action: 'Setvar',
@@ -661,10 +654,8 @@ function setAmiChannelVolume(channel, level, direction, cb) {
 		}, function(err, res) {
 			if (!err) {
 				cb();
-				console.log(JSON.stringify(res));
 			} else {
 				cb(JSON.stringify(res));
-				console.error(JSON.stringify(res));
 			}
 		});
 	} else {
