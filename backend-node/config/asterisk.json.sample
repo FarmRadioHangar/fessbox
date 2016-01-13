@@ -1,0 +1,32 @@
+{
+	"dongles": {
+		"airtel1": {
+			"number": "+255689514544",
+			"network": "airtel",
+			"sms": "disable"
+		},
+		"airtel2": {
+			"number": "+255788333330",
+			"network": "airtel",
+			"sms": "own"
+		},
+		"vodacom1": {
+			"number": "+255758123098",
+			"network": "vodacom",
+			"sms": "any"
+		}
+	},
+	"hosts": ["707"],
+	"operators": ["701", "703", "705"],
+	"external": ["702", "704"],
+	"virtual": {
+		"master": "2663",
+		"ivr": "191",
+		"on_hold": "196",
+		"free": "SIP/197@from-internal",
+		"ring": "198",
+		"parking": "70",
+		"parked": "71"
+	},
+	"defaultSMS": "airtel1"
+}

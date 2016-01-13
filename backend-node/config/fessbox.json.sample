@@ -1,0 +1,7 @@
+{
+	"adminEmail": "damjan@farmradio.org",
+	"wsPort": 19998,
+	"provider": "ami",
+	"addressBook": "iAddressBook"
+}
+ 
