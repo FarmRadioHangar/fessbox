@@ -64,12 +64,16 @@ class Ui extends React.Component {
                 </button>
               )}
             </div>
-            <Mixer {...this.props} />
+            <div>
+              <Mixer {...this.props} />
+            </div>
           </Sidebar>
         </div>
       </div>
     ) : (
-      <Mixer {...this.props} />
+      <div>
+        <Mixer {...this.props} />
+      </div>
     )
   }
 }

@@ -43,6 +43,7 @@ class App extends React.Component {
       'content'   : 'Testing 2'
     }))
   }
+  // temp
 
   render() {
     const Ui = connect(state => {

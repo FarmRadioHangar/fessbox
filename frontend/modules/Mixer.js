@@ -2,6 +2,7 @@ import React            from 'react'
 import ReactDOM         from 'react-dom'
 import Channel          from './Channel'
 import Master           from './Master'
+import Inbox            from './Inbox'
 import _                from 'lodash'
 import getQueryVariable from '../js/url-params'
 
@@ -62,7 +63,7 @@ class Mixer extends React.Component {
   }
   render() {
     const { 
-        mixer : { channels, master }, 
+      mixer : { channels, master }, 
       client, 
       dispatch, 
       sendMessage 
@@ -88,6 +89,7 @@ class Mixer extends React.Component {
               )
             })}
           </div>
+          <Inbox notifications={client.notifications} />
         </div>
         <div style={styles.master}> 
           {!!master && !!Object.keys(master).length && (
