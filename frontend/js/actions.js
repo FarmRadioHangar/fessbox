@@ -75,3 +75,9 @@ export function setTimeDiff(diff) {
     type : 'set-diff', diff
   }
 }
+
+export function updateInbox(payload) {
+  return {
+    type : 'update-inbox', payload
+  }
+}

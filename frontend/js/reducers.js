@@ -129,6 +129,15 @@ function client(state = {}, action) {
         default:
           return state
       }
+    case 'update-inbox':
+      const notifications = state.notifications || {}
+      return {
+        ...state,
+        notifications: {
+          ...notifications,
+          [action.payload.type] : [action.payload, ...notifications[action.payload.type] || []]
+        }
+      }
     default:
       return state
   }

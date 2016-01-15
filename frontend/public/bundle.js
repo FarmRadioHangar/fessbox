@@ -17,6 +17,7 @@ exports.updateMaster = updateMaster;
 exports.updateMasterLevel = updateMasterLevel;
 exports.updateCaller = updateCaller;
 exports.setTimeDiff = setTimeDiff;
+exports.updateInbox = updateInbox;
 function mute(channel) {
   return {
     type: 'mute', channel: channel
@@ -95,6 +96,12 @@ function setTimeDiff(diff) {
   };
 }
 
+function updateInbox(payload) {
+  return {
+    type: 'update-inbox', payload: payload
+  };
+}
+
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -148,7 +155,7 @@ var userId = (0, _urlParams2.default)('user_id') || 701;
 var hostUrl = (0, _urlParams2.default)('host_url') || '192.168.1.38:19998';
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + userId }))(_redux.createStore);
-var store = createPersistentStore(_reducers2.default, { client: { userId: userId, channels: {}, $: Math.random() * 1000000000 | 0 } });
+var store = createPersistentStore(_reducers2.default, { client: { userId: userId, channels: {}, notifications: {}, $: Math.random() * 1000000000 | 0 } });
 var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://' + hostUrl + '/?user_id=' + userId);
 
 var App = (function (_React$Component) {
@@ -160,7 +167,26 @@ var App = (function (_React$Component) {
     return _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
   }
 
+  // temp
+
   _createClass(App, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      store.dispatch((0, _actions.updateInbox)({
+        'type': 'sms',
+        'timestamp': Date.now(),
+        'source': '0688755855',
+        'content': 'Testing'
+      }));
+
+      store.dispatch((0, _actions.updateInbox)({
+        'type': 'sms',
+        'timestamp': Date.now(),
+        'source': '0111111111',
+        'content': 'Testing 2'
+      }));
+    }
+  }, {
     key: 'render',
     value: function render() {
       var Ui = (0, _reactRedux.connect)(function (state) {
@@ -308,6 +334,9 @@ ws.onmessage = function (e) {
             store.dispatch((0, _actions.updateCaller)(chan, msg.data[chan]));
           });
           break;
+        case 'inboxUpdate':
+          store.dispatch((0, _actions.updateInbox)(msg.data));
+          break;
         default:
           break;
       }
@@ -336,6 +365,8 @@ var _lodash2 = _interopRequireDefault(_lodash);
 var _redux = require('redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -450,6 +481,11 @@ function client() {
         default:
           return state;
       }
+    case 'update-inbox':
+      var notifications = state.notifications || {};
+      return _extends({}, state, {
+        notifications: _extends({}, notifications, _defineProperty({}, action.payload.type, [action.payload].concat(_toConsumableArray(notifications[action.payload.type] || []))))
+      });
     default:
       return state;
   }

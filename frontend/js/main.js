@@ -12,20 +12,38 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller }
+import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox }
   from './actions'
 
 const userId  = getQueryVariable('user_id') || 701
 const hostUrl = getQueryVariable('host_url') || '192.168.1.38:19998'
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${userId}`}))(createStore)
-const store = createPersistentStore(app, {client: {userId, channels: {}, $: Math.random()*1000000000|0}})
+const store = createPersistentStore(app, {client: {userId, channels: {}, notifications: {}, $: Math.random()*1000000000|0}})
 const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
 
 class App extends React.Component {
   constructor(props) {
     super(props)
   }
+
+  // temp
+  componentDidMount() {
+    store.dispatch(updateInbox({
+      'type'      : 'sms',
+      'timestamp' : Date.now(),
+      'source'    : '0688755855',
+      'content'   : 'Testing'
+    }))
+
+    store.dispatch(updateInbox({
+      'type'      : 'sms',
+      'timestamp' : Date.now(),
+      'source'    : '0111111111',
+      'content'   : 'Testing 2'
+    }))
+  }
+
   render() {
     const Ui = connect(state => {
       return {
@@ -166,6 +184,9 @@ ws.onmessage = e => {
         Object.keys(msg.data).forEach(chan => {
           store.dispatch(updateCaller(chan, msg.data[chan]))
         })
+        break
+      case 'inboxUpdate':
+        store.dispatch(updateInbox(msg.data))
         break
       default:
         break
