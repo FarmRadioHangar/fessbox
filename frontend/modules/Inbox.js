@@ -65,6 +65,7 @@ class Inbox extends React.Component {
 const styles = {
   inbox : {
     position   : 'fixed',
+    zIndex     : 3,
     bottom     : 0,
     border     : '1px solid #888',
     width      : '70%',
