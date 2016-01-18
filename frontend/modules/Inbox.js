@@ -1,8 +1,12 @@
 import React   from 'react'
+import moment  from 'moment'
 
 class Notifications extends React.Component {
   constructor(props) {
     super(props)
+  }
+  formatDate(date) {
+    return moment(date).fromNow()
   }
   render() {
     const { items } = this.props
@@ -14,7 +18,7 @@ class Notifications extends React.Component {
         {items.map((item, i) => (
           <tr key={i}>
             <td>{item.type}</td>
-            <td>{(new Date(item.timestamp)).toString()}</td>
+            <td>{this.formatDate(item.timestamp)}</td>
             <td>{item.source}</td>
             <td>{item.content}</td>
           </tr>
@@ -35,7 +39,13 @@ class Inbox extends React.Component {
       <div>
         {notifications && Object.keys(notifications).length && (
           <div style={styles.inbox}>
-            <table style={styles.table}>
+            <table className='table' style={styles.table}>
+              <colgroup>
+                <col width='10%' />
+                <col width='20%' />
+                <col width='15%' />
+                <col width='55%' />
+              </colgroup>
               <thead>
                 <tr>
                   <th>Type</th>
