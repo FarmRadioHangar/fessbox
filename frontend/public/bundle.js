@@ -1348,6 +1348,8 @@ exports.default = Host;
 },{"../js/actions":1,"./Slider":10,"react":430}],7:[function(require,module,exports){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {
@@ -1392,6 +1394,19 @@ var Inbox = (function (_React$Component) {
       var dispatch = this.props.dispatch;
 
       dispatch((0, _actions.removeInboxMessage)(id));
+    }
+  }, {
+    key: 'getNotifications',
+    value: function getNotifications() {
+      var notifications = this.props.notifications;
+
+      return Object.keys(notifications).map(function (msgId) {
+        return _extends({}, notifications[msgId], {
+          _id: msgId
+        });
+      }).sort(function (a, b) {
+        return b.timestamp - a.timestamp;
+      });
     }
   }, {
     key: 'render',
@@ -1450,11 +1465,10 @@ var Inbox = (function (_React$Component) {
             _react2.default.createElement(
               'tbody',
               null,
-              Object.keys(notifications).map(function (msgId) {
-                var item = notifications[msgId];
+              this.getNotifications().map(function (item) {
                 return _react2.default.createElement(
                   'tr',
-                  { key: msgId },
+                  { key: item._id },
                   _react2.default.createElement(
                     'td',
                     null,
@@ -1481,7 +1495,7 @@ var Inbox = (function (_React$Component) {
                     _react2.default.createElement(
                       'button',
                       { onClick: function onClick() {
-                          return _this2.deleteMessage(msgId);
+                          return _this2.deleteMessage(item._id);
                         } },
                       'Delete message'
                     )

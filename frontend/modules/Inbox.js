@@ -15,6 +15,17 @@ class Inbox extends React.Component {
     const { dispatch } = this.props
     dispatch(removeInboxMessage(id))
   }
+  getNotifications() {
+    const { notifications } = this.props
+    return Object.keys(notifications).map(msgId => {
+      return {
+        ...notifications[msgId],
+        _id : msgId
+      }
+    }).sort((a, b) => {
+      return (b.timestamp - a.timestamp)
+    })
+  }
   render() {
     const { notifications } = this.props
     return (
@@ -39,20 +50,17 @@ class Inbox extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(notifications).map(msgId => {
-                  const item = notifications[msgId]
-                  return (
-                    <tr key={msgId}>
-                      <td>{item.type}</td>
-                      <td>{this.formatDate(item.timestamp)}</td>
-                      <td>{item.source}</td>
-                      <td>{item.content}</td>
-                      <td>
-                        <button onClick={() => this.deleteMessage(msgId)}>Delete message</button>
-                      </td>
-                    </tr>
-                  )
-                })}
+                {this.getNotifications().map(item => (
+                  <tr key={item._id}>
+                    <td>{item.type}</td>
+                    <td>{this.formatDate(item.timestamp)}</td>
+                    <td>{item.source}</td>
+                    <td>{item.content}</td>
+                    <td>
+                      <button onClick={() => this.deleteMessage(item._id)}>Delete message</button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
