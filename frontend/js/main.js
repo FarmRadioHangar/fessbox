@@ -26,6 +26,22 @@ class App extends React.Component {
   constructor(props) {
     super(props)
   }
+  componentDidMount() {
+      /* @TODO -- REMOVE
+    store.dispatch(updateInbox(1, {
+      type      : 'sms_in',
+      timestamp : Date.now(),
+      source    : '123123132',
+      content   : 'hello'
+    }))
+    store.dispatch(updateInbox(2, {
+      type      : 'sms_in',
+      timestamp : Date.now(),
+      source    : '123123132',
+      content   : 'hello again'
+    }))
+        */
+  }
   render() {
     const Ui = connect(state => {
       return {
@@ -168,7 +184,9 @@ ws.onmessage = e => {
         })
         break
       case 'inboxUpdate':
-        store.dispatch(updateInbox(msg.data))
+        Object.keys(msg.data).forEach(id => {
+          store.dispatch(updateInbox(id, msg.data[id]))
+        })
         break
       default:
         break

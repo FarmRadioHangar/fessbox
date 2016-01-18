@@ -129,15 +129,23 @@ function client(state = {}, action) {
         default:
           return state
       }
-    case 'update-inbox':
+    case 'update-inbox': {
       const notifications = state.notifications || {}
       return {
         ...state,
         notifications: {
           ...notifications,
-          [action.payload.type] : [action.payload, ...notifications[action.payload.type] || []]
+          [action.id] : action.payload 
         }
       }
+    }
+    case 'remove-inbox-message': {
+      const notifications = state.notifications || {}
+      return {
+        ...state,
+        notifications: _.omit(notifications, action.id)
+      }
+    }
     default:
       return state
   }

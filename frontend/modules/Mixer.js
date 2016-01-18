@@ -89,7 +89,7 @@ class Mixer extends React.Component {
               )
             })}
           </div>
-          <Inbox notifications={client.notifications} />
+          <Inbox notifications={client.notifications} {...this.props} />
         </div>
         <div style={styles.master}> 
           {!!master && !!Object.keys(master).length && (

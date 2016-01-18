@@ -18,6 +18,7 @@ exports.updateMasterLevel = updateMasterLevel;
 exports.updateCaller = updateCaller;
 exports.setTimeDiff = setTimeDiff;
 exports.updateInbox = updateInbox;
+exports.removeInboxMessage = removeInboxMessage;
 function mute(channel) {
   return {
     type: 'mute', channel: channel
@@ -96,9 +97,15 @@ function setTimeDiff(diff) {
   };
 }
 
-function updateInbox(payload) {
+function updateInbox(id, payload) {
   return {
-    type: 'update-inbox', payload: payload
+    type: 'update-inbox', id: id, payload: payload
+  };
+}
+
+function removeInboxMessage(id) {
+  return {
+    type: 'remove-inbox-message', id: id
   };
 }
 
@@ -167,27 +174,23 @@ var App = (function (_React$Component) {
     return _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
   }
 
-  // temp
-
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      store.dispatch((0, _actions.updateInbox)({
-        'type': 'sms',
-        'timestamp': Date.now(),
-        'source': '0688755855',
-        'content': 'Testing'
-      }));
 
-      store.dispatch((0, _actions.updateInbox)({
-        'type': 'sms',
-        'timestamp': Date.now(),
-        'source': '0111111111',
-        'content': 'Testing 2'
+      store.dispatch((0, _actions.updateInbox)(1, {
+        type: 'sms_in',
+        timestamp: Date.now(),
+        source: '123123132',
+        content: 'hello'
+      }));
+      store.dispatch((0, _actions.updateInbox)(2, {
+        type: 'sms_in',
+        timestamp: Date.now(),
+        source: '123123132',
+        content: 'hello again'
       }));
     }
-    // temp
-
   }, {
     key: 'render',
     value: function render() {
@@ -337,7 +340,9 @@ ws.onmessage = function (e) {
           });
           break;
         case 'inboxUpdate':
-          store.dispatch((0, _actions.updateInbox)(msg.data));
+          Object.keys(msg.data).forEach(function (id) {
+            store.dispatch((0, _actions.updateInbox)(id, msg.data[id]));
+          });
           break;
         default:
           break;
@@ -367,8 +372,6 @@ var _lodash2 = _interopRequireDefault(_lodash);
 var _redux = require('redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -484,10 +487,19 @@ function client() {
           return state;
       }
     case 'update-inbox':
-      var notifications = state.notifications || {};
-      return _extends({}, state, {
-        notifications: _extends({}, notifications, _defineProperty({}, action.payload.type, [action.payload].concat(_toConsumableArray(notifications[action.payload.type] || []))))
-      });
+      {
+        var notifications = state.notifications || {};
+        return _extends({}, state, {
+          notifications: _extends({}, notifications, _defineProperty({}, action.id, action.payload))
+        });
+      }
+    case 'remove-inbox-message':
+      {
+        var notifications = state.notifications || {};
+        return _extends({}, state, {
+          notifications: _lodash2.default.omit(notifications, action.id)
+        });
+      }
     default:
       return state;
   }
@@ -1366,6 +1378,8 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
+var _actions = require('../js/actions');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1374,68 +1388,38 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Notifications = (function (_React$Component) {
-  _inherits(Notifications, _React$Component);
-
-  function Notifications(props) {
-    _classCallCheck(this, Notifications);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Notifications).call(this, props));
+/*
+class Notifications extends React.Component {
+  constructor(props) {
+    super(props)
   }
-
-  _createClass(Notifications, [{
-    key: 'formatDate',
-    value: function formatDate(date) {
-      return (0, _moment2.default)(date).fromNow();
+  formatDate(date) {
+    return moment(date).fromNow()
+  }
+  render() {
+    const { items } = this.props
+    if (!items || !items.length) {
+      return <span />
     }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
+    return (
+      <tbody>
+        {items.map((item, i) => (
+          <tr key={i}>
+            <td>{item.type}</td>
+            <td>{this.formatDate(item.timestamp)}</td>
+            <td>{item.source}</td>
+            <td>{item.content}</td>
+            <td><a href='#'>Delete message</a></td>
+          </tr>
+        ))}
+      </tbody>
+    )
+  }
+}
+*/
 
-      var items = this.props.items;
-
-      if (!items || !items.length) {
-        return _react2.default.createElement('span', null);
-      }
-      return _react2.default.createElement(
-        'tbody',
-        null,
-        items.map(function (item, i) {
-          return _react2.default.createElement(
-            'tr',
-            { key: i },
-            _react2.default.createElement(
-              'td',
-              null,
-              item.type
-            ),
-            _react2.default.createElement(
-              'td',
-              null,
-              _this2.formatDate(item.timestamp)
-            ),
-            _react2.default.createElement(
-              'td',
-              null,
-              item.source
-            ),
-            _react2.default.createElement(
-              'td',
-              null,
-              item.content
-            )
-          );
-        })
-      );
-    }
-  }]);
-
-  return Notifications;
-})(_react2.default.Component);
-
-var Inbox = (function (_React$Component2) {
-  _inherits(Inbox, _React$Component2);
+var Inbox = (function (_React$Component) {
+  _inherits(Inbox, _React$Component);
 
   function Inbox(props) {
     _classCallCheck(this, Inbox);
@@ -1444,15 +1428,28 @@ var Inbox = (function (_React$Component2) {
   }
 
   _createClass(Inbox, [{
+    key: 'formatDate',
+    value: function formatDate(date) {
+      return (0, _moment2.default)(date).fromNow();
+    }
+  }, {
+    key: 'deleteMessage',
+    value: function deleteMessage(id) {
+      var dispatch = this.props.dispatch;
+
+      dispatch((0, _actions.removeInboxMessage)(id));
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var notifications = this.props.notifications;
 
-      var notificationTypes = ['sms'];
       return _react2.default.createElement(
         'div',
         null,
-        notifications && Object.keys(notifications).length && _react2.default.createElement(
+        !!notifications && !!Object.keys(notifications).length && _react2.default.createElement(
           'div',
           { style: styles.inbox },
           _react2.default.createElement(
@@ -1464,7 +1461,8 @@ var Inbox = (function (_React$Component2) {
               _react2.default.createElement('col', { width: '10%' }),
               _react2.default.createElement('col', { width: '20%' }),
               _react2.default.createElement('col', { width: '15%' }),
-              _react2.default.createElement('col', { width: '55%' })
+              _react2.default.createElement('col', { width: '45%' }),
+              _react2.default.createElement('col', { width: '10%' })
             ),
             _react2.default.createElement(
               'thead',
@@ -1491,12 +1489,52 @@ var Inbox = (function (_React$Component2) {
                   'th',
                   null,
                   'Content'
-                )
+                ),
+                _react2.default.createElement('th', null)
               )
             ),
-            notificationTypes.map(function (type, i) {
-              return _react2.default.createElement(Notifications, { key: i, items: notifications[type] });
-            })
+            _react2.default.createElement(
+              'tbody',
+              null,
+              Object.keys(notifications).map(function (msgId) {
+                var item = notifications[msgId];
+                return _react2.default.createElement(
+                  'tr',
+                  { key: msgId },
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    item.type
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    _this2.formatDate(item.timestamp)
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    item.source
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    item.content
+                  ),
+                  _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                      'button',
+                      { onClick: function onClick() {
+                          return _this2.deleteMessage(msgId);
+                        } },
+                      'Delete message'
+                    )
+                  )
+                );
+              })
+            )
           )
         )
       );
@@ -1505,6 +1543,10 @@ var Inbox = (function (_React$Component2) {
 
   return Inbox;
 })(_react2.default.Component);
+
+//              {notificationTypes.map((type, i) => (
+//                <Notifications key={i} items={notifications[type]} />
+//              ))}
 
 var styles = {
   inbox: {
@@ -1523,7 +1565,7 @@ var styles = {
 
 exports.default = Inbox;
 
-},{"moment":21,"react":430}],8:[function(require,module,exports){
+},{"../js/actions":1,"moment":21,"react":430}],8:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1821,7 +1863,7 @@ var Mixer = (function (_React$Component) {
                 sendMessage: sendMessage })) : _react2.default.createElement('span', { key: id });
             })
           ),
-          _react2.default.createElement(_Inbox2.default, { notifications: client.notifications })
+          _react2.default.createElement(_Inbox2.default, _extends({ notifications: client.notifications }, this.props))
         ),
         _react2.default.createElement(
           'div',

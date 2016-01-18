@@ -76,8 +76,14 @@ export function setTimeDiff(diff) {
   }
 }
 
-export function updateInbox(payload) {
+export function updateInbox(id, payload) {
   return {
-    type : 'update-inbox', payload
+    type : 'update-inbox', id, payload
+  }
+}
+
+export function removeInboxMessage(id) {
+  return {
+    type : 'remove-inbox-message', id
   }
 }
