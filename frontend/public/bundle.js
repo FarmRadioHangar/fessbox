@@ -177,19 +177,20 @@ var App = (function (_React$Component) {
   _createClass(App, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-
-      store.dispatch((0, _actions.updateInbox)(1, {
-        type: 'sms_in',
-        timestamp: Date.now(),
-        source: '123123132',
-        content: 'hello'
-      }));
-      store.dispatch((0, _actions.updateInbox)(2, {
-        type: 'sms_in',
-        timestamp: Date.now(),
-        source: '123123132',
-        content: 'hello again'
-      }));
+      /* @TODO -- REMOVE
+      store.dispatch(updateInbox(1, {
+      type      : 'sms_in',
+      timestamp : Date.now(),
+      source    : '123123132',
+      content   : 'hello'
+      }))
+      store.dispatch(updateInbox(2, {
+      type      : 'sms_in',
+      timestamp : Date.now(),
+      source    : '123123132',
+      content   : 'hello again'
+      }))
+        */
     }
   }, {
     key: 'render',
@@ -1388,36 +1389,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/*
-class Notifications extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  formatDate(date) {
-    return moment(date).fromNow()
-  }
-  render() {
-    const { items } = this.props
-    if (!items || !items.length) {
-      return <span />
-    }
-    return (
-      <tbody>
-        {items.map((item, i) => (
-          <tr key={i}>
-            <td>{item.type}</td>
-            <td>{this.formatDate(item.timestamp)}</td>
-            <td>{item.source}</td>
-            <td>{item.content}</td>
-            <td><a href='#'>Delete message</a></td>
-          </tr>
-        ))}
-      </tbody>
-    )
-  }
-}
-*/
-
 var Inbox = (function (_React$Component) {
   _inherits(Inbox, _React$Component);
 
@@ -1543,10 +1514,6 @@ var Inbox = (function (_React$Component) {
 
   return Inbox;
 })(_react2.default.Component);
-
-//              {notificationTypes.map((type, i) => (
-//                <Notifications key={i} items={notifications[type]} />
-//              ))}
 
 var styles = {
   inbox: {
