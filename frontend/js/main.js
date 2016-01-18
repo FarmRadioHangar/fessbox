@@ -26,25 +26,6 @@ class App extends React.Component {
   constructor(props) {
     super(props)
   }
-
-  // temp
-  componentDidMount() {
-    store.dispatch(updateInbox({
-      'type'      : 'sms',
-      'timestamp' : Date.now(),
-      'source'    : '0688755855',
-      'content'   : 'Testing'
-    }))
-
-    store.dispatch(updateInbox({
-      'type'      : 'sms',
-      'timestamp' : Date.now(),
-      'source'    : '0111111111',
-      'content'   : 'Testing 2'
-    }))
-  }
-  // temp
-
   render() {
     const Ui = connect(state => {
       return {
