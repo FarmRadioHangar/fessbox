@@ -1362,6 +1362,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1380,8 +1384,15 @@ var Notifications = (function (_React$Component) {
   }
 
   _createClass(Notifications, [{
+    key: 'formatDate',
+    value: function formatDate(date) {
+      return (0, _moment2.default)(date).fromNow();
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var items = this.props.items;
 
       if (!items || !items.length) {
@@ -1402,7 +1413,7 @@ var Notifications = (function (_React$Component) {
             _react2.default.createElement(
               'td',
               null,
-              new Date(item.timestamp).toString()
+              _this2.formatDate(item.timestamp)
             ),
             _react2.default.createElement(
               'td',
@@ -1446,7 +1457,15 @@ var Inbox = (function (_React$Component2) {
           { style: styles.inbox },
           _react2.default.createElement(
             'table',
-            { style: styles.table },
+            { className: 'table', style: styles.table },
+            _react2.default.createElement(
+              'colgroup',
+              null,
+              _react2.default.createElement('col', { width: '10%' }),
+              _react2.default.createElement('col', { width: '20%' }),
+              _react2.default.createElement('col', { width: '15%' }),
+              _react2.default.createElement('col', { width: '55%' })
+            ),
             _react2.default.createElement(
               'thead',
               null,
@@ -1504,7 +1523,7 @@ var styles = {
 
 exports.default = Inbox;
 
-},{"react":430}],8:[function(require,module,exports){
+},{"moment":21,"react":430}],8:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
