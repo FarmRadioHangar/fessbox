@@ -21,6 +21,7 @@ class Notifications extends React.Component {
             <td>{this.formatDate(item.timestamp)}</td>
             <td>{item.source}</td>
             <td>{item.content}</td>
+            <td><a href='#'>Delete message</a></td>
           </tr>
         ))}
       </tbody>
