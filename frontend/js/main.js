@@ -16,7 +16,8 @@ import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster
   from './actions'
 
 const userId  = getQueryVariable('user_id') || 701
-const hostUrl = getQueryVariable('host_url') || '192.168.1.38:19998'
+//const hostUrl = getQueryVariable('host_url') || '192.168.1.38:19998'
+const hostUrl = getQueryVariable('host_url') || '192.168.1.77:19998'
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${userId}`}))(createStore)
 const store = createPersistentStore(app, {client: {userId, channels: {}, notifications: {}, $: Math.random()*1000000000|0}})
