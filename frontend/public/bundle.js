@@ -176,24 +176,6 @@ var App = (function (_React$Component) {
   }
 
   _createClass(App, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      /* @TODO -- REMOVE
-      store.dispatch(updateInbox(1, {
-      type      : 'sms_in',
-      timestamp : Date.now(),
-      source    : '123123132',
-      content   : 'hello'
-      }))
-      store.dispatch(updateInbox(2, {
-      type      : 'sms_in',
-      timestamp : Date.now(),
-      source    : '123123132',
-      content   : 'hello again'
-      }))
-        */
-    }
-  }, {
     key: 'render',
     value: function render() {
       var Ui = (0, _reactRedux.connect)(function (state) {
@@ -1519,6 +1501,7 @@ var Inbox = (function (_React$Component) {
 var styles = {
   inbox: {
     position: 'fixed',
+    zIndex: 3,
     bottom: 0,
     border: '1px solid #888',
     width: '70%',
