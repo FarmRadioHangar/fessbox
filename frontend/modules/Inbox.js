@@ -4,36 +4,6 @@ import moment  from 'moment'
 import { removeInboxMessage }
   from '../js/actions'
 
-/*
-class Notifications extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  formatDate(date) {
-    return moment(date).fromNow()
-  }
-  render() {
-    const { items } = this.props
-    if (!items || !items.length) {
-      return <span />
-    }
-    return (
-      <tbody>
-        {items.map((item, i) => (
-          <tr key={i}>
-            <td>{item.type}</td>
-            <td>{this.formatDate(item.timestamp)}</td>
-            <td>{item.source}</td>
-            <td>{item.content}</td>
-            <td><a href='#'>Delete message</a></td>
-          </tr>
-        ))}
-      </tbody>
-    )
-  }
-}
-*/
-
 class Inbox extends React.Component {
   constructor(props) {
     super(props)
