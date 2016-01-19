@@ -336,7 +336,7 @@ ws.onmessage = function (e) {
             if (msg.data[id]) {
               store.dispatch((0, _actions.updateInbox)(id, msg.data[id]));
             } else {
-              store.dispatch((0, _actions.deleteMessage)(id));
+              store.dispatch((0, _actions.removeMessage)(id));
             }
           });
           break;
