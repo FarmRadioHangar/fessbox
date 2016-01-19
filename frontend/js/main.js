@@ -12,15 +12,14 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox }
+import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, deleteMessage }
   from './actions'
 
 const userId  = getQueryVariable('user_id') || 701
-//const hostUrl = getQueryVariable('host_url') || '192.168.1.38:19998'
-const hostUrl = getQueryVariable('host_url') || '192.168.1.77:19998'
+const hostUrl = getQueryVariable('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${userId}`}))(createStore)
-const store = createPersistentStore(app, {client: {userId, channels: {}, notifications: {}, $: Math.random()*1000000000|0}})
+const store = createPersistentStore(app, {client: {userId, channels: {}, $: Math.random()*1000000000|0}})
 const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
 
 class App extends React.Component {
@@ -32,7 +31,8 @@ class App extends React.Component {
       return {
         mixer  : state.mixer,
         client : state.client,
-        users  : state.users
+        users  : state.users,
+        inbox  : state.inbox
       }
     })(ui)
     return (
@@ -55,6 +55,7 @@ ReactDOM.render(
 ws.onopen  = () => { console.log('open') } 
 ws.onclose = () => { console.log('close') } 
 
+/*
 const channels = {
   'chan_2' : {
     level      : 40,
@@ -125,6 +126,7 @@ const temp = {
   host   : {},
   sound  : false
 }
+*/
 
 ws.onmessage = e => { 
   if (e.data) {
@@ -135,7 +137,7 @@ ws.onmessage = e => {
     switch (msg.event) {
       case 'initialize':
         store.dispatch(initializeMixer(msg.data.mixer))
-        //store.dispatch(initializeMixer(temp))
+        /* store.dispatch(initializeMixer(temp)) */
         if (msg.data.users) {
           store.dispatch(initializeUsers(msg.data.users))
         }
@@ -143,6 +145,12 @@ ws.onmessage = e => {
         const diff = Date.now() - msg.data.server_time
         console.log(`diff : ${diff}`)
         store.dispatch(setTimeDiff(diff))
+        // Initialize message inbox
+        if (msg.data.inbox) {
+          msg.data.inbox.ids.slice().reverse().forEach(id => {
+            store.dispatch(updateInbox(id, msg.data.inbox.messages[id]))
+          })
+        }
         break
       case 'channelUpdate':
         store.dispatch(updateMixer(msg.data))
@@ -170,8 +178,15 @@ ws.onmessage = e => {
         break
       case 'inboxUpdate':
         Object.keys(msg.data).forEach(id => {
-          store.dispatch(updateInbox(id, msg.data[id]))
+          if (msg.data[id]) {
+            store.dispatch(updateInbox(id, msg.data[id]))
+          } else {
+            store.dispatch(deleteMessage(id))
+          }
         })
+        break
+      case 'inboxMessages':
+        // @TODO
         break
       default:
         break

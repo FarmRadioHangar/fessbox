@@ -1,36 +1,36 @@
 import React   from 'react'
+import TimeAgo from 'react-timeago'
 import moment  from 'moment'
 
-import { removeInboxMessage }
+import { removeMessage } 
   from '../js/actions'
 
 class Inbox extends React.Component {
   constructor(props) {
     super(props)
   }
-  formatDate(date) {
-    return moment(date).fromNow()
-  }
   deleteMessage(id) {
-    const { dispatch } = this.props
-    dispatch(removeInboxMessage(id))
-  }
-  getNotifications() {
-    const { notifications } = this.props
-    return Object.keys(notifications).map(msgId => {
-      return {
-        ...notifications[msgId],
-        _id : msgId
-      }
-    }).sort((a, b) => {
-      return (b.timestamp - a.timestamp)
+    const { dispatch, sendMessage } = this.props
+    sendMessage('messageDelete', {
+      [id]: null
     })
+    dispatch(removeMessage(id))
+  }
+  getType(type) {
+    switch (type) {
+      case 'sms_in':
+        return 'Incoming SMS'
+      case 'sms_out':
+        return 'Outgoing SMS'
+      default:
+        return type
+    }
   }
   render() {
     const { notifications } = this.props
     return (
       <div>
-        {!!notifications && !!Object.keys(notifications).length && (
+        {!!notifications && !!notifications.length && (
           <div style={styles.inbox}>
             <table className='table' style={styles.table}>
               <colgroup>
@@ -50,14 +50,18 @@ class Inbox extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.getNotifications().map(item => (
-                  <tr key={item._id}>
-                    <td>{item.type}</td>
-                    <td>{this.formatDate(item.timestamp)}</td>
+                {notifications.map(item => (
+                  <tr key={item.id}>
+                    <td>{this.getType(item.type)}</td>
+                    <td>
+                      {isNaN(item.timestamp) ? '-' : (
+                        <TimeAgo date={Number(item.timestamp)} />
+                      )}
+                    </td>
                     <td>{item.source}</td>
                     <td>{item.content}</td>
                     <td>
-                      <button onClick={() => this.deleteMessage(item._id)}>Delete message</button>
+                      <button onClick={() => this.deleteMessage(item.id)}>Delete</button>
                     </td>
                   </tr>
                 ))}

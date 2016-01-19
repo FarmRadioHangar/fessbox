@@ -82,8 +82,8 @@ export function updateInbox(id, payload) {
   }
 }
 
-export function removeInboxMessage(id) {
+export function removeMessage(id) {
   return {
-    type : 'remove-inbox-message', id
+    type : 'remove-message', id
   }
 }

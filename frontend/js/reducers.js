@@ -129,28 +129,36 @@ function client(state = {}, action) {
         default:
           return state
       }
-    case 'update-inbox': {
-      const notifications = state.notifications || {}
-      return {
-        ...state,
-        notifications: {
-          ...notifications,
-          [action.id] : action.payload 
-        }
-      }
-    }
-    case 'remove-inbox-message': {
-      const notifications = state.notifications || {}
-      return {
-        ...state,
-        notifications: _.omit(notifications, action.id)
-      }
-    }
     default:
       return state
   }
 }
 
-const reducers = { mixer, users, client }
+const initialInboxState = {
+  notifications: []
+}
+
+function inbox(state = initialInboxState, action) {
+  switch (action.type) {
+    case 'update-inbox': 
+      const message = {
+        ...action.payload,
+        id: action.id
+      }
+      return {
+        ...state,
+        notifications: [message, ...state.notifications]
+      }
+    case 'remove-message':
+      return {
+        ...state,
+        notifications: state.notifications.filter(item => item.id != action.id)
+      }
+    default:
+      return state
+  }
+}
+
+const reducers = { mixer, users, client, inbox }
 
 export default combineReducers(reducers)
