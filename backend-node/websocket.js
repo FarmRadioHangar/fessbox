@@ -1,43 +1,61 @@
-//var eventHandler = require("./eventHandler");
+var appConfig = require("./config/app.json");
 
-var s = require("./singleton");
-var ami = require("./ami");
+var s = require("./localStorage");
+var eventHandlers = require("./eventHandlers");
+var myLib = require("./myLib");
+
+var url = require("url");
 var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: 19998 });
-
-//var sms_buffer = [];
+  , wss = new WebSocketServer({ port: appConfig.wsPort });
 
 wss.on('connection', function connection(ws) {
-	var fromUrl = ws.upgradeReq.url.substr(1);
+	var location = url.parse(ws.upgradeReq.url, true);
+
 	ws.on('message', function incoming(message) {
+		myLib.consoleLog('debug', 'receivedEvent', message);
 		message = JSON.parse(message);
 		if (!message.event) {
-			ws.send(createObject("input_error", "message format error, should be { event: String, data: Object }"));
+			ws.send(serializeEvent("input_error", "message format error, should be { event: String, data: Object }"));
 		} else {
-			console.log('received %s: %s', message.event, JSON.stringify(message.data));
-			console.log('s.channels', s.channels);
-			if (message.data.tracks) {
-				for (var i=0; i < message.data.tracks.length; i++) {
-					var item = message.data.tracks[i];
-					if (s.channels[item.name]) {
-						// gain: 0 - 1.3225
-						console.log('exp:', Math.exp(item.gain));
-						var level = (item.gain - 0.65) * 25;
-						console.log('!!!', s.channels[item.name].channel, level, "RX");
-						ami.setChannelVolume(s.channels[item.name].channel, level, "TX");
-						ami.setChannelVolume(s.channels[item.name].channel, level, "RX");
+			// debug: return to sender and print
+			ws.send(serializeEvent("echo", message));
+
+			if (!eventHandlers[message.event]) {
+				myLib.consoleLog('debug', 'input_error', "event handler not found: " + message.event);
+				ws.send(serializeEvent("input_error", "event handler not found: " + message.event));
+			} else {
+				eventHandlers[message.event](location.query.user_id, message.data, function (event, data, target) {
+					data = serializeEvent(event, data);
+					myLib.consoleLog('debug', 'emitEvent', data);
+					switch (target) {
+						case 'self':
+							ws.send(data);
+							break;
+						case 'others':
+							wss.clients.forEach(function each(client) {
+								if (client !== ws) {
+									client.send(data);
+								}
+							});
+							break;
+						default:
+							wss.broadcast(data);
 					}
-				}
+				});
 			}
 		}
-//	eventHandler(message.event, message.data);
 	});
-	ws.send(createObject("initialize", s.ui));
-/*
-  for (var i in sms_buffer) {
-        ws.send(sms_buffer[i]);
-  }
-*/
+	// todo: move this to api.js
+	if (location.query.user_id && s.ui.users[location.query.user_id]) { 
+		var users = {};
+		users[location.query.user_id] = s.ui.users[location.query.user_id];
+	}
+	var initState = {
+		mixer: s.ui.mixer,
+		users: users,
+		server_time: Date.now()
+	};
+	ws.send(serializeEvent("initialize", initState));
 });
 
 wss.broadcast = function broadcast(data) {
@@ -46,20 +64,19 @@ wss.broadcast = function broadcast(data) {
 	});
 };
 
-var createObject = function (event, data) {
+var serializeEvent = function (event, data) {
 	return JSON.stringify({
 		event: event,
 		data: data
 	});
 };
 
-var broadcast = function (event, data) {
-	var payload = createObject(event, data);
+var broadcastEvent = function (event, data) {
+	var payload = serializeEvent(event, data);
+	myLib.consoleLog('debug', 'broadcastEvent', payload);
 	wss.clients.forEach(function each(client) {
 		client.send(payload);
 	});
 };
 
-
-exports.broadcast = broadcast;
-//exports.bind = bind;
+exports.broadcastEvent = broadcastEvent;
