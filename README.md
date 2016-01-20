@@ -1,1 +1,1 @@
-# fessbox-node
+# FessBox stack
