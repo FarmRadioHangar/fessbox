@@ -36,7 +36,7 @@ class App extends React.Component {
       }
     })(ui)
     return (
-      <Ui sendMessage={(type, data) => {
+      <Ui t={t} sendMessage={(type, data) => {
         ws.send(JSON.stringify({ event : type, data }))
       }} />
     )
@@ -45,12 +45,23 @@ class App extends React.Component {
 
 injectTapEventPlugin()
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('main')
-)
+i18next.init({
+  lng: 'en',
+  resources: {
+    en: {
+      translation: {
+        'key' : 'hello world'
+      }
+    }
+  }
+}, (err, t) => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <App t={t} />
+    </Provider>,
+    document.getElementById('main')
+  )
+})
 
 ws.onopen  = () => { console.log('open') } 
 ws.onclose = () => { console.log('close') } 
