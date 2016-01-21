@@ -34,10 +34,13 @@ class Ui extends React.Component {
     this.setState({sidebarDocked: !docked})
   }
   render() {
-    const { client, mixer, users } = this.props
+    const { client, mixer, users, t } = this.props
     const { sidebarOpen, sidebarDocked } = this.state
     return !!users && users.hasOwnProperty(client.userId) && mixer.hasOwnProperty('channels') && mixer.channels.hasOwnProperty(client.userId) ? ( 
       <div>
+        <h1>
+          {t('key')}
+        </h1>
         <div>
           <Sidebar sidebar = {(
             <div style = {styles.hostWrapper}>
