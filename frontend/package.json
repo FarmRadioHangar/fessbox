@@ -6,6 +6,7 @@
   "dependencies": {
     "awesome-websocket": "0.0.25",
     "classnames": "^2.2.0",
+    "i18next": "^2.0.22",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
     "react": "^0.14.2",
