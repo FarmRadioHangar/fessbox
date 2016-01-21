@@ -1,5 +1,6 @@
 import React                from 'react'
 import ReactDOM             from 'react-dom'
+import i18next              from 'i18next'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import persistState         from 'redux-localstorage'
 import app                  from './reducers'
