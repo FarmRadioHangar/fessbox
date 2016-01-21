@@ -28,6 +28,7 @@ class App extends React.Component {
     super(props)
   }
   render() {
+    const { t } = this.props
     const Ui = connect(state => {
       return {
         mixer  : state.mixer,
