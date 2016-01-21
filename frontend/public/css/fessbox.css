@@ -1,0 +1,26 @@
+body {
+    font-family: 'Open Sans', sans-serif; 
+}
+
+.list-group-item:first-child {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.slider-handle {
+    width: 17px;
+    height: 17px;
+}
+
+.slider.slider-horizontal .slider-handle {
+    margin-top: -4px;
+}
+
+.slider.slider-vertical .slider-handle {
+    margin-left: -4px;
+}
+
+.material-icons {
+    line-height: inherit;
+    font-size: 16px;
+}
