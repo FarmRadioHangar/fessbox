@@ -1378,6 +1378,8 @@ exports.default = Host;
 },{"../js/actions":1,"./Slider":10,"react":431}],7:[function(require,module,exports){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {
@@ -1414,10 +1416,23 @@ var Inbox = (function (_React$Component) {
   function Inbox(props) {
     _classCallCheck(this, Inbox);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));
+
+    _this.state = {
+      expanded: false
+    };
+    _this.toggleExpand = _this.toggleExpand.bind(_this);
+    return _this;
   }
 
   _createClass(Inbox, [{
+    key: 'toggleExpand',
+    value: function toggleExpand() {
+      this.setState({
+        expanded: !this.state.expanded
+      });
+    }
+  }, {
     key: 'deleteMessage',
     value: function deleteMessage(id) {
       var _props = this.props;
@@ -1451,8 +1466,15 @@ var Inbox = (function (_React$Component) {
         null,
         !!notifications && !!notifications.length && _react2.default.createElement(
           'div',
-          { style: styles.inbox },
+          { style: _extends({
+              maxHeight: this.state.expanded ? '300px' : '45px'
+            }, styles.inbox) },
           _react2.default.createElement(
+            'div',
+            { onClick: this.toggleExpand, style: styles.toggleButton },
+            _react2.default.createElement('i', { className: 'glyphicon glyphicon-arrow-' + (this.state.expanded ? 'down' : 'up') })
+          ),
+          this.state.expanded ? _react2.default.createElement(
             'table',
             { className: 'table', style: styles.table },
             _react2.default.createElement(
@@ -1534,6 +1556,19 @@ var Inbox = (function (_React$Component) {
                 );
               })
             )
+          ) : _react2.default.createElement(
+            'div',
+            { style: { margin: '10px' } },
+            !!notifications.length && _react2.default.createElement(
+              'span',
+              null,
+              'Inbox ',
+              _react2.default.createElement(
+                'span',
+                { className: 'badge' },
+                notifications.length
+              )
+            )
           )
         )
       );
@@ -1550,12 +1585,21 @@ var styles = {
     bottom: 0,
     border: '1px solid #888',
     width: '70%',
-    maxHeight: '200px',
     overflowY: 'scroll',
     background: '#ffffff'
   },
   table: {
     width: '100%'
+  },
+  toggleButton: {
+    cursor: 'pointer',
+    position: 'absolute',
+    background: '#ffffff',
+    right: 0,
+    top: 0,
+    padding: '6px',
+    borderBottom: '1px solid #888888',
+    borderLeft: '1px solid #888888'
   }
 };
 
