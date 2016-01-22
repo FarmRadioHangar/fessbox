@@ -44,7 +44,7 @@ class Master extends React.Component {
               style          = {styles.button} 
               className      = 'btn btn-default btn-sm' 
               onClick        = { () => this.toggleMuted() }>
-              <i className={muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
+              <i className={`glyphicon glyphicon-volume-${muted ? 'off' : 'up'}`} />
             </button>
           </div>
           <div style={styles.label}>M</div>
@@ -71,7 +71,7 @@ const styles = {
   },
   sliderWrapper : {
     textAlign: 'center'
-  }
+  },
 }
 
 export default Master

@@ -1672,7 +1672,7 @@ var Master = (function (_React$Component) {
                 onClick: function onClick() {
                   return _this2.toggleMuted();
                 } },
-              _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
+              _react2.default.createElement('i', { className: 'glyphicon glyphicon-volume-' + (muted ? 'off' : 'up') })
             )
           ),
           _react2.default.createElement(
