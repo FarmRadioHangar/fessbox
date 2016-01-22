@@ -119,7 +119,7 @@ const styles = {
   master : {
     flex       : 2, 
     textAlign  : 'center'
-  }
+  },
 }
 
 export default Mixer

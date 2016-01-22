@@ -64,16 +64,12 @@ class Ui extends React.Component {
                 </button>
               )}
             </div>
-            <div>
-              <Mixer {...this.props} />
-            </div>
+            <Mixer {...this.props} />
           </Sidebar>
         </div>
       </div>
     ) : (
-      <div>
-        <Mixer {...this.props} />
-      </div>
+      <Mixer {...this.props} />
     )
   }
 }
@@ -94,7 +90,7 @@ const styles = {
       width    : '100%', 
       border   : 'none'
     }
-  }
+  },
 }
 
 export default Ui

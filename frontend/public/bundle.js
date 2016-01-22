@@ -2168,18 +2168,10 @@ var Ui = (function (_React$Component) {
                 _react2.default.createElement('span', { className: 'glyphicon glyphicon-menu-hamburger' })
               )
             ),
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(_Mixer2.default, this.props)
-            )
+            _react2.default.createElement(_Mixer2.default, this.props)
           )
         )
-      ) : _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(_Mixer2.default, this.props)
-      );
+      ) : _react2.default.createElement(_Mixer2.default, this.props);
     }
   }]);
 

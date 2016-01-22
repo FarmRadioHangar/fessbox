@@ -23,7 +23,7 @@ function getOptions(props) {
     ticks_labels       : props.labels,
     ticks_snap_bounds  : props.ticksSnapBounds,
     scale              : props.scale,
-    focus              : props.focus
+    focus              : props.focus,
   }
 }
 
