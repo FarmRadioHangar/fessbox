@@ -35,7 +35,7 @@ class SliderBar extends React.Component {
             style        = {styles.button} 
             className    = 'btn btn-default btn-sm' 
             onClick      = {onToggleMuted}>
-            <i className = {muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up'} />
+            <i className = {`glyphicon glyphicon-volume-${muted ? 'off' : 'up'}`} />
           </button>
         </div>
         <div style={styles.iconWrapper}> 
@@ -132,7 +132,7 @@ const styles = {
     flex         : 1, 
     minWidth     : '80px', 
     margin       : '11px 6px 11px 11px'
-  }
+  },
 }
 
 export default Host

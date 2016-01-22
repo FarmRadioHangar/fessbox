@@ -1183,7 +1183,7 @@ var SliderBar = (function (_React$Component) {
               style: styles.button,
               className: 'btn btn-default btn-sm',
               onClick: onToggleMuted },
-            _react2.default.createElement('i', { className: muted ? 'glyphicon glyphicon-volume-off' : 'glyphicon glyphicon-volume-up' })
+            _react2.default.createElement('i', { className: 'glyphicon glyphicon-volume-' + (muted ? 'off' : 'up') })
           )
         ),
         _react2.default.createElement(
