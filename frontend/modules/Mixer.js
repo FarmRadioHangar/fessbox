@@ -67,7 +67,8 @@ class Mixer extends React.Component {
       client, 
       inbox,
       dispatch, 
-      sendMessage 
+      sendMessage,
+      t
     } = this.props
     return (
       <div style={styles.wrapper}>
@@ -80,6 +81,7 @@ class Mixer extends React.Component {
               const [id, chan] = pair
               return (id != client.userId) ? (
                 <Channel {...chan} 
+                  t           = {t}
                   key         = {id}
                   channelId   = {id}
                   client      = {client}
@@ -95,6 +97,7 @@ class Mixer extends React.Component {
         <div style={styles.master}> 
           {!!master && !!Object.keys(master).length && (
             <Master {...master} 
+              t               = {t}
               active          = {this.masterIsActive()}
               dispatch        = {dispatch} 
               sendMessage     = {sendMessage} />

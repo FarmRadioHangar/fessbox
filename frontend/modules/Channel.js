@@ -89,11 +89,11 @@ class Channel extends React.Component {
     }
   }
   renderChannelMode() {
-    const { mode, contact } = this.props
+    const { mode, contact, t } = this.props
     const { editMode } = this.state
     if ('free' === mode) {
       return (
-        <p style={{margin: 0}}>Free line</p>
+        <p style={{margin: 0}}>{t('Free line')}</p>
       )
     } else if ('ring' === mode) {
       return (
@@ -101,7 +101,7 @@ class Channel extends React.Component {
           <div style={{flex: 1}}>
             <div>
               <p style={{margin: 0}}>
-                Incoming call:
+                {t('Incoming call')}:
               </p>
               <h4 style={{margin: '4px 0'}}>
                 {contact.number}
@@ -164,39 +164,39 @@ class Channel extends React.Component {
                 type      = 'button'
                 style     = {styles.callButton}
                 className = 'btn btn-default btn-lg'>
-                <span className='glyphicon glyphicon-pen' />&nbsp;Edit caller 
+                <span className='glyphicon glyphicon-pen' />&nbsp;{t('Edit caller')} 
               </button>&nbsp;&nbsp;
               <button 
                 onClick   = {() => this.disconnectCall()}
                 type      = 'button'
                 style     = {styles.callButton}
                 className = 'btn btn-default btn-lg btn-danger'>
-                <span style={{'top': '2px'}} className='glyphicon glyphicon-remove'></span>&nbsp;Hang up
+                <span style={{'top': '2px'}} className='glyphicon glyphicon-remove'></span>&nbsp;{t('Hang up')}
               </button>
             </div>
           </div>
           <Modal show={editMode} onHide={() => this.endEditCaller()}>
             <Modal.Header>
-              Edit caller details
+              {t('Edit caller details')}
             </Modal.Header>
             <Modal.Body>
               <div>
-                <label>Name</label>
+                <label>{t('Name')}</label>
                 <input 
                   ref          = 'callerName'
                   type         = 'text'
                   className    = 'form-control'
-                  placeholder  = 'Name'
+                  placeholder  = {t('Name')}
                   defaultValue = {contact ? contact.name : ''} />
               </div>
               {/*
               <div>
-                <label style={{marginTop: '8px'}}>Location</label>
+                <label style={{marginTop: '8px'}}>{t('Location')}</label>
                 <input 
                   ref          = 'callerLocation'
                   type         = 'text'
                   className    = 'form-control'
-                  placeholder  = 'Location'
+                  placeholder  = {t('Location')}
                   defaultValue = {contact ? contact['location'] : ''} />
               </div>
               */}
@@ -205,13 +205,13 @@ class Channel extends React.Component {
                   onClick      = {() => this.updateCaller()}
                   type         = 'button'
                   className    = 'btn btn-default btn-primary'>
-                  <span className='glyphicon glyphicon-ok' />&nbsp;Save
+                  <span className='glyphicon glyphicon-ok' />&nbsp;{t('Save')}
                 </button>&nbsp;&nbsp;
                 <button 
                   onClick      = {() => this.endEditCaller()} 
                   type         = 'button' 
                   className    = 'btn btn-default'>
-                  Cancel
+                  {t('Cancel')}
                 </button>
               </div>
             </Modal.Body>
@@ -221,19 +221,20 @@ class Channel extends React.Component {
     }
   }
   renderModeSwitch(color) {
+    const { t } = this.props
     /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
     const modes = ['host', 'master', 'on_hold']
     const labels = {
-      host    : 'Host',
-      master  : 'Master',
-      on_hold : 'On hold',
-      ivr     : 'IVR'
+      host    : t('Host'),
+      master  : t('Master'),
+      on_hold : t('On hold'),
+      ivr     : t('IVR'),
     }
     const icons = {
       host    : 'mic',
       master  : 'radio',
       on_hold : 'pause',
-      ivr     : 'voicemail'
+      ivr     : 'voicemail',
     }
     const { channelId, client : { channels } } = this.props
     const chan = channels[channelId] || { preset : 'master' }
@@ -248,7 +249,6 @@ class Channel extends React.Component {
                 type      = 'button'
                 className = {classNames(`btn btn-default btn-${color}`, { 'active' : chan.preset == mode })}
                 onClick   = {() => { this.updateMode(mode) }}>
-                {/* <i className='material-icons'>{icons[mode]}</i> */}
                 {labels[mode]}
               </button>
             )
@@ -297,7 +297,7 @@ class Channel extends React.Component {
     }
   }
   render() {
-    const { channelId, number, contact, mode, level, muted, timestamp } = this.props
+    const { channelId, number, contact, mode, level, muted, timestamp, t } = this.props
     const { color, bg } = this.getPanelStyle()
     const hours = moment(this.state.now).diff(timestamp, 'hours')
     return (
@@ -317,7 +317,7 @@ class Channel extends React.Component {
                 fontWeight    : 700,
                 lineHeight    : 1.6,
                 textTransform : 'uppercase'
-              }}>Defunct</span>
+              }}>{t('Defunct')}</span>
             )}
           </div>
         </div>
@@ -381,22 +381,5 @@ const styles = {
     }
   }
 }
-
-//          {/*
-//          <span className='fa-stack fa-lg'>
-//            <i className='fa fa-circle fa-stack-2x' style={{color: '#5cb85c'}} />
-//            <i className='fa fa-phone fa-stack-1x fa-inverse' />
-//          </span>
-//          */}
-//
-//          {/*
-//          <span className='fa-stack fa-lg'>
-//            <i className='fa fa-circle fa-stack-2x' style={{color: '#337ab7'}} />
-//            <i className='fa fa-phone fa-stack-1x fa-inverse' />
-//          </span>
-//          <h4>
-//            {mode}
-//          </h4>
-//          */}
 
 export default Channel

@@ -16,8 +16,9 @@ import { Provider, connect }
 import { initializeMixer, initializeUsers, updateUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, removeMessage }
   from './actions'
 
-const userId  = getQueryVariable('user_id') || 701
-const hostUrl = getQueryVariable('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
+const userId   = getQueryVariable('user_id') || 701
+const hostUrl  = getQueryVariable('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
+const language = getQueryVariable('language') || 'en' 
 
 const createPersistentStore = compose(persistState('client', {key: `__fessbox_client_${userId}`}))(createStore)
 const store = createPersistentStore(app, {client: {userId, channels: {}, $: Math.random()*1000000000|0}})
@@ -48,11 +49,32 @@ class App extends React.Component {
 injectTapEventPlugin()
 
 i18next.init({
-  lng: 'en',
+  lng: language,
   resources: {
-    en: {
+    se: {
       translation: {
-        'key' : 'hello world'
+        'Incoming call' : 'Inkommande samtal',
+        'Incoming SMS'  : 'Inkommande SMS',
+        'Outgoing SMS'  : 'Utgående SMS',
+        'Inbox'         : 'Inkorg',
+        'Type'          : 'Typ',
+        'Time'          : 'Tidpunkt',
+        'Sender'        : 'Avsändare',
+        'Content'       : 'Innehåll',
+        'Free line'     : 'Tillgänglig linje',
+        'Host'          : 'Värd',
+        'Master'        : 'Master',
+        'On hold'       : 'Parkera',
+        'IVR'           : 'Röstbrevlåda',
+        'Defunct'       : 'Ur funktion',
+        'Edit caller'   : 'Personinformation',
+        'Hang up'       : 'Avsluta samtal',
+        'Edit caller details' 
+                        : 'Uppdatera personinformation',
+        'Name'          : 'Namn',
+        'Location'      : 'Plats',
+        'Save'          : 'Spara',
+        'Cancel'        : 'Avbryt',
       }
     }
   }

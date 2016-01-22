@@ -164,6 +164,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var userId = (0, _urlParams2.default)('user_id') || 701;
 var hostUrl = (0, _urlParams2.default)('host_url') || 'fessbox.local:19998'; // '192.168.1.38:19998'
+var language = (0, _urlParams2.default)('language') || 'en';
 
 var createPersistentStore = (0, _redux.compose)((0, _reduxLocalstorage2.default)('client', { key: '__fessbox_client_' + userId }))(_redux.createStore);
 var store = createPersistentStore(_reducers2.default, { client: { userId: userId, channels: {}, $: Math.random() * 1000000000 | 0 } });
@@ -203,11 +204,31 @@ var App = (function (_React$Component) {
 (0, _reactTapEventPlugin2.default)();
 
 _i18next2.default.init({
-  lng: 'en',
+  lng: language,
   resources: {
-    en: {
+    se: {
       translation: {
-        'key': 'hello world'
+        'Incoming call': 'Inkommande samtal',
+        'Incoming SMS': 'Inkommande SMS',
+        'Outgoing SMS': 'Utgående SMS',
+        'Inbox': 'Inkorg',
+        'Type': 'Typ',
+        'Time': 'Tidpunkt',
+        'Sender': 'Avsändare',
+        'Content': 'Innehåll',
+        'Free line': 'Tillgänglig linje',
+        'Host': 'Värd',
+        'Master': 'Master',
+        'On hold': 'Parkera',
+        'IVR': 'Röstbrevlåda',
+        'Defunct': 'Ur funktion',
+        'Edit caller': 'Personinformation',
+        'Hang up': 'Avsluta samtal',
+        'Edit caller details': 'Uppdatera personinformation',
+        'Name': 'Namn',
+        'Location': 'Plats',
+        'Save': 'Spara',
+        'Cancel': 'Avbryt'
       }
     }
   }
@@ -225,79 +246,6 @@ ws.onopen = function () {
 ws.onclose = function () {
   console.log('close');
 };
-
-/*
-const channels = {
-  'chan_2' : {
-    level      : 40,
-    direction  : 'outgoing',
-    mode       : 'ring',
-    number     : '+255 712 444 333',
-    muted      : false,
-    duration   : null,
-    contact    : {
-      number   : '+255 712 155 789',
-      name     : 'Uri Geller',
-      location : '',
-      notes    : {}
-    },
-    recording  : false
-  },
-  'chan_3' : {
-    level      : 70,
-    direction  : null,
-    mode       : 'master',
-    number     : '+255 712 444 333',
-    muted      : true,
-    duration   : null,
-    contact    : {
-      number   : '+255 712 155 789',
-      name     : 'Uri Geller',
-      location : '',
-      notes    : {}
-    },
-    recording  : false
-  },
-  'chan_4' : {
-    level      : 90,
-    direction  : null,
-    mode       : 'defunct',
-    number     : '+255 712 444 333',
-    muted      : false,
-    duration   : null,
-    contact    : null,
-    recording  : false
-  },
-  'chan_1' : {
-    level      : 10,
-    direction  : 'incoming',
-    mode       : 'ring',
-    number     : '+255 712 444 333',
-    muted      : false,
-    duration   : null,
-    contact    : {
-      number   : '+255 712 444 333',
-      name     : 'Manute Bol',
-      location : '',
-      notes    : {}
-    },
-    recording  : false
-  }
-}
-
-const temp = {
-  channels,
-  master : {
-    delay     : 0,
-    level     : 38,
-    muted     : false,
-    on_air    : true,
-    recording : false
-  },
-  host   : {},
-  sound  : false
-}
-*/
 
 ws.onmessage = function (e) {
   if (e.data) {
@@ -732,13 +680,14 @@ var Channel = (function (_React$Component) {
       var _props8 = this.props;
       var mode = _props8.mode;
       var contact = _props8.contact;
+      var t = _props8.t;
       var editMode = this.state.editMode;
 
       if ('free' === mode) {
         return _react2.default.createElement(
           'p',
           { style: { margin: 0 } },
-          'Free line'
+          t('Free line')
         );
       } else if ('ring' === mode) {
         return _react2.default.createElement(
@@ -753,7 +702,8 @@ var Channel = (function (_React$Component) {
               _react2.default.createElement(
                 'p',
                 { style: { margin: 0 } },
-                'Incoming call:'
+                t('Incoming call'),
+                ':'
               ),
               _react2.default.createElement(
                 'h4',
@@ -848,7 +798,8 @@ var Channel = (function (_React$Component) {
                   style: styles.callButton,
                   className: 'btn btn-default btn-lg' },
                 _react2.default.createElement('span', { className: 'glyphicon glyphicon-pen' }),
-                ' Edit caller'
+                ' ',
+                t('Edit caller')
               ),
               '  ',
               _react2.default.createElement(
@@ -861,7 +812,8 @@ var Channel = (function (_React$Component) {
                   style: styles.callButton,
                   className: 'btn btn-default btn-lg btn-danger' },
                 _react2.default.createElement('span', { style: { 'top': '2px' }, className: 'glyphicon glyphicon-remove' }),
-                ' Hang up'
+                ' ',
+                t('Hang up')
               )
             )
           ),
@@ -873,7 +825,7 @@ var Channel = (function (_React$Component) {
             _react2.default.createElement(
               _reactBootstrap.Modal.Header,
               null,
-              'Edit caller details'
+              t('Edit caller details')
             ),
             _react2.default.createElement(
               _reactBootstrap.Modal.Body,
@@ -884,13 +836,13 @@ var Channel = (function (_React$Component) {
                 _react2.default.createElement(
                   'label',
                   null,
-                  'Name'
+                  t('Name')
                 ),
                 _react2.default.createElement('input', {
                   ref: 'callerName',
                   type: 'text',
                   className: 'form-control',
-                  placeholder: 'Name',
+                  placeholder: t('Name'),
                   defaultValue: contact ? contact.name : '' })
               ),
               _react2.default.createElement(
@@ -905,7 +857,8 @@ var Channel = (function (_React$Component) {
                     type: 'button',
                     className: 'btn btn-default btn-primary' },
                   _react2.default.createElement('span', { className: 'glyphicon glyphicon-ok' }),
-                  ' Save'
+                  ' ',
+                  t('Save')
                 ),
                 '  ',
                 _react2.default.createElement(
@@ -916,7 +869,7 @@ var Channel = (function (_React$Component) {
                     },
                     type: 'button',
                     className: 'btn btn-default' },
-                  'Cancel'
+                  t('Cancel')
                 )
               )
             )
@@ -929,13 +882,15 @@ var Channel = (function (_React$Component) {
     value: function renderModeSwitch(color) {
       var _this3 = this;
 
+      var t = this.props.t;
       /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
+
       var modes = ['host', 'master', 'on_hold'];
       var labels = {
-        host: 'Host',
-        master: 'Master',
-        on_hold: 'On hold',
-        ivr: 'IVR'
+        host: t('Host'),
+        master: t('Master'),
+        on_hold: t('On hold'),
+        ivr: t('IVR')
       };
       var icons = {
         host: 'mic',
@@ -1027,6 +982,7 @@ var Channel = (function (_React$Component) {
       var level = _props10.level;
       var muted = _props10.muted;
       var timestamp = _props10.timestamp;
+      var t = _props10.t;
 
       var _getPanelStyle = this.getPanelStyle();
 
@@ -1068,7 +1024,7 @@ var Channel = (function (_React$Component) {
                   lineHeight: 1.6,
                   textTransform: 'uppercase'
                 } },
-              'Defunct'
+              t('Defunct')
             )
           )
         ),
@@ -1148,23 +1104,6 @@ var styles = {
     }
   }
 };
-
-//          {/*
-//          <span className='fa-stack fa-lg'>
-//            <i className='fa fa-circle fa-stack-2x' style={{color: '#5cb85c'}} />
-//            <i className='fa fa-phone fa-stack-1x fa-inverse' />
-//          </span>
-//          */}
-//
-//          {/*
-//          <span className='fa-stack fa-lg'>
-//            <i className='fa fa-circle fa-stack-2x' style={{color: '#337ab7'}} />
-//            <i className='fa fa-phone fa-stack-1x fa-inverse' />
-//          </span>
-//          <h4>
-//            {mode}
-//          </h4>
-//          */}
 
 exports.default = Channel;
 
@@ -1462,11 +1401,13 @@ var Inbox = (function (_React$Component) {
   }, {
     key: 'getType',
     value: function getType(type) {
+      var t = this.props.t;
+
       switch (type) {
         case 'sms_in':
-          return 'Incoming SMS';
+          return t('Incoming SMS');
         case 'sms_out':
-          return 'Outgoing SMS';
+          return t('Outgoing SMS');
         default:
           return type;
       }
@@ -1476,7 +1417,9 @@ var Inbox = (function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      var notifications = this.props.notifications;
+      var _props2 = this.props;
+      var notifications = _props2.notifications;
+      var t = _props2.t;
 
       return _react2.default.createElement(
         'div',
@@ -1512,22 +1455,22 @@ var Inbox = (function (_React$Component) {
                 _react2.default.createElement(
                   'th',
                   null,
-                  'Type'
+                  t('Type')
                 ),
                 _react2.default.createElement(
                   'th',
                   null,
-                  'Time'
+                  t('Time')
                 ),
                 _react2.default.createElement(
                   'th',
                   null,
-                  'Sender'
+                  t('Sender')
                 ),
                 _react2.default.createElement(
                   'th',
                   null,
-                  'Content'
+                  t('Content')
                 ),
                 _react2.default.createElement('th', null)
               )
@@ -1579,7 +1522,8 @@ var Inbox = (function (_React$Component) {
             !!notifications.length && _react2.default.createElement(
               'span',
               null,
-              'Inbox ',
+              t('Inbox'),
+              ' ',
               _react2.default.createElement(
                 'span',
                 { className: 'badge' },
@@ -1892,6 +1836,7 @@ var Mixer = (function (_React$Component) {
       var inbox = _props.inbox;
       var dispatch = _props.dispatch;
       var sendMessage = _props.sendMessage;
+      var t = _props.t;
 
       return _react2.default.createElement(
         'div',
@@ -1914,6 +1859,7 @@ var Mixer = (function (_React$Component) {
               var chan = _pair[1];
 
               return id != client.userId ? _react2.default.createElement(_Channel2.default, _extends({}, chan, {
+                t: t,
                 key: id,
                 channelId: id,
                 client: client,
@@ -1927,6 +1873,7 @@ var Mixer = (function (_React$Component) {
           'div',
           { style: styles.master },
           !!master && !!Object.keys(master).length && _react2.default.createElement(_Master2.default, _extends({}, master, {
+            t: t,
             active: this.masterIsActive(),
             dispatch: dispatch,
             sendMessage: sendMessage }))
@@ -2186,11 +2133,6 @@ var Ui = (function (_React$Component) {
       return !!users && users.hasOwnProperty(client.userId) && mixer.hasOwnProperty('channels') && mixer.channels.hasOwnProperty(client.userId) ? _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(
-          'h1',
-          null,
-          t('key')
-        ),
         _react2.default.createElement(
           'div',
           null,

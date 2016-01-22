@@ -26,17 +26,18 @@ class Inbox extends React.Component {
     dispatch(removeMessage(id))
   }
   getType(type) {
+    const { t } = this.props
     switch (type) {
       case 'sms_in':
-        return 'Incoming SMS'
+        return t('Incoming SMS')
       case 'sms_out':
-        return 'Outgoing SMS'
+        return t('Outgoing SMS')
       default:
         return type
     }
   }
   render() {
-    const { notifications } = this.props
+    const { notifications, t } = this.props
     return (
       <div>
         {!!notifications && !!notifications.length && (
@@ -58,10 +59,10 @@ class Inbox extends React.Component {
                 </colgroup>
                 <thead>
                   <tr>
-                    <th>Type</th>
-                    <th>Time</th>
-                    <th>Sender</th>
-                    <th>Content</th>
+                    <th>{t('Type')}</th>
+                    <th>{t('Time')}</th>
+                    <th>{t('Sender')}</th>
+                    <th>{t('Content')}</th>
                     <th />
                   </tr>
                 </thead>
@@ -87,7 +88,7 @@ class Inbox extends React.Component {
               <div style={{margin: '10px'}}>
                 {!!notifications.length && (
                   <span>
-                    Inbox <span className='badge'>{notifications.length}</span>
+                    {t('Inbox')} <span className='badge'>{notifications.length}</span>
                   </span>
                 )}
               </div>
