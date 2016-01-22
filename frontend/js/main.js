@@ -35,7 +35,7 @@ class App extends React.Component {
         mixer  : state.mixer,
         client : state.client,
         users  : state.users,
-        inbox  : state.inbox
+        inbox  : state.inbox,
       }
     })(ui)
     return (
