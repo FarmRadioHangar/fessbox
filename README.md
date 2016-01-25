@@ -34,4 +34,4 @@ By enabling host mode, the user can control the Asterisk line-in interface.
 
 ## Etymology
 
-FessBox is named after [Reginald Fessenden](https://en.wikipedia.org/wiki/Reginald_Fessenden) -- a Canadian inventor and radio broadcast pioneer.
+FessBox is named after [Reginald Fessenden](https://en.wikipedia.org/wiki/Reginald_Fessenden) &ndash; a Canadian inventor and radio broadcast pioneer.
