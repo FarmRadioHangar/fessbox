@@ -6,7 +6,7 @@ FessBox is an integrated communications center for radio broadcasters.
 
 ### Hardware
 
-### Software stack
+### Software
 
 #### Backend
 
