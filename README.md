@@ -6,7 +6,7 @@ FessBox is an integrated communications center for radio broadcasters. It acts a
 
 ### Backend
 
-The FessBox server runs on low-cost Linux compatible hardware
+The FessBox server runs on low-cost, Linux compatible hardware and is suitable for single-board devices such as the Raspberry Pi.
 
 #### Asterisk
 
