@@ -39,3 +39,5 @@ FessBox was design to address the needs of community radio stations and broadcas
 ## Etymology
 
 FessBox is named after [Reginald Fessenden](https://en.wikipedia.org/wiki/Reginald_Fessenden) &ndash; a Canadian inventor and radio broadcast pioneer.
+
+## License
