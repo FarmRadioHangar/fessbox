@@ -63,6 +63,7 @@ i18next.init({
         'Content'       : 'Innehåll',
         'Free line'     : 'Tillgänglig linje',
         'Host'          : 'Värd',
+        'Private'       : 'Privat',
         'Master'        : 'Huvudkanal',
         'On hold'       : 'Parkera',
         'IVR'           : 'Röstbrevlåda',
