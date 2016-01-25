@@ -38,7 +38,7 @@ A channel is a connection which brings in a call to the PBX.
 
 ## History
 
-FessBox was design to address the needs of community radio stations and broadcasters in sub-saharan Africa.
+FessBox was design to address the needs of community radio stations and broadcasters in sub-saharan Africa. It emulates the studio setup typically found in radio stations across the continent. 
 
 ## Etymology
 
