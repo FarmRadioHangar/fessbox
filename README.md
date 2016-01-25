@@ -26,11 +26,9 @@ By enabling host mode, the user can control the Asterisk line-in interface.
 
 ### Channel
 
-## History
-
 ## Getting started
 
-## Overview
+## History
 
 ## Etymology
 
