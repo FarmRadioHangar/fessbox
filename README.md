@@ -8,6 +8,8 @@ FessBox is an integrated communications center for radio broadcasters. It acts a
 
 #### Asterisk
 
+> Asterisk is a framework for building multi-protocol, real-time communications applications and solutions. Asterisk is to realtime voice and video applications as what Apache is to web applications: the underlying platform. 
+
 ### Frontend
 
 #### Browser-based
