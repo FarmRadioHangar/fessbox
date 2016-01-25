@@ -18,6 +18,4 @@ FessBox is an integrated communications center for radio broadcasters.
 
 ### Operator
 
-### User
-
 ### Channel
