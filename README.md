@@ -4,19 +4,15 @@ FessBox is an integrated communications center for radio broadcasters.
 
 ## Overview
 
-### Hardware
+### Backend
 
-### Software
+#### Asterisk
 
-#### Backend
+### Frontend
 
-##### Asterisk
+#### Browser-based
 
-#### Frontend
-
-##### Browser-based
-
-##### Android
+#### Android
 
 ### Session Initiation Protocol (SIP)
 
