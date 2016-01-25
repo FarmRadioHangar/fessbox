@@ -30,6 +30,8 @@ By enabling host mode, the user can control the Asterisk line-in interface.
 
 ### Channel
 
+A channel is a connection which brings in a call to the PBX.
+
 ## Getting started
 
 ## History
