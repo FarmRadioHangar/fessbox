@@ -1,8 +1,9 @@
 import React            from 'react'
 import ReactDOM         from 'react-dom'
 import Channel          from './Channel'
-import Master           from './Master'
+import Host             from './Host'
 import Inbox            from './Inbox'
+import Master           from './Master'
 import _                from 'lodash'
 import getQueryVariable from '../js/url-params'
 
@@ -63,12 +64,13 @@ class Mixer extends React.Component {
   }
   render() {
     const { 
-      mixer : { channels, master }, 
+      mixer : { channels, master, host }, 
       client, 
       inbox,
       dispatch, 
       sendMessage,
-      t
+      users : { _userId },
+      t,
     } = this.props
     return (
       <div style={styles.wrapper}>
@@ -79,7 +81,7 @@ class Mixer extends React.Component {
           <div>
             {_.pairs(channels).sort(compareChannels).map(pair => {
               const [id, chan] = pair
-              return (id != client.userId) ? (
+              return (!_userId || id != _userId) ? (
                 <Channel {...chan} 
                   t           = {t}
                   key         = {id}
@@ -94,6 +96,14 @@ class Mixer extends React.Component {
           </div>
           <Inbox notifications={inbox.notifications} {...this.props} />
         </div>
+        {!!client.isHost && (
+          <div style={styles.host}> 
+            <Host {...host} 
+              t               = {t}
+              dispatch        = {dispatch} 
+              sendMessage     = {sendMessage} />
+          </div>
+        )}
         <div style={styles.master}> 
           {!!master && !!Object.keys(master).length && (
             <Master {...master} 
@@ -115,6 +125,10 @@ const styles = {
   main : {
     flex       : 11,
     marginLeft : '40px'
+  },
+  host : {
+    flex       : 2, 
+    textAlign  : 'center'
   },
   master : {
     flex       : 2, 
