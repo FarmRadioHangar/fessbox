@@ -4,7 +4,11 @@ FessBox is an integrated communications center for radio broadcasters. It acts a
 
 ## Overview
 
+TODO
+
 ### Capabilities
+
+TODO
 
 ### Backend
 
@@ -14,13 +18,23 @@ The FessBox server runs on low-cost, Linux compatible hardware and is suitable f
 
 > Asterisk is a framework for building multi-protocol, real-time communications applications and solutions. Asterisk is to realtime voice and video applications as what Apache is to web applications: the underlying platform. 
 
+TODO
+
 ### Frontend
+
+TODO
 
 #### Browser-based
 
+TODO
+
 #### Android
 
+TODO
+
 ### Session Initiation Protocol (SIP)
+
+TODO
 
 ## Concepts
 
@@ -30,11 +44,15 @@ By enabling host mode, the user can control the Asterisk line-in interface.
 
 ### Operator
 
+TODO
+
 ### Channel
 
 A channel is a connection which brings in a call to the PBX.
 
 ## Getting started
+
+TODO
 
 ## History
 
@@ -45,3 +63,5 @@ FessBox was design to address the needs of community radio stations and broadcas
 FessBox is named after [Reginald Fessenden](https://en.wikipedia.org/wiki/Reginald_Fessenden) &ndash; a Canadian inventor and radio broadcast pioneer.
 
 ## License
+
+TODO
