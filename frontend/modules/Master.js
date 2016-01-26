@@ -67,10 +67,10 @@ const styles = {
     textAlign    : 'center'
   },
   panel : {
-    margin: '11px 11px 11px 0'
+    margin       : '11px 11px 11px 0'
   },
   sliderWrapper : {
-    textAlign: 'center'
+    textAlign    : 'center'
   },
 }
 
