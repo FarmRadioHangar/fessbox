@@ -1,7 +1,7 @@
-import React   from 'react'
-import Sidebar from 'react-sidebar'
-import Host    from './Host'
-import Mixer   from './Mixer'
+import React    from 'react'
+import Sidebar  from 'react-sidebar'
+import Operator from './Operator'
+import Mixer    from './Mixer'
 
 class Ui extends React.Component {
   constructor(props) {
@@ -33,10 +33,15 @@ class Ui extends React.Component {
     const docked = this.state.sidebarDocked
     this.setState({sidebarDocked: !docked})
   }
+  renderMixer() {
+    return (
+      <Mixer {...this.props} />
+    )
+  }
   render() {
     const { client, mixer, users, t } = this.props
     const { sidebarOpen, sidebarDocked } = this.state
-    return !!users && users.hasOwnProperty(client.userId) && mixer.hasOwnProperty('channels') && mixer.channels.hasOwnProperty(client.userId) ? ( 
+    return users._connected ? (
       <div>
         <div>
           <Sidebar sidebar = {(
@@ -48,7 +53,7 @@ class Ui extends React.Component {
                 onClick     = {this.toggleMenu}>
                 <span className='glyphicon glyphicon-menu-hamburger' />
               </button>
-              <Host {...this.props} />
+              <Operator {...this.props} />
             </div>)}
               open          = {sidebarOpen}
               docked        = {sidebarDocked}
@@ -64,12 +69,14 @@ class Ui extends React.Component {
                 </button>
               )}
             </div>
-            <Mixer {...this.props} />
+            {this.renderMixer()}
           </Sidebar>
         </div>
       </div>
     ) : (
-      <Mixer {...this.props} />
+      <div>
+        {this.renderMixer()}
+      </div>
     )
   }
 }
