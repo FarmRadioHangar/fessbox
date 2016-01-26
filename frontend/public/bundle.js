@@ -2412,19 +2412,7 @@ var Ui = (function (_React$Component) {
   }, {
     key: 'renderMixer',
     value: function renderMixer() {
-      var mixer = this.props.mixer;
-
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'div',
-          null,
-          'mixer active : ',
-          '' + mixer.active
-        ),
-        _react2.default.createElement(_Mixer2.default, this.props)
-      );
+      return _react2.default.createElement(_Mixer2.default, this.props);
     }
   }, {
     key: 'render',
