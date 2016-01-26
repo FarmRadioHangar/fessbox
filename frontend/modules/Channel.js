@@ -225,7 +225,7 @@ class Channel extends React.Component {
     /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
     const modes = ['host', 'master', 'on_hold']
     const labels = {
-      host    : t('Host'),
+      host    : t('Private'),
       master  : t('Master'),
       on_hold : t('On hold'),
       ivr     : t('IVR'),
