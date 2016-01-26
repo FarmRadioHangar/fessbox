@@ -1,13 +1,18 @@
-import _ from 'lodash'
+import _                    from 'lodash'
+import getQueryVariable     from './url-params'
 
 import { combineReducers } 
   from 'redux'
+
+const userId = getQueryVariable('user_id') 
+const isHost = 'true' == getQueryVariable('host') 
 
 const initialMixerState = {
   channels : {},
   master   : {},
   host     : {},
-  sound    : false
+  sound    : false,
+  active   : false,
 }
 
 function channelState(channels, chan, state) {
@@ -19,7 +24,7 @@ function channelState(channels, chan, state) {
 
 function shouldPlaySound(channels) {
   for (let key in channels) {
-    if ('ring' === channels[key].mode) {
+    if (channels[key] && 'ring' === channels[key].mode) {
       return true
     }
   }
@@ -28,17 +33,26 @@ function shouldPlaySound(channels) {
 
 function mixer(state = initialMixerState, action) {
   switch (action.type) {
+    case 'update-mixer-active': {
+      return {
+        ...state,
+        active : action.active,
+      }
+    }
     case 'initialize-mixer': {
       const sound = shouldPlaySound(action.state.channels)
       return {
-        ...action.state, sound
+        ...action.state, sound,
+        active   : true,
+        channels : _.pick(action.state.channels, _.identity),
       }
     }
     case 'update-mixer': {
       const channels = Object.assign({}, state.channels, action.state)
       const sound = shouldPlaySound(channels)
       return { 
-        ...state, sound, channels 
+        ...state, sound, 
+        channels : _.pick(channels, _.identity)
       }
     }
     case 'mute':
@@ -87,14 +101,28 @@ function mixer(state = initialMixerState, action) {
 
 function users(state = {}, action) {
   switch (action.type) {
-    case 'initialize-users':
-      return action.state
-    case 'update-user':
+    case 'initialize-users': {
+      return {
+        _userId    : userId,
+        _connected : action.state.hasOwnProperty(userId) && !!action.state[userId],
+        ...action.state
+      }
+    }
+    case 'update-user': {
       return {
         ...state,
-        [action.userId] : action.state
+        [action.userId] : action.state,
+        _userId         : userId,
+        _connected      : state.hasOwnProperty(userId) || action.userId == userId,
       }
-    case 'update-user-level':
+    }
+    case 'remove-user': {
+      let users = _.omit(state, action.userId)
+      users._userId = userId
+      users._connected = users.hasOwnProperty(userId) && !!users[userId]
+      return users
+    }
+    case 'update-user-level': 
       return {
         ...state,
         [action.userId] : Object.assign({}, state[action.userId], { level : action.level })
@@ -106,6 +134,8 @@ function users(state = {}, action) {
 
 function client(state = {}, action) {
   switch (action.type) {
+    case 'initialize-mixer': 
+      return { isHost, ...state }
     case 'set-diff':
       return {
         ...state, 
