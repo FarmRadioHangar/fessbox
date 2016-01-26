@@ -34,6 +34,12 @@ export function updateUser(userId, state) {
   }
 }
 
+export function removeUser(userId) {
+  return {
+    type : 'remove-user', userId
+  }
+}
+
 export function updateUserLevel(userId, level) {
   return {
     type : 'update-user-level', userId, level
