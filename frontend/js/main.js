@@ -148,11 +148,7 @@ ws.onmessage = e => {
           break
         case 'userUpdate':
           Object.keys(msg.data).forEach(user => {
-            //if (msg.data[user]) {
             store.dispatch(updateUser(user, msg.data[user])) 
-            //} else {
-            //  store.dispatch(removeUser(user)) 
-            //}
           })
           break
         case 'masterUpdate':
