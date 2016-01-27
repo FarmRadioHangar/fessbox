@@ -2032,10 +2032,11 @@ var SliderBar = (function (_React$Component) {
       var defaultValue = _props.defaultValue;
       var onChange = _props.onChange;
       var onToggleMuted = _props.onToggleMuted;
+      var panelStyle = _props.panelStyle;
 
       return _react2.default.createElement(
         'div',
-        { className: 'panel panel-default' },
+        { className: 'panel panel-default', style: panelStyle },
         _react2.default.createElement(
           'div',
           { className: 'panel-body', style: styles.panel },
@@ -2164,10 +2165,11 @@ var Operator = (function (_React$Component2) {
             { style: styles.wrapper },
             _react2.default.createElement(
               'div',
-              { style: _extends({}, styles.bar, {
-                  backgroundColor: 'master' == channel.mode ? '#f04124' : 'transparent'
-                }) },
+              { style: styles.bar },
               _react2.default.createElement(SliderBar, {
+                panelStyle: {
+                  backgroundColor: 'master' == channel.mode ? '#f04124' : 'transparent'
+                },
                 icon: 'microphone',
                 value: channel.level,
                 defaultValue: channel.level,

@@ -16,10 +16,11 @@ class SliderBar extends React.Component {
       value,
       defaultValue, 
       onChange, 
-      onToggleMuted 
+      onToggleMuted,
+      panelStyle,
     } = this.props
     return (
-      <div className='panel panel-default'>
+      <div className='panel panel-default' style={panelStyle}>
         <div className='panel-body' style={styles.panel}>
           <Slider 
             value        = {value} 
@@ -95,11 +96,11 @@ class Operator extends React.Component {
       <div style={{display : 'flex', flexDirection: 'column'}}>
         <div>
           <div style={styles.wrapper}>
-            <div style={{
-              ...styles.bar,
-              backgroundColor : 'master' == channel.mode ? '#f04124' : 'transparent'
-            }}> 
+            <div style={styles.bar}>
               <SliderBar 
+                panelStyle    = {{
+                  backgroundColor : 'master' == channel.mode ? '#f04124' : 'transparent'
+                }}
                 icon          = 'microphone' 
                 value         = {channel.level}
                 defaultValue  = {channel.level}
