@@ -109,6 +109,6 @@ export function disableMixer() {
 
 export function updateHost(state) {
   return {
-    type : 'update host', state
+    type : 'update-host', state,
   }
 }
