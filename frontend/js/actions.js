@@ -88,6 +88,12 @@ export function updateInbox(id, payload) {
   }
 }
 
+export function intializeInbox(notifications) {
+  return {
+    type : 'initialize-inbox', notifications
+  }
+}
+
 export function removeMessage(id) {
   return {
     type : 'remove-message', id
