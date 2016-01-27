@@ -112,3 +112,9 @@ export function updateHost(state) {
     type : 'update-host', state,
   }
 }
+
+export function updateHostLevel(level) {
+  return {
+    type : 'update-host-level', level
+  }
+}

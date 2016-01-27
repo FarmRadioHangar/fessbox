@@ -23,6 +23,7 @@ exports.initializeInbox = initializeInbox;
 exports.removeMessage = removeMessage;
 exports.disableMixer = disableMixer;
 exports.updateHost = updateHost;
+exports.updateHostLevel = updateHostLevel;
 function mute(channel) {
   return {
     type: 'mute', channel: channel
@@ -135,6 +136,12 @@ function disableMixer() {
 function updateHost(state) {
   return {
     type: 'update-host', state: state
+  };
+}
+
+function updateHostLevel(level) {
+  return {
+    type: 'update-host-level', level: level
   };
 }
 
@@ -444,6 +451,21 @@ function mixer() {
       {
         return _extends({}, state, {
           host: action.state
+        });
+      }
+    case 'update-host-level':
+      {
+
+        console.log(_extends({}, state, {
+          host: _extends({}, state.host, {
+            level: action.level
+          })
+        }));
+
+        return _extends({}, state, {
+          host: _extends({}, state.host, {
+            level: action.level
+          })
         });
       }
     case 'update-mixer-active':
@@ -1241,6 +1263,8 @@ var _Slider = require('./Slider');
 
 var _Slider2 = _interopRequireDefault(_Slider);
 
+var _actions = require('../js/actions');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1276,6 +1300,7 @@ var Host = (function (_React$Component) {
 
       var value = event.target ? event.target.value : event;
       sendMessage('hostVolume', value);
+      dispatch((0, _actions.updateHostLevel)(value));
     }
   }, {
     key: 'render',
@@ -1363,7 +1388,7 @@ var styles = {
 
 exports.default = Host;
 
-},{"./Slider":11,"react":433}],7:[function(require,module,exports){
+},{"../js/actions":1,"./Slider":11,"react":433}],7:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };

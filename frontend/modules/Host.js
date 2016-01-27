@@ -1,6 +1,9 @@
 import React  from 'react'
 import Slider from './Slider'
 
+import { updateHostLevel }
+  from '../js/actions'
+
 class Host extends React.Component {
   constructor(props) {
     super(props)
@@ -13,6 +16,7 @@ class Host extends React.Component {
     const { dispatch, sendMessage } = this.props
     const value = event.target ? event.target.value : event
     sendMessage('hostVolume', value)
+    dispatch(updateHostLevel(value))
   }
   render() {
     const { level, muted, active } = this.props

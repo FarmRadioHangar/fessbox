@@ -36,7 +36,25 @@ function mixer(state = initialMixerState, action) {
     case 'update-host': {
       return {
         ...state,
-        host : action.state
+        host : action.state,
+      }
+    }
+    case 'update-host-level': {
+
+      console.log({
+        ...state,
+        host : {
+          ...state.host,
+          level : action.level
+        }
+      })
+
+      return {
+        ...state,
+        host : {
+          ...state.host,
+          level : action.level
+        }
       }
     }
     case 'update-mixer-active': {
@@ -58,7 +76,7 @@ function mixer(state = initialMixerState, action) {
       const sound = shouldPlaySound(channels)
       return { 
         ...state, sound, 
-        channels : _.pick(channels, _.identity)
+        channels : _.pick(channels, _.identity),
       }
     }
     case 'mute':
@@ -76,7 +94,7 @@ function mixer(state = initialMixerState, action) {
           ...state.channels,
           [action.channel] : {
             ...state.channels[action.channel],
-            contact : Object.assign({}, state.channels[action.channel].contact, action.caller)
+            contact : Object.assign({}, state.channels[action.channel].contact, action.caller),
           }
         }
       }
@@ -90,14 +108,14 @@ function mixer(state = initialMixerState, action) {
     case 'update-master': 
       return {
         ...state,
-        master : action.state
+        master : action.state,
       }
     case 'update-master-level':
       return {
         ...state,
         master : {
           ...state.master,
-          level : action.level
+          level : action.level,
         }
       }
     default:
