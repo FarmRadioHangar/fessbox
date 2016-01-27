@@ -1850,10 +1850,6 @@ var Mixer = (function (_React$Component) {
             'div',
             null,
             _lodash2.default.pairs(channels).sort(compareChannels).map(function (pair) {
-
-              console.log('###################');
-              console.log(pair);
-
               var _pair = _slicedToArray(pair, 2);
 
               var id = _pair[0];

@@ -80,10 +80,6 @@ class Mixer extends React.Component {
         <div style={styles.main}> 
           <div>
             {_.pairs(channels).sort(compareChannels).map(pair => {
-
-              console.log('###################')
-              console.log(pair)
-
               const [id, chan] = pair
               return (!_userId || id != _userId) ? (
                 <Channel {...chan} 
