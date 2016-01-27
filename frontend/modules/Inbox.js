@@ -40,7 +40,7 @@ class Inbox extends React.Component {
     const { notifications, t } = this.props
     return (
       <div>
-        {!!notifications && !!notifications.length && (
+        {notifications && notifications.length > 0 && (
           <div style={{
             maxHeight : this.state.expanded ? '300px' : '45px',
             ...styles.inbox
@@ -86,7 +86,7 @@ class Inbox extends React.Component {
               </table>
             ) : (
               <div style={{margin: '10px'}}>
-                {!!notifications.length && (
+                {notifications.length > 0 && (
                   <span>
                     {t('Inbox')} <span className='badge'>{notifications.length}</span>
                   </span>

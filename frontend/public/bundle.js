@@ -1413,7 +1413,7 @@ var Inbox = (function (_React$Component) {
       return _react2.default.createElement(
         'div',
         null,
-        !!notifications && !!notifications.length && _react2.default.createElement(
+        notifications && notifications.length > 0 && _react2.default.createElement(
           'div',
           { style: _extends({
               maxHeight: this.state.expanded ? '300px' : '45px'
@@ -1508,7 +1508,7 @@ var Inbox = (function (_React$Component) {
           ) : _react2.default.createElement(
             'div',
             { style: { margin: '10px' } },
-            !!notifications.length && _react2.default.createElement(
+            notifications.length > 0 && _react2.default.createElement(
               'span',
               null,
               t('Inbox'),
