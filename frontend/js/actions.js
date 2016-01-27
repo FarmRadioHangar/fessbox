@@ -88,7 +88,7 @@ export function updateInbox(id, payload) {
   }
 }
 
-export function intializeInbox(notifications) {
+export function initializeInbox(notifications) {
   return {
     type : 'initialize-inbox', notifications
   }
