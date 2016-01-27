@@ -69,7 +69,7 @@ class Mixer extends React.Component {
       inbox,
       dispatch, 
       sendMessage,
-      users : { _userId },
+      users : { _userId, _connected },
       t,
     } = this.props
     return (
@@ -86,6 +86,7 @@ class Mixer extends React.Component {
                   t           = {t}
                   key         = {id}
                   channelId   = {id}
+                  isConnected = {_connected}
                   client      = {client}
                   dispatch    = {dispatch}
                   sendMessage = {sendMessage} />
