@@ -13,7 +13,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, removeMessage, disableMixer, updateHost }
+import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, initializeInbox, removeMessage, disableMixer, updateHost }
   from './actions'
 
 const userId   = getQueryVariable('user_id') 
@@ -71,9 +71,8 @@ function initApp(data) {
   store.dispatch(setTimeDiff(diff))
   // Initialize message inbox
   if (data.inbox) {
-    data.inbox.ids.slice().reverse().forEach(id => {
-      store.dispatch(updateInbox(id, data.inbox.messages[id]))
-    })
+    const messages = data.inbox.ids.slice().reverse().map(id => ({ id, ...data.inbox.messages[id] }))
+    store.dispatch(initializeInbox(messages))
   }
 
   injectTapEventPlugin()
@@ -187,5 +186,7 @@ ws.onmessage = e => {
 ws.onerror = e => { 
   /*alert('Connection to server ' + hostUrl + ' failed.')*/
   console.log(e)
-  store.dispatch(disableMixer())
+  if (store) {
+    store.dispatch(disableMixer())
+  }
 }
