@@ -176,6 +176,11 @@ const initialInboxState = {
 
 function inbox(state = initialInboxState, action) {
   switch (action.type) {
+    case 'initialize-inbox':
+      return {
+        ...state,
+        notifications: action.notifications
+      }
     case 'update-inbox': 
       const message = {
         ...action.payload,
