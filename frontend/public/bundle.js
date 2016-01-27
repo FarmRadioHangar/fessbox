@@ -954,10 +954,10 @@ var Channel = (function (_React$Component) {
 
       var _props9 = this.props;
       var t = _props9.t;
-      var users = _props9.users;
+      var isConnected = _props9.isConnected;
       /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
 
-      var modes = users._connected ? ['host', 'master', 'on_hold'] : ['master', 'on_hold'];
+      var modes = isConnected ? ['host', 'master', 'on_hold'] : ['master', 'on_hold'];
       var labels = {
         host: t('Private'),
         master: t('Master'),
@@ -1830,7 +1830,9 @@ var Mixer = (function (_React$Component) {
       var inbox = _props.inbox;
       var dispatch = _props.dispatch;
       var sendMessage = _props.sendMessage;
-      var _userId = _props.users._userId;
+      var _props$users = _props.users;
+      var _userId = _props$users._userId;
+      var _connected = _props$users._connected;
       var t = _props.t;
 
       return _react2.default.createElement(
@@ -1857,6 +1859,7 @@ var Mixer = (function (_React$Component) {
                 t: t,
                 key: id,
                 channelId: id,
+                isConnected: _connected,
                 client: client,
                 dispatch: dispatch,
                 sendMessage: sendMessage })) : _react2.default.createElement('span', { key: id });
