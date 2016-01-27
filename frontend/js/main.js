@@ -13,7 +13,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, removeMessage, disableMixer }
+import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, removeMessage, disableMixer, updateHost }
   from './actions'
 
 const userId   = getQueryVariable('user_id') 

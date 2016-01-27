@@ -355,7 +355,7 @@ ws.onmessage = function (e) {
             });
             break;
           case 'hostUpdate':
-            store.dispatch(updateHost(msg.data));
+            store.dispatch((0, _actions.updateHost)(msg.data));
             break;
           case 'inboxMessages':
             // @TODO
