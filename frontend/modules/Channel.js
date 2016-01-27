@@ -31,11 +31,11 @@ class Channel extends React.Component {
     dispatch(updateLevel(channelId, value))
   }
   answerCall() {
-    const { channelId, sendMessage, client } = this.props
+    const { channelId, sendMessage, client, userId } = this.props
     const chan = client.channels[channelId] || { preset: 'master' }
     console.log(`answer in mode ${chan.preset}`)
     sendMessage('channelMode', {
-      [channelId] : 'host' === chan.preset ? ''+client.userId : chan.preset
+      [channelId] : 'host' === chan.preset ? ''+userId : chan.preset
     })
   }
   disconnectCall() {
@@ -45,9 +45,9 @@ class Channel extends React.Component {
     })
   }
   updateMode(mode) {
-    const { channelId, dispatch, sendMessage, client } = this.props
+    const { channelId, dispatch, sendMessage, client, userId } = this.props
     sendMessage('channelMode', {
-      [channelId] : 'host' === mode ? ''+client.userId : mode
+      [channelId] : 'host' === mode ? ''+userId : mode
     })
     dispatch(updatePreset(channelId, mode))
   }

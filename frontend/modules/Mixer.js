@@ -86,6 +86,7 @@ class Mixer extends React.Component {
                   t           = {t}
                   key         = {id}
                   channelId   = {id}
+                  userId      = {_userId}
                   isConnected = {_connected}
                   client      = {client}
                   dispatch    = {dispatch}

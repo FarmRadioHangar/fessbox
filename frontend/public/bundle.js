@@ -702,10 +702,11 @@ var Channel = (function (_React$Component) {
       var channelId = _props3.channelId;
       var sendMessage = _props3.sendMessage;
       var client = _props3.client;
+      var userId = _props3.userId;
 
       var chan = client.channels[channelId] || { preset: 'master' };
       console.log('answer in mode ' + chan.preset);
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.preset ? '' + client.userId : chan.preset));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.preset ? '' + userId : chan.preset));
     }
   }, {
     key: 'disconnectCall',
@@ -724,8 +725,9 @@ var Channel = (function (_React$Component) {
       var dispatch = _props5.dispatch;
       var sendMessage = _props5.sendMessage;
       var client = _props5.client;
+      var userId = _props5.userId;
 
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + client.userId : mode));
+      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + userId : mode));
       dispatch((0, _actions.updatePreset)(channelId, mode));
     }
   }, {
@@ -1285,8 +1287,6 @@ var Host = (function (_React$Component) {
       var muted = _props3.muted;
       var active = _props3.active;
 
-      console.log(this.props);
-
       return _react2.default.createElement(
         'div',
         { className: 'panel panel-default', style: _extends({}, styles.panel, {
@@ -1601,8 +1601,6 @@ exports.default = Inbox;
 },{"../js/actions":1,"moment":23,"react":433,"react-timeago":277}],8:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {
@@ -1668,12 +1666,12 @@ var Master = (function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        { className: 'panel panel-default', style: _extends({}, styles.panel, {
-            backgroundColor: active ? '#f04124' : 'transparent'
-          }) },
+        { className: 'panel panel-default', style: styles.panel },
         _react2.default.createElement(
           'div',
-          { className: 'panel-body' },
+          { className: 'panel-body', style: {
+              backgroundColor: active ? '#f04124' : 'transparent'
+            } },
           _react2.default.createElement(
             'div',
             null,
@@ -1902,6 +1900,7 @@ var Mixer = (function (_React$Component) {
                 t: t,
                 key: id,
                 channelId: id,
+                userId: _userId,
                 isConnected: _connected,
                 client: client,
                 dispatch: dispatch,

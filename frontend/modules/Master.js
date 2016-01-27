@@ -21,11 +21,10 @@ class Master extends React.Component {
   render() {
     const { level, muted, active } = this.props
     return (
-      <div className='panel panel-default' style={{
-        ...styles.panel,
-        backgroundColor : active ? '#f04124' : 'transparent'
-      }}>
-        <div className='panel-body'>
+      <div className='panel panel-default' style={styles.panel}>
+        <div className='panel-body' style={{
+          backgroundColor : active ? '#f04124' : 'transparent'
+        }}>
           <div>
             <div style={styles.sliderWrapper}> 
               <Slider 
