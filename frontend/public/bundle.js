@@ -19,7 +19,7 @@ exports.updateMasterLevel = updateMasterLevel;
 exports.updateCaller = updateCaller;
 exports.setTimeDiff = setTimeDiff;
 exports.updateInbox = updateInbox;
-exports.intializeInbox = intializeInbox;
+exports.initializeInbox = initializeInbox;
 exports.removeMessage = removeMessage;
 exports.disableMixer = disableMixer;
 exports.updateHost = updateHost;
@@ -113,7 +113,7 @@ function updateInbox(id, payload) {
   };
 }
 
-function intializeInbox(notifications) {
+function initializeInbox(notifications) {
   return {
     type: 'initialize-inbox', notifications: notifications
   };
@@ -134,7 +134,7 @@ function disableMixer() {
 
 function updateHost(state) {
   return {
-    type: 'update host', state: state
+    type: 'update-host', state: state
   };
 }
 
