@@ -62,7 +62,7 @@ class Operator extends React.Component {
     sendMessage('channelVolume', {
       [_userId] : level
     })
-    dispatch(updateLevel(client.userId, level))
+    dispatch(updateLevel(_userId, level))
   }
   setUserMuted(muted) {
     const { sendMessage, client, dispatch, users : { _userId } } = this.props
@@ -75,7 +75,7 @@ class Operator extends React.Component {
     sendMessage('userVolume', {
       [_userId] : level 
     })
-    dispatch(updateUserLevel(client.userId, level))
+    dispatch(updateUserLevel(_userId, level))
   }
   toggleMode(mode) {
     const { sendMessage, users } = this.props
@@ -119,18 +119,22 @@ class Operator extends React.Component {
           </div>
         </div>
         <div>
-          <div style={{width: '100%'}}>
+          <div style={{
+            width     : '100%',
+            textAlign : 'center',
+          }}>
+            {/*
             <div>
-              <div>
-                Channel mode : {channel.mode}
-              </div>
-              <button 
-                type      = 'button'
-                className = {classNames('btn btn-default btn-success', { 'active' : 'master' == channel.mode })}
-                onClick   = {() => { this.toggleMode('master' == channel.mode ? 'free' : 'master') }}>
-                {t('Master')}
-              </button>
+              Channel mode : {channel.mode}
             </div>
+            */}
+            <button 
+              style     = {{width: '80%'}}
+              type      = 'button'
+              className = {`btn btn-default ${'master' == channel.mode ? 'btn-danger' : 'btn-success'}`} 
+              onClick   = {() => { this.toggleMode('master' == channel.mode ? 'free' : 'master') }}>
+              {t('Master')}
+            </button>
           </div>
         </div>
       </div>

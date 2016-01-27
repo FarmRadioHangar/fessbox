@@ -1850,6 +1850,10 @@ var Mixer = (function (_React$Component) {
             'div',
             null,
             _lodash2.default.pairs(channels).sort(compareChannels).map(function (pair) {
+
+              console.log('###################');
+              console.log(pair);
+
               var _pair = _slicedToArray(pair, 2);
 
               var id = _pair[0];
@@ -2035,7 +2039,7 @@ var Operator = (function (_React$Component2) {
       var _userId = _props3.users._userId;
 
       sendMessage('channelVolume', _defineProperty({}, _userId, level));
-      dispatch((0, _actions.updateLevel)(client.userId, level));
+      dispatch((0, _actions.updateLevel)(_userId, level));
     }
   }, {
     key: 'setUserMuted',
@@ -2058,7 +2062,7 @@ var Operator = (function (_React$Component2) {
       var _userId = _props5.users._userId;
 
       sendMessage('userVolume', _defineProperty({}, _userId, level));
-      dispatch((0, _actions.updateUserLevel)(client.userId, level));
+      dispatch((0, _actions.updateUserLevel)(_userId, level));
     }
   }, {
     key: 'toggleMode',
@@ -2134,26 +2138,20 @@ var Operator = (function (_React$Component2) {
           null,
           _react2.default.createElement(
             'div',
-            { style: { width: '100%' } },
+            { style: {
+                width: '100%',
+                textAlign: 'center'
+              } },
             _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'div',
-                null,
-                'Channel mode : ',
-                channel.mode
-              ),
-              _react2.default.createElement(
-                'button',
-                {
-                  type: 'button',
-                  className: (0, _classnames2.default)('btn btn-default btn-success', { 'active': 'master' == channel.mode }),
-                  onClick: function onClick() {
-                    _this3.toggleMode('master' == channel.mode ? 'free' : 'master');
-                  } },
-                t('Master')
-              )
+              'button',
+              {
+                style: { width: '80%' },
+                type: 'button',
+                className: 'btn btn-default ' + ('master' == channel.mode ? 'btn-danger' : 'btn-success'),
+                onClick: function onClick() {
+                  _this3.toggleMode('master' == channel.mode ? 'free' : 'master');
+                } },
+              t('Master')
             )
           )
         )
