@@ -1048,7 +1048,7 @@ var Channel = (function (_React$Component) {
 
       var _props11 = this.props;
       var channelId = _props11.channelId;
-      var number = _props11.number;
+      var label = _props11.label;
       var contact = _props11.contact;
       var mode = _props11.mode;
       var level = _props11.level;
@@ -1076,7 +1076,7 @@ var Channel = (function (_React$Component) {
               { style: { flex: 1 } },
               channelId,
               ' ',
-              number
+              label
             ),
             !!timestamp && _react2.default.createElement(
               'div',

@@ -299,7 +299,7 @@ class Channel extends React.Component {
     }
   }
   render() {
-    const { channelId, number, contact, mode, level, muted, timestamp, t } = this.props
+    const { channelId, label, contact, mode, level, muted, timestamp, t } = this.props
     const { color, bg } = this.getPanelStyle()
     const hours = moment(this.state.now).diff(timestamp, 'hours')
     return (
@@ -307,7 +307,7 @@ class Channel extends React.Component {
         <div className='panel-heading'>
           <div style={{display: 'flex'}}>
             <div style={{flex: 1}}>
-              {channelId}&nbsp;{number}
+              {channelId}&nbsp;{label}
             </div>
             {!!timestamp && (
               <div style={{width: '140px', textAlign: 'right'}}>
