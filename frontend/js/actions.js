@@ -93,3 +93,10 @@ export function removeMessage(id) {
     type : 'remove-message', id
   }
 }
+
+export function disableMixer() {
+  return {
+    type   : 'update-mixer-active',
+    active : false,
+  }
+}

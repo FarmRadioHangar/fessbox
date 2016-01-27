@@ -20,6 +20,7 @@ exports.updateCaller = updateCaller;
 exports.setTimeDiff = setTimeDiff;
 exports.updateInbox = updateInbox;
 exports.removeMessage = removeMessage;
+exports.disableMixer = disableMixer;
 function mute(channel) {
   return {
     type: 'mute', channel: channel
@@ -113,6 +114,13 @@ function updateInbox(id, payload) {
 function removeMessage(id) {
   return {
     type: 'remove-message', id: id
+  };
+}
+
+function disableMixer() {
+  return {
+    type: 'update-mixer-active',
+    active: false
   };
 }
 
@@ -353,6 +361,7 @@ ws.onmessage = function (e) {
 ws.onerror = function (e) {
   /*alert('Connection to server ' + hostUrl + ' failed.')*/
   console.log(e);
+  store.dispatch((0, _actions.disableMixer)());
 };
 
 },{"../modules/Ui":12,"./actions":1,"./reducers":3,"./url-params":4,"awesome-websocket":13,"i18next":20,"react":433,"react-dom":261,"react-redux":264,"react-tap-event-plugin":276,"redux":440,"redux-localstorage":436}],3:[function(require,module,exports){

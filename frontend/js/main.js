@@ -13,7 +13,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, removeMessage }
+import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, removeMessage, disableMixer }
   from './actions'
 
 const userId   = getQueryVariable('user_id') 
@@ -184,4 +184,5 @@ ws.onmessage = e => {
 ws.onerror = e => { 
   /*alert('Connection to server ' + hostUrl + ' failed.')*/
   console.log(e)
+  store.dispatch(disableMixer())
 }
