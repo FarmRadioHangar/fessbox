@@ -221,9 +221,11 @@ class Channel extends React.Component {
     }
   }
   renderModeSwitch(color) {
-    const { t } = this.props
+    const { t, users } = this.props
     /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
-    const modes = ['host', 'master', 'on_hold']
+    const modes = users._connected 
+        ? ['host', 'master', 'on_hold']
+        : ['master', 'on_hold']
     const labels = {
       host    : t('Private'),
       master  : t('Master'),

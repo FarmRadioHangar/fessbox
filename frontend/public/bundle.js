@@ -316,11 +316,7 @@ ws.onmessage = function (e) {
             break;
           case 'userUpdate':
             Object.keys(msg.data).forEach(function (user) {
-              //if (msg.data[user]) {
               store.dispatch((0, _actions.updateUser)(user, msg.data[user]));
-              //} else {
-              //  store.dispatch(removeUser(user))
-              //}
             });
             break;
           case 'masterUpdate':
@@ -956,10 +952,12 @@ var Channel = (function (_React$Component) {
     value: function renderModeSwitch(color) {
       var _this3 = this;
 
-      var t = this.props.t;
+      var _props9 = this.props;
+      var t = _props9.t;
+      var users = _props9.users;
       /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
 
-      var modes = ['host', 'master', 'on_hold'];
+      var modes = users._connected ? ['host', 'master', 'on_hold'] : ['master', 'on_hold'];
       var labels = {
         host: t('Private'),
         master: t('Master'),
@@ -972,9 +970,9 @@ var Channel = (function (_React$Component) {
         on_hold: 'pause',
         ivr: 'voicemail'
       };
-      var _props9 = this.props;
-      var channelId = _props9.channelId;
-      var channels = _props9.client.channels;
+      var _props10 = this.props;
+      var channelId = _props10.channelId;
+      var channels = _props10.client.channels;
 
       var chan = channels[channelId] || { preset: 'master' };
       return _react2.default.createElement(
@@ -1048,15 +1046,15 @@ var Channel = (function (_React$Component) {
     value: function render() {
       var _this4 = this;
 
-      var _props10 = this.props;
-      var channelId = _props10.channelId;
-      var number = _props10.number;
-      var contact = _props10.contact;
-      var mode = _props10.mode;
-      var level = _props10.level;
-      var muted = _props10.muted;
-      var timestamp = _props10.timestamp;
-      var t = _props10.t;
+      var _props11 = this.props;
+      var channelId = _props11.channelId;
+      var number = _props11.number;
+      var contact = _props11.contact;
+      var mode = _props11.mode;
+      var level = _props11.level;
+      var muted = _props11.muted;
+      var timestamp = _props11.timestamp;
+      var t = _props11.t;
 
       var _getPanelStyle = this.getPanelStyle();
 
