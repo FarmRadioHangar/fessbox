@@ -171,6 +171,9 @@ ws.onmessage = e => {
             }
           })
           break
+        case 'hostUpdate':
+          store.dispatch(updateHost(msg.data))
+          break
         case 'inboxMessages':
           // @TODO
           break

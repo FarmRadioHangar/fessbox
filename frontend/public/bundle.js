@@ -21,6 +21,7 @@ exports.setTimeDiff = setTimeDiff;
 exports.updateInbox = updateInbox;
 exports.removeMessage = removeMessage;
 exports.disableMixer = disableMixer;
+exports.updateHost = updateHost;
 function mute(channel) {
   return {
     type: 'mute', channel: channel
@@ -121,6 +122,12 @@ function disableMixer() {
   return {
     type: 'update-mixer-active',
     active: false
+  };
+}
+
+function updateHost(state) {
+  return {
+    type: 'update host', state: state
   };
 }
 
@@ -347,6 +354,9 @@ ws.onmessage = function (e) {
               }
             });
             break;
+          case 'hostUpdate':
+            store.dispatch(updateHost(msg.data));
+            break;
           case 'inboxMessages':
             // @TODO
             break;
@@ -418,6 +428,12 @@ function mixer() {
   var action = arguments[1];
 
   switch (action.type) {
+    case 'update-host':
+      {
+        return _extends({}, state, {
+          host: action.state
+        });
+      }
     case 'update-mixer-active':
       {
         return _extends({}, state, {

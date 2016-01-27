@@ -33,6 +33,12 @@ function shouldPlaySound(channels) {
 
 function mixer(state = initialMixerState, action) {
   switch (action.type) {
+    case 'update-host': {
+      return {
+        ...state,
+        host : action.state
+      }
+    }
     case 'update-mixer-active': {
       return {
         ...state,
