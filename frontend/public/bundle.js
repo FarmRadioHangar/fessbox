@@ -19,6 +19,7 @@ exports.updateMasterLevel = updateMasterLevel;
 exports.updateCaller = updateCaller;
 exports.setTimeDiff = setTimeDiff;
 exports.updateInbox = updateInbox;
+exports.intializeInbox = intializeInbox;
 exports.removeMessage = removeMessage;
 exports.disableMixer = disableMixer;
 exports.updateHost = updateHost;
@@ -112,6 +113,12 @@ function updateInbox(id, payload) {
   };
 }
 
+function intializeInbox(notifications) {
+  return {
+    type: 'initialize-inbox', notifications: notifications
+  };
+}
+
 function removeMessage(id) {
   return {
     type: 'remove-message', id: id
@@ -133,6 +140,8 @@ function updateHost(state) {
 
 },{}],2:[function(require,module,exports){
 'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -252,9 +261,10 @@ function initApp(data) {
   store.dispatch((0, _actions.setTimeDiff)(diff));
   // Initialize message inbox
   if (data.inbox) {
-    data.inbox.ids.slice().reverse().forEach(function (id) {
-      store.dispatch((0, _actions.updateInbox)(id, data.inbox.messages[id]));
+    var messages = data.inbox.ids.slice().reverse().map(function (id) {
+      return _extends({ id: id }, data.inbox.messages[id]);
     });
+    store.dispatch((0, _actions.initializeInbox)(messages));
   }
 
   (0, _reactTapEventPlugin2.default)();
@@ -371,7 +381,9 @@ ws.onmessage = function (e) {
 ws.onerror = function (e) {
   /*alert('Connection to server ' + hostUrl + ' failed.')*/
   console.log(e);
-  store.dispatch((0, _actions.disableMixer)());
+  if (store) {
+    store.dispatch((0, _actions.disableMixer)());
+  }
 };
 
 },{"../modules/Ui":12,"./actions":1,"./reducers":3,"./url-params":4,"awesome-websocket":13,"i18next":20,"react":433,"react-dom":261,"react-redux":264,"react-tap-event-plugin":276,"redux":440,"redux-localstorage":436}],3:[function(require,module,exports){
@@ -561,6 +573,10 @@ function inbox() {
   var action = arguments[1];
 
   switch (action.type) {
+    case 'initialize-inbox':
+      return _extends({}, state, {
+        notifications: action.notifications
+      });
     case 'update-inbox':
       var message = _extends({}, action.payload, {
         id: action.id
@@ -1268,6 +1284,8 @@ var Host = (function (_React$Component) {
       var level = _props3.level;
       var muted = _props3.muted;
       var active = _props3.active;
+
+      console.log(this.props);
 
       return _react2.default.createElement(
         'div',
