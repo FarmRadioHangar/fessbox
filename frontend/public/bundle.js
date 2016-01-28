@@ -289,6 +289,7 @@ function initApp(data) {
           'Time': 'Tidpunkt',
           'Sender': 'Avsändare',
           'Content': 'Innehåll',
+          'Operator': 'Operatör',
           'Free line': 'Tillgänglig linje',
           'Host': 'Värd',
           'Private': 'Privat',
@@ -1114,6 +1115,7 @@ var Channel = (function (_React$Component) {
       var _props11 = this.props;
       var channelId = _props11.channelId;
       var label = _props11.label;
+      var direction = _props11.direction;
       var contact = _props11.contact;
       var mode = _props11.mode;
       var level = _props11.level;
@@ -1153,6 +1155,15 @@ var Channel = (function (_React$Component) {
                 ':'
               ),
               (0, _moment2.default)((0, _moment2.default)(this.state.now).diff(timestamp)).format('mm:ss')
+            ),
+            'operator' === direction && 'defunct' != mode && _react2.default.createElement(
+              'span',
+              { className: 'label label-info', style: {
+                  fontWeight: 700,
+                  lineHeight: 1.6,
+                  textTransform: 'uppercase'
+                } },
+              t('Operator')
             ),
             'defunct' === mode && _react2.default.createElement(
               'span',
