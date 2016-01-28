@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#heartbeat
+wget -q -O /dev/null --no-check-certificate https://triple-a:test22@thehangar.farmradio.org:669
+
 PIDFILE=run/fessbox.pid
 PID=`cat $PIDFILE`
 NODEPATH=run/node_fessbox
