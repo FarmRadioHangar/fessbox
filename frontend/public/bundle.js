@@ -268,7 +268,7 @@ function initApp(data) {
   store.dispatch((0, _actions.setTimeDiff)(diff));
   // Initialize message inbox
   if (data.inbox) {
-    var messages = data.inbox.ids.slice().reverse().map(function (id) {
+    var messages = data.inbox.ids.slice().map(function (id) {
       return _extends({ id: id }, data.inbox.messages[id]);
     });
     store.dispatch((0, _actions.initializeInbox)(messages));
@@ -735,7 +735,7 @@ var Channel = (function (_React$Component) {
     }
   }, {
     key: 'updateMode',
-    value: function updateMode(mode) {
+    value: function updateMode(mode, currentMode) {
       var _props5 = this.props;
       var channelId = _props5.channelId;
       var dispatch = _props5.dispatch;
@@ -743,7 +743,9 @@ var Channel = (function (_React$Component) {
       var client = _props5.client;
       var userId = _props5.userId;
 
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + userId : mode));
+      if ('free' !== currentMode) {
+        sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + userId : mode));
+      }
       dispatch((0, _actions.updatePreset)(channelId, mode));
     }
   }, {
@@ -1008,15 +1010,19 @@ var Channel = (function (_React$Component) {
     }
   }, {
     key: 'renderModeSwitch',
-    value: function renderModeSwitch(color) {
+    value: function renderModeSwitch(color, currentMode) {
       var _this3 = this;
 
       var _props9 = this.props;
+      var userChanFree = _props9.userChanFree;
       var t = _props9.t;
       var isConnected = _props9.isConnected;
-      /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
+      var channelId = _props9.channelId;
+      var channels = _props9.client.channels;
 
-      var modes = isConnected ? ['host', 'master', 'on_hold'] : ['master', 'on_hold'];
+      var chan = channels[channelId] || { preset: 'master' };
+      /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
+      var modes = userChanFree && isConnected ? ['host', 'master', 'on_hold'] : ['master', 'on_hold'];
       var labels = {
         host: t('Private'),
         master: t('Master'),
@@ -1029,11 +1035,6 @@ var Channel = (function (_React$Component) {
         on_hold: 'pause',
         ivr: 'voicemail'
       };
-      var _props10 = this.props;
-      var channelId = _props10.channelId;
-      var channels = _props10.client.channels;
-
-      var chan = channels[channelId] || { preset: 'master' };
       return _react2.default.createElement(
         'div',
         { style: styles.modeSwitchWrapper },
@@ -1049,7 +1050,7 @@ var Channel = (function (_React$Component) {
                 type: 'button',
                 className: (0, _classnames2.default)('btn btn-default btn-' + color, { 'active': chan.preset == mode }),
                 onClick: function onClick() {
-                  _this3.updateMode(mode);
+                  _this3.updateMode(mode, currentMode);
                 } },
               labels[mode]
             );
@@ -1105,16 +1106,16 @@ var Channel = (function (_React$Component) {
     value: function render() {
       var _this4 = this;
 
-      var _props11 = this.props;
-      var channelId = _props11.channelId;
-      var label = _props11.label;
-      var direction = _props11.direction;
-      var contact = _props11.contact;
-      var mode = _props11.mode;
-      var level = _props11.level;
-      var muted = _props11.muted;
-      var timestamp = _props11.timestamp;
-      var t = _props11.t;
+      var _props10 = this.props;
+      var channelId = _props10.channelId;
+      var label = _props10.label;
+      var direction = _props10.direction;
+      var contact = _props10.contact;
+      var mode = _props10.mode;
+      var level = _props10.level;
+      var muted = _props10.muted;
+      var timestamp = _props10.timestamp;
+      var t = _props10.t;
 
       var _getPanelStyle = this.getPanelStyle();
 
@@ -1122,6 +1123,10 @@ var Channel = (function (_React$Component) {
       var bg = _getPanelStyle.bg;
 
       var hours = (0, _moment2.default)(this.state.now).diff(timestamp, 'hours');
+      /*
+      console.log('is connected ' + isConnected)
+      console.log('user id ' + userId)
+      */
       return _react2.default.createElement(
         'div',
         { className: 'panel panel-default panel-' + color, style: { margin: '11px' } },
@@ -1208,7 +1213,7 @@ var Channel = (function (_React$Component) {
                   },
                   enabled: !muted && 'ivr' !== mode })
               ),
-              this.renderModeSwitch(color)
+              this.renderModeSwitch(color, mode)
             )
           )
         )
@@ -1904,7 +1909,11 @@ var Mixer = (function (_React$Component) {
       var _userId = _props$users._userId;
       var _connected = _props$users._connected;
       var t = _props.t;
+      /* 
+       * temp fix 
+       */
 
+      var notFree = _connected && channels[_userId] && channels[_userId].mode !== 'free';
       return _react2.default.createElement(
         'div',
         { style: styles.wrapper },
@@ -1929,6 +1938,7 @@ var Mixer = (function (_React$Component) {
                 t: t,
                 key: id,
                 channelId: id,
+                userChanFree: !notFree,
                 userId: _userId,
                 isConnected: _connected,
                 client: client,

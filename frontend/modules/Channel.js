@@ -44,11 +44,13 @@ class Channel extends React.Component {
       [channelId] : 'free'
     })
   }
-  updateMode(mode) {
+  updateMode(mode, currentMode) {
     const { channelId, dispatch, sendMessage, client, userId } = this.props
-    sendMessage('channelMode', {
-      [channelId] : 'host' === mode ? ''+userId : mode
-    })
+    if ('free' !== currentMode) {
+      sendMessage('channelMode', {
+        [channelId] : 'host' === mode ? ''+userId : mode
+      })
+    }
     dispatch(updatePreset(channelId, mode))
   }
   beginEditCaller() {
@@ -220,10 +222,11 @@ class Channel extends React.Component {
       )
     }
   }
-  renderModeSwitch(color) {
-    const { t, isConnected } = this.props
+  renderModeSwitch(color, currentMode) {
+    const { userChanFree, t, isConnected, channelId, client : { channels } } = this.props
+    const chan = channels[channelId] || { preset : 'master' }
     /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
-    const modes = isConnected
+    const modes = (userChanFree && isConnected)
         ? ['host', 'master', 'on_hold']
         : ['master', 'on_hold']
     const labels = {
@@ -238,8 +241,6 @@ class Channel extends React.Component {
       on_hold : 'pause',
       ivr     : 'voicemail',
     }
-    const { channelId, client : { channels } } = this.props
-    const chan = channels[channelId] || { preset : 'master' }
     return (
       <div style={styles.modeSwitchWrapper}>
         <div className='btn-group btn-group-lg' role='group'>
@@ -250,7 +251,7 @@ class Channel extends React.Component {
                 key       = {i}
                 type      = 'button'
                 className = {classNames(`btn btn-default btn-${color}`, { 'active' : chan.preset == mode })}
-                onClick   = {() => { this.updateMode(mode) }}>
+                onClick   = {() => { this.updateMode(mode, currentMode) }}>
                 {labels[mode]}
               </button>
             )
@@ -302,6 +303,10 @@ class Channel extends React.Component {
     const { channelId, label, direction, contact, mode, level, muted, timestamp, t } = this.props
     const { color, bg } = this.getPanelStyle()
     const hours = moment(this.state.now).diff(timestamp, 'hours')
+    /*
+    console.log('is connected ' + isConnected)
+    console.log('user id ' + userId)
+    */
     return (
       <div className={`panel panel-default panel-${color}`} style={{margin: '11px'}}>
         <div className='panel-heading'>
@@ -354,7 +359,7 @@ class Channel extends React.Component {
                     onChange     = {(from, to) => this.updateLevel(to)}
                     enabled      = {!muted && 'ivr' !== mode} />
                 </div>
-                {this.renderModeSwitch(color)}
+                {this.renderModeSwitch(color, mode)}
               </div>
             </div>
           </div>

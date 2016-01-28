@@ -72,6 +72,10 @@ class Mixer extends React.Component {
       users : { _userId, _connected },
       t,
     } = this.props
+    /* 
+     * temp fix 
+     */ 
+    const notFree = _connected && channels[_userId] && channels[_userId].mode !== 'free'
     return (
       <div style={styles.wrapper}>
         <audio ref='audio' loop='true'>
@@ -83,14 +87,15 @@ class Mixer extends React.Component {
               const [id, chan] = pair
               return (!_userId || id != _userId) ? (
                 <Channel {...chan} 
-                  t           = {t}
-                  key         = {id}
-                  channelId   = {id}
-                  userId      = {_userId}
-                  isConnected = {_connected}
-                  client      = {client}
-                  dispatch    = {dispatch}
-                  sendMessage = {sendMessage} />
+                  t            = {t}
+                  key          = {id}
+                  channelId    = {id}
+                  userChanFree = {!notFree}
+                  userId       = {_userId}
+                  isConnected  = {_connected}
+                  client       = {client}
+                  dispatch     = {dispatch}
+                  sendMessage  = {sendMessage} />
               ) : (
                 <span key={id} />
               )

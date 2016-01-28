@@ -71,7 +71,7 @@ function initApp(data) {
   store.dispatch(setTimeDiff(diff))
   // Initialize message inbox
   if (data.inbox) {
-    const messages = data.inbox.ids.slice().reverse().map(id => ({ id, ...data.inbox.messages[id] }))
+    const messages = data.inbox.ids.slice().map(id => ({ id, ...data.inbox.messages[id] }))
     store.dispatch(initializeInbox(messages))
   }
 
