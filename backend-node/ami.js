@@ -277,6 +277,7 @@ ami.on('devicestatechange', function(evt) {
 				}
 				break;
 			case 'NOT_INUSE':
+			case 'INUSE':
 				if (!s.ui.mixer.channels[channelInfo[1]]) {
 					s.loadChannel(channelInfo[1]);
 					//s.ui.mixer.channels[channelInfo[1]].type = 'sip';

@@ -254,8 +254,9 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 							errorMsg = "invalid mode, cannot change from " + s.ui.mixer.channels[channel_id].mode + " to " + value;
 						} else {
 							switch (s.ui.mixer.channels[value].mode) { // mode of the channel that we're connecting to
+								case 'defunct':
 								case 'ivr':
-									errorMsg = "can't connect to channel in IVR mode";
+									errorMsg = "can't connect to channel in " + s.ui.mixer.channels[value].mode + " mode";
 									break;
 								case 'free':
 									provider.setChanMode(channel_id, value, function (err) {
