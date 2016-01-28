@@ -456,13 +456,6 @@ function mixer() {
       }
     case 'update-host-level':
       {
-
-        console.log(_extends({}, state, {
-          host: _extends({}, state.host, {
-            level: action.level
-          })
-        }));
-
         return _extends({}, state, {
           host: _extends({}, state.host, {
             level: action.level
