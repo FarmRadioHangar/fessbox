@@ -299,7 +299,7 @@ class Channel extends React.Component {
     }
   }
   render() {
-    const { channelId, label, contact, mode, level, muted, timestamp, t } = this.props
+    const { channelId, label, direction, contact, mode, level, muted, timestamp, t } = this.props
     const { color, bg } = this.getPanelStyle()
     const hours = moment(this.state.now).diff(timestamp, 'hours')
     return (
@@ -313,6 +313,13 @@ class Channel extends React.Component {
               <div style={{width: '140px', textAlign: 'right'}}>
                 {hours > 0 && <span>{hours}:</span>}{moment(moment(this.state.now).diff(timestamp)).format('mm:ss')}
               </div>
+            )}
+            {'operator' === direction && 'defunct' != mode && (
+              <span className='label label-info' style={{
+                fontWeight    : 700,
+                lineHeight    : 1.6,
+                textTransform : 'uppercase'
+              }}>{t('Operator')}</span>
             )}
             {'defunct' === mode && (
               <span className='label label-danger' style={{
