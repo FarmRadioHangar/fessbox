@@ -43,13 +43,13 @@ var loadDefaults = function() {
 		exports.ui.mixer.channels[dongleName].label = astConf.dongles[dongleName].number;
 		exports.ui.mixer.channels[dongleName].type = 'dongle';
 	}
-/*
-	for (var i in astConf.hosts) {
-		loadChannel(astConf.hosts[i]);
-		exports.ui.mixer.channels[astConf.hosts[i]].type = 'sip';
-		loadUser(astConf.hosts[i]);
+
+	for (var i in astConf.operators) {
+		//loadChannel(astConf.operators[i]);
+		//exports.ui.mixer.channels[astConf.hosts[i]].type = 'sip';
+		loadUser(astConf.operators[i]);
 	}
-*/
+
 };
 
 function saveSnapshot(exit) {
@@ -85,13 +85,26 @@ function loadSnapshot() {
 	}
 }
 
+function loadUser(user_id) {
+	var userFile = __dirname + "/state/users/" + user_id + ".json";
+	if (fs.existsSync(userFile)) {
+		var myData = require(userFile);
+		exports.ui.users[user_id] = myData;
+		myLib.consoleLog('debug', "loadUser - data loaded from disk", user_id);
+		return true;
+	} else {
+		myLib.consoleLog('error', "loadUser - not found", userFile);
+		return false;
+	}
+}
+
 function saveUser(user_id) {
 	var userFile = __dirname + "/state/users/" + user_id + ".json";
 	fs.writeFile(userFile, JSON.stringify(exports.ui.users[user_id]), "utf8", function (err) {
 		if (err) {
 			console.error("ERROR::saveUser - " + JSON.stringify(err));
 		} else {
-			console.log("NOTICE::saveUser - data saved to disk");
+			console.log("NOTICE::saveUser - data saved to disk", JSON.stringify(exports.ui.users[user_id]));
 		}
 	});
 }
@@ -113,26 +126,13 @@ function loadChannel(channel_id) {
 	}
 }
 
-function loadUser(user_id) {
-	var userFile = __dirname + "/state/users/" + user_id + ".json";
-	if (fs.existsSync(userFile)) {
-		var myData = require(userFile);
-		exports.ui.users[user_id] = myData;
-		myLib.consoleLog('debug', "loadUser - data loaded from disk", user_id);
-		return true;
-	} else {
-		myLib.consoleLog('error', "loadUser - not found", userFile);
-		return false;
-	}
-}
-
 function saveChannel(channel_id) {
 	channelFile = __dirname + "/state/channels/" + channel_id + ".json";
 	fs.writeFile(channelFile, JSON.stringify(exports.ui.mixer.channels[channel_id]), "utf8", function (err) {
 		if (err) {
 			console.error("ERROR::saveChannel - " + JSON.stringify(err));
 		} else {
-			console.log("NOTICE::saveChannel - data saved to disk");
+			console.log("NOTICE::saveChannel - data saved to disk", JSON.stringify(exports.ui.mixer.channels[channel_id]));
 		}
 	});
 }

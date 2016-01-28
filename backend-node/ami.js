@@ -266,13 +266,15 @@ ami.on('devicestatechange', function(evt) {
 	if (channelInfo[0] === 'SIP' && astConf.operators.indexOf(channelInfo[1]) !== -1) {
 		switch (evt.state) {
 			case 'UNAVAILABLE':
-				// todo: channels should have 'allways visible' property. If set, mode should be updated to 'defunct' instead of removing channel
-				s.saveChannel(channelInfo[1]);
-				s.saveUser(channelInfo[1]);
-				//api.channelUpdate(channelInfo[1], null);
-				api.channelUpdate(channelInfo[1], {
-					mode: 'defunct'
-				});
+				if (s.ui.mixer.channels[channelInfo[1]] && s.ui.mixer.channels[channelInfo[1]].mode !== 'defunct') {
+					// todo: channels should have 'allways visible' property. If set, mode should be updated to 'defunct' instead of removing channel
+					s.saveChannel(channelInfo[1]);
+					s.saveUser(channelInfo[1]);
+					//api.channelUpdate(channelInfo[1], null);
+					api.channelUpdate(channelInfo[1], {
+						mode: 'defunct'
+					});
+				}
 				break;
 			case 'NOT_INUSE':
 				if (!s.ui.mixer.channels[channelInfo[1]]) {
@@ -448,7 +450,7 @@ ami.on('newchannel', function(evt) {
 						type: channelInfo[0].toLowerCase(),
 
 					}
-				} else if (astConf.hosts.indexOf(channelInfo[1]) !== -1) {
+				} else if (astConf.operators.indexOf(channelInfo[1]) !== -1) {
 					//myLib.consoleLog('debug', "New host channel internal name", [channelInfo[1], evt.channel]);
 					s.asterisk.channels[channelInfo[1]] = {
 						internalName: evt.channel
@@ -775,6 +777,7 @@ exports.userToMaster = function (user_id, cb) {
 //	amiConnectToMaster(s.asterisk.channels[channel_id].internalName, cb);
 };
 
+// broken
 exports.toMaster = function (host_id, channel_id, cb) {
 	amiRedirectBoth(s.asterisk.channels[channel_id].internalName, astConf.virtual.master, s.asterisk.hosts[host_id].internalName, astConf.virtual.master, cb);
 //	amiConnectToMaster(s.asterisk.channels[channel_id].internalName, cb);
@@ -890,13 +893,13 @@ exports.setChanMode = function (channel_id, destination, cb) {
 
 // channel_id and channel_id2 must be bridged for this to work
 exports.setChanModes = function (channel_id, destination, channel_id2, destination2, cb) {
-	console.log("exports.setChanModes", channel_id, destination, channel_id2, destination2);
 	if (astConf.virtual[destination]) {
 		destination = astConf.virtual[destination];
 	}
 	if (astConf.virtual[destination2]) {
 		destination2 = astConf.virtual[destination2];
 	}
+	console.log("exports.setChanModes", channel_id, destination, channel_id2, destination2);
 	amiRedirectBoth(s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2, cb);
 };
 

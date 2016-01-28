@@ -9,6 +9,7 @@ var s = require("./localStorage");
 var wss = require("./websocket");
 
 exports.getCurrentState = function (user_id, cb) {
+	console.log('users', user_id, JSON.stringify(s.ui.users[user_id]));
 	var users;
 	if (user_id) {
 		users = {};
@@ -256,8 +257,19 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 								case 'ivr':
 									errorMsg = "can't connect to channel in IVR mode";
 									break;
-								case 'ring':
 								case 'free':
+									provider.setChanMode(channel_id, value, function (err) {
+										if (err) {
+											cbErr(err);
+										} else {
+											s.ui.mixer.channels[value].mode = channel_id;
+											s.ui.mixer.channels[channel_id].mode = value;
+											s.ui.mixer.channels[channel_id].timestamp = Date.now();
+											channelEvent([channel_id, value]);
+										}
+									});
+									break;
+								case 'ring':
 								case 'on_hold':
 //									provider.setChanMode(value, channel_id, cb);
 //									provider.setChanMode(channel_id, value, cb);
@@ -291,7 +303,7 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 				}
 				break;
 			default: // channel_id is currently connected to other channel.
-				if (s.ui.channels[channel_id].direction === 'operator') {
+				if (s.ui.mixer.channels[channel_id].direction === 'operator') {
 					if (value === 'master') {
 						var channel2_id = s.ui.mixer.channels[channel_id].mode;
 						//provider.setChanModes(channel_id, value, s.ui.mixer.channels[channel_id].mode, 'master', cb); // send both to master
