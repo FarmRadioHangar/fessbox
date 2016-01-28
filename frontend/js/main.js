@@ -90,6 +90,7 @@ function initApp(data) {
           'Time'          : 'Tidpunkt',
           'Sender'        : 'Avsändare',
           'Content'       : 'Innehåll',
+          'Operator'      : 'Operatör',
           'Free line'     : 'Tillgänglig linje',
           'Host'          : 'Värd',
           'Private'       : 'Privat',
