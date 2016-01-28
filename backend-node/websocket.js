@@ -1,6 +1,6 @@
 var appConfig = require("./config/app.json");
 
-var s = require("./localStorage");
+var api = require("./api");
 var eventHandlers = require("./eventHandlers");
 var myLib = require("./myLib");
 
@@ -45,17 +45,10 @@ wss.on('connection', function connection(ws) {
 			}
 		}
 	});
-	// todo: move this to api.js
-	if (location.query.user_id && s.ui.users[location.query.user_id]) { 
-		var users = {};
-		users[location.query.user_id] = s.ui.users[location.query.user_id];
-	}
-	var initState = {
-		mixer: s.ui.mixer,
-		users: users,
-		server_time: Date.now()
-	};
-	ws.send(serializeEvent("initialize", initState));
+
+	api.getCurrentState(location.query.user_id, function (err, initState) {
+		ws.send(serializeEvent("initialize", initState));
+	});
 });
 
 wss.broadcast = function broadcast(data) {

@@ -3,6 +3,31 @@ var api = require("./api");
 exports.callNumber = function () {
 }
 
+exports.messageDelete = function(user_id, data, cb) {
+	cb("inboxUpdate", data, 'others');
+	api.messageDelete(data, function (err) {
+		if (err) {
+			cb("event_error", {
+				event: "messageDelete",
+				msg: err
+			}, 'self');
+		}
+	});
+};
+
+exports.inboxFetch = function(user_id, data, cb) {
+	api.inboxFetch(data.count, data.reference_id, function (err, messages) {
+		if (err) {
+			cb("event_error", {
+				event: "inboxFetch",
+				msg: err
+			}, 'self');
+		} else {
+			cb("inboxMessages", messages, 'self');
+		}
+	});
+};
+
 exports.channelContactInfo = function(user_id, data, cb) {
 	cb("channelContactInfo", data, 'others');
 	for (channel_id in data) {
@@ -96,7 +121,21 @@ exports.userMuted = function(user_id, data, cb) {
 		});
 	}
 };
-
+/*
+exports.userMode = function(user_id, data, cb) {
+	for(user_id in data) {
+		api.setUserMode(user_id, data[user_id],  function (err, user) {
+			if (err) {
+				cb("event_error", {
+					event: "userMode",
+					key: user_id,
+					msg: err
+				}, 'self');
+			}
+		});
+	}
+};
+*/
 exports.userVolume = function(channel_id, data, cb) {
 	for(channel_id in data) {
 		api.setUserVolume(channel_id, data[channel_id],  function (err, user) {
@@ -109,6 +148,31 @@ exports.userVolume = function(channel_id, data, cb) {
 			}
 		});
 	}
+};
+
+exports.hostVolume = function(user_id, data, cb) {
+	api.setHostVolume(data, function (err) {
+		if (err) {
+			cb("event_error", {
+				event: "hostVolume",
+				msg: err
+			}, 'self');
+		} else {
+			cb("hostVolumeChange", data, "others");
+		}
+	});
+};
+
+exports.hostMuted = function(user_id, data, cb) {
+	//api.setHostProperty('muted', data, function (err) {
+	api.setHostMuted(data, function (err) {
+		if (err) {
+			cb("event_error", {
+				event: "hostMuted",
+				msg: err
+			}, 'self');
+		}
+	});
 };
 
 // obsolete
