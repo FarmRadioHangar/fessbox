@@ -40,15 +40,6 @@ function mixer(state = initialMixerState, action) {
       }
     }
     case 'update-host-level': {
-
-      console.log({
-        ...state,
-        host : {
-          ...state.host,
-          level : action.level
-        }
-      })
-
       return {
         ...state,
         host : {
