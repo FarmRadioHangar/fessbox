@@ -2494,51 +2494,51 @@ var Ui = (function (_React$Component) {
       var sidebarOpen = _state.sidebarOpen;
       var sidebarDocked = _state.sidebarDocked;
 
-      return users._connected ? _react2.default.createElement(
+      return mixer.active ? _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(
-            _reactSidebar2.default,
-            { sidebar: _react2.default.createElement(
-                'div',
-                { style: styles.hostWrapper },
-                _react2.default.createElement(
-                  'button',
-                  {
-                    style: styles.drawer.hamburger,
-                    className: 'btn btn-default',
-                    type: 'button',
-                    onClick: this.toggleMenu },
-                  _react2.default.createElement('span', { className: 'glyphicon glyphicon-menu-hamburger' })
-                ),
-                _react2.default.createElement(_Operator2.default, this.props)
-              ),
-              open: sidebarOpen,
-              docked: sidebarDocked,
-              onSetOpen: this.onSetSidebarOpen },
-            _react2.default.createElement(
+        users._connected ? _react2.default.createElement(
+          _reactSidebar2.default,
+          { sidebar: _react2.default.createElement(
               'div',
-              null,
-              !sidebarDocked && _react2.default.createElement(
+              { style: styles.hostWrapper },
+              _react2.default.createElement(
                 'button',
                 {
-                  style: styles.hamburger,
+                  style: styles.drawer.hamburger,
                   className: 'btn btn-default',
                   type: 'button',
                   onClick: this.toggleMenu },
                 _react2.default.createElement('span', { className: 'glyphicon glyphicon-menu-hamburger' })
-              )
+              ),
+              _react2.default.createElement(_Operator2.default, this.props)
             ),
-            this.renderMixer()
-          )
+            open: sidebarOpen,
+            docked: sidebarDocked,
+            onSetOpen: this.onSetSidebarOpen },
+          _react2.default.createElement(
+            'div',
+            null,
+            !sidebarDocked && _react2.default.createElement(
+              'button',
+              {
+                style: styles.hamburger,
+                className: 'btn btn-default',
+                type: 'button',
+                onClick: this.toggleMenu },
+              _react2.default.createElement('span', { className: 'glyphicon glyphicon-menu-hamburger' })
+            )
+          ),
+          this.renderMixer()
+        ) : _react2.default.createElement(
+          'div',
+          null,
+          this.renderMixer()
         )
       ) : _react2.default.createElement(
         'div',
         null,
-        this.renderMixer()
+        'Connection lost.'
       );
     }
   }]);

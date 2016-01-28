@@ -41,9 +41,9 @@ class Ui extends React.Component {
   render() {
     const { client, mixer, users, t } = this.props
     const { sidebarOpen, sidebarDocked } = this.state
-    return users._connected ? (
+    return mixer.active ? (
       <div>
-        <div>
+        {users._connected ? (
           <Sidebar sidebar = {(
             <div style = {styles.hostWrapper}>
               <button 
@@ -71,11 +71,13 @@ class Ui extends React.Component {
             </div>
             {this.renderMixer()}
           </Sidebar>
-        </div>
+        ) : (
+          <div>{this.renderMixer()}</div>
+        )}
       </div>
     ) : (
       <div>
-        {this.renderMixer()}
+        Connection lost.
       </div>
     )
   }
