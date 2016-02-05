@@ -58,6 +58,7 @@ wss.broadcast = function broadcast(data) {
 };
 
 var serializeEvent = function (event, data) {
+	// maybe can be optimized as { eventName: data } ?
 	return JSON.stringify({
 		event: event,
 		data: data

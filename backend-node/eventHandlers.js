@@ -121,21 +121,7 @@ exports.userMuted = function(user_id, data, cb) {
 		});
 	}
 };
-/*
-exports.userMode = function(user_id, data, cb) {
-	for(user_id in data) {
-		api.setUserMode(user_id, data[user_id],  function (err, user) {
-			if (err) {
-				cb("event_error", {
-					event: "userMode",
-					key: user_id,
-					msg: err
-				}, 'self');
-			}
-		});
-	}
-};
-*/
+
 exports.userVolume = function(channel_id, data, cb) {
 	for(channel_id in data) {
 		api.setUserVolume(channel_id, data[channel_id],  function (err, user) {

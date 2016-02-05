@@ -106,6 +106,10 @@ ami.on('dongledeviceentry', function(evt) {
 		if (!s.ui.mixer.channels[evt.device]) { // sanity check
 			myLib.consoleLog('panic', 'configured dongle not present', evt.device);
 		} else {
+			//todo: is this the right place to to this?
+			s.ui.mixer.channels[evt.device].direction = astConf.operators.indexOf(evt.device) !== -1 ? 'operator' : null;
+			s.ui.mixer.channels[evt.device].number = astConf.dongles[evt.device].number;
+
 			if (astConf.dongles[evt.device].number !== evt.subscribernumber) {
 				// todo: send email to admin
 				if (evt.subscribernumber) {
@@ -229,7 +233,6 @@ ami.on('coreshowchannel', function (evt) {
 				};
 				newChannel[channelInfo[1]] = {
 					type: channelInfo[0].toLowerCase(),
-
 				}
 			}
 			//s.channels[evt.calleridnum] = evt;
@@ -277,7 +280,6 @@ ami.on('devicestatechange', function(evt) {
 				}
 				break;
 			case 'NOT_INUSE':
-			case 'INUSE':
 				if (!s.ui.mixer.channels[channelInfo[1]]) {
 					s.loadChannel(channelInfo[1]);
 					//s.ui.mixer.channels[channelInfo[1]].type = 'sip';
@@ -296,19 +298,34 @@ ami.on('devicestatechange', function(evt) {
 					});
 				}
 				break;
+			case 'INUSE':
+				if (!s.ui.mixer.channels[channelInfo[1]]) {
+					s.loadChannel(channelInfo[1]);
+					//s.ui.mixer.channels[channelInfo[1]].type = 'sip';
+					//s.ui.mixer.channels[channelInfo[1]].mode = 'free';
+					//s.ui.mixer.channels[channelInfo[1]].direction = 'operator';
+					api.channelUpdate(channelInfo[1], {
+						type: 'sip',
+						mode: 'master',
+						direction: 'operator'
+					});
+					s.loadUser(channelInfo[1]);
+				}
+
+				break;
 		}
 	}
 });
 
 ami.on('donglecallstatechange', function(evt) {
 //	{"event":"DongleCallStateChange","privilege":"call,all","device":"airtel2","callidx":"1","newstate":"released"}
-	console.error(JSON.stringify(evt));
+//	console.error(JSON.stringify(evt));
 });
 
 ami.on('donglenewsmsbase64', function(evt) {
 	var prefix = new RegExp('^\\' + amiConf.country_prefix);
 	api.inboxUpdate('sms_in', Date.now(), evt.from.replace(prefix, '0'), new Buffer(evt.message, 'base64').toString("utf8"));
-	console.error(JSON.stringify(evt));
+//	console.error(JSON.stringify(evt));
 });
 
 //todo: get user info via addressBook api call on newchannel event instead of using this event
@@ -373,7 +390,7 @@ ami.on('hangup', function(evt) {
 
 ami.on('confbridgejoin', function(evt) {
 //	{"event":"ConfbridgeJoin","privilege":"call,all","channel":"SIP/703-00000000","uniqueid":"1444910756.0","conference":"2663","calleridnum":"703","calleridname":"Damjan Laptop"}
-	if (evt.conference == astConf.virtual.master) {
+	if (evt.conference === astConf.virtual.master) {
 		var channelInfo = evt.channel.split(/[\/-]/, 3);
 		if (s.asterisk.channels[channelInfo[1]]) {
 			s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
@@ -442,7 +459,7 @@ ami.on('newchannel', function(evt) {
 		case 'SIP':
 //		case 'Local':
 			//todo : where is this channel dialing?
-			if (evt.exten === astConf.virtual.ring) {
+//			if (evt.exten === astConf.virtual.ring) {
 				if (astConf.extensions.indexOf(channelInfo[1]) !== -1) {
 					s.asterisk.channels[channelInfo[1]] = {
 						internalName: evt.channel,
@@ -470,10 +487,17 @@ ami.on('newchannel', function(evt) {
 	//				initializeHost(channelInfo[1]);
 					
 				}
-			}
+//			}
 			//s.channels[evt.calleridnum] = evt;
 			break;
 		default:
+	}
+});
+
+ami.on('confbridgestoprecord', function (evt) {
+	if (evt.conference === astConf.virtual.master) {
+		api.inboxUpdate('recording', Date.now(), 'master', s.asterisk.conference.file_name);
+		s.asterisk.conference.file_name = null;
 	}
 });
 
@@ -797,7 +821,7 @@ exports.putOnHold = function(channel_id, cb) {
 */
 
 // use this when connecting to a channel_id that is busy
-exports.setChanMode2 = function(channel_id, busy_channel_id, cb) {
+exports.setChanModeBusy = function(channel_id, busy_channel_id, cb) {
 
 	amiParkCall(s.asterisk.channels[busy_channel_id].internalName, s.asterisk.channels[channel_id].internalName, function(err, res) {
 		if (!err) {
@@ -901,7 +925,12 @@ exports.setChanModes = function (channel_id, destination, channel_id2, destinati
 		destination2 = astConf.virtual[destination2];
 	}
 	console.log("exports.setChanModes", channel_id, destination, channel_id2, destination2);
+	console.log("exports.setChanModes", s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2);
 	amiRedirectBoth(s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2, cb);
+};
+
+exports.setChanFree = function (channel_id, cb) {
+	amiHangup(s.asterisk.channels[channel_id].internalName, cb);
 };
 
 exports.setPhoneBookEntry = function (number, label, cb) {
