@@ -42,6 +42,8 @@ SIP is a text-based protocol used to control create, modify, and terminate VoIP 
 * session setup, and 
 * session management.
 
+SIP is an IETF standard as described by [RFC321](https://www.ietf.org/rfc/rfc3261.txt).
+
 ## Concepts
 
 ### Host
