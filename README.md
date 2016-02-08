@@ -34,7 +34,7 @@ TODO
 
 ### Session Initiation Protocol (SIP)
 
-SIP is a text-based protocol used to control create, modify, and terminate VoIP and other text and multimedia sessions. It supports common IP telephony features like call or media transfer, call conference, and call hold. SIP's primary job is to control user sessions. A session can involve one or more participants and SIP defines five primary session-related functions:
+SIP is a text-based protocol used to control create, modify, and terminate VoIP and other text and multimedia sessions. It supports common IP telephony features like call or media transfer, call conference, and call hold. A SIP session can involve one or more participants and the protocol defines five primary session-related functions:
 
 * user location, 
 * user availability, 
