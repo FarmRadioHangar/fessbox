@@ -1,3 +1,5 @@
+import { toastr } from 'redux-toastr'
+
 export function mute(channel) {
   return {
     type : 'mute', channel
@@ -83,6 +85,7 @@ export function setTimeDiff(diff) {
 }
 
 export function updateInbox(id, payload) {
+  toastr.success('The title', 'The message')
   return {
     type : 'update-inbox', id, payload
   }
