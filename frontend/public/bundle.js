@@ -2165,9 +2165,6 @@ var Operator = (function (_React$Component2) {
       var userId = users._userId;
       var user = users[userId];
       var channel = mixer.channels[userId];
-
-      console.log(channel);
-
       if (!channel || !user) {
         return _react2.default.createElement('span', null);
       }

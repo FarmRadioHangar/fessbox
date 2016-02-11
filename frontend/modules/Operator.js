@@ -89,9 +89,6 @@ class Operator extends React.Component {
     const userId = users._userId
     const user = users[userId]
     const channel = mixer.channels[userId]
-
-    console.log(channel)
-
     if (!channel || !user) {
       return <span />
     }
