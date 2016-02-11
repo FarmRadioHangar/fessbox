@@ -1933,7 +1933,12 @@ var Mixer = (function (_React$Component) {
 
               var id = _pair[0];
               var chan = _pair[1];
+              /* temp */
 
+              if ('operator' === chan.direction) {
+                return null;
+              }
+              /* /temp */
               return !_userId || id != _userId ? _react2.default.createElement(_Channel2.default, _extends({}, chan, {
                 t: t,
                 key: id,
