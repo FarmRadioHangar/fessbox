@@ -73,7 +73,9 @@ class Mixer extends React.Component {
       t,
     } = this.props
     /* 
+     *
      * temp fix 
+     *
      */ 
     const notFree = _connected && channels[_userId] && channels[_userId].mode !== 'free'
     return (
