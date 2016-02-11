@@ -126,7 +126,7 @@ class Channel extends React.Component {
                 <span 
                   style     = {{'top': '2px'}} 
                   className = 'glyphicon glyphicon-earphone' />&nbsp;
-                  Accept
+                  {t('Accept')}
               </button>&nbsp;&nbsp;
               <button 
                 onClick     = {() => this.disconnectCall()} 
@@ -136,7 +136,7 @@ class Channel extends React.Component {
                 <span 
                   style     = {{'top': '2px'}} 
                   className = 'glyphicon glyphicon-remove' />&nbsp;
-                  Reject
+                  {t('Reject')}
               </button>
             </div>
           </div>

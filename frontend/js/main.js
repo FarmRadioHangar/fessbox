@@ -106,6 +106,8 @@ function initApp(data) {
           'Location'      : 'Plats',
           'Save'          : 'Spara',
           'Cancel'        : 'Avbryt',
+          'Accept'        : 'Svara',
+          'Reject'        : 'Neka',
         }
       }
     }
