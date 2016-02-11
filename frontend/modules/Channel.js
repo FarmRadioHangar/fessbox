@@ -13,7 +13,7 @@ class Channel extends React.Component {
     this.state = {
       editMode : false,
       timer    : null,
-      now      : Date.now()
+      now      : Date.now(),
     }
   }
   toggleMuted() {
