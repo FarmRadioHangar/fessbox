@@ -115,7 +115,7 @@ function initApp(data) {
   }, (err, t) => {
     ReactDOM.render(
       <Provider store={store}>
-        <ReduxToastr timeOut={4000} position='top-right' />
+        <ReduxToastr />
         <App t={t} />
       </Provider>,
       document.getElementById('main')
