@@ -115,8 +115,10 @@ function initApp(data) {
   }, (err, t) => {
     ReactDOM.render(
       <Provider store={store}>
-        <ReduxToastr />
-        <App t={t} />
+        <div>
+          <ReduxToastr />
+          <App t={t} />
+        </div>
       </Provider>,
       document.getElementById('main')
     )
