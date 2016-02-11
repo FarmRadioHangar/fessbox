@@ -14,7 +14,7 @@ import { compose, createStore }
   from 'redux'
 import { Provider, connect } 
   from 'react-redux'
-import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, updateInbox, initializeInbox, removeMessage, disableMixer, updateHost }
+import { initializeMixer, initializeUsers, updateUser, removeUser, updateMixer, updateMaster, updateMasterLevel, updateLevel, setTimeDiff, updateCaller, addMessage, initializeInbox, removeMessage, disableMixer, updateHost }
   from './actions'
 
 const userId   = getQueryVariable('user_id') 
@@ -171,8 +171,7 @@ ws.onmessage = e => {
         case 'inboxUpdate':
           Object.keys(msg.data).forEach(id => {
             if (msg.data[id]) {
-              // @TODO: rename this to addMessage perhaps?
-              store.dispatch(updateInbox(id, msg.data[id]))
+              store.dispatch(addMessage(id, msg.data[id]))
             } else {
               store.dispatch(removeMessage(id))
             }

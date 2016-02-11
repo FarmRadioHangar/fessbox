@@ -84,16 +84,16 @@ export function setTimeDiff(diff) {
   }
 }
 
-export function updateInbox(id, payload) {
-  toastr.success('The title', 'The message')
-  return {
-    type : 'update-inbox', id, payload
-  }
-}
-
 export function initializeInbox(notifications) {
   return {
     type : 'initialize-inbox', notifications
+  }
+}
+
+export function addMessage(id, payload) {
+  toastr.success('The title', 'The message')
+  return {
+    type : 'update-inbox', id, payload
   }
 }
 
