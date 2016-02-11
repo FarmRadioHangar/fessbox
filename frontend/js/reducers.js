@@ -3,6 +3,8 @@ import getQueryVariable     from './url-params'
 
 import { combineReducers } 
   from 'redux'
+import { reducer as toastrReducer }  
+  from 'redux-toastr'
 
 const userId = getQueryVariable('user_id') 
 const isHost = 'true' == getQueryVariable('host') 
@@ -209,6 +211,6 @@ function inbox(state = initialInboxState, action) {
   }
 }
 
-const reducers = { mixer, users, client, inbox }
+const reducers = { mixer, users, client, inbox, toastr: toastrReducer }
 
 export default combineReducers(reducers)
