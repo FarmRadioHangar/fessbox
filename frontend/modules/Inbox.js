@@ -45,51 +45,53 @@ class Inbox extends React.Component {
             maxHeight : this.state.expanded ? '300px' : '45px',
             ...styles.inbox
           }}>
-            <div onClick={this.toggleExpand} style={styles.toggleButton}>
-              <i className = {`glyphicon glyphicon-arrow-${this.state.expanded ? 'down' : 'up'}`} />
-            </div>
             {this.state.expanded ? (
-              <table className='table' style={styles.table}>
-                <colgroup>
-                  <col width='10%' />
-                  <col width='20%' />
-                  <col width='15%' />
-                  <col width='45%' />
-                  <col width='10%' />
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th>{t('Type')}</th>
-                    <th>{t('Time')}</th>
-                    <th>{t('Sender')}</th>
-                    <th>{t('Content')}</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {notifications.map(item => (
-                    <tr key={item.id}>
-                      <td>{this.getType(item.type)}</td>
-                      <td>
-                        {isNaN(item.timestamp) ? '-' : (
-                          <TimeAgo date={Number(item.timestamp)} />
-                        )}
-                      </td>
-                      <td>{item.source}</td>
-                      <td>{item.content}</td>
-                      <td>
-                        <button onClick={() => this.deleteMessage(item.id)}>Delete</button>
-                      </td>
+              <div>
+                <div onClick={this.toggleExpand} style={styles.toggleButton}>
+                  <i className='glyphicon glyphicon-arrow-down' />
+                </div>
+                <table className='table' style={styles.table}>
+                  <colgroup>
+                    <col width='10%' />
+                    <col width='20%' />
+                    <col width='15%' />
+                    <col width='45%' />
+                    <col width='10%' />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>{t('Type')}</th>
+                      <th>{t('Time')}</th>
+                      <th>{t('Sender')}</th>
+                      <th>{t('Content')}</th>
+                      <th />
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {notifications.map(item => (
+                      <tr key={item.id}>
+                        <td>{this.getType(item.type)}</td>
+                        <td>
+                          {isNaN(item.timestamp) ? '-' : (
+                            <TimeAgo date={Number(item.timestamp)} />
+                          )}
+                        </td>
+                        <td>{item.source}</td>
+                        <td>{item.content}</td>
+                        <td>
+                          <button onClick={() => this.deleteMessage(item.id)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
-              <div style={{margin: '10px'}}>
+              <div>
                 {notifications.length > 0 && (
-                  <span>
+                  <button onClick={this.toggleExpand} className='btn btn-primary' type='button'>
                     {t('Inbox')} <span className='badge'>{notifications.length}</span>
-                  </span>
+                  </button>
                 )}
               </div>
             )}
