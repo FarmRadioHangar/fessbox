@@ -6,6 +6,7 @@ import persistState         from 'redux-localstorage'
 import app                  from './reducers'
 import getQueryVariable     from './url-params'
 import ui                   from '../modules/Ui'
+import ReduxToastr          from 'redux-toastr'
 
 import { ReconnectingWebSocket } 
   from 'awesome-websocket'
@@ -114,6 +115,7 @@ function initApp(data) {
   }, (err, t) => {
     ReactDOM.render(
       <Provider store={store}>
+        <ReduxToastr timeOut={4000} position='top-right' />
         <App t={t} />
       </Provider>,
       document.getElementById('main')
