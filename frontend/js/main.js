@@ -169,6 +169,7 @@ ws.onmessage = e => {
         case 'inboxUpdate':
           Object.keys(msg.data).forEach(id => {
             if (msg.data[id]) {
+              // @TODO: rename this to addMessage perhaps?
               store.dispatch(updateInbox(id, msg.data[id]))
             } else {
               store.dispatch(removeMessage(id))
