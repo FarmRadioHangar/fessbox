@@ -89,6 +89,9 @@ class Operator extends React.Component {
     const userId = users._userId
     const user = users[userId]
     const channel = mixer.channels[userId]
+
+    console.log(channel)
+
     if (!channel || !user) {
       return <span />
     }
@@ -124,18 +127,23 @@ class Operator extends React.Component {
             width     : '100%',
             textAlign : 'center',
           }}>
-            {/*
-            <div>
-              Channel mode : {channel.mode}
-            </div>
-            */}
-            <button 
-              style     = {{width: '80%'}}
-              type      = 'button'
-              className = {`btn btn-default ${'master' == channel.mode ? 'btn-danger' : 'btn-success'}`} 
-              onClick   = {() => { this.toggleMode('master' == channel.mode ? 'free' : 'master') }}>
-              {t('Master')}
-            </button>
+            {'defunct' == channel.mode ? (
+              <button disabled
+                style     = {{width: '80%'}}
+                type      = 'button'
+                className = 'btn btn-default' 
+                onClick   = {() => {}}>
+                {t('Defunct')}
+              </button>
+            ) : (
+              <button 
+                style     = {{width: '80%'}}
+                type      = 'button'
+                className = {`btn btn-default ${'master' == channel.mode ? 'btn-danger' : 'btn-success'}`} 
+                onClick   = {() => { this.toggleMode('master' == channel.mode ? 'free' : 'master') }}>
+                {t('Master')}
+              </button>
+            )}
           </div>
         </div>
       </div>

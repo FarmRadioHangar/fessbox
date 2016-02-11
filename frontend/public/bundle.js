@@ -2165,6 +2165,9 @@ var Operator = (function (_React$Component2) {
       var userId = users._userId;
       var user = users[userId];
       var channel = mixer.channels[userId];
+
+      console.log(channel);
+
       if (!channel || !user) {
         return _react2.default.createElement('span', null);
       }
@@ -2221,7 +2224,15 @@ var Operator = (function (_React$Component2) {
                 width: '100%',
                 textAlign: 'center'
               } },
-            _react2.default.createElement(
+            'defunct' == channel.mode ? _react2.default.createElement(
+              'button',
+              { disabled: true,
+                style: { width: '80%' },
+                type: 'button',
+                className: 'btn btn-default',
+                onClick: function onClick() {} },
+              t('Defunct')
+            ) : _react2.default.createElement(
               'button',
               {
                 style: { width: '80%' },
