@@ -85,6 +85,11 @@ class Mixer extends React.Component {
           <div>
             {_.pairs(channels).sort(compareChannels).map(pair => {
               const [id, chan] = pair
+              /* temp */
+              if ('operator' === chan.direction) {
+                return null
+              }
+              /* /temp */
               return (!_userId || id != _userId) ? (
                 <Channel {...chan} 
                   t            = {t}
