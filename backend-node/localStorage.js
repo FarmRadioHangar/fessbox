@@ -116,7 +116,7 @@ function loadChannel(channel_id) {
 		exports.ui.mixer.channels[channel_id] = myData;
 		exports.ui.mixer.channels[channel_id].mode = 'defunct';
 		exports.ui.mixer.channels[channel_id].timestamp = null;
-		exports.ui.mixer.channels[channel_id].direction = astConf.operators.indexOf(channel_id) !== -1 ? 'operator' : null;
+		//exports.ui.mixer.channels[channel_id].direction = astConf.operators.indexOf(channel_id) !== -1 ? 'operator' : null;
 		exports.asterisk.channels[channel_id] = {};
 		myLib.consoleLog('debug', "loadChannel - data loaded from disk", channel_id);
 		return true;
@@ -208,6 +208,23 @@ function messageFetch(count, reference_id, cb) {
 	}
 }
 
+function contactUpdate(contact_key, data, cb) {
+	var contactArray = [];
+	for(var key in data) {
+		contactArray.push(key);
+		contactArray.push(data);
+	}
+	redisClient.hmset(contact_key, contactArray, cb);
+}
+
+function contactDelete(contact_key, cb) {
+	redisClient.del(contact_key, cb);
+}
+
+function contactFetch(contact_key, cb) {
+	redisCient.hgetall(contact_key, cb);
+}
+
 exports.saveSnapshot = saveSnapshot;
 exports.saveUser = saveUser;
 exports.saveChannel = saveChannel;
@@ -220,3 +237,15 @@ exports.messages = {
 	delete: messageDelete,
 	fetch: messageFetch
 };
+exports.contacts = {
+	update: contactUpdate,
+	delete: contactDelete,
+	fetch: contactFetch
+};
+/*
+exports.recordings = {
+	save: recordingSave,
+	delete: recordingDelete,
+	fetch: recordingFetch
+};
+*/

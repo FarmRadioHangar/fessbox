@@ -243,8 +243,10 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 			case 'on_hold':
 			case 'master':
 				switch (value) {
-					case 'master':
 					case 'free':
+						provider.setChanFree(channel_id, cb);
+						break;
+					case 'master':
 					case 'on_hold':
 					case 'ivr':
 						provider.setChanMode(channel_id, value, cb);
@@ -276,8 +278,8 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 //									provider.setChanMode(channel_id, value, cb);
 //									break;
 								case 'master':
-										provider.setChanMode2(channel_id, value, cb);
-										//provider.setChanMode2(value, channel_id, cb);
+										provider.setChanModeBusy(channel_id, value, cb);
+										//provider.setChanModeBusy(value, channel_id, cb);
 									/*
 									provider.parkCall(value, function(err, res) {
 										if (err) {
@@ -304,10 +306,12 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 				}
 				break;
 			default: // channel_id is currently connected to other channel.
+				console.log('channel_id is currently connected to other channel', s.ui.mixer.channels[channel_id].direction, value);
+
 				if (s.ui.mixer.channels[channel_id].direction === 'operator') {
 					if (value === 'master') {
-						var channel2_id = s.ui.mixer.channels[channel_id].mode;
 						//provider.setChanModes(channel_id, value, s.ui.mixer.channels[channel_id].mode, 'master', cb); // send both to master
+						var channel2_id = s.ui.mixer.channels[channel_id].mode;
 						provider.setChanModes(channel_id, value, channel2_id, 'master', function(err) {
 							if (err) {
 								cbErr(err);

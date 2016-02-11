@@ -58,7 +58,7 @@ function consoleLog(output, label, message) {
 	} else if (output === 'warning') {
 		console.log(logStamp, output, label, message);
 	} else if (output === 'debug') {
-		console.error('|||| ', output, label, message);
+		console.error('||||', Date.now(), output, label, message);
 	} else {
 		console.error(logStamp, "undefined log output", label, message);
 	}
