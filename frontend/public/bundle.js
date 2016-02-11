@@ -293,7 +293,7 @@ function initApp(data) {
           'Free line': 'Tillgänglig linje',
           'Host': 'Värd',
           'Private': 'Privat',
-          'Master': 'Huvudkanal',
+          'Master': 'Master',
           'On hold': 'Parkera',
           'IVR': 'Röstbrevlåda',
           'Defunct': 'Ur funktion',
@@ -303,7 +303,9 @@ function initApp(data) {
           'Name': 'Namn',
           'Location': 'Plats',
           'Save': 'Spara',
-          'Cancel': 'Avbryt'
+          'Cancel': 'Avbryt',
+          'Accept': 'Svara',
+          'Reject': 'Neka'
         }
       }
     }
@@ -712,36 +714,23 @@ var Channel = (function (_React$Component) {
       dispatch((0, _actions.updateLevel)(channelId, value));
     }
   }, {
-    key: 'answerCall',
-    value: function answerCall() {
+    key: 'disconnectCall',
+    value: function disconnectCall() {
       var _props3 = this.props;
       var channelId = _props3.channelId;
       var sendMessage = _props3.sendMessage;
-      var client = _props3.client;
-      var userId = _props3.userId;
-
-      var chan = client.channels[channelId] || { preset: 'master' };
-      console.log('answer in mode ' + chan.preset);
-      sendMessage('channelMode', _defineProperty({}, channelId, 'host' === chan.preset ? '' + userId : chan.preset));
-    }
-  }, {
-    key: 'disconnectCall',
-    value: function disconnectCall() {
-      var _props4 = this.props;
-      var channelId = _props4.channelId;
-      var sendMessage = _props4.sendMessage;
 
       sendMessage('channelMode', _defineProperty({}, channelId, 'free'));
     }
   }, {
     key: 'updateMode',
     value: function updateMode(mode, currentMode) {
-      var _props5 = this.props;
-      var channelId = _props5.channelId;
-      var dispatch = _props5.dispatch;
-      var sendMessage = _props5.sendMessage;
-      var client = _props5.client;
-      var userId = _props5.userId;
+      var _props4 = this.props;
+      var channelId = _props4.channelId;
+      var dispatch = _props4.dispatch;
+      var sendMessage = _props4.sendMessage;
+      var client = _props4.client;
+      var userId = _props4.userId;
 
       if ('free' !== currentMode) {
         sendMessage('channelMode', _defineProperty({}, channelId, 'host' === mode ? '' + userId : mode));
@@ -761,10 +750,10 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'updateCaller',
     value: function updateCaller() {
-      var _props6 = this.props;
-      var channelId = _props6.channelId;
-      var dispatch = _props6.dispatch;
-      var sendMessage = _props6.sendMessage;
+      var _props5 = this.props;
+      var channelId = _props5.channelId;
+      var dispatch = _props5.dispatch;
+      var sendMessage = _props5.sendMessage;
 
       var caller = {
         'name': this.refs.callerName.value
@@ -777,9 +766,9 @@ var Channel = (function (_React$Component) {
   }, {
     key: 'timer',
     value: function timer() {
-      var _props7 = this.props;
-      var timestamp = _props7.timestamp;
-      var diff = _props7.client.diff;
+      var _props6 = this.props;
+      var timestamp = _props6.timestamp;
+      var diff = _props6.client.diff;
 
       if (timestamp) {
         this.setState({
@@ -808,10 +797,10 @@ var Channel = (function (_React$Component) {
     value: function renderChannelMode() {
       var _this2 = this;
 
-      var _props8 = this.props;
-      var mode = _props8.mode;
-      var contact = _props8.contact;
-      var t = _props8.t;
+      var _props7 = this.props;
+      var mode = _props7.mode;
+      var contact = _props7.contact;
+      var t = _props7.t;
       var editMode = this.state.editMode;
 
       if ('free' === mode) {
@@ -846,43 +835,6 @@ var Channel = (function (_React$Component) {
                   _react2.default.createElement('span', { style: { margin: '0 6px 0 20px' }, className: 'glyphicon glyphicon-user' }),
                   contact['location'] ? contact.name + ', ' + contact['location'] : contact.name
                 )
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { style: { flex: 1 } },
-            _react2.default.createElement(
-              'div',
-              { style: { textAlign: 'right' } },
-              _react2.default.createElement(
-                'button',
-                {
-                  onClick: function onClick() {
-                    return _this2.answerCall();
-                  },
-                  type: 'button',
-                  style: styles.callButton,
-                  className: 'btn btn-default btn-lg btn-success' },
-                _react2.default.createElement('span', {
-                  style: { 'top': '2px' },
-                  className: 'glyphicon glyphicon-earphone' }),
-                '  Accept'
-              ),
-              '  ',
-              _react2.default.createElement(
-                'button',
-                {
-                  onClick: function onClick() {
-                    return _this2.disconnectCall();
-                  },
-                  type: 'button',
-                  style: styles.callButton,
-                  className: 'btn btn-default btn-lg btn-danger' },
-                _react2.default.createElement('span', {
-                  style: { 'top': '2px' },
-                  className: 'glyphicon glyphicon-remove' }),
-                '  Reject'
               )
             )
           )
@@ -1013,15 +965,18 @@ var Channel = (function (_React$Component) {
     value: function renderModeSwitch(color, currentMode) {
       var _this3 = this;
 
-      var _props9 = this.props;
-      var userChanFree = _props9.userChanFree;
-      var t = _props9.t;
-      var isConnected = _props9.isConnected;
-      var channelId = _props9.channelId;
-      var channels = _props9.client.channels;
-
-      var chan = channels[channelId] || { preset: 'master' };
+      if ('free' == currentMode || 'defunct' == currentMode) {
+        return null;
+      }
+      var _props8 = this.props;
+      var userChanFree = _props8.userChanFree;
+      var t = _props8.t;
+      var isConnected = _props8.isConnected;
+      var channelId = _props8.channelId;
+      var channels = _props8.client.channels;
+      //const chan = channels[channelId] || { preset : 'master' }
       /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
+
       var modes = userChanFree && isConnected ? ['host', 'master', 'on_hold'] : ['master', 'on_hold'];
       var labels = {
         host: t('Private'),
@@ -1048,13 +1003,23 @@ var Channel = (function (_React$Component) {
                 disabled: 'ivr' === _this3.props.mode,
                 key: i,
                 type: 'button',
-                className: (0, _classnames2.default)('btn btn-default btn-' + color, { 'active': chan.preset == mode }),
+                className: (0, _classnames2.default)('btn btn-default btn-' + color, { 'active': currentMode == mode }),
                 onClick: function onClick() {
                   _this3.updateMode(mode, currentMode);
                 } },
               labels[mode]
             );
-          })
+          }),
+          'ring' == currentMode && _react2.default.createElement(
+            'button',
+            {
+              type: 'button',
+              className: 'btn btn-default btn-lg btn-danger',
+              onClick: function onClick() {
+                _this3.updateMode('free', currentMode);
+              } },
+            t('Reject')
+          )
         )
       );
     }
@@ -1094,7 +1059,6 @@ var Channel = (function (_React$Component) {
           bg: 'transparent'
         };
       } else {
-        /* host */
         return {
           color: 'default',
           bg: 'transparent'
@@ -1106,16 +1070,16 @@ var Channel = (function (_React$Component) {
     value: function render() {
       var _this4 = this;
 
-      var _props10 = this.props;
-      var channelId = _props10.channelId;
-      var label = _props10.label;
-      var direction = _props10.direction;
-      var contact = _props10.contact;
-      var mode = _props10.mode;
-      var level = _props10.level;
-      var muted = _props10.muted;
-      var timestamp = _props10.timestamp;
-      var t = _props10.t;
+      var _props9 = this.props;
+      var channelId = _props9.channelId;
+      var label = _props9.label;
+      var direction = _props9.direction;
+      var contact = _props9.contact;
+      var mode = _props9.mode;
+      var level = _props9.level;
+      var muted = _props9.muted;
+      var timestamp = _props9.timestamp;
+      var t = _props9.t;
 
       var _getPanelStyle = this.getPanelStyle();
 

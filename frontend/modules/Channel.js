@@ -30,14 +30,6 @@ class Channel extends React.Component {
     })
     dispatch(updateLevel(channelId, value))
   }
-  answerCall() {
-    const { channelId, sendMessage, client, userId } = this.props
-    const chan = client.channels[channelId] || { preset: 'master' }
-    console.log(`answer in mode ${chan.preset}`)
-    sendMessage('channelMode', {
-      [channelId] : 'host' === chan.preset ? ''+userId : chan.preset
-    })
-  }
   disconnectCall() {
     const { channelId, sendMessage } = this.props
     sendMessage('channelMode', {
@@ -114,30 +106,6 @@ class Channel extends React.Component {
                   </span>
                 )}
               </h4>
-            </div>
-          </div>
-          <div style={{flex: 1}}>
-            <div style={{textAlign: 'right'}}>
-              <button 
-                onClick     = {() => this.answerCall()}
-                type        = 'button'
-                style       = {styles.callButton}
-                className   = 'btn btn-default btn-lg btn-success'>
-                <span 
-                  style     = {{'top': '2px'}} 
-                  className = 'glyphicon glyphicon-earphone' />&nbsp;
-                  {t('Accept')}
-              </button>&nbsp;&nbsp;
-              <button 
-                onClick     = {() => this.disconnectCall()} 
-                type        = 'button' 
-                style       = {styles.callButton} 
-                className   = 'btn btn-default btn-lg btn-danger'>
-                <span 
-                  style     = {{'top': '2px'}} 
-                  className = 'glyphicon glyphicon-remove' />&nbsp;
-                  {t('Reject')}
-              </button>
             </div>
           </div>
         </div>
@@ -223,8 +191,11 @@ class Channel extends React.Component {
     }
   }
   renderModeSwitch(color, currentMode) {
+    if ('free' == currentMode || 'defunct' == currentMode) {
+      return null
+    }
     const { userChanFree, t, isConnected, channelId, client : { channels } } = this.props
-    const chan = channels[channelId] || { preset : 'master' }
+    //const chan = channels[channelId] || { preset : 'master' }
     /* const modes = ['host', 'master', 'on_hold', 'ivr'] */
     const modes = (userChanFree && isConnected)
         ? ['host', 'master', 'on_hold']
@@ -250,12 +221,20 @@ class Channel extends React.Component {
                 disabled  = {'ivr' === this.props.mode}
                 key       = {i}
                 type      = 'button'
-                className = {classNames(`btn btn-default btn-${color}`, { 'active' : chan.preset == mode })}
+                className = {classNames(`btn btn-default btn-${color}`, { 'active' : currentMode == mode })}
                 onClick   = {() => { this.updateMode(mode, currentMode) }}>
                 {labels[mode]}
               </button>
             )
           })}
+          {'ring' == currentMode && (
+            <button 
+              type      = 'button'
+              className = 'btn btn-default btn-lg btn-danger'
+              onClick   = {() => { this.updateMode('free', currentMode) }}>
+              {t('Reject')}
+            </button>
+          )}
         </div>
       </div>
     )
@@ -292,7 +271,7 @@ class Channel extends React.Component {
         color : 'default',
         bg    : 'transparent'
       }
-    } else { /* host */
+    } else { 
       return {
         color : 'default',
         bg    : 'transparent'

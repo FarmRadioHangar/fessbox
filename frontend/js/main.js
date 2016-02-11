@@ -94,7 +94,7 @@ function initApp(data) {
           'Free line'     : 'Tillgänglig linje',
           'Host'          : 'Värd',
           'Private'       : 'Privat',
-          'Master'        : 'Huvudkanal',
+          'Master'        : 'Master',
           'On hold'       : 'Parkera',
           'IVR'           : 'Röstbrevlåda',
           'Defunct'       : 'Ur funktion',
