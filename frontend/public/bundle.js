@@ -18,8 +18,8 @@ exports.updateMaster = updateMaster;
 exports.updateMasterLevel = updateMasterLevel;
 exports.updateCaller = updateCaller;
 exports.setTimeDiff = setTimeDiff;
-exports.updateInbox = updateInbox;
 exports.initializeInbox = initializeInbox;
+exports.addMessage = addMessage;
 exports.removeMessage = removeMessage;
 exports.disableMixer = disableMixer;
 exports.updateHost = updateHost;
@@ -111,16 +111,16 @@ function setTimeDiff(diff) {
   };
 }
 
-function updateInbox(id, payload) {
-  _reduxToastr.toastr.success('The title', 'The message');
-  return {
-    type: 'update-inbox', id: id, payload: payload
-  };
-}
-
 function initializeInbox(notifications) {
   return {
     type: 'initialize-inbox', notifications: notifications
+  };
+}
+
+function addMessage(id, payload) {
+  _reduxToastr.toastr.success('New message', payload.content);
+  return {
+    type: 'update-inbox', id: id, payload: payload
   };
 }
 
@@ -381,8 +381,7 @@ ws.onmessage = function (e) {
           case 'inboxUpdate':
             Object.keys(msg.data).forEach(function (id) {
               if (msg.data[id]) {
-                // @TODO: rename this to addMessage perhaps?
-                store.dispatch((0, _actions.updateInbox)(id, msg.data[id]));
+                store.dispatch((0, _actions.addMessage)(id, msg.data[id]));
               } else {
                 store.dispatch((0, _actions.removeMessage)(id));
               }
