@@ -91,7 +91,7 @@ export function initializeInbox(notifications) {
 }
 
 export function addMessage(id, payload) {
-  toastr.success('The title', 'The message')
+  toastr.success('New message', payload.content)
   return {
     type : 'update-inbox', id, payload
   }
