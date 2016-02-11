@@ -46,7 +46,9 @@ class Master extends React.Component {
               <i className={`glyphicon glyphicon-volume-${muted ? 'off' : 'up'}`} />
             </button>
           </div>
-          <div style={styles.label}>M</div>
+          <div style={styles.iconWrapper}> 
+            <i className='fa fa-headphones' />
+          </div>
         </div>
       </div>
     )
@@ -70,6 +72,11 @@ const styles = {
   },
   sliderWrapper : {
     textAlign    : 'center'
+  },
+  iconWrapper : {
+    textAlign    : 'center', 
+    margin       : '0 0 12px', 
+    fontSize     : '150%'
   },
 }
 

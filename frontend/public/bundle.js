@@ -1328,8 +1328,8 @@ var Host = (function (_React$Component) {
           ),
           _react2.default.createElement(
             'div',
-            { style: styles.label },
-            'H'
+            { style: styles.iconWrapper },
+            _react2.default.createElement('i', { className: 'fa fa-microphone' })
           )
         )
       );
@@ -1356,6 +1356,11 @@ var styles = {
   },
   sliderWrapper: {
     textAlign: 'center'
+  },
+  iconWrapper: {
+    textAlign: 'center',
+    margin: '0 0 12px',
+    fontSize: '150%'
   }
 };
 
@@ -1705,8 +1710,8 @@ var Master = (function (_React$Component) {
           ),
           _react2.default.createElement(
             'div',
-            { style: styles.label },
-            'M'
+            { style: styles.iconWrapper },
+            _react2.default.createElement('i', { className: 'fa fa-headphones' })
           )
         )
       );
@@ -1733,6 +1738,11 @@ var styles = {
   },
   sliderWrapper: {
     textAlign: 'center'
+  },
+  iconWrapper: {
+    textAlign: 'center',
+    margin: '0 0 12px',
+    fontSize: '150%'
   }
 };
 
