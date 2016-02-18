@@ -7,24 +7,45 @@ var stateFile = __dirname + "/state/snapshot.json";
 var myLib = require("./myLib");
 
 redisClient.on("error",  function(err) {
-	myLib.consoleLog('error', err);
+	myLib.consoleLog('error', "redis", err);
 });
+
+	exports.ui = {
+		mixer: {
+			channels: {},
+			master: {},
+			host: null,
+//			hosts: astConf.hosts,
+//			operators: astConf.operators
+		},
+		operators: {}
+	};
+
+	exports.ui.mixer.master = require("./state/master.json");
+	exports.ui.mixer.master.out = require("./state/master_out.json");
+	exports.ui.mixer.master.in = require("./state/host.json");
+	exports.ui.mixer.host = exports.ui.mixer.master.in;
+	
+var saveDefaults = function() {
+};
 
 var loadDefaults = function() {
 	exports.ui = {
 		mixer: {
 			channels: {},
-			master: null,
+			master: {},
 			host: null,
 //			hosts: astConf.hosts,
 //			operators: astConf.operators
 		},
-		users: {}
+		operators: {}
 	};
 
 	exports.ui.mixer.master = require("./state/master.json");
-	exports.ui.mixer.host = require("./state/host.json");
-
+	exports.ui.mixer.master.out = require("./state/master_out.json");
+	exports.ui.mixer.master.in = require("./state/host.json");
+	exports.ui.mixer.host = exports.ui.mixer.master.in;
+	
 	exports.asterisk = {
 	//	hosts: {},
 		channels: {},
@@ -47,7 +68,7 @@ var loadDefaults = function() {
 	for (var i in astConf.operators) {
 		//loadChannel(astConf.operators[i]);
 		//exports.ui.mixer.channels[astConf.hosts[i]].type = 'sip';
-		loadUser(astConf.operators[i]);
+		loadOperator(astConf.operators[i]);
 	}
 
 };
@@ -55,7 +76,7 @@ var loadDefaults = function() {
 function saveSnapshot(exit) {
 	var myData = {
 		mixer: exports.ui.mixer,
-		users: exports.ui.users,
+		operators: exports.ui.operators,
 		asterisk: exports.asterisk
 	};
 	fs.writeFile(stateFile, JSON.stringify(myData), "utf8", function (err) {
@@ -75,7 +96,7 @@ function loadSnapshot() {
 		var myData = require(stateFile);
 		exports.ui = {
 			mixer: myData.mixer,
-			users: myData.users
+			operators: myData.operators
 		};
 		exports.asterisk = myData.asterisk;
 		console.log("NOTICE::loadSnapshot - data loaded from disk");
@@ -85,48 +106,104 @@ function loadSnapshot() {
 	}
 }
 
-function loadUser(user_id) {
-	var userFile = __dirname + "/state/users/" + user_id + ".json";
-	if (fs.existsSync(userFile)) {
-		var myData = require(userFile);
-		exports.ui.users[user_id] = myData;
-		myLib.consoleLog('debug', "loadUser - data loaded from disk", user_id);
-		return true;
-	} else {
-		myLib.consoleLog('error', "loadUser - not found", userFile);
-		return false;
-	}
-}
-
-function saveUser(user_id) {
-	var userFile = __dirname + "/state/users/" + user_id + ".json";
-	fs.writeFile(userFile, JSON.stringify(exports.ui.users[user_id]), "utf8", function (err) {
-		if (err) {
-			console.error("ERROR::saveUser - " + JSON.stringify(err));
+function loadOperator(channel_id) {
+	redisClient.hgetall("operator." + channel_id, function (err, res) {
+		if (!err) {
+			exports.ui.operators[channel_id] = res;
+			myLib.consoleLog('debug', "loadOperator - data loaded from redis", channel_id);
+			return true;
 		} else {
-			console.log("NOTICE::saveUser - data saved to disk", JSON.stringify(exports.ui.users[user_id]));
+			var userFile = __dirname + "/config/defaults/operators/" + channel_id + ".json";
+			if (fs.existsSync(userFile)) {
+				var myData = require(userFile);
+				exports.ui.operators[channel_id] = myData;
+				myLib.consoleLog('debug', "loadOperator - data loaded from disk", channel_id);
+				return true;
+			} else {
+				myLib.consoleLog('error', "loadOperator - not found", userFile);
+				return false;
+			}
 		}
 	});
 }
 
-function loadChannel(channel_id) {
-	var channelFile = __dirname + "/state/channels/" + channel_id + ".json";
-	if (fs.existsSync(channelFile)) {
-		var myData = require(channelFile);
-		exports.ui.mixer.channels[channel_id] = myData;
-		exports.ui.mixer.channels[channel_id].mode = 'defunct';
-		exports.ui.mixer.channels[channel_id].timestamp = null;
-		//exports.ui.mixer.channels[channel_id].direction = astConf.operators.indexOf(channel_id) !== -1 ? 'operator' : null;
-		exports.asterisk.channels[channel_id] = {};
-		myLib.consoleLog('debug', "loadChannel - data loaded from disk", channel_id);
-		return true;
-	} else {
-		myLib.consoleLog('error', "loadChannel - not found", channelFile);
-		return false;
-	}
+function saveOperator(channel_id, cb) {
+	redisClient.hmset("operator." + channel_id, exports.ui.operators[channel_id], cb);
+	/*
+	var userFile = __dirname + "/config/defaults/operators/" + channel_id + ".json";
+	fs.writeFile(userFile, JSON.stringify(exports.ui.operators[channel_id]), "utf8", function (err) {
+		if (err) {
+			console.error("ERROR::saveOperator - " + JSON.stringify(err));
+		} else {
+			console.log("NOTICE::saveOperator - data saved to disk", JSON.stringify(exports.ui.operators[channel_id]));
+		}
+	});
+   */
 }
 
-function saveChannel(channel_id) {
+function loadChannel(channel_id, cb) {
+	var loadFromFile = function () {
+		var channelFile = __dirname + "/config/defaults/channels/" + channel_id + ".json";
+		if (fs.existsSync(channelFile)) {
+			var myData = require(channelFile);
+			exports.ui.mixer.channels[channel_id] = myData;
+			exports.ui.mixer.channels[channel_id].mode = 'defunct';
+			exports.ui.mixer.channels[channel_id].timestamp = null;
+			//exports.ui.mixer.channels[channel_id].direction = astConf.operators.indexOf(channel_id) !== -1 ? 'operator' : null;
+			exports.asterisk.channels[channel_id] = {};
+			if (typeof cb === 'function') {
+				cb();
+			} else {
+				myLib.consoleLog('debug', "loadChannel", ["data loaded from disk", channel_id]);
+			}
+		} else {
+			var errorMsg = "loadChannel - file not found";
+			if (typeof cb === 'function') {
+				cb("file not found " + channelFile);
+			} else {
+				myLib.consoleLog('error', "loadChannel", ["file not found", channelFile]);
+			}
+		}
+	};
+
+	redisClient.hgetall("channel." + channel_id, function (err, res) {
+		if (!err) {
+			if (typeof cb === 'function') {
+				cb(null, res);
+			} else {
+				exports.ui.mixer.channels[channel_id] = res;
+				myLib.consoleLog('debug', "loadChannel", ["data loaded from redis", channel_id]);
+			}
+		} else {
+			loadFromFile();
+		}
+	});
+}
+
+function saveAudioProperties (key, data, cb) {
+	var audioProperties = {
+		muted: data.muted,
+		level: data.level
+	};
+	redisClient.hmset(key, audioProperties, cb);
+}
+
+function loadProperties(key, object, cb) {
+	redisClient.hgetall(key, function (err, res) {
+		if (!err) {
+			for(var name in res) {
+				object[name] = res[name];
+			}
+			cb(null, object);
+		} else {
+			cb(err);
+		}
+	});
+}
+
+function saveChannel(channel_id, cb) {
+	redisClient.hmset("channel." + channel_id, exports.ui.mixer.channels[channel_id], cb);
+	/*
 	channelFile = __dirname + "/state/channels/" + channel_id + ".json";
 	fs.writeFile(channelFile, JSON.stringify(exports.ui.mixer.channels[channel_id]), "utf8", function (err) {
 		if (err) {
@@ -135,6 +212,7 @@ function saveChannel(channel_id) {
 			console.log("NOTICE::saveChannel - data saved to disk", JSON.stringify(exports.ui.mixer.channels[channel_id]));
 		}
 	});
+   */
 }
 
 function messageTagAdd(message_ids, tag, cb) {
@@ -226,10 +304,10 @@ function contactFetch(contact_key, cb) {
 }
 
 exports.saveSnapshot = saveSnapshot;
-exports.saveUser = saveUser;
+exports.saveOperator = saveOperator;
 exports.saveChannel = saveChannel;
 exports.loadSnapshot = loadSnapshot;
-exports.loadUser = loadUser;
+exports.loadOperator = loadOperator;
 exports.loadChannel = loadChannel;
 exports.loadSnapshot = loadSnapshot;
 exports.messages = {
@@ -241,6 +319,9 @@ exports.contacts = {
 	update: contactUpdate,
 	delete: contactDelete,
 	fetch: contactFetch
+};
+exports.deleteSavedSettings = function() {
+
 };
 /*
 exports.recordings = {
