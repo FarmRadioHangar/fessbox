@@ -2,6 +2,7 @@ var amiConf = require("./config/ami.json");
 var astConf = require("./config/asterisk.json");
 
 var myLib = require("./myLib");
+var mixerLib = require("./mixerLib");
 var s = require("./localStorage");
 var api = require("./api");
 
@@ -10,56 +11,71 @@ var ami = new require('asterisk-manager')(amiConf.port, amiConf.host, amiConf.us
 // https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+AMI+Actions
 ami.keepConnected();
 
+	s.asterisk = {
+	//	hosts: {},
+		channels: {},
+		conference: {
+//			input: null,
+//			output: null,
+	//		members: {},
+			on_air: null
+		},
+		master: {
+		}
+	};
+
+
+var eventCallbacks = {
+	'initialized': function () {}
+};
+
+exports.on = function (event, callback) {
+	if (eventCallbacks.hasOwnProperty(event) && 'function' === typeof callback) {
+		eventCallbacks[event] = callback;
+	} else {
+		myLib.consoleLog('panic', 'ami::eventCallbacks', [event, callback]);
+	}
+};
+
+
 // start initialization sequence
 // this code is executed when our app (re)connects to Asterisk
 ami.on('fullybooted', function(evt) {
 	myLib.consoleLog('log', "init", "Asterisk interface ready!");
-	ami.action({
-		action: "DongleShowDevices"
-	}, function(err, res) {
-		//{"response":"Success","actionid":"1446811737040","eventlist":"start","message":"Device status list will follow"}
-		if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow, ends with 'DongleShowDevicesComplete'
-			myLib.consoleLog('log', "init", 'Dongle driver is talking');
-		} else {
-			myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
+	s.ui.mixer.channels = {}; //clear previous channel properties
+
+	if (astConf.dongles && Object.keys(astConf.dongles).length > 0) {
+		// we want all configured dongle channels to be present
+		for (var dongleName in astConf.dongles) {
+			s.ui.mixer.channels[dongleName] = mixerLib.createChannel('dongle', astConf.dongles[dongleName].number);
+			s.asterisk.channels[dongleName] = {};
 		}
-	});
-	ami.action({
+
+		ami.action({
+			action: "DongleShowDevices"
+		}, function(err, res) {
+			//{"response":"Success","actionid":"1446811737040","eventlist":"start","message":"Device status list will follow"}
+			if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow, ends with 'DongleShowDevicesComplete'
+				myLib.consoleLog('log', "init", 'Dongle driver is talking');
+			} else {
+				myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
+			}
+		});
+	}
+
+	ami.action({ // list SIP and other relevant peers present at time of connection
 		action: "DeviceStateList"
 	}, function(err, res) {  // 'DeviceStateChange' events will follow, ends with 'DeviceStateListComplete'
 		// this must succeed
 	});
-/*
-	ami.action({
-		action: "CoreStatus"
-		//action: "SIPpeerstatus"
-		//action: "SIPpeers"
-	}, function(err, res) {
-		if (!err && res.response === 'Success') { // 'peerstatus' events will follow
-			myLib.consoleLog('log', 'CoreStatus requested', JSON.stringify(res));
-		} else {
-			myLib.consoleLog('error', 'init SIP', JSON.stringify(err) + " " + JSON.stringify(res));
-		}
-	});
-*/
 });
 
 // shoud happen only on init
 ami.on('devicestatelistcomplete', function(evt) {
-/*
-	ami.action({
-		action: "ExtensionStateList"
-	}, function(err, res) { // 'ExtensionStatus' events will follow, ends with 'ExtensionStateListComplete'
-	});
-*/
-	ami.action({
+	ami.action({ // list active channels at time of connection
 		action: "CoreShowChannels"
-	}, function(err, res) {
-		if (!err && res.response === 'Success') { // 'coreshowchannel' events will follow, ends with 'CoreShowChannelsComplete'
-			myLib.consoleLog('log', "init", 'Dongle driver is talking');
-		} else {
-			myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
-		}
+	}, function(err, res) { // 'coreshowchannel' events will follow, ends with 'CoreShowChannelsComplete'
+		// this must succeed
 	});
 
 	ami.action({
@@ -68,32 +84,31 @@ ami.on('devicestatelistcomplete', function(evt) {
 	}, function(err, res) {
 		// { response: 'Success', actionid: '1447157967259', eventlist: 'start', message: 'Confbridge user list will follow' }
 		if (!err && res.response === 'Success') { // 'confbridgelist' events will follow
-			myLib.consoleLog('log', "ConfbridgeList", res);
+			myLib.consoleLog('debug', "ConfbridgeList", res);
 		} else {
 			myLib.consoleLog('error', "ConfbridgeList", JSON.stringify(res));
-			if (s.ui.mixer.master.on_air) {
+			if (astConf.console && (astConf.console.in || astConf.console.out)) {
 				ami.action({
 					action: "Command",
-					command: "console dial " + astConf.virtual.master + "@from-internal"
+					command: "console dial " + astConf.virtual.master + "@from-internal" // todo: dial different context with appropriete confbridge properties
 				}, function(err, res) {
 					if (!err) {
+						myLib.consoleLog('log', 'init', "Console connected to master");
 						s.ui.mixer.master.on_air = true;
+						if (astConf.console.in) {
+							//s.ui.mixer.master.in = s.loadSettings("master.in");
+							//s.ui.mixer.host = s.loadSettings("master.in"); // obsolete
+						}
+						if (astConf.console.out) {
+							//s.ui.mixer.master.out = s.loadSettings("master.out");
+						}
+					} else {
+						s.ui.mixer.master.in = null;
+						s.ui.mixer.master.out = null;
+						eventCallbacks.initialize();
 					}
-					myLib.consoleLog('log', "Conference-onAir", res);
-
 				});
 			}
-//			var channel = "Local/707@from-internal/n";
-/*
-			var channel = "SIP/703";
-			amiOriginate(channel, astConf.virtual.master, function (err) {
-				if (!err) {
-					s.ui.mixer.channels['703'].mode = 'master';
-				} else {
-					myLib.consoleLog('debug', 'xxx', err);
-				}
-			});
-*/
 		}
 	});
 });
@@ -202,7 +217,8 @@ ami.on('coreshowchannel', function (evt) {
 						s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 						if (evt.application === 'ConfBridge') {
 							var appData = evt.applicationdata.split(',', 4);
-							if (appData[0] === 'astConf.virtual.master') {
+							/* todo: this should be done here instead of in 'confbridgelist' handler
+							if (appData[0] === astConf.virtual.master) {
 								api.channelUpdate({
 									mode: 'master',
 									direction: 'incoming',
@@ -213,6 +229,7 @@ ami.on('coreshowchannel', function (evt) {
 									}
 								});
 							}
+				i			*/
 						}
 						break;
 				}
@@ -257,6 +274,10 @@ ami.on('confbridgelist', function (evt) {
 		}
 	}
 });
+
+ami.on('confbridgelistcomplete', function(evt) {
+	eventCallbacks.initialized();
+});
 // end initialization code
 
 ami.on('devicestatechange', function(evt) {
@@ -272,7 +293,7 @@ ami.on('devicestatechange', function(evt) {
 				if (s.ui.mixer.channels[channelInfo[1]] && s.ui.mixer.channels[channelInfo[1]].mode !== 'defunct') {
 					// todo: channels should have 'allways visible' property. If set, mode should be updated to 'defunct' instead of removing channel
 					s.saveChannel(channelInfo[1]);
-					s.saveUser(channelInfo[1]);
+					s.saveOperator(channelInfo[1]);
 					//api.channelUpdate(channelInfo[1], null);
 					api.channelUpdate(channelInfo[1], {
 						mode: 'defunct'
@@ -290,7 +311,7 @@ ami.on('devicestatechange', function(evt) {
 						mode: 'free',
 						direction: 'operator'
 					});
-					s.loadUser(channelInfo[1]);
+					s.loadOperator(channelInfo[1]);
 				} else if (s.ui.mixer.channels[channelInfo[1]].mode !== 'free') {
 					//todo: write proper function for setting channel free
 					api.channelUpdate(channelInfo[1], {
@@ -309,7 +330,7 @@ ami.on('devicestatechange', function(evt) {
 						mode: 'master',
 						direction: 'operator'
 					});
-					s.loadUser(channelInfo[1]);
+					s.loadOperator(channelInfo[1]);
 				}
 
 				break;
@@ -378,14 +399,14 @@ ami.on('musiconhold', function(evt) {
 
 // todo: catch only remote party initiated hangup
 ami.on('hangup', function(evt) {
-//	{"event":"Hangup","privilege":"call,all","channel":"Dongle/airtel1-0100000006","uniqueid":"1448369795.17","calleridnum":"+255687754487","calleridname":"airtel1","connectedlinenum":"707","connectedlinename":"host galaxy tab","accountcode":"","cause":"17","cause-txt":"User busy"}
+//	{"event":"Hangup","privilege":"call,all","channel":"Dongle/airtel1-0100000006","uniqueid":"1448369795.17","calleridnum":"+255687754487","calleridname":"airtel1","connectedlinenum":"707","connectedlinename":"host galaxy tab","accountcode":"","cause":"17","cause-txt":"Operator busy"}
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	if (s.asterisk.channels[channelInfo[1]]) {
 		s.asterisk.channels[channelInfo[1]].internalName = null;
 		api.channelUpdate(channelInfo[1], {
 			mode: 'free'
 		});
-	}	
+	}
 });
 
 ami.on('confbridgejoin', function(evt) {
@@ -397,6 +418,25 @@ ami.on('confbridgejoin', function(evt) {
 			api.channelUpdate(channelInfo[1], { mode: 'master' });
 		} else if (channelInfo[0] === 'ALSA') {
 			s.asterisk.conference.on_air = evt.channel;
+			if (s.ui.mixer.master.in && typeof s.ui.mixer.master.in.muted === 'boolean') {
+				setAmiChannelMuted(evt.channel, s.ui.mixer.master.in.muted, 'in', function() {});
+			}
+			if (s.ui.mixer.master.out && typeof s.ui.mixer.master.out.muted === 'boolean') {
+				setAmiChannelMuted(evt.channel, s.ui.mixer.master.out.muted, 'out', function() {});
+			}
+			eventCallbacks.initialized();
+			/*
+					//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
+					exports.setChannelVolume(channelInfo[1], s.ui.mixer.channels[channelInfo[1]].level, function() {});
+					//setAmiChannelVolume(evt.channel, s.ui.operators[channelInfo[1]].level, 'TX', function() {});
+					exports.setOperatorVolume(channelInfo[1], s.ui.operators[channelInfo[1]].level, function() {});
+					if (s.ui.mixer.channels[channelInfo[1]].muted) {
+						setAmiChannelMuted(evt.channel, true, 'in', function() {});
+					}
+					if (s.ui.operators[channelInfo[1]].muted) {
+						setAmiChannelMuted(evt.channel, true, 'out', function() {});
+					}
+			*/
 			//api.masterUpdate({ on_air: true });
 		}
 	}
@@ -475,12 +515,12 @@ ami.on('newchannel', function(evt) {
 					};
 					//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
 					exports.setChannelVolume(channelInfo[1], s.ui.mixer.channels[channelInfo[1]].level, function() {});
-					//setAmiChannelVolume(evt.channel, s.ui.users[channelInfo[1]].level, 'TX', function() {});
-					exports.setUserVolume(channelInfo[1], s.ui.users[channelInfo[1]].level, function() {});
+					//setAmiChannelVolume(evt.channel, s.ui.operators[channelInfo[1]].level, 'TX', function() {});
+					exports.setOperatorVolume(channelInfo[1], s.ui.operators[channelInfo[1]].level, function() {});
 					if (s.ui.mixer.channels[channelInfo[1]].muted) {
 						setAmiChannelMuted(evt.channel, true, 'in', function() {});
 					}
-					if (s.ui.users[channelInfo[1]].muted) {
+					if (s.ui.operators[channelInfo[1]].muted) {
 						setAmiChannelMuted(evt.channel, true, 'out', function() {});
 					}
 	//				s.ui.mixer.hosts[channelInfo[1]] = s.loadHostSettings(channelInfo[1]);
@@ -822,6 +862,19 @@ exports.putOnHold = function(channel_id, cb) {
 
 // use this when connecting to a channel_id that is busy
 exports.setChanModeBusy = function(channel_id, busy_channel_id, cb) {
+/*
+	ami.action({
+		action: 'bridge',
+		channel2: s.asterisk.channels[channel_id].internalName,
+		channel1: s.asterisk.channels[busy_channel_id].internalName
+	}, function(err, res) {
+		if (!err) {
+			//amiRedirect(s.asterisk.channels[channel_id].internalName, astConf.virtual.parked, cb);
+		} else {
+			cb(err);
+		}
+	});
+*/
 
 	amiParkCall(s.asterisk.channels[busy_channel_id].internalName, s.asterisk.channels[channel_id].internalName, function(err, res) {
 		if (!err) {
@@ -839,6 +892,8 @@ exports.hangup = function (channel_id, cb) {
 };
 
 
+// ami.on('initialize', function() { ... })
+
 // api interface exports
 
 exports.setChannelMuted = function (channel_id, value, cb) {
@@ -850,7 +905,7 @@ exports.setChannelMuted = function (channel_id, value, cb) {
 	}
 };
 
-exports.setUserMuted = function (user_id, value, cb) {
+exports.setOperatorMuted = function (user_id, value, cb) {
 	if (s.asterisk.channels[user_id] && s.asterisk.channels[user_id].internalName) {
 		var direction = "out";
 		setAmiChannelMuted(s.asterisk.channels[user_id].internalName, value, direction, cb);
@@ -894,7 +949,7 @@ exports.setChannelVolume = function (channel_id, level, cb) {
 	}
 };
 
-exports.setUserVolume = function (channel_id, level, cb) {
+exports.setOperatorVolume = function (channel_id, level, cb) {
 	if (s.asterisk.channels[channel_id] && s.asterisk.channels[channel_id].internalName) {
 		var direction = "TX";
 		//-16 :: 9

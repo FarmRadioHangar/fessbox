@@ -8,13 +8,13 @@ var myLib = require("./myLib");
 var s = require("./localStorage");
 var wss = require("./websocket");
 
-exports.getCurrentState = function (user_id, cb) {
-	console.log('users', user_id, JSON.stringify(s.ui.users[user_id]));
-	var users;
-	if (user_id) {
-		users = {};
-		if (s.ui.users[user_id]) {
-			users[user_id] = s.ui.users[user_id];
+exports.getCurrentState = function (operator_id, cb) {
+	//console.log('operators', operator_id, JSON.stringify(s.ui.operators[operator_id]));
+	var operators;
+	if (operator_id) {
+		operators = {};
+		if (s.ui.operators[operator_id]) {
+			operators[operator_id] = s.ui.operators[operator_id];
 		}
 	}
 	s.messages.fetch(50, null, function(err, messages) {
@@ -23,7 +23,8 @@ exports.getCurrentState = function (user_id, cb) {
 		}
 		var currentState = {
 			mixer: s.ui.mixer,
-			users: users,
+			users: operators, // deprecated
+			operators: operators,
 			inbox: messages,
 			server_time: Date.now()
 		};
@@ -340,7 +341,7 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 								}
 							}
 							if (destination) {
-								//if (s.ui.users[s.ui.mixer.channels[channel_id].mode]) { // channel is currently connected to an operator
+								//if (s.ui.operators[s.ui.mixer.channels[channel_id].mode]) { // channel is currently connected to an operator
 									//provider.setChanModes(channel_id, value, s.ui.mixer.channels[channel_id].mode, 'master', cb); // send both to master
 								provider.setChanMode(channel_id, value, cb);
 							}
@@ -355,26 +356,26 @@ exports.setChannelMode = function(channel_id, value, cbErr) {
 
 // user
 
-exports.setUserVolume = function (channel_id, value, cb) {
+exports.setOperatorVolume = function (channel_id, value, cb) {
 	var errorMsg;
-	if (!s.ui.mixer.channels[channel_id] || !s.ui.users[channel_id]) {
+	if (!s.ui.mixer.channels[channel_id] || !s.ui.operators[channel_id]) {
 		errorMsg = 'user not found';
 	} else if (value === null || value > 100 || value < 0) {
 		errorMsg = 'invalid input value';
-	} else if (s.ui.users[channel_id].level === value) {
+	} else if (s.ui.operators[channel_id].level === value) {
 		errorMsg = "value already set";
 	} else {
 		switch (s.ui.mixer.channels[channel_id].mode) {
 			case 'free':
 			case 'defunct':
-				s.ui.users[channel_id].level = value;
+				s.ui.operators[channel_id].level = value;
 				break;
 			default:
-				provider.setUserVolume(channel_id, value, function (err) {
+				provider.setOperatorVolume(channel_id, value, function (err) {
 					if (err) {
 						cb(err);
 					} else {
-						s.ui.users[channel_id].level = value;
+						s.ui.operators[channel_id].level = value;
 					}
 				});
 		}
@@ -384,28 +385,28 @@ exports.setUserVolume = function (channel_id, value, cb) {
 	}
 };
 
-exports.setUserRecording = function (channel_id, value, cb) {
+exports.setOperatorRecording = function (channel_id, value, cb) {
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id]) {
 		errorMsg = 'user not found';
 	} else if (value === null || typeof value !== 'boolean') {
 		errorMsg = 'invalid input value';
-	} else if (s.ui.users[channel_id].recording === value) {
+	} else if (s.ui.operators[channel_id].recording === value) {
 		errorMsg = "value already set";
 	} else {
 		switch (s.ui.mixer.channels[channel_id].mode) {
 			case 'free':
 			case 'defunct':
-				s.ui.users[channel_id].recording = value;
-				cb(null, s.ui.users[channel_id]);
+				s.ui.operators[channel_id].recording = value;
+				cb(null, s.ui.operators[channel_id]);
 				break;
 			default:
-				provider.setUserRecording(channel_id, value, function (err) {
+				provider.setOperatorRecording(channel_id, value, function (err) {
 					if (err) {
 						cb(err);
 					} else {
-						s.ui.users[channel_id].recording = value;
-						cb(null, s.ui.users[channel_id]);
+						s.ui.operators[channel_id].recording = value;
+						cb(null, s.ui.operators[channel_id]);
 					}
 				});
 		}
@@ -415,28 +416,28 @@ exports.setUserRecording = function (channel_id, value, cb) {
 	}
 };
 
-exports.setUserMuted = function (channel_id, value, cb) {
+exports.setOperatorMuted = function (channel_id, value, cb) {
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id]) {
 		errorMsg = 'user not found';
 	} else if (value === null || typeof value !== 'boolean') {
 		errorMsg = 'invalid input value';
-	} else if (s.ui.users[channel_id].muted === value) {
+	} else if (s.ui.operators[channel_id].muted === value) {
 		errorMsg = "value already set";
 	} else {
 		switch (s.ui.mixer.channels[channel_id].mode) {
 			case 'free':
 			case 'defunct':
-				s.ui.users[channel_id].muted = value;
-				cb(null, s.ui.users[channel_id]);
+				s.ui.operators[channel_id].muted = value;
+				cb(null, s.ui.operators[channel_id]);
 				break;
 			default:
-				provider.setUserMuted(channel_id, value, function (err) {
+				provider.setOperatorMuted(channel_id, value, function (err) {
 					if (err) {
 						cb(err);
 					} else {
-						s.ui.users[channel_id].muted = value;
-						cb(null, s.ui.users[channel_id]);
+						s.ui.operators[channel_id].muted = value;
+						cb(null, s.ui.operators[channel_id]);
 					}
 				});
 		}
@@ -697,7 +698,7 @@ exports.setChannelAutoanswer = function (channel_id, value, cbErr) {
 				channelUpdate(channel_id, { autoanswer: value });
 				break;
 			default:
-				if (s.ui.users[value]) {
+				if (s.ui.operators[value]) {
 					channelUpdate(channel_id, { autoanswer: value });
 				} else {
 					errorMsg = "invalid autoanswer value: " + value;
