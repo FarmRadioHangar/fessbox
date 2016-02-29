@@ -412,7 +412,7 @@ var App = function (_React$Component) {
       tab: 'mixer',
       opacity: 0
     };
-    _this.renderFab = _this.renderFab.bind(_this);
+    _this.renderFAB = _this.renderFAB.bind(_this);
     return _this;
   }
 
@@ -422,8 +422,8 @@ var App = function (_React$Component) {
       this.setState({ tab: tab });
     }
   }, {
-    key: 'renderFab',
-    value: function renderFab() {
+    key: 'renderFAB',
+    value: function renderFAB() {
       switch (this.state.tab) {
         case 'mixer':
           return _react2.default.createElement(
@@ -516,7 +516,7 @@ var App = function (_React$Component) {
             'Call log'
           )
         ),
-        this.renderFab()
+        this.renderFAB()
       );
     }
   }]);
