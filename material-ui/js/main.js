@@ -30,7 +30,10 @@ ws.onopen = () => {
   store.dispatch(updateAppStatus(APP_STATUS_CONNECTED))
 } 
 
-ws.onclose = () => { console.log('WebSocket connection closed.') } 
+ws.onclose = () => { 
+  console.log('WebSocket connection closed.') 
+  store.dispatch(updateAppStatus(APP_STATUS_ERROR, 'WebSocket connection closed by peer.'))
+} 
 
 function parseMessage(message) {
   if (message) {
