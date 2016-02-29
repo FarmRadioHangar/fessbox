@@ -1,4 +1,7 @@
-import React from 'react'
+import React   from 'react'
+import Mixer   from './mixer'
+import CallLog from './call-log'
+import Inbox   from './inbox'
 
 import { connect } 
   from 'react-redux'
@@ -43,21 +46,21 @@ class App extends React.Component {
           icon     = {<i className='material-icons'>volume_up</i>}
           label    = 'Mixer' 
           value    = 'mixer'>
-          Mixer
+          <Mixer />
         </Tab>
         <Tab
           onActive = {() => this.activateTab('inbox')}
           icon     = {<i className='material-icons'>message</i>}
           label    = 'Inbox' 
           value    = 'inbox'>
-          Inbox
+          <Inbox />
         </Tab>
         <Tab
           onActive = {() => this.activateTab('call_log')}
           icon     = {<i className='material-icons'>history</i>}
           label    = 'Call log' 
           value    = 'call_log'>
-          Call log
+          <CallLog />
         </Tab>
       </Tabs>
     )
