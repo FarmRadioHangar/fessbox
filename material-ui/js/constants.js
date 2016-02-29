@@ -1,7 +1,6 @@
 export const APP_INITIALIZE              = 'APP_INITIALIZE'
 export const APP_UPDATE_STATUS           = 'APP_UPDATE_STATUS'
-
-export const WS_STATUS_CONNECTED         = 'WS_STATUS_CONNECTED'
-export const WS_STATUS_CONNECTING        = 'WS_STATUS_CONNECTING'
-export const WS_STATUS_ERROR             = 'WS_STATUS_ERROR'
-
+export const APP_STATUS_CONNECTED        = 'APP_STATUS_CONNECTED'
+export const APP_STATUS_CONNECTING       = 'APP_STATUS_CONNECTING'
+export const APP_STATUS_ERROR            = 'APP_STATUS_ERROR'
+export const APP_STATUS_INITIALIZED      = 'APP_STATUS_INITIALIZED'
