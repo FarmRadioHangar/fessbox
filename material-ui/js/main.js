@@ -3,6 +3,7 @@ import React            from 'react'
 import ReactDOM         from 'react-dom'
 import getUrlParam      from './url-params'
 import reducers         from './reducers'
+import messageHandler   from './message-handler'
 import Ui               from '../modules/ui'
 
 import injectTapEventPlugin 
@@ -30,7 +31,25 @@ const store = createStore(reducers, {})
 ws.onopen  = () => { console.log('WebSocket connection established.') } 
 ws.onclose = () => { console.log('WebSocket connection closed.') } 
 
+function parseMessage(message) {
+  if (message) {
+    try {
+      return JSON.parse(message)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  return null
+}
+
 ws.onmessage = e => { 
+  const message = parseMessage(e.data)
+
+  console.log('>>> Message')
+  console.log(message)
+  console.log('<<<')
+
+  messageHandler(message.event, message.data, store.dispatch)
 }
 
 ws.onerror = e => { 
