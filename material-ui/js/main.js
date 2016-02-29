@@ -12,7 +12,7 @@ import { ReconnectingWebSocket }
   from 'awesome-websocket'
 import { Provider } 
   from 'react-redux'
-import { WS_STATUS_ERROR } 
+import { APP_STATUS_ERROR, APP_STATUS_CONNECTED } 
   from './constants'
 import { updateAppStatus }
   from './actions'
@@ -25,7 +25,11 @@ const language = getUrlParam('language') || 'en'
 
 const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
 
-ws.onopen  = () => { console.log('WebSocket connection established.') } 
+ws.onopen = () => { 
+  console.log('WebSocket connection established.') 
+  store.dispatch(updateAppStatus(APP_STATUS_CONNECTED))
+} 
+
 ws.onclose = () => { console.log('WebSocket connection closed.') } 
 
 function parseMessage(message) {
@@ -52,7 +56,7 @@ ws.onmessage = (e => {
 
 ws.onerror = e => { 
   console.error(e)
-  store.dispatch(updateAppStatus(WS_STATUS_ERROR, 'Error establishing WebSocket connection.'))
+  store.dispatch(updateAppStatus(APP_STATUS_ERROR, 'Error establishing WebSocket connection.'))
 }
 
 function sendMessage(type, data) {
