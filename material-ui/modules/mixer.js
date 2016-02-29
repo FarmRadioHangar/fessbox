@@ -1,4 +1,5 @@
-import React from 'react'
+import React    from 'react'
+import Channel  from './channel'
 
 import { connect } 
   from 'react-redux'
@@ -8,9 +9,15 @@ class Mixer extends React.Component {
     super(props)
   }
   render() {
+    const { mixer : { channelList }, sendMessage } = this.props
     return (
       <div>
-        Mixer
+        {channelList.map(channel => (
+          <Channel {...channel} 
+            key         = {channel.id}
+            sendMessage = {sendMessage}
+          />
+        ))}
       </div>
     )
   }
