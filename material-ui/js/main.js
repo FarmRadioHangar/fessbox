@@ -1,6 +1,7 @@
 import 'babel-polyfill'
 import React            from 'react'
 import ReactDOM         from 'react-dom'
+import getUrlParam      from './url-params'
 import reducers         from './reducers'
 
 import injectTapEventPlugin 
@@ -13,6 +14,10 @@ import { Provider }
   from 'react-redux'
 
 injectTapEventPlugin()
+
+const userId   = getUrlParam('user_id') 
+const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
+const language = getUrlParam('language') || 'en' 
 
 const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
 const store = createStore(reducers, {})
