@@ -13,6 +13,8 @@ import { createStore }
   from 'redux'
 import { Provider } 
   from 'react-redux'
+import { updateAppStatus }
+  from './actions'
 
 injectTapEventPlugin()
 
@@ -31,7 +33,7 @@ ws.onmessage = e => {
 
 ws.onerror = e => { 
   console.error(e)
-  //store.dispatch(updateUiStatus(UI_STATUS_ERROR, 'Error establishing WebSocket connection.'))
+  store.dispatch(updateAppStatus(WS_STATUS_ERROR, 'Error establishing WebSocket connection.'))
 }
 
 function sendMessage(type, data) {
