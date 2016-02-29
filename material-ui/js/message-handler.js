@@ -1,6 +1,8 @@
-import * as types from './constants'
+import store from './store'
+import * as types 
+  from './constants'
 
-export default function(eventType, data, dispatch) {
+export default function(eventType, data) {
   switch (eventType) {
     case 'echo':
       console.log('>>> echo >>>')
@@ -8,7 +10,7 @@ export default function(eventType, data, dispatch) {
       console.log('<<<<<<<<<<<<')
       break
     case 'initialize':
-      dispatch({ 
+      store.dispatch({ 
         type : types.APP_INITIALIZE, 
         data 
       })
