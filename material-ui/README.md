@@ -8,3 +8,15 @@ New JavaScript frontend for The Box based on Google's Material Design guidelines
 * http://redux.js.org/
 * https://babeljs.io/
 * http://browserify.org/
+
+### Install dependencies
+
+```
+npm install
+```
+
+### Build command
+
+```
+npm run build
+```
