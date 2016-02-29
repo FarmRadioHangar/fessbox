@@ -1,4 +1,4 @@
-New JavaScript frontend based on Google's Material Design guidelines.
+New JavaScript frontend for The Box based on Google's Material Design guidelines.
 
 <img src="materialdesign_principles_metaphor.png" width="50%" />
 
