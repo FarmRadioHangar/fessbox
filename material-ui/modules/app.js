@@ -19,14 +19,15 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      tab : 'mixer',
+      tab     : 'mixer',
+      opacity : 0,
     }
-    this.renderFab = this.renderFab.bind(this)
+    this.renderFAB = this.renderFAB.bind(this)
   }
   activateTab(tab) {
     this.setState({ tab })
   }
-  renderFab() {
+  renderFAB() {
     switch (this.state.tab) {
       case 'mixer':
         return (
@@ -51,10 +52,13 @@ class App extends React.Component {
         )
     }
   }
+  componentDidMount() {
+    window.setTimeout(() => this.setState({opacity: 1}), 100)
+  }
   render() {
-    const { tab } = this.state
+    const { tab, opacity } = this.state
     return (
-      <div>
+      <div style={{opacity, ...styles.component}}>
         <Tabs value={tab}>
           <Tab
             onActive = {() => this.activateTab('mixer')}
@@ -78,17 +82,22 @@ class App extends React.Component {
             Call log
           </Tab>
         </Tabs>
-        {this.renderFab()}
+        {this.renderFAB()}
       </div>
     )
   }
 }
 
 const styles = {
+  component: { 
+    WebkitTransition : 'opacity 1s',
+    transition       : 'opacity 1s',
+    width            : '100%',
+  },
   fab: {
-    position     : 'fixed',
-    bottom       : '30px',
-    right        : '30px',
+    position         : 'fixed',
+    bottom           : '30px',
+    right            : '30px',
   },
 }
 
