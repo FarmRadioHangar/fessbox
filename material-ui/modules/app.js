@@ -3,6 +3,8 @@ import React from 'react'
 import { connect } 
   from 'react-redux'
 
+import AppBar   
+  from 'material-ui/lib/app-bar'
 import Tabs 
   from 'material-ui/lib/tabs/tabs'
 import Tab 
@@ -26,6 +28,39 @@ class App extends React.Component {
   }
   activateTab(tab) {
     this.setState({ tab })
+  }
+  renderAppBar() {
+    return (
+      <AppBar title='The Box' />
+    )
+  }
+  renderTabs() {
+    const { tab } = this.state
+    return (
+      <Tabs value={tab}>
+        <Tab
+          onActive = {() => this.activateTab('mixer')}
+          icon     = {<i className='material-icons'>volume_up</i>}
+          label    = 'Mixer' 
+          value    = 'mixer'>
+          Mixer
+        </Tab>
+        <Tab
+          onActive = {() => this.activateTab('inbox')}
+          icon     = {<i className='material-icons'>message</i>}
+          label    = 'Inbox' 
+          value    = 'inbox'>
+          Inbox
+        </Tab>
+        <Tab
+          onActive = {() => this.activateTab('call_log')}
+          icon     = {<i className='material-icons'>history</i>}
+          label    = 'Call log' 
+          value    = 'call_log'>
+          Call log
+        </Tab>
+      </Tabs>
+    )
   }
   renderFAB() {
     switch (this.state.tab) {
@@ -56,32 +91,11 @@ class App extends React.Component {
     window.setTimeout(() => this.setState({opacity: 1}), 100)
   }
   render() {
-    const { tab, opacity } = this.state
+    const { opacity } = this.state
     return (
       <div style={{opacity, ...styles.component}}>
-        <Tabs value={tab}>
-          <Tab
-            onActive = {() => this.activateTab('mixer')}
-            icon     = {<i className='material-icons'>volume_up</i>}
-            label    = 'Mixer' 
-            value    = 'mixer'>
-            Mixer
-          </Tab>
-          <Tab
-            onActive = {() => this.activateTab('inbox')}
-            icon     = {<i className='material-icons'>message</i>}
-            label    = 'Inbox' 
-            value    = 'inbox'>
-            Inbox
-          </Tab>
-          <Tab
-            onActive = {() => this.activateTab('call_log')}
-            icon     = {<i className='material-icons'>history</i>}
-            label    = 'Call log' 
-            value    = 'call_log'>
-            Call log
-          </Tab>
-        </Tabs>
+        {this.renderAppBar()}
+        {this.renderTabs()}
         {this.renderFAB()}
       </div>
     )
