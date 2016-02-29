@@ -13,6 +13,8 @@ import { createStore }
   from 'redux'
 import { Provider } 
   from 'react-redux'
+import { WS_STATUS_ERROR } 
+  from './constants'
 import { updateAppStatus }
   from './actions'
 
