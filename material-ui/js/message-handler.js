@@ -1,6 +1,5 @@
 import store from './store'
-import * as types 
-  from './constants'
+import * as types from './constants'
 
 export default function(eventType, data) {
   switch (eventType) {
