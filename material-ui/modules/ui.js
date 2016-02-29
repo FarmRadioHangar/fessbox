@@ -10,6 +10,8 @@ import { connect }
   from 'react-redux'
 import CircularProgress 
   from 'material-ui/lib/circular-progress'
+import Dialog 
+  from 'material-ui/lib/dialog'
 
 class Ui extends React.Component {
   constructor(props) {
@@ -17,7 +19,7 @@ class Ui extends React.Component {
   }
   render() {
     const { 
-      ui : { status, error }, 
+      app : { status, error }, 
       sendMessage,
     } = this.props
     switch (status) {
