@@ -24,10 +24,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 var APP_INITIALIZE = exports.APP_INITIALIZE = 'APP_INITIALIZE';
 var APP_UPDATE_STATUS = exports.APP_UPDATE_STATUS = 'APP_UPDATE_STATUS';
-
-var WS_STATUS_CONNECTED = exports.WS_STATUS_CONNECTED = 'WS_STATUS_CONNECTED';
-var WS_STATUS_CONNECTING = exports.WS_STATUS_CONNECTING = 'WS_STATUS_CONNECTING';
-var WS_STATUS_ERROR = exports.WS_STATUS_ERROR = 'WS_STATUS_ERROR';
+var APP_STATUS_CONNECTED = exports.APP_STATUS_CONNECTED = 'APP_STATUS_CONNECTED';
+var APP_STATUS_CONNECTING = exports.APP_STATUS_CONNECTING = 'APP_STATUS_CONNECTING';
+var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
+var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -82,7 +82,9 @@ var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://' + hostUrl + '/?user
 
 ws.onopen = function () {
   console.log('WebSocket connection established.');
+  _store2.default.dispatch((0, _actions.updateAppStatus)(_constants.APP_STATUS_CONNECTED));
 };
+
 ws.onclose = function () {
   console.log('WebSocket connection closed.');
 };
@@ -111,7 +113,7 @@ ws.onmessage = function (e) {
 
 ws.onerror = function (e) {
   console.error(e);
-  _store2.default.dispatch((0, _actions.updateAppStatus)(_constants.WS_STATUS_ERROR, 'Error establishing WebSocket connection.'));
+  _store2.default.dispatch((0, _actions.updateAppStatus)(_constants.APP_STATUS_ERROR, 'Error establishing WebSocket connection.'));
 };
 
 function sendMessage(type, data) {
@@ -217,7 +219,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _constants = require('../constants');
 
 var initialState = {
-  'status': _constants.WS_STATUS_CONNECTING,
+  'status': _constants.APP_STATUS_CONNECTING,
   'error': null
 };
 
@@ -228,7 +230,7 @@ function reducer() {
   switch (action.type) {
     case _constants.APP_INITIALIZE:
       return _extends({}, state, {
-        'status': _constants.WS_STATUS_CONNECTED
+        'status': _constants.APP_STATUS_INITIALIZED
       });
     case _constants.APP_UPDATE_STATUS:
       return _extends({}, state, {
@@ -360,6 +362,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -405,7 +409,8 @@ var App = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 
     _this.state = {
-      tab: 'mixer'
+      tab: 'mixer',
+      opacity: 0
     };
     _this.renderFab = _this.renderFab.bind(_this);
     return _this;
@@ -442,15 +447,26 @@ var App = function (_React$Component) {
       }
     }
   }, {
-    key: 'render',
-    value: function render() {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
       var _this2 = this;
 
-      var tab = this.state.tab;
+      window.setTimeout(function () {
+        return _this2.setState({ opacity: 1 });
+      }, 100);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      var _state = this.state;
+      var tab = _state.tab;
+      var opacity = _state.opacity;
 
       return _react2.default.createElement(
         'div',
-        null,
+        { style: _extends({ opacity: opacity }, styles.component) },
         _react2.default.createElement(
           _tabs2.default,
           { value: tab },
@@ -458,7 +474,7 @@ var App = function (_React$Component) {
             _tab2.default,
             {
               onActive: function onActive() {
-                return _this2.activateTab('mixer');
+                return _this3.activateTab('mixer');
               },
               icon: _react2.default.createElement(
                 'i',
@@ -473,7 +489,7 @@ var App = function (_React$Component) {
             _tab2.default,
             {
               onActive: function onActive() {
-                return _this2.activateTab('inbox');
+                return _this3.activateTab('inbox');
               },
               icon: _react2.default.createElement(
                 'i',
@@ -488,7 +504,7 @@ var App = function (_React$Component) {
             _tab2.default,
             {
               onActive: function onActive() {
-                return _this2.activateTab('call_log');
+                return _this3.activateTab('call_log');
               },
               icon: _react2.default.createElement(
                 'i',
@@ -509,6 +525,11 @@ var App = function (_React$Component) {
 }(_react2.default.Component);
 
 var styles = {
+  component: {
+    WebkitTransition: 'opacity 1s',
+    transition: 'opacity 1s',
+    width: '100%'
+  },
   fab: {
     position: 'fixed',
     bottom: '30px',
@@ -531,6 +552,8 @@ exports.default = AppComponent;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -581,15 +604,17 @@ var Ui = function (_React$Component) {
       var sendMessage = _props.sendMessage;
 
       switch (status) {
-        case _constants.WS_STATUS_CONNECTING:
+        case _constants.APP_STATUS_CONNECTING:
+        case _constants.APP_STATUS_CONNECTED:
+          var backgroundColor = _constants.APP_STATUS_CONNECTING == status ? 'white' : 'transparent';
           return _react2.default.createElement(
             'div',
-            { style: styles.spinner },
+            { style: _extends({ backgroundColor: backgroundColor }, styles.spinner) },
             _react2.default.createElement(_circularProgress2.default, { size: 1 })
           );
-        case _constants.WS_STATUS_CONNECTED:
+        case _constants.APP_STATUS_INITIALIZED:
           return _react2.default.createElement(_app2.default, { sendMessage: sendMessage });
-        case _constants.WS_STATUS_ERROR:
+        case _constants.APP_STATUS_ERROR:
         default:
           return _react2.default.createElement(
             _dialog2.default,
@@ -613,7 +638,9 @@ var styles = {
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    WebkitTransition: 'background-color 2s',
+    transition: 'background-color 2s'
   }
 };
 
