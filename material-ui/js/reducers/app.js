@@ -3,7 +3,6 @@ import {
   APP_UPDATE_STATUS, 
   WS_STATUS_CONNECTED, 
   WS_STATUS_CONNECTING, 
-  WS_STATUS_ERROR,
 } from '../constants'
 
 const initialState = {
@@ -14,7 +13,16 @@ const initialState = {
 function reducer(state = initialState, action) {
   switch (action.type) {
     case APP_INITIALIZE:
+      return {
+        ...state,
+        'status' : WS_STATUS_CONNECTED,
+      }
     case APP_UPDATE_STATUS:
+      return {
+        ...state,
+        'status' : action.status,
+        'error'  : action.error,
+      }
     default:
       return state
   }
