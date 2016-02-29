@@ -1,4 +1,5 @@
 import React from 'react'
+import App   from './app'
 
 import { 
   WS_STATUS_CONNECTING, 
