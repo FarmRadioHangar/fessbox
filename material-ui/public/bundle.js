@@ -46,10 +46,6 @@ var _urlParams = require('./url-params');
 
 var _urlParams2 = _interopRequireDefault(_urlParams);
 
-var _reducers = require('./reducers');
-
-var _reducers2 = _interopRequireDefault(_reducers);
-
 var _store = require('./store');
 
 var _store2 = _interopRequireDefault(_store);
@@ -68,8 +64,6 @@ var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
 var _awesomeWebsocket = require('awesome-websocket');
 
-var _redux = require('redux');
-
 var _reactRedux = require('react-redux');
 
 var _constants = require('./constants');
@@ -85,7 +79,6 @@ var hostUrl = (0, _urlParams2.default)('host_url') || 'fessbox.local:19998'; // 
 var language = (0, _urlParams2.default)('language') || 'en';
 
 var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://' + hostUrl + '/?user_id=' + userId);
-//const store = createStore(reducers, {})
 
 ws.onopen = function () {
   console.log('WebSocket connection established.');
@@ -107,13 +100,13 @@ function parseMessage(message) {
 
 ws.onmessage = function (e) {
   var message = parseMessage(e.data);
+  if (message) {
+    console.log('>>> Message');
+    console.log(message);
+    console.log('<<<');
 
-  console.log('>>> Message');
-  console.log(message);
-  console.log('<<<');
-
-  //messageHandler(message.event, message.data, store.dispatch)
-  (0, _messageHandler2.default)(message.event, message.data);
+    (0, _messageHandler2.default)(message.event, message.data);
+  }
 };
 
 ws.onerror = function (e) {
@@ -134,14 +127,14 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(_ui2.default, { sendMessage: sendMessage })
 ), document.getElementById('main'));
 
-},{"../modules/ui":11,"./actions":1,"./constants":2,"./message-handler":4,"./reducers":5,"./store":8,"./url-params":9,"awesome-websocket":12,"babel-polyfill":16,"react":431,"react-dom":283,"react-redux":287,"react-tap-event-plugin":298,"redux":437}],4:[function(require,module,exports){
+},{"../modules/ui":11,"./actions":1,"./constants":2,"./message-handler":4,"./store":8,"./url-params":9,"awesome-websocket":12,"babel-polyfill":16,"react":431,"react-dom":283,"react-redux":287,"react-tap-event-plugin":298}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports.default = function (eventType, data, dispatch) {
+exports.default = function (eventType, data) {
   switch (eventType) {
     case 'echo':
       console.log('>>> echo >>>');
