@@ -1,8 +1,8 @@
-import 'babel-polyfill'
-import React            from 'react'
+import 'babel-polyfill' import React            from 'react'
 import ReactDOM         from 'react-dom'
 import getUrlParam      from './url-params'
 import reducers         from './reducers'
+import Ui               from '../modules/ui'
 
 import injectTapEventPlugin 
   from 'react-tap-event-plugin'
