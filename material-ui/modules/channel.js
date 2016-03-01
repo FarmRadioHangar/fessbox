@@ -22,7 +22,7 @@ class ChannelToolbar extends React.Component {
           float      = 'left'>
           <ToolbarTitle 
             text     = {id}
-            style    = {styles.toolbarTitle}
+            style    = {styles.title}
           />
         </ToolbarGroup>
       </Toolbar>
@@ -71,7 +71,7 @@ const styles = {
   paper: {
     width   : '100%',
   },
-  toolbarTitle: {
+  title: {
     padding : '0 24px',
   },
 }
