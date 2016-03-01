@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateAppStatus = updateAppStatus;
 exports.showNotification = showNotification;
+exports.hideNotification = hideNotification;
 exports.refreshToastr = refreshToastr;
 exports.initializeApp = initializeApp;
 
@@ -23,6 +24,13 @@ function showNotification(message) {
   return {
     type: _constants.TOASTR_ADD_MESSAGE,
     message: message
+  };
+}
+
+function hideNotification(key) {
+  return {
+    type: _constants.TOASTR_REMOVE_MESSAGE,
+    key: key
   };
 }
 
@@ -53,6 +61,7 @@ var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
 var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
 
 var TOASTR_ADD_MESSAGE = exports.TOASTR_ADD_MESSAGE = 'TOASTR_ADD_MESSAGE';
+var TOASTR_REMOVE_MESSAGE = exports.TOASTR_REMOVE_MESSAGE = 'TOASTR_REMOVE_MESSAGE';
 var TOASTR_REFRESH = exports.TOASTR_REFRESH = 'TOASTR_REFRESH';
 
 },{}],3:[function(require,module,exports){
@@ -333,6 +342,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _constants = require('../constants');
@@ -350,26 +361,47 @@ function reducer() {
 
   switch (action.type) {
     case _constants.TOASTR_REFRESH:
-      if (!state.messages.length) {
-        return state;
+      {
+        var _ret = function () {
+          if (!state.messages.length) {
+            return {
+              v: state
+            };
+          }
+          var threshold = (Date.now() | 0) - 2000000;
+          var messages = state.messages.filter(function (message) {
+            return message.added > threshold;
+          });
+          return {
+            v: _extends({}, state, {
+              messages: messages
+            })
+          };
+        }();
+
+        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
       }
-      var threshold = (Date.now() | 0) - 2000;
-      var messages = state.messages.filter(function (message) {
-        return message.added > threshold;
-      });
-      return _extends({}, state, {
-        messages: messages
-      });
+    case _constants.TOASTR_REMOVE_MESSAGE:
+      {
+        var messages = state.messages.filter(function (message) {
+          return message.key != action.key;
+        });
+        return _extends({}, state, {
+          messages: messages
+        });
+      }
     case _constants.TOASTR_ADD_MESSAGE:
-      var message = {
-        key: '' + state.nextKey,
-        content: action.message,
-        added: Date.now() | 0
-      };
-      return _extends({}, state, {
-        nextKey: state.nextKey + 1,
-        messages: [message].concat(_toConsumableArray(state.messages))
-      });
+      {
+        var message = {
+          key: '' + state.nextKey,
+          content: action.message,
+          added: Date.now() | 0
+        };
+        return _extends({}, state, {
+          nextKey: state.nextKey + 1,
+          messages: [message].concat(_toConsumableArray(state.messages))
+        });
+      }
     case _constants.APP_INITIALIZE:
     default:
       return state;
@@ -823,6 +855,10 @@ var _reactRedux = require('react-redux');
 
 var _reactMotion = require('react-motion');
 
+var _enhancedButton = require('material-ui/lib/enhanced-button');
+
+var _enhancedButton2 = _interopRequireDefault(_enhancedButton);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -846,6 +882,15 @@ var Toastr = function (_React$Component) {
   }
 
   _createClass(Toastr, [{
+    key: 'hideMessage',
+    value: function hideMessage(key) {
+      var _this2 = this;
+
+      window.setTimeout(function () {
+        return _this2.props.dispatch((0, _actions.hideNotification)(key));
+      }, 350);
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var dispatch = this.props.dispatch;
@@ -868,41 +913,57 @@ var Toastr = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
       var messages = this.props.toastr.messages;
 
       return _react2.default.createElement(
-        _reactMotion.TransitionMotion,
-        {
-          willEnter: function willEnter() {
-            return { zoom: 0 };
-          },
-          willLeave: function willLeave() {
-            return { zoom: (0, _reactMotion.spring)(0, _reactMotion.presets.stiff) };
-          },
-          styles: messages.map(function (item) {
-            return {
-              key: item.key,
-              data: item.content,
-              style: {
-                zoom: (0, _reactMotion.spring)(1, { stiffness: 200, damping: 10 })
-              }
-            };
-          }) },
-        function (interpolated) {
-          return _react2.default.createElement(
-            'div',
-            null,
-            interpolated.map(function (config, i) {
-              return _react2.default.createElement(
-                'div',
-                { key: config.key, style: _extends({}, styles.component, {
-                    transform: 'scale(' + config.style.zoom + ')'
-                  }) },
-                config.data
-              );
-            })
-          );
-        }
+        'div',
+        { style: styles.component },
+        _react2.default.createElement(
+          _reactMotion.TransitionMotion,
+          {
+            willEnter: function willEnter() {
+              return { zoom: 0 };
+            },
+            willLeave: function willLeave() {
+              return { zoom: (0, _reactMotion.spring)(0, _reactMotion.presets.stiff) };
+            },
+            styles: messages.map(function (item) {
+              return {
+                key: item.key,
+                data: item.content,
+                style: {
+                  zoom: (0, _reactMotion.spring)(1, { stiffness: 200, damping: 10 })
+                }
+              };
+            }) },
+          function (interpolated) {
+            return _react2.default.createElement(
+              'div',
+              null,
+              interpolated.map(function (config) {
+                return _react2.default.createElement(
+                  'div',
+                  {
+                    key: config.key,
+                    style: _extends({}, styles.box, { transform: 'scale(' + config.style.zoom + ')' }) },
+                  _react2.default.createElement(
+                    _enhancedButton2.default,
+                    {
+                      onTouchTap: function onTouchTap() {
+                        return _this3.hideMessage(config.key);
+                      },
+                      touchRippleOpacity: 1,
+                      touchRippleColor: 'rgba(255, 255, 255, 0.35)',
+                      style: styles.ripple },
+                    config.data
+                  )
+                );
+              })
+            );
+          }
+        )
       );
     }
   }]);
@@ -912,9 +973,20 @@ var Toastr = function (_React$Component) {
 
 var styles = {
   component: {
-    width: '100px',
-    height: '100px',
-    border: '1px solid'
+    position: 'absolute',
+    right: '30px',
+    top: '30px',
+    zIndex: 2000
+  },
+  box: {
+    width: '300px',
+    backgroundColor: 'rgba(27, 155, 92, 0.6)',
+    lineHeight: '19px'
+  },
+  ripple: {
+    textAlign: 'left',
+    padding: '10px 10px 12px',
+    color: 'white'
   }
 };
 
@@ -926,7 +998,7 @@ var ToastrComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = ToastrComponent;
 
-},{"../js/actions":1,"react":477,"react-motion":323,"react-redux":331}],18:[function(require,module,exports){
+},{"../js/actions":1,"material-ui/lib/enhanced-button":270,"react":477,"react-motion":323,"react-redux":331}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
