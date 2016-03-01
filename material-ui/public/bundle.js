@@ -666,16 +666,57 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Channel = function (_React$Component) {
-  _inherits(Channel, _React$Component);
+var ChannelToolbar = function (_React$Component) {
+  _inherits(ChannelToolbar, _React$Component);
+
+  function ChannelToolbar(props) {
+    _classCallCheck(this, ChannelToolbar);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(ChannelToolbar).call(this, props));
+  }
+
+  _createClass(ChannelToolbar, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement('span', null);
+    }
+  }]);
+
+  return ChannelToolbar;
+}(_react2.default.Component);
+
+var Channel = function (_React$Component2) {
+  _inherits(Channel, _React$Component2);
 
   function Channel(props) {
     _classCallCheck(this, Channel);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
+    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
+
+    _this2.renderActions = _this2.renderActions.bind(_this2);
+    _this2.renderControls = _this2.renderControls.bind(_this2);
+    return _this2;
   }
 
   _createClass(Channel, [{
+    key: 'renderActions',
+    value: function renderActions() {
+      return _react2.default.createElement(
+        'span',
+        null,
+        'Actions'
+      );
+    }
+  }, {
+    key: 'renderControls',
+    value: function renderControls() {
+      return _react2.default.createElement(
+        'span',
+        null,
+        'Controls'
+      );
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -684,6 +725,9 @@ var Channel = function (_React$Component) {
         _react2.default.createElement(
           _paper2.default,
           { style: styles.paper },
+          _react2.default.createElement(ChannelToolbar, this.props),
+          this.renderControls(),
+          this.renderActions(),
           'Hello'
         )
       );
