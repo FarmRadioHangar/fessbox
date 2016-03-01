@@ -8,6 +8,8 @@ import ToolbarGroup
   from 'material-ui/lib/toolbar/toolbar-group'
 import ToolbarTitle 
   from 'material-ui/lib/toolbar/toolbar-title'
+import Avatar 
+  from 'material-ui/lib/avatar'
 
 class ChannelToolbar extends React.Component {
   constructor(props) {
@@ -38,16 +40,18 @@ class Channel extends React.Component {
   }
   renderControls() {
     return (
-      <span>
-        Controls
-      </span>
+      <div style={styles.controls}>
+        <div style={styles.avatar}>
+          <Avatar icon={<i className='material-icons'>remove</i>} />
+        </div>
+      </div>
     )
   }
   renderActions() {
     return (
-      <span>
+      <div>
         Actions
-      </span>
+      </div>
     )
   }
   render() {
@@ -57,7 +61,6 @@ class Channel extends React.Component {
           <ChannelToolbar {...this.props} />
           {this.renderControls()}
           {this.renderActions()}
-          Hello
         </Paper>
       </div>
     )
@@ -66,13 +69,24 @@ class Channel extends React.Component {
 
 const styles = {
   component: {
-    padding : '1em 1em 0 1em',
+    padding       : '1em 1em 0 1em',
   },
   paper: {
-    width   : '100%',
+    width         : '100%',
   },
   title: {
-    padding : '0 24px',
+    padding       : '0 24px',
+  },
+  controls: {
+    display       : 'flex',
+    flexDirection : 'row', 
+    alignItems    : 'center',
+    height        : '60px',
+    marginBottom  : '10px',
+    padding       : '10px 0',
+  },
+  avatar: {
+    padding       : '0 0 0 20px',
   },
 }
 
