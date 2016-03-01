@@ -2,14 +2,30 @@ import React from 'react'
 
 import Paper 
   from 'material-ui/lib/paper'
+import Toolbar 
+  from 'material-ui/lib/toolbar/toolbar'
+import ToolbarGroup 
+  from 'material-ui/lib/toolbar/toolbar-group'
+import ToolbarTitle 
+  from 'material-ui/lib/toolbar/toolbar-title'
 
 class ChannelToolbar extends React.Component {
   constructor(props) {
     super(props)
   }
   render() {
+    const { id } = this.props
     return (
-      <span />
+      <Toolbar>
+        <ToolbarGroup 
+          firstChild = {true}
+          float      = 'left'>
+          <ToolbarTitle 
+            text     = {id}
+            style    = {styles.toolbarTitle}
+          />
+        </ToolbarGroup>
+      </Toolbar>
     )
   }
 }
@@ -54,6 +70,9 @@ const styles = {
   },
   paper: {
     width   : '100%',
+  },
+  toolbarTitle: {
+    padding : '0 24px',
   },
 }
 
