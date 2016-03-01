@@ -1,6 +1,9 @@
 import store from './store'
 import * as types from './constants'
 
+import { showNotification }
+  from './actions'
+
 export default function(eventType, data) {
   switch (eventType) {
     case 'echo':
@@ -13,6 +16,7 @@ export default function(eventType, data) {
         type : types.APP_INITIALIZE, 
         data 
       })
+      store.dispatch(showNotification('Successfully connected to Starship Enterprise.'))
       break
     case 'channelUpdate':
       break
