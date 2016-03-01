@@ -1,7 +1,7 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification }
+import { showNotification, initializeApp }
   from './actions'
 
 export default function(eventType, data) {
@@ -12,11 +12,8 @@ export default function(eventType, data) {
       console.log('<<<<<<<<<<<<')
       break
     case 'initialize':
-      store.dispatch({ 
-        type : types.APP_INITIALIZE, 
-        data 
-      })
-      store.dispatch(showNotification('Successfully connected to Starship Enterprise.'))
+      store.dispatch(initializeApp(data))
+      window.setTimeout(() => store.dispatch(showNotification('Successfully connected to Starship Enterprise.')), 700)
       break
     case 'channelUpdate':
       break

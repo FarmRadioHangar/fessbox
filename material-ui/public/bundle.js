@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.updateAppStatus = updateAppStatus;
 exports.showNotification = showNotification;
 exports.refreshToastr = refreshToastr;
+exports.initializeApp = initializeApp;
 
 var _constants = require('./constants');
 
@@ -28,6 +29,13 @@ function showNotification(message) {
 function refreshToastr() {
   return {
     type: _constants.TOASTR_REFRESH
+  };
+}
+
+function initializeApp(data) {
+  return {
+    type: _constants.APP_INITIALIZE,
+    data: data
   };
 }
 
@@ -163,11 +171,10 @@ exports.default = function (eventType, data) {
       console.log('<<<<<<<<<<<<');
       break;
     case 'initialize':
-      _store2.default.dispatch({
-        type: types.APP_INITIALIZE,
-        data: data
-      });
-      _store2.default.dispatch((0, _actions.showNotification)('Successfully connected to Starship Enterprise.'));
+      _store2.default.dispatch((0, _actions.initializeApp)(data));
+      window.setTimeout(function () {
+        return _store2.default.dispatch((0, _actions.showNotification)('Successfully connected to Starship Enterprise.'));
+      }, 700);
       break;
     case 'channelUpdate':
       break;

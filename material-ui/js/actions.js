@@ -1,4 +1,5 @@
 import { 
+  APP_INITIALIZE, 
   APP_UPDATE_STATUS, 
   TOASTR_ADD_MESSAGE,
   TOASTR_REFRESH,
@@ -22,5 +23,12 @@ export function showNotification(message) {
 export function refreshToastr() {
   return {
     type: TOASTR_REFRESH,
+  }
+}
+
+export function initializeApp(data) { 
+  return {
+    type : APP_INITIALIZE, 
+    data,
   }
 }
