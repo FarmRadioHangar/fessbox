@@ -1,6 +1,7 @@
 import { 
   APP_INITIALIZE, 
   TOASTR_ADD_MESSAGE,
+  TOASTR_REMOVE_MESSAGE,
   TOASTR_REFRESH,
 } from '../constants'
 
@@ -11,7 +12,7 @@ const initialState = {
 
 function reducer(state = initialState, action) {
   switch (action.type) {
-    case TOASTR_REFRESH:
+    case TOASTR_REFRESH: {
       if (!state.messages.length) {
         return state
       }
@@ -21,7 +22,15 @@ function reducer(state = initialState, action) {
         ...state,
         messages,
       }
-    case TOASTR_ADD_MESSAGE:
+    }
+    case TOASTR_REMOVE_MESSAGE: {
+      const messages = state.messages.filter(message => message.key != action.key)
+      return {
+        ...state,
+        messages,
+      }
+    }
+    case TOASTR_ADD_MESSAGE: {
       const message = {
         key     : '' + state.nextKey,
         content : action.message,
@@ -32,6 +41,7 @@ function reducer(state = initialState, action) {
         nextKey  : state.nextKey + 1,
         messages : [message, ...state.messages],
       }
+    }
     case APP_INITIALIZE:
     default:
       return state
