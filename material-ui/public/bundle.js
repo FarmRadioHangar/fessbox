@@ -184,6 +184,12 @@ exports.default = function (eventType, data) {
       window.setTimeout(function () {
         return _store2.default.dispatch((0, _actions.showNotification)('Successfully connected to Starship Enterprise.'));
       }, 700);
+      window.setTimeout(function () {
+        return _store2.default.dispatch((0, _actions.showNotification)('New message from xxx-xxx'));
+      }, 1700);
+      window.setTimeout(function () {
+        return _store2.default.dispatch((0, _actions.showNotification)('This is to test the message notifications.'));
+      }, 2700);
       break;
     case 'channelUpdate':
       break;
@@ -981,7 +987,8 @@ var styles = {
   box: {
     width: '300px',
     backgroundColor: 'rgba(27, 155, 92, 0.6)',
-    lineHeight: '19px'
+    lineHeight: '19px',
+    marginBottom: '10px'
   },
   ripple: {
     textAlign: 'left',

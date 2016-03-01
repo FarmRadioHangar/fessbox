@@ -80,6 +80,7 @@ const styles = {
     width           : '300px',
     backgroundColor : 'rgba(27, 155, 92, 0.6)',
     lineHeight      : '19px',
+    marginBottom    : '10px',
   },
   ripple: {
     textAlign       : 'left',
