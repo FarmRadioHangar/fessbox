@@ -19,6 +19,10 @@ import Dialog
   from 'material-ui/lib/dialog'
 import FlatButton 
   from 'material-ui/lib/flat-button'
+import TextField 
+  from 'material-ui/lib/text-field'
+import AutoComplete 
+  from 'material-ui/lib/auto-complete'
 
 import IconCommunicationPhone
   from 'material-ui/lib/svg-icons/communication/phone'
@@ -58,7 +62,7 @@ class App extends React.Component {
         onTouchTap      = {this.handleCloseDialog}
       />,
       <FlatButton
-        label           = 'Submit'
+        label           = 'Send'
         primary         = {true}
         keyboardFocused = {true}
         onTouchTap      = {this.handleCloseDialog}
@@ -66,12 +70,26 @@ class App extends React.Component {
     ]
     return (
       <Dialog
-        title          = 'Dialog With Actions'
+        title          = 'Send message'
         actions        = {actions}
         modal          = {false}
         open           = {!!dialog}
         onRequestClose = {this.handleCloseDialog}>
-        The actions in this window were passed in as an array of React objects.
+        <AutoComplete
+          hintText          = 'Type a contact name or phone number'
+          dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
+          onUpdateInput     = {() => {}}
+          floatingLabelText = 'Recepient'
+          fullWidth         = {true}
+        />
+        {'send-message' == dialog && (
+          <TextField
+            hintText   = 'Message content'
+            fullWidth  = {true}
+            multiLine  = {true}
+            rows       = {3} 
+          />
+        )}
       </Dialog>
     )
   }
