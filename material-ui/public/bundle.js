@@ -353,7 +353,7 @@ function reducer() {
       if (!state.messages.length) {
         return state;
       }
-      var threshold = (Date.now() | 0) - 2000;
+      var threshold = (Date.now() | 0) - 2000000;
       var messages = state.messages.filter(function (message) {
         return message.added > threshold;
       });
