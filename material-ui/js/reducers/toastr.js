@@ -15,7 +15,7 @@ function reducer(state = initialState, action) {
       if (!state.messages.length) {
         return state
       }
-      const threshold = (Date.now() | 0) - 2000
+      const threshold = (Date.now() | 0) - 2000000
       const messages = state.messages.filter(message => message.added > threshold)
       return {
         ...state,
