@@ -2,6 +2,7 @@ import React   from 'react'
 import Mixer   from './mixer'
 import CallLog from './call-log'
 import Inbox   from './inbox'
+import Toastr  from './toastr'
 
 import { connect } 
   from 'react-redux'
@@ -138,6 +139,7 @@ class App extends React.Component {
         {this.renderAppBar()}
         {this.renderTabs()}
         {this.renderFAB()}
+        <Toastr />
       </div>
     )
   }
