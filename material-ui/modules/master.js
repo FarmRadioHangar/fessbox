@@ -11,6 +11,10 @@ import IconVolumeUp
   from 'material-ui/lib/svg-icons/av/volume-up'
 import Slider 
   from 'material-ui/lib/slider'
+import Subheader 
+  from 'material-ui/lib/Subheader'
+import Divider 
+  from 'material-ui/lib/divider'
 
 class Master extends React.Component {
   constructor(props) {
@@ -19,6 +23,8 @@ class Master extends React.Component {
   render() {
     return (
       <Paper>
+        <Subheader>Master</Subheader>
+        <Divider />
         <div style={styles.controls}>
           <div>
             <IconVolumeUp />

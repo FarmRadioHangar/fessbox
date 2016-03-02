@@ -1511,6 +1511,14 @@ var _slider = require('material-ui/lib/slider');
 
 var _slider2 = _interopRequireDefault(_slider);
 
+var _Subheader = require('material-ui/lib/Subheader');
+
+var _Subheader2 = _interopRequireDefault(_Subheader);
+
+var _divider = require('material-ui/lib/divider');
+
+var _divider2 = _interopRequireDefault(_divider);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1534,6 +1542,12 @@ var Master = function (_React$Component) {
       return _react2.default.createElement(
         _paper2.default,
         null,
+        _react2.default.createElement(
+          _Subheader2.default,
+          null,
+          'Master'
+        ),
+        _react2.default.createElement(_divider2.default, null),
         _react2.default.createElement(
           'div',
           { style: styles.controls },
@@ -1589,7 +1603,7 @@ var MasterComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = MasterComponent;
 
-},{"material-ui/lib/paper":304,"material-ui/lib/slider":311,"material-ui/lib/svg-icons/av/mic":325,"material-ui/lib/svg-icons/av/volume-up":326,"react":528,"react-redux":381}],18:[function(require,module,exports){
+},{"material-ui/lib/Subheader":273,"material-ui/lib/divider":288,"material-ui/lib/paper":304,"material-ui/lib/slider":311,"material-ui/lib/svg-icons/av/mic":325,"material-ui/lib/svg-icons/av/volume-up":326,"react":528,"react-redux":381}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
