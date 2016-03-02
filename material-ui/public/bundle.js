@@ -1445,7 +1445,6 @@ var Inbox = function (_React$Component) {
               onClick: function onClick() {
                 return dispatch((0, _actions.markMessageRead)(message.id));
               },
-              style: message.read ? { backgroundColor: 'white' } : {},
               leftAvatar: message.read ? _react2.default.createElement(
                 'i',
                 { className: 'material-icons', style: { color: 'rgb(0, 188, 212)' } },
@@ -1455,7 +1454,6 @@ var Inbox = function (_React$Component) {
                 { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
                 'notifications'
               ),
-              disabled: !!message.read,
               primaryText: messageType(message.type, message.read) + ' ' + message.source,
               secondaryTextLines: 2,
               secondaryText: _react2.default.createElement(
