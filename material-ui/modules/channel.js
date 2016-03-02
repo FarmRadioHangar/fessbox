@@ -103,7 +103,6 @@ const styles = {
   slider: {
     width         : '100%',
     marginTop     : '22px',
-    padding       : '0 20px 0 0',
   },
 }
 

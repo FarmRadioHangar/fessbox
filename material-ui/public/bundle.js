@@ -947,8 +947,7 @@ var styles = {
   },
   slider: {
     width: '100%',
-    marginTop: '22px',
-    padding: '0 20px 0 0'
+    marginTop: '22px'
   }
 };
 
@@ -1296,7 +1295,7 @@ var Toastr = function (_React$Component) {
                   'div',
                   {
                     key: config.key,
-                    style: _extends({}, styles.box, { transform: 'scale(' + config.style.zoom + ')' }) },
+                    style: _extends({}, styles.toastr.box, { transform: 'scale(' + config.style.zoom + ')' }) },
                   _react2.default.createElement(
                     _enhancedButton2.default,
                     {
@@ -1305,8 +1304,17 @@ var Toastr = function (_React$Component) {
                       },
                       touchRippleOpacity: 1,
                       touchRippleColor: 'rgba(255, 255, 255, 0.35)',
-                      style: styles.ripple },
-                    config.data
+                      style: styles.toastr.ripple },
+                    _react2.default.createElement(
+                      'i',
+                      { style: styles.toastr.icon, className: 'material-icons' },
+                      'message'
+                    ),
+                    _react2.default.createElement(
+                      'span',
+                      { style: styles.toastr.message },
+                      config.data
+                    )
                   )
                 );
               })
@@ -1327,16 +1335,26 @@ var styles = {
     top: '30px',
     zIndex: 2000
   },
-  box: {
-    width: '300px',
-    backgroundColor: 'rgba(27, 155, 92, 0.6)',
-    lineHeight: '19px',
-    marginBottom: '10px'
-  },
-  ripple: {
-    textAlign: 'left',
-    padding: '10px 10px 12px',
-    color: 'white'
+  toastr: {
+    box: {
+      width: '300px',
+      backgroundColor: 'rgba(27, 155, 92, 0.6)',
+      lineHeight: '19px',
+      marginBottom: '10px'
+    },
+    ripple: {
+      textAlign: 'left',
+      padding: '10px 10px 12px',
+      color: 'white'
+    },
+    message: {
+      display: 'block',
+      float: 'left',
+      marginLeft: '30px'
+    },
+    icon: {
+      position: 'absolute'
+    }
   }
 };
 

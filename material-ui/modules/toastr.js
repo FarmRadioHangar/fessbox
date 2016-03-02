@@ -51,13 +51,16 @@ class Toastr extends React.Component {
               {interpolated.map(config => 
                 <div 
                   key   = {config.key}
-                  style = {{...styles.box, transform: `scale(${config.style.zoom})`}}>
+                  style = {{...styles.toastr.box, transform: `scale(${config.style.zoom})`}}>
                   <EnhancedButton 
                     onTouchTap         = {() => this.hideMessage(config.key)}
                     touchRippleOpacity = {1}
                     touchRippleColor   = 'rgba(255, 255, 255, 0.35)'
-                    style              = {styles.ripple}>
-                    {config.data}
+                    style              = {styles.toastr.ripple}>
+                    <i style={styles.toastr.icon} className='material-icons'>message</i>
+                    <span style={styles.toastr.message}>
+                      {config.data}
+                    </span>
                   </EnhancedButton>
                 </div>
               )}
@@ -71,21 +74,31 @@ class Toastr extends React.Component {
 
 const styles = {
   component: {
-    position        : 'absolute', 
-    right           : '30px', 
-    top             : '30px', 
-    zIndex          : 2000,
+    position          : 'absolute', 
+    right             : '30px', 
+    top               : '30px', 
+    zIndex            : 2000,
   },
-  box: {
-    width           : '300px',
-    backgroundColor : 'rgba(27, 155, 92, 0.6)',
-    lineHeight      : '19px',
-    marginBottom    : '10px',
-  },
-  ripple: {
-    textAlign       : 'left',
-    padding         : '10px 10px 12px',
-    color           : 'white',
+  toastr: {
+    box: {
+      width           : '300px',
+      backgroundColor : 'rgba(27, 155, 92, 0.6)',
+      lineHeight      : '19px',
+      marginBottom    : '10px',
+    },
+    ripple: {
+      textAlign       : 'left',
+      padding         : '10px 10px 12px',
+      color           : 'white',
+    },
+    message: {
+      display         : 'block', 
+      float           : 'left', 
+      marginLeft      : '30px',
+    },
+    icon: {
+      position        : 'absolute',
+    },
   },
 }
 
