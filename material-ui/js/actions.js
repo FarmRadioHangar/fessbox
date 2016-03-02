@@ -1,9 +1,6 @@
 import { 
   APP_INITIALIZE, 
   APP_UPDATE_STATUS, 
-  TOASTR_ADD_MESSAGE,
-  TOASTR_REMOVE_MESSAGE,
-  TOASTR_REFRESH,
   MESSAGE_MARK_READ,
 } from './constants'
 
@@ -12,26 +9,6 @@ export function updateAppStatus(status, error) {
     type: APP_UPDATE_STATUS, 
     error,
     status,
-  }
-}
-
-export function showNotification(message) {
-  return {
-    type: TOASTR_ADD_MESSAGE,
-    message,
-  }
-}
-
-export function hideNotification(key) {
-  return {
-    type: TOASTR_REMOVE_MESSAGE,
-    key,
-  }
-}
-
-export function refreshToastr() {
-  return {
-    type: TOASTR_REFRESH,
   }
 }
 

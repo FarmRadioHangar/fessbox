@@ -5,8 +5,4 @@ export const APP_STATUS_CONNECTING       = 'APP_STATUS_CONNECTING'
 export const APP_STATUS_ERROR            = 'APP_STATUS_ERROR'
 export const APP_STATUS_INITIALIZED      = 'APP_STATUS_INITIALIZED'
 
-export const TOASTR_ADD_MESSAGE          = 'TOASTR_ADD_MESSAGE'
-export const TOASTR_REMOVE_MESSAGE       = 'TOASTR_REMOVE_MESSAGE'
-export const TOASTR_REFRESH              = 'TOASTR_REFRESH'
-
 export const MESSAGE_MARK_READ           = 'MESSAGE_MARK_READ'
