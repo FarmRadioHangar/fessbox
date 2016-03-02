@@ -9,6 +9,7 @@ exports.showNotification = showNotification;
 exports.hideNotification = hideNotification;
 exports.refreshToastr = refreshToastr;
 exports.initializeApp = initializeApp;
+exports.markMessageRead = markMessageRead;
 
 var _constants = require('./constants');
 
@@ -47,6 +48,13 @@ function initializeApp(data) {
   };
 }
 
+function markMessageRead(id) {
+  return {
+    type: _constants.MESSAGE_MARK_READ,
+    id: id
+  };
+}
+
 },{"./constants":2}],2:[function(require,module,exports){
 'use strict';
 
@@ -63,6 +71,8 @@ var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIA
 var TOASTR_ADD_MESSAGE = exports.TOASTR_ADD_MESSAGE = 'TOASTR_ADD_MESSAGE';
 var TOASTR_REMOVE_MESSAGE = exports.TOASTR_REMOVE_MESSAGE = 'TOASTR_REMOVE_MESSAGE';
 var TOASTR_REFRESH = exports.TOASTR_REFRESH = 'TOASTR_REFRESH';
+
+var MESSAGE_MARK_READ = exports.MESSAGE_MARK_READ = 'MESSAGE_MARK_READ';
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -312,17 +322,32 @@ function reducer() {
 
   switch (action.type) {
     case _constants.APP_INITIALIZE:
-      var ids = action.data.inbox.ids;
+      {
+        var ids = action.data.inbox.ids;
 
-      return Object.assign({}, state, _extends({}, action.data.inbox, {
-        messageCount: ids.length,
-        unreadCount: ids.length,
-        visibleMessages: ids.slice(0, 25).map(function (id) {
-          return _extends({}, action.data.inbox.messages[id], {
-            id: id
-          });
-        })
-      }));
+        return Object.assign({}, state, _extends({}, action.data.inbox, {
+          messageCount: ids.length,
+          unreadCount: ids.length,
+          visibleMessages: ids.slice(0, 25).map(function (id) {
+            return _extends({}, action.data.inbox.messages[id], {
+              id: id
+            });
+          })
+        }));
+      }
+    case _constants.MESSAGE_MARK_READ:
+      {
+        var visibleMessages = state.visibleMessages.map(function (message) {
+          return message.id == action.id ? _extends({}, message, { read: true }) : message;
+        });
+        var unreadCount = visibleMessages.filter(function (message) {
+          return !message.read;
+        }).length;
+        return _extends({}, state, {
+          visibleMessages: visibleMessages,
+          unreadCount: unreadCount
+        });
+      }
     default:
       return state;
   }
@@ -1263,6 +1288,8 @@ var _reactTimeago2 = _interopRequireDefault(_reactTimeago);
 
 var _reactRedux = require('react-redux');
 
+var _actions = require('../js/actions');
+
 var _iconButton = require('material-ui/lib/icon-button');
 
 var _iconButton2 = _interopRequireDefault(_iconButton);
@@ -1313,7 +1340,9 @@ var Inbox = function (_React$Component) {
   _createClass(Inbox, [{
     key: 'render',
     value: function render() {
-      var visibleMessages = this.props.inbox.visibleMessages;
+      var _props = this.props;
+      var visibleMessages = _props.inbox.visibleMessages;
+      var dispatch = _props.dispatch;
 
       return _react2.default.createElement(
         _list2.default,
@@ -1326,10 +1355,21 @@ var Inbox = function (_React$Component) {
         visibleMessages.map(function (message) {
           return _react2.default.createElement(
             'div',
-            { key: message.id },
+            { key: message.id, style: message.read ? {
+                marginLeft: '4px'
+              } : {
+                borderLeft: '4px solid #ff4081'
+              } },
             _react2.default.createElement(_divider2.default, null),
             _react2.default.createElement(_listItem2.default, {
-              leftAvatar: _react2.default.createElement(
+              onClick: function onClick() {
+                return dispatch((0, _actions.markMessageRead)(message.id));
+              },
+              leftAvatar: message.read ? _react2.default.createElement(
+                'i',
+                { className: 'material-icons', style: { color: '#757575' } },
+                'check_circle'
+              ) : _react2.default.createElement(
                 'i',
                 { className: 'material-icons' },
                 'notifications'
@@ -1414,7 +1454,7 @@ var InboxComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = InboxComponent;
 
-},{"material-ui/lib/Subheader":273,"material-ui/lib/divider":288,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
+},{"../js/actions":1,"material-ui/lib/Subheader":273,"material-ui/lib/divider":288,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

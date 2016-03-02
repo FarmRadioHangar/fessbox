@@ -4,6 +4,7 @@ import {
   TOASTR_ADD_MESSAGE,
   TOASTR_REMOVE_MESSAGE,
   TOASTR_REFRESH,
+  MESSAGE_MARK_READ,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -38,5 +39,12 @@ export function initializeApp(data) {
   return {
     type : APP_INITIALIZE, 
     data,
+  }
+}
+
+export function markMessageRead(id) {
+  return {
+    type : MESSAGE_MARK_READ, 
+    id,
   }
 }
