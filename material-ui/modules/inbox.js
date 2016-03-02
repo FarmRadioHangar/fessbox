@@ -80,15 +80,16 @@ class Inbox extends React.Component {
           <div key={message.id} style={message.read ? {
             marginLeft : '4px',
           } : {
-            borderLeft : '4px solid #ff4081',
+            borderLeft      : '4px solid rgb(255, 64, 129)',
+            backgroundColor : 'rgba(255, 64, 129, 0.05)',
           }}>
             <Divider />
             <ListItem
               onClick            = {() => dispatch(markMessageRead(message.id))}
               leftAvatar         = {message.read ? (
-                <i className='material-icons' style={{color: '#757575'}}>check_circle</i>
+                <i className='material-icons' style={{color: 'rgb(0, 188, 212)'}}>check_circle</i>
               ) : (
-                <i className='material-icons'>notifications</i>
+                <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
               )}
               primaryText        = {`${messageType(message.type, message.read)} ${message.source}`}
               secondaryTextLines = {2}
@@ -103,7 +104,7 @@ class Inbox extends React.Component {
                 </p>
               }
               rightIconButton = {
-                <div>
+                <div style={{marginTop: '10px'}}>
                   <IconButton style={styles.icon} tooltip='Reply'>
                     <i className='material-icons'>reply</i>
                   </IconButton>
