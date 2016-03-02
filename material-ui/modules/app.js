@@ -157,7 +157,6 @@ class App extends React.Component {
         {this.renderAppBar()}
         {this.renderTabs()}
         {this.renderFAB()}
-        <Toastr />
       </div>
     )
   }
