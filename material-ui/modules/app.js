@@ -15,6 +15,14 @@ import Tab
   from 'material-ui/lib/tabs/tab'
 import FloatingActionButton 
   from 'material-ui/lib/floating-action-button'
+import Dialog 
+  from 'material-ui/lib/dialog'
+import FlatButton 
+  from 'material-ui/lib/flat-button'
+import TextField 
+  from 'material-ui/lib/text-field'
+import AutoComplete 
+  from 'material-ui/lib/auto-complete'
 
 import IconCommunicationPhone
   from 'material-ui/lib/svg-icons/communication/phone'
@@ -27,8 +35,10 @@ class App extends React.Component {
     this.state = {
       tab     : 'mixer',
       opacity : 0,
+      dialog  : null,
     }
     this.renderFAB = this.renderFAB.bind(this)
+    this.handleCloseDialog = this.handleCloseDialog.bind(this)
   }
   activateTab(tab) {
     this.setState({ tab })
@@ -36,6 +46,51 @@ class App extends React.Component {
   renderAppBar() {
     return (
       <AppBar title='The Box' />
+    )
+  }
+  handleCloseDialog() {
+    this.setState({
+      dialog : null
+    })
+  }
+  renderDialog() {
+    const { dialog } = this.state
+    const actions = [
+      <FlatButton
+        label           = 'Cancel'
+        secondary       = {true}
+        onTouchTap      = {this.handleCloseDialog}
+      />,
+      <FlatButton
+        label           = 'Send'
+        primary         = {true}
+        keyboardFocused = {true}
+        onTouchTap      = {this.handleCloseDialog}
+      />,
+    ]
+    return (
+      <Dialog
+        title          = 'Send message'
+        actions        = {actions}
+        modal          = {false}
+        open           = {!!dialog}
+        onRequestClose = {this.handleCloseDialog}>
+        <AutoComplete
+          hintText          = 'Type a contact name or phone number'
+          dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
+          onUpdateInput     = {() => {}}
+          floatingLabelText = 'Recepient'
+          fullWidth         = {true}
+        />
+        {'send-message' == dialog && (
+          <TextField
+            hintText   = 'Message content'
+            fullWidth  = {true}
+            multiLine  = {true}
+            rows       = {3} 
+          />
+        )}
+      </Dialog>
     )
   }
   renderTabs() {
@@ -79,7 +134,7 @@ class App extends React.Component {
       case 'inbox':
         return (
           <FloatingActionButton 
-            onClick = {() => {}}
+            onClick = {() => this.setState({dialog: 'send-message'})}
             style   = {styles.fab}>
             <IconCommunicationMessage />
           </FloatingActionButton>
@@ -98,6 +153,7 @@ class App extends React.Component {
     const { opacity } = this.state
     return (
       <div style={{opacity, ...styles.component}}>
+        {this.renderDialog()}
         {this.renderAppBar()}
         {this.renderTabs()}
         {this.renderFAB()}
