@@ -16,6 +16,10 @@ import Divider
   from 'material-ui/lib/divider'
 import Subheader 
   from 'material-ui/lib/Subheader'
+import Dialog 
+  from 'material-ui/lib/dialog'
+import FlatButton 
+  from 'material-ui/lib/flat-button'
 
 import { grey400, darkBlack, lightBlack } 
   from 'material-ui/lib/styles/colors'
@@ -31,11 +35,46 @@ function messageType(key, read) {
 class Inbox extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      confirmDialogVisible : false,
+    }
+    this.handleCloseDialog = this.handleCloseDialog.bind(this)
+  }
+  handleCloseDialog() {
+    this.setState({
+      confirmDialogVisible : false,
+    })
+  }
+  renderDialog() {
+    const actions = [
+      <FlatButton
+        label      = 'Cancel'
+        secondary  = {true}
+        onTouchTap = {this.handleCloseDialog}
+      />,
+      <FlatButton
+        label      = 'Delete'
+        primary    = {true}
+        disabled   = {true}
+        onTouchTap = {this.handleCloseDialog}
+      />,
+    ]
+    return (
+      <Dialog
+        title          = 'Confirm action'
+        actions        = {actions}
+        modal          = {true}
+        open           = {this.state.confirmDialogVisible}
+        onRequestClose = {this.handleCloseDialog}>
+        Do you really want to delete this message?
+      </Dialog>
+    )
   }
   render() {
     const { inbox : { visibleMessages }, dispatch } = this.props
     return (
       <List>
+        {this.renderDialog()}
         <Subheader>SMS Messages</Subheader>
         {visibleMessages.map(message => (
           <div key={message.id} style={message.read ? {
@@ -74,7 +113,7 @@ class Inbox extends React.Component {
                   <IconButton style={styles.icon} tooltip='Favorite'>
                     <i className='material-icons'>favorite_border</i>
                   </IconButton>
-                  <IconButton style={styles.icon} tooltip='Delete'>
+                  <IconButton onClick={() => this.setState({confirmDialogVisible: true})} style={styles.icon} tooltip='Delete'>
                     <i className='material-icons'>delete_forever</i>
                   </IconButton>
                 </div>

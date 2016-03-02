@@ -5,9 +5,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.updateAppStatus = updateAppStatus;
-exports.showNotification = showNotification;
-exports.hideNotification = hideNotification;
-exports.refreshToastr = refreshToastr;
 exports.initializeApp = initializeApp;
 exports.markMessageRead = markMessageRead;
 
@@ -18,26 +15,6 @@ function updateAppStatus(status, error) {
     type: _constants.APP_UPDATE_STATUS,
     error: error,
     status: status
-  };
-}
-
-function showNotification(message) {
-  return {
-    type: _constants.TOASTR_ADD_MESSAGE,
-    message: message
-  };
-}
-
-function hideNotification(key) {
-  return {
-    type: _constants.TOASTR_REMOVE_MESSAGE,
-    key: key
-  };
-}
-
-function refreshToastr() {
-  return {
-    type: _constants.TOASTR_REFRESH
   };
 }
 
@@ -67,10 +44,6 @@ var APP_STATUS_CONNECTED = exports.APP_STATUS_CONNECTED = 'APP_STATUS_CONNECTED'
 var APP_STATUS_CONNECTING = exports.APP_STATUS_CONNECTING = 'APP_STATUS_CONNECTING';
 var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
 var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
-
-var TOASTR_ADD_MESSAGE = exports.TOASTR_ADD_MESSAGE = 'TOASTR_ADD_MESSAGE';
-var TOASTR_REMOVE_MESSAGE = exports.TOASTR_REMOVE_MESSAGE = 'TOASTR_REMOVE_MESSAGE';
-var TOASTR_REFRESH = exports.TOASTR_REFRESH = 'TOASTR_REFRESH';
 
 var MESSAGE_MARK_READ = exports.MESSAGE_MARK_READ = 'MESSAGE_MARK_READ';
 
@@ -1310,6 +1283,14 @@ var _Subheader = require('material-ui/lib/Subheader');
 
 var _Subheader2 = _interopRequireDefault(_Subheader);
 
+var _dialog = require('material-ui/lib/dialog');
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _flatButton = require('material-ui/lib/flat-button');
+
+var _flatButton2 = _interopRequireDefault(_flatButton);
+
 var _colors = require('material-ui/lib/styles/colors');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1334,12 +1315,51 @@ var Inbox = function (_React$Component) {
   function Inbox(props) {
     _classCallCheck(this, Inbox);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));
+
+    _this.state = {
+      confirmDialogVisible: false
+    };
+    _this.handleCloseDialog = _this.handleCloseDialog.bind(_this);
+    return _this;
   }
 
   _createClass(Inbox, [{
+    key: 'handleCloseDialog',
+    value: function handleCloseDialog() {
+      this.setState({
+        confirmDialogVisible: false
+      });
+    }
+  }, {
+    key: 'renderDialog',
+    value: function renderDialog() {
+      var actions = [_react2.default.createElement(_flatButton2.default, {
+        label: 'Cancel',
+        secondary: true,
+        onTouchTap: this.handleCloseDialog
+      }), _react2.default.createElement(_flatButton2.default, {
+        label: 'Delete',
+        primary: true,
+        disabled: true,
+        onTouchTap: this.handleCloseDialog
+      })];
+      return _react2.default.createElement(
+        _dialog2.default,
+        {
+          title: 'Confirm action',
+          actions: actions,
+          modal: true,
+          open: this.state.confirmDialogVisible,
+          onRequestClose: this.handleCloseDialog },
+        'Do you really want to delete this message?'
+      );
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props;
       var visibleMessages = _props.inbox.visibleMessages;
       var dispatch = _props.dispatch;
@@ -1347,6 +1367,7 @@ var Inbox = function (_React$Component) {
       return _react2.default.createElement(
         _list2.default,
         null,
+        this.renderDialog(),
         _react2.default.createElement(
           _Subheader2.default,
           null,
@@ -1419,7 +1440,9 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon, tooltip: 'Delete' },
+                  { onClick: function onClick() {
+                      return _this2.setState({ confirmDialogVisible: true });
+                    }, style: styles.icon, tooltip: 'Delete' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
@@ -1454,7 +1477,7 @@ var InboxComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = InboxComponent;
 
-},{"../js/actions":1,"material-ui/lib/Subheader":273,"material-ui/lib/divider":288,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
+},{"../js/actions":1,"material-ui/lib/Subheader":273,"material-ui/lib/dialog":287,"material-ui/lib/divider":288,"material-ui/lib/flat-button":292,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
