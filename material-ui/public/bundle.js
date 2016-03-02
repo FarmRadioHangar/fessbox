@@ -1179,8 +1179,7 @@ var Channel = function (_React$Component2) {
             disabled: muted,
             min: 1,
             max: 100,
-            defaultValue: level,
-            style: styles.slider })
+            defaultValue: level })
         )
       );
     }
@@ -1235,8 +1234,8 @@ var styles = {
     padding: '0 0 0 20px'
   },
   slider: {
-    width: '100%',
-    marginTop: '22px'
+    margin: '22px 20px 0 20px',
+    width: '100%'
   }
 };
 

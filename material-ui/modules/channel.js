@@ -53,8 +53,7 @@ class Channel extends React.Component {
             disabled      = {muted}
             min           = {1}
             max           = {100}
-            defaultValue  = {level}
-            style         = {styles.slider} />
+            defaultValue  = {level} />
         </div>
       </div>
     )
@@ -81,28 +80,28 @@ class Channel extends React.Component {
 
 const styles = {
   component: {
-    padding       : '1em 1em 0 1em',
+    padding         : '1em 1em 0 1em',
   },
   paper: {
-    width         : '100%',
+    width           : '100%',
   },
   title: {
-    padding       : '0 24px',
+    padding         : '0 24px',
   },
   controls: {
-    display       : 'flex',
-    flexDirection : 'row', 
-    alignItems    : 'center',
-    height        : '60px',
-    marginBottom  : '10px',
-    padding       : '10px 0',
+    display         : 'flex',
+    flexDirection   : 'row', 
+    alignItems      : 'center',
+    height          : '60px',
+    marginBottom    : '10px',
+    padding         : '10px 0',
   },
   avatar: {
-    padding       : '0 0 0 20px',
+    padding         : '0 0 0 20px',
   },
   slider: {
-    width         : '100%',
-    marginTop     : '22px',
+    margin          : '22px 20px 0 20px',
+    width           : '100%',
   },
 }
 
