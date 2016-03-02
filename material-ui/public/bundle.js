@@ -1352,7 +1352,7 @@ var Inbox = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon },
+                  { style: styles.icon, tooltip: 'Reply' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
@@ -1361,7 +1361,7 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon },
+                  { style: styles.icon, tooltip: 'Forward' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
@@ -1370,7 +1370,7 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon },
+                  { style: styles.icon, tooltip: 'Favorite' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
@@ -1379,7 +1379,7 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon },
+                  { style: styles.icon, tooltip: 'Delete' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },

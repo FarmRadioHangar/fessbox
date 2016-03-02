@@ -56,16 +56,16 @@ class Inbox extends React.Component {
               }
               rightIconButton = {
                 <div>
-                  <IconButton style={styles.icon}>
+                  <IconButton style={styles.icon} tooltip='Reply'>
                     <i className='material-icons'>reply</i>
                   </IconButton>
-                  <IconButton style={styles.icon}>
+                  <IconButton style={styles.icon} tooltip='Forward'>
                     <i className='material-icons'>forward</i>
                   </IconButton>
-                  <IconButton style={styles.icon}>
+                  <IconButton style={styles.icon} tooltip='Favorite'>
                     <i className='material-icons'>favorite_border</i>
                   </IconButton>
-                  <IconButton style={styles.icon}>
+                  <IconButton style={styles.icon} tooltip='Delete'>
                     <i className='material-icons'>delete_forever</i>
                   </IconButton>
                 </div>
