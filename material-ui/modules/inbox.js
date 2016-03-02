@@ -11,8 +11,7 @@ import ListItem
 import Divider 
   from 'material-ui/lib/divider'
 import Subheader 
-  from 'material-ui/lib/Subheader'
-
+  from 'material-ui/lib/Subheader' 
 import { grey400, darkBlack, lightBlack } 
   from 'material-ui/lib/styles/colors'
 
@@ -34,10 +33,9 @@ class Inbox extends React.Component {
       <List>
         <Subheader>Messages</Subheader>
         {visibleMessages.map(message => (
-          <div>
+          <div key={message.id}>
             <Divider />
             <ListItem
-              key                = {message.id}
               primaryText        = {`${messageType(message.type, message.read)} ${message.source}`}
               secondaryTextLines = {2}
               secondaryText      = {
