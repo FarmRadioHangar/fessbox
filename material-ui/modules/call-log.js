@@ -25,54 +25,71 @@ class CallLog extends React.Component {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHeaderColumn>Activity</TableHeaderColumn>
               <TableHeaderColumn>Number</TableHeaderColumn>
               <TableHeaderColumn>Contact</TableHeaderColumn>
-              <TableHeaderColumn>Call time</TableHeaderColumn>
+              <TableHeaderColumn>Time</TableHeaderColumn>
               <TableHeaderColumn>Duration</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableRowColumn style={styles.table.row}>
+              <TableRowColumn style={styles.table.meta}>
                 <i className='material-icons' style={styles.table.icon}>call_made</i> 
                 <span style={styles.table.phone}>
-                  +255 719 131 023
+                  Outgoing call
                 </span>
               </TableRowColumn>
+              <TableRowColumn>+255 719 131 023</TableRowColumn>
               <TableRowColumn>John Smith</TableRowColumn>
               <TableRowColumn>1:01 PM Wednesday, March 2, 2016</TableRowColumn>
               <TableRowColumn>04:39</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn style={styles.table.row}>
+              <TableRowColumn style={styles.table.meta}>
                 <i className='material-icons' style={styles.table.icon}>call_made</i> 
                 <span style={styles.table.phone}>
-                  +255 719 131 023
+                  Outgoing call
                 </span>
               </TableRowColumn>
+              <TableRowColumn>+255 719 131 023</TableRowColumn>
               <TableRowColumn>Randal White</TableRowColumn>
               <TableRowColumn>1:01 PM Wednesday, March 2, 2016</TableRowColumn>
               <TableRowColumn>05:42</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn style={styles.table.row}>
+              <TableRowColumn style={styles.table.meta}>
                 <i className='material-icons' style={styles.table.icon}>call_received</i> 
                 <span style={styles.table.phone}>
-                  +255 719 131 023
+                  Received call
                 </span>
               </TableRowColumn>
+              <TableRowColumn>+255 719 131 023</TableRowColumn>
               <TableRowColumn>Stephanie Sanders</TableRowColumn>
               <TableRowColumn>1:01 PM Wednesday, March 2, 2016</TableRowColumn>
               <TableRowColumn>00:32</TableRowColumn>
             </TableRow>
             <TableRow>
-              <TableRowColumn style={styles.table.row}>
-                <i className='material-icons' style={styles.table.icon}>call_received</i> 
+              <TableRowColumn style={styles.table.meta}>
+                <i className='material-icons' style={styles.table.icon}>call_missed</i> 
                 <span style={styles.table.phone}>
-                  +255 719 131 023
+                  Missed call
                 </span>
               </TableRowColumn>
-              <TableRowColumn>Steve Brown</TableRowColumn>
+              <TableRowColumn>+255 719 131 023</TableRowColumn>
+              <TableRowColumn>Steve Bmetan</TableRowColumn>
+              <TableRowColumn>1:01 PM Wednesday, March 2, 2016</TableRowColumn>
+              <TableRowColumn></TableRowColumn>
+            </TableRow>
+            <TableRow>
+              <TableRowColumn style={styles.table.meta}>
+                <i className='material-icons' style={styles.table.icon}>call_received</i> 
+                <span style={styles.table.phone}>
+                  Received call
+                </span>
+              </TableRowColumn>
+              <TableRowColumn>+255 719 131 023</TableRowColumn>
+              <TableRowColumn>Steve Bmetan</TableRowColumn>
               <TableRowColumn>1:01 PM Wednesday, March 2, 2016</TableRowColumn>
               <TableRowColumn>01:59</TableRowColumn>
             </TableRow>
@@ -85,7 +102,7 @@ class CallLog extends React.Component {
 
 const styles = {
   table: {
-    row: {
+    meta: {
       display      : 'flex',
     },
     phone: {
@@ -94,10 +111,6 @@ const styles = {
     },
     icon: {
       alignSelf    : 'center', 
-
-      marginRight  : '14px',
-      paddingRight : '5px',
-      borderRight  : '1px solid rgba(0, 0, 0, 0.15)',
       width        : '30px',
     },
   },
