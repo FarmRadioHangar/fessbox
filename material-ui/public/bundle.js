@@ -803,6 +803,10 @@ var _avatar = require('material-ui/lib/avatar');
 
 var _avatar2 = _interopRequireDefault(_avatar);
 
+var _slider = require('material-ui/lib/slider');
+
+var _slider2 = _interopRequireDefault(_slider);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -861,6 +865,11 @@ var Channel = function (_React$Component2) {
   _createClass(Channel, [{
     key: 'renderControls',
     value: function renderControls() {
+      var _props = this.props;
+      var id = _props.id;
+      var level = _props.level;
+      var muted = _props.muted;
+
       return _react2.default.createElement(
         'div',
         { style: styles.controls },
@@ -872,6 +881,17 @@ var Channel = function (_React$Component2) {
               { className: 'material-icons' },
               'remove'
             ) })
+        ),
+        _react2.default.createElement(
+          'div',
+          { style: styles.slider },
+          _react2.default.createElement(_slider2.default, {
+            onChange: function onChange() {},
+            disabled: muted,
+            min: 1,
+            max: 100,
+            defaultValue: level,
+            style: styles.slider })
         )
       );
     }
@@ -924,12 +944,17 @@ var styles = {
   },
   avatar: {
     padding: '0 0 0 20px'
+  },
+  slider: {
+    width: '100%',
+    marginTop: '22px',
+    padding: '0 20px 0 0'
   }
 };
 
 exports.default = Channel;
 
-},{"material-ui/lib/avatar":270,"material-ui/lib/paper":279,"material-ui/lib/toolbar/toolbar":308,"material-ui/lib/toolbar/toolbar-group":306,"material-ui/lib/toolbar/toolbar-title":307,"react":486}],16:[function(require,module,exports){
+},{"material-ui/lib/avatar":270,"material-ui/lib/paper":279,"material-ui/lib/slider":284,"material-ui/lib/toolbar/toolbar":308,"material-ui/lib/toolbar/toolbar-group":306,"material-ui/lib/toolbar/toolbar-title":307,"react":486}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

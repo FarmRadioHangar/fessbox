@@ -10,6 +10,8 @@ import ToolbarTitle
   from 'material-ui/lib/toolbar/toolbar-title'
 import Avatar 
   from 'material-ui/lib/avatar'
+import Slider 
+  from 'material-ui/lib/slider'
 
 class ChannelToolbar extends React.Component {
   constructor(props) {
@@ -39,10 +41,20 @@ class Channel extends React.Component {
     this.renderActions = this.renderActions.bind(this)
   }
   renderControls() {
+    const { id, level, muted } = this.props
     return (
       <div style={styles.controls}>
         <div style={styles.avatar}>
           <Avatar icon={<i className='material-icons'>remove</i>} />
+        </div>
+        <div style={styles.slider}>
+          <Slider 
+            onChange      = {() => {}}
+            disabled      = {muted}
+            min           = {1}
+            max           = {100}
+            defaultValue  = {level}
+            style         = {styles.slider} />
         </div>
       </div>
     )
@@ -87,6 +99,11 @@ const styles = {
   },
   avatar: {
     padding       : '0 0 0 20px',
+  },
+  slider: {
+    width         : '100%',
+    marginTop     : '22px',
+    padding       : '0 20px 0 0',
   },
 }
 
