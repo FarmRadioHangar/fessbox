@@ -86,15 +86,19 @@ class CallLog extends React.Component {
 const styles = {
   table: {
     row: {
-      display   : 'flex',
+      display      : 'flex',
     },
     phone: {
-      flex      : 1, 
-      alignSelf : 'center',
+      flex         : 1, 
+      alignSelf    : 'center',
     },
     icon: {
-      alignSelf : 'center', 
-      width     : '30px',
+      alignSelf    : 'center', 
+
+      marginRight  : '14px',
+      paddingRight : '5px',
+      borderRight  : '1px solid rgba(0, 0, 0, 0.2)',
+      width        : '30px',
     },
   },
 }

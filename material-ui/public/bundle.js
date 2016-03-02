@@ -1052,6 +1052,10 @@ var styles = {
     },
     icon: {
       alignSelf: 'center',
+
+      marginRight: '14px',
+      paddingRight: '5px',
+      borderRight: '1px solid rgba(0, 0, 0, 0.2)',
       width: '30px'
     }
   }
