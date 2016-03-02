@@ -97,7 +97,7 @@ const styles = {
 
       marginRight  : '14px',
       paddingRight : '5px',
-      borderRight  : '1px solid rgba(0, 0, 0, 0.2)',
+      borderRight  : '1px solid rgba(0, 0, 0, 0.15)',
       width        : '30px',
     },
   },
