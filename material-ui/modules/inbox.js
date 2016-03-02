@@ -3,6 +3,8 @@ import TimeAgo from 'react-timeago'
 
 import { connect } 
   from 'react-redux'
+import { markMessageRead }
+  from '../js/actions'
 
 import IconButton 
   from 'material-ui/lib/icon-button'
@@ -31,17 +33,22 @@ class Inbox extends React.Component {
     super(props)
   }
   render() {
-    const { inbox : { visibleMessages } } = this.props
+    const { inbox : { visibleMessages }, dispatch } = this.props
     return (
       <List>
         <Subheader>SMS Messages</Subheader>
         {visibleMessages.map(message => (
-          <div key={message.id}>
+          <div key={message.id} style={message.read ? {} : {
+            borderLeft      : '4px solid #ff4081',
+            backgroundColor : '#efefef',
+          }}>
             <Divider />
             <ListItem
-              leftAvatar         = {
+              onClick            = {() => dispatch(markMessageRead(message.id))}
+              leftAvatar         = {message.read ? null : (
                 <i className='material-icons'>notifications</i>
-              }
+              )}
+              disabled           = {!!message.read}
               primaryText        = {`${messageType(message.type, message.read)} ${message.source}`}
               secondaryTextLines = {2}
               secondaryText      = {
