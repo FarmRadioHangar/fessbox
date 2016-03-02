@@ -38,17 +38,19 @@ class Inbox extends React.Component {
       <List>
         <Subheader>SMS Messages</Subheader>
         {visibleMessages.map(message => (
-          <div key={message.id} style={message.read ? {} : {
-            borderLeft      : '4px solid #ff4081',
-            backgroundColor : '#efefef',
+          <div key={message.id} style={message.read ? {
+            marginLeft : '4px',
+          } : {
+            borderLeft : '4px solid #ff4081',
           }}>
             <Divider />
             <ListItem
               onClick            = {() => dispatch(markMessageRead(message.id))}
-              leftAvatar         = {message.read ? null : (
+              leftAvatar         = {message.read ? (
+                <i className='material-icons' style={{color: '#757575'}}>check_circle</i>
+              ) : (
                 <i className='material-icons'>notifications</i>
               )}
-              disabled           = {!!message.read}
               primaryText        = {`${messageType(message.type, message.read)} ${message.source}`}
               secondaryTextLines = {2}
               secondaryText      = {

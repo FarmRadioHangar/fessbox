@@ -1355,21 +1355,25 @@ var Inbox = function (_React$Component) {
         visibleMessages.map(function (message) {
           return _react2.default.createElement(
             'div',
-            { key: message.id, style: message.read ? {} : {
-                borderLeft: '4px solid #ff4081',
-                backgroundColor: '#efefef'
+            { key: message.id, style: message.read ? {
+                marginLeft: '4px'
+              } : {
+                borderLeft: '4px solid #ff4081'
               } },
             _react2.default.createElement(_divider2.default, null),
             _react2.default.createElement(_listItem2.default, {
               onClick: function onClick() {
                 return dispatch((0, _actions.markMessageRead)(message.id));
               },
-              leftAvatar: message.read ? null : _react2.default.createElement(
+              leftAvatar: message.read ? _react2.default.createElement(
+                'i',
+                { className: 'material-icons', style: { color: '#757575' } },
+                'check_circle'
+              ) : _react2.default.createElement(
                 'i',
                 { className: 'material-icons' },
                 'notifications'
               ),
-              disabled: !!message.read,
               primaryText: messageType(message.type, message.read) + ' ' + message.source,
               secondaryTextLines: 2,
               secondaryText: _react2.default.createElement(
