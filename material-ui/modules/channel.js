@@ -1,13 +1,8 @@
-import React from 'react'
+import React          from 'react'
+import ChannelToolbar from './channel-toolbar'
 
 import Paper 
   from 'material-ui/lib/paper'
-import Toolbar 
-  from 'material-ui/lib/toolbar/toolbar'
-import ToolbarGroup 
-  from 'material-ui/lib/toolbar/toolbar-group'
-import ToolbarTitle 
-  from 'material-ui/lib/toolbar/toolbar-title'
 import Avatar 
   from 'material-ui/lib/avatar'
 import Slider 
@@ -16,35 +11,6 @@ import FlatButton
   from 'material-ui/lib/flat-button'
 import Divider
   from 'material-ui/lib/divider'
-
-class ChannelToolbar extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  render() {
-    const { id, label } = this.props
-    return (
-      <Toolbar>
-        <ToolbarGroup 
-          firstChild = {true}
-          float      = 'left'>
-          <ToolbarTitle 
-            text     = {id}
-            style    = {styles.toolbar.title}
-          />
-        </ToolbarGroup>
-        <ToolbarGroup float='right'>
-          <div style={styles.toolbar.label}>{label && (
-            <div style={styles.toolbar.inner}>
-              <i style={styles.toolbar.icon} className='material-icons'>sim_card</i>
-              {label}
-            </div>
-          )}</div>
-        </ToolbarGroup>
-      </Toolbar>
-    )
-  }
-}
 
 class Channel extends React.Component {
   constructor(props) {
@@ -130,35 +96,6 @@ class Channel extends React.Component {
 }
 
 const styles = {
-  toolbar: {
-    title: {
-      padding         : '0 24px',
-    },
-    label: {
-      lineHeight    : '56px',
-      fontSize      : '14px',
-      display       : 'inline-block',
-      position      : 'relative',
-      float         : 'left',
-    },
-    inner: {
-      display       : 'flex', 
-      flexDirection : 'row', 
-      alignItems    : 'center',
-      color         : 'rgba(0, 0, 0, 0.4)',
-    },
-    mode: {
-      paddingLeft   : '16px',
-      lineHeight    : '56px',
-      fontSize      : '14px',
-      display       : 'inline-block',
-      position      : 'relative',
-      float         : 'left',
-    },
-    icon: {
-      marginRight   : '10px', 
-    },
-  },
   component: {
     padding         : '1em 1em 0 1em',
   },
