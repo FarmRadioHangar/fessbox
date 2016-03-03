@@ -121,7 +121,7 @@ class Inbox extends React.Component {
                 <div style={{marginTop: '8px'}}>
                   {message.read && (
                     <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
-                      <i className='material-icons'>flag</i>
+                      <i className='material-icons'>new_releasese</i>
                     </IconButton>
                   )}
                   <IconButton onClick={e => e.stopPropagation()} style={styles.icon} tooltip='Reply'>
@@ -145,9 +145,10 @@ class Inbox extends React.Component {
                   </IconButton>
                 </div>
               }
-              style = {message.read ? (message.selected ? {
+              style = {message.read ? message.selected ? {
                 backgroundColor : 'rgba(255, 255, 129, 0.4)',
-              } : {}) : {
+                paddingLeft     : '60px',
+              } : {} : {
                 backgroundColor : 'rgba(255, 64, 129, 0.05)',
               }} />
           </div>
