@@ -1177,7 +1177,17 @@ var _slider = require('material-ui/lib/slider');
 
 var _slider2 = _interopRequireDefault(_slider);
 
+var _flatButton = require('material-ui/lib/flat-button');
+
+var _flatButton2 = _interopRequireDefault(_flatButton);
+
+var _divider = require('material-ui/lib/divider');
+
+var _divider2 = _interopRequireDefault(_divider);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1197,7 +1207,9 @@ var ChannelToolbar = function (_React$Component) {
   _createClass(ChannelToolbar, [{
     key: 'render',
     value: function render() {
-      var id = this.props.id;
+      var _props = this.props;
+      var id = _props.id;
+      var label = _props.label;
 
       return _react2.default.createElement(
         _toolbar2.default,
@@ -1209,8 +1221,26 @@ var ChannelToolbar = function (_React$Component) {
             float: 'left' },
           _react2.default.createElement(_toolbarTitle2.default, {
             text: id,
-            style: styles.title
+            style: styles.toolbar.title
           })
+        ),
+        _react2.default.createElement(
+          _toolbarGroup2.default,
+          { float: 'right' },
+          _react2.default.createElement(
+            'div',
+            { style: styles.toolbar.label },
+            label && _react2.default.createElement(
+              'div',
+              { style: styles.toolbar.inner },
+              _react2.default.createElement(
+                'i',
+                { style: styles.toolbar.icon, className: 'material-icons' },
+                'sim_card'
+              ),
+              label
+            )
+          )
         )
       );
     }
@@ -1233,12 +1263,24 @@ var Channel = function (_React$Component2) {
   }
 
   _createClass(Channel, [{
+    key: 'setMode',
+    value: function setMode(newMode) {
+      var _props2 = this.props;
+      var id = _props2.id;
+      var mode = _props2.mode;
+      var sendMessage = _props2.sendMessage;
+
+      if ('free' != mode) {
+        sendMessage('channelMode', _defineProperty({}, id, newMode));
+      }
+    }
+  }, {
     key: 'renderControls',
     value: function renderControls() {
-      var _props = this.props;
-      var id = _props.id;
-      var level = _props.level;
-      var muted = _props.muted;
+      var _props3 = this.props;
+      var id = _props3.id;
+      var level = _props3.level;
+      var muted = _props3.muted;
 
       return _react2.default.createElement(
         'div',
@@ -1267,11 +1309,63 @@ var Channel = function (_React$Component2) {
   }, {
     key: 'renderActions',
     value: function renderActions() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        'Actions'
-      );
+      var _this3 = this;
+
+      var mode = this.props.mode;
+
+      switch (mode) {
+        case 'free':
+        case 'defunct':
+          return _react2.default.createElement('span', null);
+        default:
+          return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(_divider2.default, null),
+            _react2.default.createElement(
+              'div',
+              { style: { padding: '10px' } },
+              _react2.default.createElement(_flatButton2.default, {
+                style: styles.button,
+                secondary: true,
+                label: 'Master',
+                icon: _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons' },
+                  'speaker'
+                ),
+                onClick: function onClick() {
+                  return _this3.setMode('master');
+                }
+              }),
+              _react2.default.createElement(_flatButton2.default, {
+                style: styles.button,
+                secondary: true,
+                label: 'On hold',
+                icon: _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons' },
+                  'pause'
+                ),
+                onClick: function onClick() {
+                  return _this3.setMode('on_hold');
+                }
+              }),
+              _react2.default.createElement(_flatButton2.default, {
+                style: styles.button,
+                label: 'Reject',
+                icon: _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons' },
+                  'cancel'
+                ),
+                onClick: function onClick() {
+                  return _this3.setMode('free');
+                }
+              })
+            )
+          );
+      }
     }
   }, {
     key: 'render',
@@ -1294,14 +1388,40 @@ var Channel = function (_React$Component2) {
 }(_react2.default.Component);
 
 var styles = {
+  toolbar: {
+    title: {
+      padding: '0 24px'
+    },
+    label: {
+      lineHeight: '56px',
+      fontSize: '14px',
+      display: 'inline-block',
+      position: 'relative',
+      float: 'left'
+    },
+    inner: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      color: 'rgba(0, 0, 0, 0.4)'
+    },
+    mode: {
+      paddingLeft: '16px',
+      lineHeight: '56px',
+      fontSize: '14px',
+      display: 'inline-block',
+      position: 'relative',
+      float: 'left'
+    },
+    icon: {
+      marginRight: '10px'
+    }
+  },
   component: {
     padding: '1em 1em 0 1em'
   },
   paper: {
     width: '100%'
-  },
-  title: {
-    padding: '0 24px'
   },
   controls: {
     display: 'flex',
@@ -1322,7 +1442,7 @@ var styles = {
 
 exports.default = Channel;
 
-},{"material-ui/lib/avatar":281,"material-ui/lib/paper":304,"material-ui/lib/slider":311,"material-ui/lib/toolbar/toolbar":347,"material-ui/lib/toolbar/toolbar-group":345,"material-ui/lib/toolbar/toolbar-title":346,"react":528}],16:[function(require,module,exports){
+},{"material-ui/lib/avatar":281,"material-ui/lib/divider":288,"material-ui/lib/flat-button":292,"material-ui/lib/paper":304,"material-ui/lib/slider":311,"material-ui/lib/toolbar/toolbar":347,"material-ui/lib/toolbar/toolbar-group":345,"material-ui/lib/toolbar/toolbar-title":346,"react":528}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

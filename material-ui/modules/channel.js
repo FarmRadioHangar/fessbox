@@ -12,13 +12,17 @@ import Avatar
   from 'material-ui/lib/avatar'
 import Slider 
   from 'material-ui/lib/slider'
+import FlatButton 
+  from 'material-ui/lib/flat-button'
+import Divider
+  from 'material-ui/lib/divider'
 
 class ChannelToolbar extends React.Component {
   constructor(props) {
     super(props)
   }
   render() {
-    const { id } = this.props
+    const { id, label } = this.props
     return (
       <Toolbar>
         <ToolbarGroup 
@@ -26,8 +30,16 @@ class ChannelToolbar extends React.Component {
           float      = 'left'>
           <ToolbarTitle 
             text     = {id}
-            style    = {styles.title}
+            style    = {styles.toolbar.title}
           />
+        </ToolbarGroup>
+        <ToolbarGroup float='right'>
+          <div style={styles.toolbar.label}>{label && (
+            <div style={styles.toolbar.inner}>
+              <i style={styles.toolbar.icon} className='material-icons'>sim_card</i>
+              {label}
+            </div>
+          )}</div>
         </ToolbarGroup>
       </Toolbar>
     )
@@ -39,6 +51,14 @@ class Channel extends React.Component {
     super(props)
     this.renderControls = this.renderControls.bind(this)
     this.renderActions = this.renderActions.bind(this)
+  }
+  setMode(newMode) {
+    const { id, mode, sendMessage } = this.props
+    if ('free' != mode) {
+      sendMessage('channelMode', { 
+        [id]: newMode 
+      })
+    }
   }
   renderControls() {
     const { id, level, muted } = this.props
@@ -59,11 +79,42 @@ class Channel extends React.Component {
     )
   }
   renderActions() {
-    return (
-      <div>
-        Actions
-      </div>
-    )
+    const { mode } = this.props
+    switch (mode) {
+      case 'free':
+      case 'defunct':
+        return (
+          <span />
+        ) 
+      default:
+        return (
+          <div>
+            <Divider />
+            <div style={{padding: '10px'}}>
+              <FlatButton
+                style      = {styles.button}
+                secondary  = {true} 
+                label      = 'Master'
+                icon       = {<i className='material-icons'>speaker</i>}
+                onClick    = {() => this.setMode('master')}
+              />
+              <FlatButton
+                style      = {styles.button}
+                secondary  = {true} 
+                label      = 'On hold'
+                icon       = {<i className='material-icons'>pause</i>}
+                onClick    = {() => this.setMode('on_hold')}
+              />
+              <FlatButton
+                style      = {styles.button}
+                label      = 'Reject'
+                icon       = {<i className='material-icons'>cancel</i>}
+                onClick    = {() => this.setMode('free')}
+              />
+            </div>
+          </div>
+        )
+    }
   }
   render() {
     return (
@@ -79,14 +130,40 @@ class Channel extends React.Component {
 }
 
 const styles = {
+  toolbar: {
+    title: {
+      padding         : '0 24px',
+    },
+    label: {
+      lineHeight    : '56px',
+      fontSize      : '14px',
+      display       : 'inline-block',
+      position      : 'relative',
+      float         : 'left',
+    },
+    inner: {
+      display       : 'flex', 
+      flexDirection : 'row', 
+      alignItems    : 'center',
+      color         : 'rgba(0, 0, 0, 0.4)',
+    },
+    mode: {
+      paddingLeft   : '16px',
+      lineHeight    : '56px',
+      fontSize      : '14px',
+      display       : 'inline-block',
+      position      : 'relative',
+      float         : 'left',
+    },
+    icon: {
+      marginRight   : '10px', 
+    },
+  },
   component: {
     padding         : '1em 1em 0 1em',
   },
   paper: {
     width           : '100%',
-  },
-  title: {
-    padding         : '0 24px',
   },
   controls: {
     display         : 'flex',
