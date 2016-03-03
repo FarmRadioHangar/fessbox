@@ -12,6 +12,9 @@ import FlatButton
 import Divider
   from 'material-ui/lib/divider'
 
+import { green400 } 
+  from 'material-ui/lib/styles/colors'
+
 class Channel extends React.Component {
   constructor(props) {
     super(props)
@@ -84,9 +87,13 @@ class Channel extends React.Component {
     }
   }
   render() {
+    const { mode } = this.props
     return (
       <div style={styles.component}>
-        <Paper style={styles.paper}>
+        <Paper style={{
+            ...styles.paper,
+            borderLeft : `12px solid ${green400}`,
+          }}>
           <ChannelToolbar {...this.props} />
           {this.renderControls()}
           <div>{''+this.props.mode}</div>
