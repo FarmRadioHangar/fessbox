@@ -3,7 +3,7 @@ import TimeAgo from 'react-timeago'
 
 import { connect } 
   from 'react-redux'
-import { markMessageRead }
+import { markMessageRead, toggleMessageSelected }
   from '../js/actions'
 
 import IconButton 
@@ -20,13 +20,15 @@ import Dialog
   from 'material-ui/lib/dialog'
 import FlatButton 
   from 'material-ui/lib/flat-button'
+import Checkbox
+  from 'material-ui/lib/checkbox'
 
 import { grey400, darkBlack, lightBlack } 
   from 'material-ui/lib/styles/colors'
 
 function messageType(key, read) {
   if ('sms_in' == key) {
-    return `${read ? 'Incoming' : 'New incoming'} SMS from`
+    return 'Incoming SMS from'
   } else {
     return 'Outgoing SMS to'
   }
@@ -77,21 +79,23 @@ class Inbox extends React.Component {
         {this.renderDialog()}
         <Subheader>SMS Messages</Subheader>
         {visibleMessages.map(message => (
-          <div key={message.id} style={message.read ? {
-            marginLeft : '4px',
-          } : {
-            borderLeft      : '4px solid rgb(255, 64, 129)',
-            backgroundColor : 'rgba(255, 64, 129, 0.05)',
-          }}>
+          <div key={message.id}>
             <Divider />
             <ListItem
-              onClick            = {() => dispatch(markMessageRead(message.id))}
+              onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : markMessageRead(message.id))}
               leftAvatar         = {message.read ? (
-                <i className='material-icons' style={{color: 'rgb(0, 188, 212)'}}>check_circle</i>
+                <i className='material-icons' style={{color: 'rgb(0, 188, 212)'}}>done</i>
               ) : (
                 <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
               )}
-              primaryText        = {`${messageType(message.type, message.read)} ${message.source}`}
+              primaryText        = {
+                <span>
+                  <Checkbox checked={!!message.selected} style={styles.checkbox} />
+                  <span style={{paddingLeft: '40px'}}>
+                    {`${messageType(message.type, message.read)} ${message.source}`}
+                  </span>
+                </span>
+              }
               secondaryTextLines = {2}
               secondaryText      = {
                 <p style={styles.p}>
@@ -105,6 +109,9 @@ class Inbox extends React.Component {
               }
               rightIconButton = {
                 <div style={{marginTop: '10px'}}>
+                  <IconButton style={styles.icon} tooltip={message.read ? 'Mark as unread' : 'Mark as read'}>
+                    <i className='material-icons'>{message.read ? 'markunread' : 'done'}</i>
+                  </IconButton>
                   <IconButton style={styles.icon} tooltip='Reply'>
                     <i className='material-icons'>reply</i>
                   </IconButton>
@@ -119,6 +126,9 @@ class Inbox extends React.Component {
                   </IconButton>
                 </div>
               }
+              style = {message.read ? {} : {
+                backgroundColor : 'rgba(255, 64, 129, 0.05)',
+              }}
             />
           </div>
         ))}
@@ -132,7 +142,12 @@ const styles = {
     color        : '#757575',
   },
   p: {
+    paddingLeft  : '40px',
     paddingRight : '256px',
+  },
+  checkbox: {
+    position     : 'absolute', 
+    width        : '15px',
   },
 }
 

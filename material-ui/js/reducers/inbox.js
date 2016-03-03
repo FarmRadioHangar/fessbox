@@ -1,6 +1,7 @@
 import { 
   APP_INITIALIZE, 
   MESSAGE_MARK_READ,
+  MESSAGE_TOGGLE_SELECTED,
 } from '../constants'
 
 const initialState = {
@@ -31,6 +32,14 @@ function reducer(state = initialState, action) {
         ...state,
         visibleMessages,
         unreadCount,
+      }
+    }
+    case MESSAGE_TOGGLE_SELECTED: {
+      const visibleMessages = state.visibleMessages.map(message => 
+        message.id == action.id ? { ...message, selected: !message.selected } : message)
+      return {
+        ...state,
+        visibleMessages,
       }
     }
     default:

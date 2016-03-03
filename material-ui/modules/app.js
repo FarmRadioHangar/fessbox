@@ -24,8 +24,8 @@ import TextField
 import AutoComplete 
   from 'material-ui/lib/auto-complete'
 
-import IconCommunicationPhone
-  from 'material-ui/lib/svg-icons/communication/phone'
+import IconCommunicationDialpad
+  from 'material-ui/lib/svg-icons/communication/dialpad'
 import IconCommunicationMessage
   from 'material-ui/lib/svg-icons/communication/message'
 
@@ -128,7 +128,7 @@ class App extends React.Component {
           <FloatingActionButton 
             onClick = {() => {}}
             style   = {styles.fab}>
-            <IconCommunicationPhone />
+            <IconCommunicationDialpad />
           </FloatingActionButton>
         )
       case 'inbox':
@@ -167,6 +167,7 @@ const styles = {
     WebkitTransition : 'opacity 1s',
     transition       : 'opacity 1s',
     width            : '100%',
+    marginBottom     : '100px',
   },
   fab: {
     position         : 'fixed',

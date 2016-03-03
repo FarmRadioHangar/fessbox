@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.updateAppStatus = updateAppStatus;
 exports.initializeApp = initializeApp;
 exports.markMessageRead = markMessageRead;
+exports.toggleMessageSelected = toggleMessageSelected;
 
 var _constants = require('./constants');
 
@@ -32,6 +33,13 @@ function markMessageRead(id) {
   };
 }
 
+function toggleMessageSelected(id) {
+  return {
+    type: _constants.MESSAGE_TOGGLE_SELECTED,
+    id: id
+  };
+}
+
 },{"./constants":2}],2:[function(require,module,exports){
 'use strict';
 
@@ -46,6 +54,7 @@ var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
 var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
 
 var MESSAGE_MARK_READ = exports.MESSAGE_MARK_READ = 'MESSAGE_MARK_READ';
+var MESSAGE_TOGGLE_SELECTED = exports.MESSAGE_TOGGLE_SELECTED = 'MESSAGE_TOGGLE_SELECTED';
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -321,6 +330,15 @@ function reducer() {
           unreadCount: unreadCount
         });
       }
+    case _constants.MESSAGE_TOGGLE_SELECTED:
+      {
+        var visibleMessages = state.visibleMessages.map(function (message) {
+          return message.id == action.id ? _extends({}, message, { selected: !message.selected }) : message;
+        });
+        return _extends({}, state, {
+          visibleMessages: visibleMessages
+        });
+      }
     default:
       return state;
   }
@@ -577,9 +595,9 @@ var _autoComplete = require('material-ui/lib/auto-complete');
 
 var _autoComplete2 = _interopRequireDefault(_autoComplete);
 
-var _phone = require('material-ui/lib/svg-icons/communication/phone');
+var _dialpad = require('material-ui/lib/svg-icons/communication/dialpad');
 
-var _phone2 = _interopRequireDefault(_phone);
+var _dialpad2 = _interopRequireDefault(_dialpad);
 
 var _message = require('material-ui/lib/svg-icons/communication/message');
 
@@ -735,7 +753,7 @@ var App = function (_React$Component) {
             {
               onClick: function onClick() {},
               style: styles.fab },
-            _react2.default.createElement(_phone2.default, null)
+            _react2.default.createElement(_dialpad2.default, null)
           );
         case 'inbox':
           return _react2.default.createElement(
@@ -784,7 +802,8 @@ var styles = {
   component: {
     WebkitTransition: 'opacity 1s',
     transition: 'opacity 1s',
-    width: '100%'
+    width: '100%',
+    marginBottom: '100px'
   },
   fab: {
     position: 'fixed',
@@ -802,7 +821,7 @@ var AppComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = AppComponent;
 
-},{"./call-log":14,"./inbox":16,"./mixer":18,"./toastr":19,"material-ui/lib/app-bar":279,"material-ui/lib/auto-complete":280,"material-ui/lib/dialog":287,"material-ui/lib/flat-button":292,"material-ui/lib/floating-action-button":293,"material-ui/lib/svg-icons/communication/message":327,"material-ui/lib/svg-icons/communication/phone":328,"material-ui/lib/tabs/tab":341,"material-ui/lib/tabs/tabs":343,"material-ui/lib/text-field":344,"react":528,"react-redux":381}],14:[function(require,module,exports){
+},{"./call-log":14,"./inbox":16,"./mixer":18,"./toastr":19,"material-ui/lib/app-bar":279,"material-ui/lib/auto-complete":280,"material-ui/lib/dialog":287,"material-ui/lib/flat-button":292,"material-ui/lib/floating-action-button":293,"material-ui/lib/svg-icons/communication/dialpad":327,"material-ui/lib/svg-icons/communication/message":328,"material-ui/lib/tabs/tab":341,"material-ui/lib/tabs/tabs":343,"material-ui/lib/text-field":344,"react":528,"react-redux":381}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1349,6 +1368,10 @@ var _flatButton = require('material-ui/lib/flat-button');
 
 var _flatButton2 = _interopRequireDefault(_flatButton);
 
+var _checkbox = require('material-ui/lib/checkbox');
+
+var _checkbox2 = _interopRequireDefault(_checkbox);
+
 var _colors = require('material-ui/lib/styles/colors');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1361,7 +1384,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function messageType(key, read) {
   if ('sms_in' == key) {
-    return (read ? 'Incoming' : 'New incoming') + ' SMS from';
+    return 'Incoming SMS from';
   } else {
     return 'Outgoing SMS to';
   }
@@ -1434,27 +1457,31 @@ var Inbox = function (_React$Component) {
         visibleMessages.map(function (message) {
           return _react2.default.createElement(
             'div',
-            { key: message.id, style: message.read ? {
-                marginLeft: '4px'
-              } : {
-                borderLeft: '4px solid rgb(255, 64, 129)',
-                backgroundColor: 'rgba(255, 64, 129, 0.05)'
-              } },
+            { key: message.id },
             _react2.default.createElement(_divider2.default, null),
             _react2.default.createElement(_listItem2.default, {
               onClick: function onClick() {
-                return dispatch((0, _actions.markMessageRead)(message.id));
+                return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.markMessageRead)(message.id));
               },
               leftAvatar: message.read ? _react2.default.createElement(
                 'i',
                 { className: 'material-icons', style: { color: 'rgb(0, 188, 212)' } },
-                'check_circle'
+                'done'
               ) : _react2.default.createElement(
                 'i',
                 { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
                 'notifications'
               ),
-              primaryText: messageType(message.type, message.read) + ' ' + message.source,
+              primaryText: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(_checkbox2.default, { checked: !!message.selected, style: styles.checkbox }),
+                _react2.default.createElement(
+                  'span',
+                  { style: { paddingLeft: '40px' } },
+                  messageType(message.type, message.read) + ' ' + message.source
+                )
+              ),
               secondaryTextLines: 2,
               secondaryText: _react2.default.createElement(
                 'p',
@@ -1470,6 +1497,15 @@ var Inbox = function (_React$Component) {
               rightIconButton: _react2.default.createElement(
                 'div',
                 { style: { marginTop: '10px' } },
+                _react2.default.createElement(
+                  _iconButton2.default,
+                  { style: styles.icon, tooltip: message.read ? 'Mark as unread' : 'Mark as read' },
+                  _react2.default.createElement(
+                    'i',
+                    { className: 'material-icons' },
+                    message.read ? 'markunread' : 'done'
+                  )
+                ),
                 _react2.default.createElement(
                   _iconButton2.default,
                   { style: styles.icon, tooltip: 'Reply' },
@@ -1508,7 +1544,10 @@ var Inbox = function (_React$Component) {
                     'delete_forever'
                   )
                 )
-              )
+              ),
+              style: message.read ? {} : {
+                backgroundColor: 'rgba(255, 64, 129, 0.05)'
+              }
             })
           );
         })
@@ -1524,7 +1563,12 @@ var styles = {
     color: '#757575'
   },
   p: {
+    paddingLeft: '40px',
     paddingRight: '256px'
+  },
+  checkbox: {
+    position: 'absolute',
+    width: '15px'
   }
 };
 
@@ -1536,7 +1580,7 @@ var InboxComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = InboxComponent;
 
-},{"../js/actions":1,"material-ui/lib/Subheader":273,"material-ui/lib/dialog":287,"material-ui/lib/divider":288,"material-ui/lib/flat-button":292,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
+},{"../js/actions":1,"material-ui/lib/Subheader":273,"material-ui/lib/checkbox":284,"material-ui/lib/dialog":287,"material-ui/lib/divider":288,"material-ui/lib/flat-button":292,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25255,17 +25299,17 @@ var _svgIcon2 = _interopRequireDefault(_svgIcon);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var CommunicationMessage = function CommunicationMessage(props) {
+var CommunicationDialpad = function CommunicationDialpad(props) {
   return _react2.default.createElement(
     _svgIcon2.default,
     props,
-    _react2.default.createElement('path', { d: 'M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z' })
+    _react2.default.createElement('path', { d: 'M12 19c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 1c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12-8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-6 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z' })
   );
 };
-CommunicationMessage = (0, _pure2.default)(CommunicationMessage);
-CommunicationMessage.displayName = 'CommunicationMessage';
+CommunicationDialpad = (0, _pure2.default)(CommunicationDialpad);
+CommunicationDialpad.displayName = 'CommunicationDialpad';
 
-exports.default = CommunicationMessage;
+exports.default = CommunicationDialpad;
 module.exports = exports['default'];
 },{"../../svg-icon":324,"react":528,"recompose/pure":580}],328:[function(require,module,exports){
 'use strict';
@@ -25288,17 +25332,17 @@ var _svgIcon2 = _interopRequireDefault(_svgIcon);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var CommunicationPhone = function CommunicationPhone(props) {
+var CommunicationMessage = function CommunicationMessage(props) {
   return _react2.default.createElement(
     _svgIcon2.default,
     props,
-    _react2.default.createElement('path', { d: 'M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z' })
+    _react2.default.createElement('path', { d: 'M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z' })
   );
 };
-CommunicationPhone = (0, _pure2.default)(CommunicationPhone);
-CommunicationPhone.displayName = 'CommunicationPhone';
+CommunicationMessage = (0, _pure2.default)(CommunicationMessage);
+CommunicationMessage.displayName = 'CommunicationMessage';
 
-exports.default = CommunicationPhone;
+exports.default = CommunicationMessage;
 module.exports = exports['default'];
 },{"../../svg-icon":324,"react":528,"recompose/pure":580}],329:[function(require,module,exports){
 'use strict';
