@@ -1,6 +1,7 @@
 import { 
   APP_INITIALIZE, 
-  MESSAGE_MARK_READ,
+  MESSAGE_TOGGLE_READ,
+  MESSAGE_TOGGLE_FAVORITE,
   MESSAGE_TOGGLE_SELECTED,
 } from '../constants'
 
@@ -24,9 +25,9 @@ function reducer(state = initialState, action) {
         })),
       })
     }
-    case MESSAGE_MARK_READ: {
+    case MESSAGE_TOGGLE_READ: {
       const visibleMessages = state.visibleMessages.map(message => 
-        message.id == action.id ? { ...message, read: true } : message)
+        message.id == action.id ? { ...message, read: !message.read } : message)
       const unreadCount = visibleMessages.filter(message => !message.read).length
       return {
         ...state,
@@ -37,6 +38,14 @@ function reducer(state = initialState, action) {
     case MESSAGE_TOGGLE_SELECTED: {
       const visibleMessages = state.visibleMessages.map(message => 
         message.id == action.id ? { ...message, selected: !message.selected } : message)
+      return {
+        ...state,
+        visibleMessages,
+      }
+    }
+    case MESSAGE_TOGGLE_FAVORITE: {
+      const visibleMessages = state.visibleMessages.map(message => 
+        message.id == action.id ? { ...message, favorite: !message.favorite } : message)
       return {
         ...state,
         visibleMessages,

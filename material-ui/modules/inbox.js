@@ -3,8 +3,10 @@ import TimeAgo from 'react-timeago'
 
 import { connect } 
   from 'react-redux'
-import { markMessageRead, toggleMessageSelected }
+import { toggleMessageRead, toggleMessageSelected, toggleMessageFavorite }
   from '../js/actions'
+import { TransitionMotion, Motion, spring, presets } 
+  from 'react-motion'
 
 import IconButton 
   from 'material-ui/lib/icon-button'
@@ -82,16 +84,30 @@ class Inbox extends React.Component {
           <div key={message.id}>
             <Divider />
             <ListItem
-              onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : markMessageRead(message.id))}
+              onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
               leftAvatar         = {message.read ? (
-                <i className='material-icons' style={{color: 'rgb(0, 188, 212)'}}>done</i>
+                <span>
+                  <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
+                    {i => (
+                      <i className='material-icons' style={{
+                        color     : 'rgb(0, 188, 212)',
+                        opacity   : i.opacity,
+                        transform : `scale(${i.zoom})`,
+                      }}>done</i>
+                    )}
+                  </Motion>
+                </span>
               ) : (
                 <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
               )}
               primaryText        = {
                 <span>
-                  <Checkbox checked={!!message.selected} style={styles.checkbox} />
-                  <span style={{paddingLeft: '40px'}}>
+                  <Checkbox 
+                    onCheck = {message.read ? e => e.stopPropagation() : () => dispatch(toggleMessageSelected(message.id))} 
+                    checked = {!!message.selected} 
+                    style   = {styles.checkbox} 
+                  />
+                  <span style={styles.source}>
                     {`${messageType(message.type, message.read)} ${message.source}`}
                   </span>
                 </span>
@@ -108,20 +124,25 @@ class Inbox extends React.Component {
                 </p>
               }
               rightIconButton = {
-                <div style={{marginTop: '10px'}}>
-                  <IconButton style={styles.icon} tooltip={message.read ? 'Mark as unread' : 'Mark as read'}>
-                    <i className='material-icons'>{message.read ? 'markunread' : 'done'}</i>
-                  </IconButton>
-                  <IconButton style={styles.icon} tooltip='Reply'>
+                <div style={{marginTop: '8px'}}>
+                  {message.read && (
+                    <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
+                      <i className='material-icons'>flag</i>
+                    </IconButton>
+                  )}
+                  <IconButton onClick={e => e.stopPropagation()} style={styles.icon} tooltip='Reply'>
                     <i className='material-icons'>reply</i>
                   </IconButton>
-                  <IconButton style={styles.icon} tooltip='Forward'>
+                  <IconButton onClick={e => e.stopPropagation()} style={styles.icon} tooltip='Forward'>
                     <i className='material-icons'>forward</i>
                   </IconButton>
-                  <IconButton style={styles.icon} tooltip='Favorite'>
-                    <i className='material-icons'>favorite_border</i>
+                  <IconButton onClick={e => { 
+                    dispatch(toggleMessageFavorite(message.id)) 
+                    e.stopPropagation()
+                  }} style={styles.icon} tooltip='Favorite'>
+                    <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
                   </IconButton>
-                  <IconButton onClick={() => this.setState({confirmDialogVisible: true})} style={styles.icon} tooltip='Delete'>
+                  <IconButton onClick={e => e.stopPropagation()} onClick={() => this.setState({confirmDialogVisible: true})} style={styles.icon} tooltip='Delete'>
                     <i className='material-icons'>delete_forever</i>
                   </IconButton>
                 </div>
@@ -144,6 +165,9 @@ const styles = {
   p: {
     paddingLeft  : '40px',
     paddingRight : '256px',
+  },
+  source: {
+    paddingLeft  : '40px',
   },
   checkbox: {
     position     : 'absolute', 

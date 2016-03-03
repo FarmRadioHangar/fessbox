@@ -6,8 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateAppStatus = updateAppStatus;
 exports.initializeApp = initializeApp;
-exports.markMessageRead = markMessageRead;
+exports.toggleMessageRead = toggleMessageRead;
 exports.toggleMessageSelected = toggleMessageSelected;
+exports.toggleMessageFavorite = toggleMessageFavorite;
 
 var _constants = require('./constants');
 
@@ -26,9 +27,9 @@ function initializeApp(data) {
   };
 }
 
-function markMessageRead(id) {
+function toggleMessageRead(id) {
   return {
-    type: _constants.MESSAGE_MARK_READ,
+    type: _constants.MESSAGE_TOGGLE_READ,
     id: id
   };
 }
@@ -36,6 +37,13 @@ function markMessageRead(id) {
 function toggleMessageSelected(id) {
   return {
     type: _constants.MESSAGE_TOGGLE_SELECTED,
+    id: id
+  };
+}
+
+function toggleMessageFavorite(id) {
+  return {
+    type: _constants.MESSAGE_TOGGLE_FAVORITE,
     id: id
   };
 }
@@ -53,8 +61,9 @@ var APP_STATUS_CONNECTING = exports.APP_STATUS_CONNECTING = 'APP_STATUS_CONNECTI
 var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
 var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
 
-var MESSAGE_MARK_READ = exports.MESSAGE_MARK_READ = 'MESSAGE_MARK_READ';
+var MESSAGE_TOGGLE_READ = exports.MESSAGE_TOGGLE_READ = 'MESSAGE_TOGGLE_READ';
 var MESSAGE_TOGGLE_SELECTED = exports.MESSAGE_TOGGLE_SELECTED = 'MESSAGE_TOGGLE_SELECTED';
+var MESSAGE_TOGGLE_FAVORITE = exports.MESSAGE_TOGGLE_FAVORITE = 'MESSAGE_TOGGLE_FAVORITE';
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -317,10 +326,10 @@ function reducer() {
           })
         }));
       }
-    case _constants.MESSAGE_MARK_READ:
+    case _constants.MESSAGE_TOGGLE_READ:
       {
         var visibleMessages = state.visibleMessages.map(function (message) {
-          return message.id == action.id ? _extends({}, message, { read: true }) : message;
+          return message.id == action.id ? _extends({}, message, { read: !message.read }) : message;
         });
         var unreadCount = visibleMessages.filter(function (message) {
           return !message.read;
@@ -334,6 +343,15 @@ function reducer() {
       {
         var visibleMessages = state.visibleMessages.map(function (message) {
           return message.id == action.id ? _extends({}, message, { selected: !message.selected }) : message;
+        });
+        return _extends({}, state, {
+          visibleMessages: visibleMessages
+        });
+      }
+    case _constants.MESSAGE_TOGGLE_FAVORITE:
+      {
+        var visibleMessages = state.visibleMessages.map(function (message) {
+          return message.id == action.id ? _extends({}, message, { favorite: !message.favorite }) : message;
         });
         return _extends({}, state, {
           visibleMessages: visibleMessages
@@ -1340,6 +1358,8 @@ var _reactRedux = require('react-redux');
 
 var _actions = require('../js/actions');
 
+var _reactMotion = require('react-motion');
+
 var _iconButton = require('material-ui/lib/icon-button');
 
 var _iconButton2 = _interopRequireDefault(_iconButton);
@@ -1461,12 +1481,26 @@ var Inbox = function (_React$Component) {
             _react2.default.createElement(_divider2.default, null),
             _react2.default.createElement(_listItem2.default, {
               onClick: function onClick() {
-                return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.markMessageRead)(message.id));
+                return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));
               },
               leftAvatar: message.read ? _react2.default.createElement(
-                'i',
-                { className: 'material-icons', style: { color: 'rgb(0, 188, 212)' } },
-                'done'
+                'span',
+                null,
+                _react2.default.createElement(
+                  _reactMotion.Motion,
+                  { defaultStyle: { opacity: 0, zoom: 3 }, style: { opacity: 1, zoom: (0, _reactMotion.spring)(1, { stiffness: 200, damping: 10 }) } },
+                  function (i) {
+                    return _react2.default.createElement(
+                      'i',
+                      { className: 'material-icons', style: {
+                          color: 'rgb(0, 188, 212)',
+                          opacity: i.opacity,
+                          transform: 'scale(' + i.zoom + ')'
+                        } },
+                      'done'
+                    );
+                  }
+                )
               ) : _react2.default.createElement(
                 'i',
                 { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
@@ -1475,10 +1509,18 @@ var Inbox = function (_React$Component) {
               primaryText: _react2.default.createElement(
                 'span',
                 null,
-                _react2.default.createElement(_checkbox2.default, { checked: !!message.selected, style: styles.checkbox }),
+                _react2.default.createElement(_checkbox2.default, {
+                  onCheck: message.read ? function (e) {
+                    return e.stopPropagation();
+                  } : function () {
+                    return dispatch((0, _actions.toggleMessageSelected)(message.id));
+                  },
+                  checked: !!message.selected,
+                  style: styles.checkbox
+                }),
                 _react2.default.createElement(
                   'span',
-                  { style: { paddingLeft: '40px' } },
+                  { style: styles.source },
                   messageType(message.type, message.read) + ' ' + message.source
                 )
               ),
@@ -1496,19 +1538,23 @@ var Inbox = function (_React$Component) {
               ),
               rightIconButton: _react2.default.createElement(
                 'div',
-                { style: { marginTop: '10px' } },
-                _react2.default.createElement(
+                { style: { marginTop: '8px' } },
+                message.read && _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon, tooltip: message.read ? 'Mark as unread' : 'Mark as read' },
+                  { onClick: function onClick(e) {
+                      dispatch((0, _actions.toggleMessageRead)(message.id));e.stopPropagation();
+                    }, style: styles.icon, tooltip: 'Mark as unread' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
-                    message.read ? 'markunread' : 'done'
+                    'flag'
                   )
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon, tooltip: 'Reply' },
+                  { onClick: function onClick(e) {
+                      return e.stopPropagation();
+                    }, style: styles.icon, tooltip: 'Reply' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
@@ -1517,7 +1563,9 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon, tooltip: 'Forward' },
+                  { onClick: function onClick(e) {
+                      return e.stopPropagation();
+                    }, style: styles.icon, tooltip: 'Forward' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
@@ -1526,16 +1574,21 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { style: styles.icon, tooltip: 'Favorite' },
+                  { onClick: function onClick(e) {
+                      dispatch((0, _actions.toggleMessageFavorite)(message.id));
+                      e.stopPropagation();
+                    }, style: styles.icon, tooltip: 'Favorite' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
-                    'favorite_border'
+                    message.favorite ? 'favorite' : 'favorite_border'
                   )
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { onClick: function onClick() {
+                  { onClick: function onClick(e) {
+                      return e.stopPropagation();
+                    }, onClick: function onClick() {
                       return _this2.setState({ confirmDialogVisible: true });
                     }, style: styles.icon, tooltip: 'Delete' },
                   _react2.default.createElement(
@@ -1566,6 +1619,9 @@ var styles = {
     paddingLeft: '40px',
     paddingRight: '256px'
   },
+  source: {
+    paddingLeft: '40px'
+  },
   checkbox: {
     position: 'absolute',
     width: '15px'
@@ -1580,7 +1636,7 @@ var InboxComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = InboxComponent;
 
-},{"../js/actions":1,"material-ui/lib/Subheader":273,"material-ui/lib/checkbox":284,"material-ui/lib/dialog":287,"material-ui/lib/divider":288,"material-ui/lib/flat-button":292,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
+},{"../js/actions":1,"material-ui/lib/Subheader":273,"material-ui/lib/checkbox":284,"material-ui/lib/dialog":287,"material-ui/lib/divider":288,"material-ui/lib/flat-button":292,"material-ui/lib/icon-button":295,"material-ui/lib/lists/list":298,"material-ui/lib/lists/list-item":297,"material-ui/lib/styles/colors":314,"react":528,"react-motion":373,"react-redux":381,"react-timeago":393}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

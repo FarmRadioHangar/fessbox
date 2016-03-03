@@ -1,7 +1,8 @@
 import { 
   APP_INITIALIZE, 
   APP_UPDATE_STATUS, 
-  MESSAGE_MARK_READ,
+  MESSAGE_TOGGLE_READ,
+  MESSAGE_TOGGLE_FAVORITE,
   MESSAGE_TOGGLE_SELECTED,
 } from './constants'
 
@@ -20,9 +21,9 @@ export function initializeApp(data) {
   }
 }
 
-export function markMessageRead(id) {
+export function toggleMessageRead(id) {
   return {
-    type : MESSAGE_MARK_READ, 
+    type : MESSAGE_TOGGLE_READ, 
     id,
   }
 }
@@ -30,6 +31,14 @@ export function markMessageRead(id) {
 export function toggleMessageSelected(id) {
   return {
     type : MESSAGE_TOGGLE_SELECTED, 
+    id,
+  }
+}
+
+
+export function toggleMessageFavorite(id) {
+  return {
+    type : MESSAGE_TOGGLE_FAVORITE, 
     id,
   }
 }
