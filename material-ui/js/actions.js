@@ -1,9 +1,7 @@
 import { 
   APP_INITIALIZE, 
   APP_UPDATE_STATUS, 
-  MESSAGE_TOGGLE_READ,
-  MESSAGE_TOGGLE_FAVORITE,
-  MESSAGE_TOGGLE_SELECTED,
+  MESSAGE_TOGGLE_PROPERTY,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -23,14 +21,16 @@ export function initializeApp(data) {
 
 export function toggleMessageRead(id) {
   return {
-    type : MESSAGE_TOGGLE_READ, 
+    type     : MESSAGE_TOGGLE_PROPERTY, 
+    property : 'read',
     id,
   }
 }
 
 export function toggleMessageSelected(id) {
   return {
-    type : MESSAGE_TOGGLE_SELECTED, 
+    type     : MESSAGE_TOGGLE_PROPERTY, 
+    property : 'selected',
     id,
   }
 }
@@ -38,7 +38,8 @@ export function toggleMessageSelected(id) {
 
 export function toggleMessageFavorite(id) {
   return {
-    type : MESSAGE_TOGGLE_FAVORITE, 
+    type     : MESSAGE_TOGGLE_PROPERTY, 
+    property : 'favorite',
     id,
   }
 }

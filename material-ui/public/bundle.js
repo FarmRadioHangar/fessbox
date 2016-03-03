@@ -29,21 +29,24 @@ function initializeApp(data) {
 
 function toggleMessageRead(id) {
   return {
-    type: _constants.MESSAGE_TOGGLE_READ,
+    type: _constants.MESSAGE_TOGGLE_PROPERTY,
+    property: 'read',
     id: id
   };
 }
 
 function toggleMessageSelected(id) {
   return {
-    type: _constants.MESSAGE_TOGGLE_SELECTED,
+    type: _constants.MESSAGE_TOGGLE_PROPERTY,
+    property: 'selected',
     id: id
   };
 }
 
 function toggleMessageFavorite(id) {
   return {
-    type: _constants.MESSAGE_TOGGLE_FAVORITE,
+    type: _constants.MESSAGE_TOGGLE_PROPERTY,
+    property: 'favorite',
     id: id
   };
 }
@@ -61,9 +64,7 @@ var APP_STATUS_CONNECTING = exports.APP_STATUS_CONNECTING = 'APP_STATUS_CONNECTI
 var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
 var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
 
-var MESSAGE_TOGGLE_READ = exports.MESSAGE_TOGGLE_READ = 'MESSAGE_TOGGLE_READ';
-var MESSAGE_TOGGLE_SELECTED = exports.MESSAGE_TOGGLE_SELECTED = 'MESSAGE_TOGGLE_SELECTED';
-var MESSAGE_TOGGLE_FAVORITE = exports.MESSAGE_TOGGLE_FAVORITE = 'MESSAGE_TOGGLE_FAVORITE';
+var MESSAGE_TOGGLE_PROPERTY = exports.MESSAGE_TOGGLE_PROPERTY = 'MESSAGE_TOGGLE_PROPERTY';
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -301,6 +302,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _constants = require('../constants');
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var initialState = {
   messageCount: 0,
   unreadCount: 0,
@@ -326,10 +329,10 @@ function reducer() {
           })
         }));
       }
-    case _constants.MESSAGE_TOGGLE_READ:
+    case _constants.MESSAGE_TOGGLE_PROPERTY:
       {
         var visibleMessages = state.visibleMessages.map(function (message) {
-          return message.id == action.id ? _extends({}, message, { read: !message.read }) : message;
+          return message.id == action.id ? _extends({}, message, _defineProperty({}, action.property, !message[action.property])) : message;
         });
         var unreadCount = visibleMessages.filter(function (message) {
           return !message.read;
@@ -337,24 +340,6 @@ function reducer() {
         return _extends({}, state, {
           visibleMessages: visibleMessages,
           unreadCount: unreadCount
-        });
-      }
-    case _constants.MESSAGE_TOGGLE_SELECTED:
-      {
-        var visibleMessages = state.visibleMessages.map(function (message) {
-          return message.id == action.id ? _extends({}, message, { selected: !message.selected }) : message;
-        });
-        return _extends({}, state, {
-          visibleMessages: visibleMessages
-        });
-      }
-    case _constants.MESSAGE_TOGGLE_FAVORITE:
-      {
-        var visibleMessages = state.visibleMessages.map(function (message) {
-          return message.id == action.id ? _extends({}, message, { favorite: !message.favorite }) : message;
-        });
-        return _extends({}, state, {
-          visibleMessages: visibleMessages
         });
       }
     default:
@@ -1574,10 +1559,13 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { onClick: function onClick(e) {
-                      dispatch((0, _actions.toggleMessageFavorite)(message.id));
-                      e.stopPropagation();
-                    }, style: styles.icon, tooltip: 'Favorite' },
+                  {
+                    onClick: function onClick(e) {
+                      dispatch((0, _actions.toggleMessageFavorite)(message.id));e.stopPropagation();
+                    },
+                    style: styles.icon,
+                    iconStyle: !!message.favorite ? { color: 'rgb(0, 188, 212)' } : {},
+                    tooltip: 'Favorite' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },

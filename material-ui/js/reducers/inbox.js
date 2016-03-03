@@ -1,8 +1,6 @@
 import { 
   APP_INITIALIZE, 
-  MESSAGE_TOGGLE_READ,
-  MESSAGE_TOGGLE_FAVORITE,
-  MESSAGE_TOGGLE_SELECTED,
+  MESSAGE_TOGGLE_PROPERTY,
 } from '../constants'
 
 const initialState = {
@@ -25,30 +23,14 @@ function reducer(state = initialState, action) {
         })),
       })
     }
-    case MESSAGE_TOGGLE_READ: {
+    case MESSAGE_TOGGLE_PROPERTY: {
       const visibleMessages = state.visibleMessages.map(message => 
-        message.id == action.id ? { ...message, read: !message.read } : message)
+        message.id == action.id ? { ...message, [action.property]: !message[action.property] } : message)
       const unreadCount = visibleMessages.filter(message => !message.read).length
       return {
         ...state,
         visibleMessages,
         unreadCount,
-      }
-    }
-    case MESSAGE_TOGGLE_SELECTED: {
-      const visibleMessages = state.visibleMessages.map(message => 
-        message.id == action.id ? { ...message, selected: !message.selected } : message)
-      return {
-        ...state,
-        visibleMessages,
-      }
-    }
-    case MESSAGE_TOGGLE_FAVORITE: {
-      const visibleMessages = state.visibleMessages.map(message => 
-        message.id == action.id ? { ...message, favorite: !message.favorite } : message)
-      return {
-        ...state,
-        visibleMessages,
       }
     }
     default:

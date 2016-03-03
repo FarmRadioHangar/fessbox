@@ -136,10 +136,11 @@ class Inbox extends React.Component {
                   <IconButton onClick={e => e.stopPropagation()} style={styles.icon} tooltip='Forward'>
                     <i className='material-icons'>forward</i>
                   </IconButton>
-                  <IconButton onClick={e => { 
-                    dispatch(toggleMessageFavorite(message.id)) 
-                    e.stopPropagation()
-                  }} style={styles.icon} tooltip='Favorite'>
+                  <IconButton 
+                    onClick   = {e => { dispatch(toggleMessageFavorite(message.id)) ; e.stopPropagation() }} 
+                    style     = {styles.icon}
+                    iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}
+                    tooltip   = 'Favorite'>
                     <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
                   </IconButton>
                   <IconButton onClick={e => e.stopPropagation()} onClick={() => this.setState({confirmDialogVisible: true})} style={styles.icon} tooltip='Delete'>
