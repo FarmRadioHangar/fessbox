@@ -28,7 +28,6 @@ import Checkbox
 import { grey400, darkBlack, lightBlack } 
   from 'material-ui/lib/styles/colors'
 
-
 function messageType(key, read) {
   if ('sms_in' == key) {
     return 'Incoming SMS from'
@@ -120,7 +119,6 @@ class Inbox extends React.Component {
               }
               rightIconButton = {
                 <div style={{marginTop: '8px'}}>
-                  {!!message.selected ? 'selected' : null}
                   {message.read && (
                     <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
                       <i className='material-icons'>flag</i>
@@ -147,7 +145,9 @@ class Inbox extends React.Component {
                   </IconButton>
                 </div>
               }
-              style = {message.read ? {} : {
+              style = {message.read ? (message.selected ? {
+                backgroundColor : 'rgba(255, 255, 129, 0.4)',
+              } : {}) : {
                 backgroundColor : 'rgba(255, 64, 129, 0.05)',
               }} />
           </div>
