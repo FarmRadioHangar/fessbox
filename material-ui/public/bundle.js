@@ -1646,7 +1646,6 @@ var Inbox = function (_React$Component) {
             { key: message.id },
             _react2.default.createElement(_divider2.default, null),
             _react2.default.createElement(_listItem2.default, {
-              disabled: true,
               onClick: function onClick() {
                 return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));
               },
@@ -1654,24 +1653,6 @@ var Inbox = function (_React$Component) {
                 'i',
                 { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
                 'notifications'
-              ),
-              primaryText: _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement(_checkbox2.default, {
-                  onCheck: message.read ? function (e) {
-                    return e.stopPropagation();
-                  } : function () {
-                    return dispatch((0, _actions.toggleMessageSelected)(message.id));
-                  },
-                  checked: !!message.selected,
-                  style: styles.checkbox
-                }),
-                _react2.default.createElement(
-                  'span',
-                  { style: styles.source },
-                  messageType(message.type, message.read) + ' ' + message.source
-                )
               ),
               secondaryTextLines: 2,
               secondaryText: _react2.default.createElement(
@@ -1688,6 +1669,7 @@ var Inbox = function (_React$Component) {
               rightIconButton: _react2.default.createElement(
                 'div',
                 { style: { marginTop: '8px' } },
+                !!message.selected ? 'selected' : null,
                 message.read && _react2.default.createElement(
                   _iconButton2.default,
                   { onClick: function onClick(e) {
@@ -1768,11 +1750,7 @@ var styles = {
     color: '#757575'
   },
   p: {
-    paddingLeft: '40px',
     paddingRight: '256px'
-  },
-  source: {
-    paddingLeft: '40px'
   },
   checkbox: {
     position: 'absolute',

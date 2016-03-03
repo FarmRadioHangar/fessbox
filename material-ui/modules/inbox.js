@@ -103,23 +103,10 @@ class Inbox extends React.Component {
           <div key={message.id}>
             <Divider />
             <ListItem
-              disabled           = {true}
               onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
               leftAvatar         = {message.read ? readIcon : (
                 <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
               )}
-              primaryText        = {
-                <span>
-                  <Checkbox 
-                    onCheck = {message.read ? e => e.stopPropagation() : () => dispatch(toggleMessageSelected(message.id))} 
-                    checked = {!!message.selected} 
-                    style   = {styles.checkbox} 
-                  />
-                  <span style={styles.source}>
-                    {`${messageType(message.type, message.read)} ${message.source}`}
-                  </span>
-                </span>
-              }
               secondaryTextLines = {2}
               secondaryText      = {
                 <p style={styles.p}>
@@ -133,6 +120,7 @@ class Inbox extends React.Component {
               }
               rightIconButton = {
                 <div style={{marginTop: '8px'}}>
+                  {!!message.selected ? 'selected' : null}
                   {message.read && (
                     <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
                       <i className='material-icons'>flag</i>
@@ -174,11 +162,7 @@ const styles = {
     color        : '#757575',
   },
   p: {
-    paddingLeft  : '40px',
     paddingRight : '256px',
-  },
-  source: {
-    paddingLeft  : '40px',
   },
   checkbox: {
     position     : 'absolute', 
