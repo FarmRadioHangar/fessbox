@@ -14,7 +14,7 @@ class ChannelToolbar extends React.Component {
   render() {
     const { id, label } = this.props
     return (
-      <Toolbar>
+      <Toolbar style={{backgroundColor: 'white'}}>
         <ToolbarGroup 
           firstChild = {true}
           float      = 'left'>
