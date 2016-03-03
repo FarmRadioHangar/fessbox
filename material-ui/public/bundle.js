@@ -1384,7 +1384,7 @@ var Channel = function (_React$Component) {
               { style: { padding: '10px' } },
               _react2.default.createElement(_flatButton2.default, {
                 style: styles.button,
-                secondary: true,
+                primary: true,
                 label: 'Master',
                 icon: _react2.default.createElement(
                   'i',
@@ -1397,7 +1397,7 @@ var Channel = function (_React$Component) {
               }),
               _react2.default.createElement(_flatButton2.default, {
                 style: styles.button,
-                secondary: true,
+                primary: true,
                 label: 'On hold',
                 icon: _react2.default.createElement(
                   'i',
@@ -1410,6 +1410,7 @@ var Channel = function (_React$Component) {
               }),
               _react2.default.createElement(_flatButton2.default, {
                 style: styles.button,
+                secondary: true,
                 label: 'Reject',
                 icon: _react2.default.createElement(
                   'i',

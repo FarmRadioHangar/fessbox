@@ -59,20 +59,21 @@ class Channel extends React.Component {
             <div style={{padding: '10px'}}>
               <FlatButton
                 style      = {styles.button}
-                secondary  = {true} 
+                primary    = {true} 
                 label      = 'Master'
                 icon       = {<i className='material-icons'>speaker</i>}
                 onClick    = {() => this.setMode('master')}
               />
               <FlatButton
                 style      = {styles.button}
-                secondary  = {true} 
+                primary    = {true} 
                 label      = 'On hold'
                 icon       = {<i className='material-icons'>pause</i>}
                 onClick    = {() => this.setMode('on_hold')}
               />
               <FlatButton
                 style      = {styles.button}
+                secondary  = {true}
                 label      = 'Reject'
                 icon       = {<i className='material-icons'>cancel</i>}
                 onClick    = {() => this.setMode('free')}
