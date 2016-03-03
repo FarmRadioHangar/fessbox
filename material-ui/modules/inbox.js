@@ -28,6 +28,7 @@ import Checkbox
 import { grey400, darkBlack, lightBlack } 
   from 'material-ui/lib/styles/colors'
 
+
 function messageType(key, read) {
   if ('sms_in' == key) {
     return 'Incoming SMS from'
@@ -76,6 +77,19 @@ class Inbox extends React.Component {
   }
   render() {
     const { inbox : { visibleMessages }, dispatch } = this.props
+    const readIcon = (
+      <span>
+        <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
+          {i => (
+            <i className='material-icons' style={{
+              color     : 'rgb(0, 188, 212)',
+              opacity   : i.opacity,
+              transform : `scale(${i.zoom})`,
+            }}>done</i>
+          )}
+        </Motion>
+      </span>
+    )
     return (
       <List>
         {this.renderDialog()}
@@ -85,19 +99,7 @@ class Inbox extends React.Component {
             <Divider />
             <ListItem
               onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
-              leftAvatar         = {message.read ? (
-                <span>
-                  <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
-                    {i => (
-                      <i className='material-icons' style={{
-                        color     : 'rgb(0, 188, 212)',
-                        opacity   : i.opacity,
-                        transform : `scale(${i.zoom})`,
-                      }}>done</i>
-                    )}
-                  </Motion>
-                </span>
-              ) : (
+              leftAvatar         = {message.read ? readIcon : (
                 <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
               )}
               primaryText        = {
@@ -150,8 +152,8 @@ class Inbox extends React.Component {
               }
               style = {message.read ? {} : {
                 backgroundColor : 'rgba(255, 64, 129, 0.05)',
-              }}
-            />
+              }}>
+            </ListItem>
           </div>
         ))}
       </List>

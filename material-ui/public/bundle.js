@@ -1450,6 +1450,25 @@ var Inbox = function (_React$Component) {
       var visibleMessages = _props.inbox.visibleMessages;
       var dispatch = _props.dispatch;
 
+      var readIcon = _react2.default.createElement(
+        'span',
+        null,
+        _react2.default.createElement(
+          _reactMotion.Motion,
+          { defaultStyle: { opacity: 0, zoom: 3 }, style: { opacity: 1, zoom: (0, _reactMotion.spring)(1, { stiffness: 200, damping: 10 }) } },
+          function (i) {
+            return _react2.default.createElement(
+              'i',
+              { className: 'material-icons', style: {
+                  color: 'rgb(0, 188, 212)',
+                  opacity: i.opacity,
+                  transform: 'scale(' + i.zoom + ')'
+                } },
+              'done'
+            );
+          }
+        )
+      );
       return _react2.default.createElement(
         _list2.default,
         null,
@@ -1468,25 +1487,7 @@ var Inbox = function (_React$Component) {
               onClick: function onClick() {
                 return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));
               },
-              leftAvatar: message.read ? _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement(
-                  _reactMotion.Motion,
-                  { defaultStyle: { opacity: 0, zoom: 3 }, style: { opacity: 1, zoom: (0, _reactMotion.spring)(1, { stiffness: 200, damping: 10 }) } },
-                  function (i) {
-                    return _react2.default.createElement(
-                      'i',
-                      { className: 'material-icons', style: {
-                          color: 'rgb(0, 188, 212)',
-                          opacity: i.opacity,
-                          transform: 'scale(' + i.zoom + ')'
-                        } },
-                      'done'
-                    );
-                  }
-                )
-              ) : _react2.default.createElement(
+              leftAvatar: message.read ? readIcon : _react2.default.createElement(
                 'i',
                 { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
                 'notifications'
@@ -1588,8 +1589,7 @@ var Inbox = function (_React$Component) {
               ),
               style: message.read ? {} : {
                 backgroundColor: 'rgba(255, 64, 129, 0.05)'
-              }
-            })
+              } })
           );
         })
       );
