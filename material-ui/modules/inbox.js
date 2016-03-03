@@ -41,14 +41,20 @@ class Inbox extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      confirmDialogVisible : false,
+      confirmDeleteMessage : null,
     }
     this.handleCloseDialog = this.handleCloseDialog.bind(this)
   }
   handleCloseDialog() {
     this.setState({
-      confirmDialogVisible : false,
+      confirmDeleteMessage : null,
     })
+  }
+  handleConfirmDelete() {
+    this.props.sendMessage('messageDelete', { 
+      [this.state.confirmDeleteMessage]: null
+    })
+    this.handleCloseDialog()
   }
   renderDialog() {
     const actions = [
@@ -60,8 +66,7 @@ class Inbox extends React.Component {
       <FlatButton
         label      = 'Delete'
         primary    = {true}
-        disabled   = {true}
-        onTouchTap = {this.handleCloseDialog}
+        onTouchTap = {this.handleConfirmDelete.bind(this)}
       />,
     ]
     return (
@@ -69,7 +74,7 @@ class Inbox extends React.Component {
         title          = 'Confirm action'
         actions        = {actions}
         modal          = {true}
-        open           = {this.state.confirmDialogVisible}
+        open           = {!!this.state.confirmDeleteMessage}
         onRequestClose = {this.handleCloseDialog}>
         Do you really want to delete this message?
       </Dialog>
@@ -98,6 +103,7 @@ class Inbox extends React.Component {
           <div key={message.id}>
             <Divider />
             <ListItem
+              disabled           = {true}
               onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
               leftAvatar         = {message.read ? readIcon : (
                 <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
@@ -145,15 +151,17 @@ class Inbox extends React.Component {
                     tooltip   = 'Favorite'>
                     <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
                   </IconButton>
-                  <IconButton onClick={e => e.stopPropagation()} onClick={() => this.setState({confirmDialogVisible: true})} style={styles.icon} tooltip='Delete'>
+                  <IconButton 
+                    onClick   = {e => { this.setState({confirmDeleteMessage: message.id}) ; e.stopPropagation() }} 
+                    style     = {styles.icon} 
+                    tooltip   = 'Delete'>
                     <i className='material-icons'>delete_forever</i>
                   </IconButton>
                 </div>
               }
               style = {message.read ? {} : {
                 backgroundColor : 'rgba(255, 64, 129, 0.05)',
-              }}>
-            </ListItem>
+              }} />
           </div>
         ))}
       </List>

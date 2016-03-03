@@ -322,7 +322,7 @@ function reducer() {
         return Object.assign({}, state, _extends({}, action.data.inbox, {
           messageCount: ids.length,
           unreadCount: ids.length,
-          visibleMessages: ids.slice(0, 25).map(function (id) {
+          visibleMessages: ids.slice(0, 10).map(function (id) {
             return _extends({}, action.data.inbox.messages[id], {
               id: id
             });
@@ -693,6 +693,7 @@ var App = function (_React$Component) {
       var _this2 = this;
 
       var tab = this.state.tab;
+      var sendMessage = this.props.sendMessage;
 
       return _react2.default.createElement(
         _tabs2.default,
@@ -725,7 +726,7 @@ var App = function (_React$Component) {
             ),
             label: 'Inbox',
             value: 'inbox' },
-          _react2.default.createElement(_inbox2.default, null)
+          _react2.default.createElement(_inbox2.default, { sendMessage: sendMessage })
         ),
         _react2.default.createElement(
           _tab2.default,
@@ -1436,6 +1437,11 @@ var Channel = function (_React$Component) {
           { style: styles.paper },
           _react2.default.createElement(_channelToolbar2.default, this.props),
           this.renderControls(),
+          _react2.default.createElement(
+            'div',
+            null,
+            '' + this.props.mode
+          ),
           this.renderActions()
         )
       );
@@ -1530,6 +1536,8 @@ var _colors = require('material-ui/lib/styles/colors');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -1553,7 +1561,7 @@ var Inbox = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));
 
     _this.state = {
-      confirmDialogVisible: false
+      confirmDeleteMessage: null
     };
     _this.handleCloseDialog = _this.handleCloseDialog.bind(_this);
     return _this;
@@ -1563,8 +1571,14 @@ var Inbox = function (_React$Component) {
     key: 'handleCloseDialog',
     value: function handleCloseDialog() {
       this.setState({
-        confirmDialogVisible: false
+        confirmDeleteMessage: null
       });
+    }
+  }, {
+    key: 'handleConfirmDelete',
+    value: function handleConfirmDelete() {
+      this.props.sendMessage('messageDelete', _defineProperty({}, this.state.confirmDeleteMessage, null));
+      this.handleCloseDialog();
     }
   }, {
     key: 'renderDialog',
@@ -1576,8 +1590,7 @@ var Inbox = function (_React$Component) {
       }), _react2.default.createElement(_flatButton2.default, {
         label: 'Delete',
         primary: true,
-        disabled: true,
-        onTouchTap: this.handleCloseDialog
+        onTouchTap: this.handleConfirmDelete.bind(this)
       })];
       return _react2.default.createElement(
         _dialog2.default,
@@ -1585,7 +1598,7 @@ var Inbox = function (_React$Component) {
           title: 'Confirm action',
           actions: actions,
           modal: true,
-          open: this.state.confirmDialogVisible,
+          open: !!this.state.confirmDeleteMessage,
           onRequestClose: this.handleCloseDialog },
         'Do you really want to delete this message?'
       );
@@ -1633,6 +1646,7 @@ var Inbox = function (_React$Component) {
             { key: message.id },
             _react2.default.createElement(_divider2.default, null),
             _react2.default.createElement(_listItem2.default, {
+              disabled: true,
               onClick: function onClick() {
                 return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));
               },
@@ -1724,11 +1738,12 @@ var Inbox = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   _iconButton2.default,
-                  { onClick: function onClick(e) {
-                      return e.stopPropagation();
-                    }, onClick: function onClick() {
-                      return _this2.setState({ confirmDialogVisible: true });
-                    }, style: styles.icon, tooltip: 'Delete' },
+                  {
+                    onClick: function onClick(e) {
+                      _this2.setState({ confirmDeleteMessage: message.id });e.stopPropagation();
+                    },
+                    style: styles.icon,
+                    tooltip: 'Delete' },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },

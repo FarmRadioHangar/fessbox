@@ -17,7 +17,7 @@ function reducer(state = initialState, action) {
         ...action.data.inbox,
         messageCount    : ids.length,
         unreadCount     : ids.length,
-        visibleMessages : ids.slice(0, 25).map(id => ({
+        visibleMessages : ids.slice(0, 10).map(id => ({
           ...action.data.inbox.messages[id],
           id,
         })),

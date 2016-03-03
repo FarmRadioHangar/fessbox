@@ -89,6 +89,7 @@ class Channel extends React.Component {
         <Paper style={styles.paper}>
           <ChannelToolbar {...this.props} />
           {this.renderControls()}
+          <div>{''+this.props.mode}</div>
           {this.renderActions()}
         </Paper>
       </div>

@@ -95,6 +95,7 @@ class App extends React.Component {
   }
   renderTabs() {
     const { tab } = this.state
+    const { sendMessage } = this.props
     return (
       <Tabs value={tab}>
         <Tab
@@ -109,7 +110,7 @@ class App extends React.Component {
           icon     = {<i className='material-icons'>message</i>}
           label    = 'Inbox' 
           value    = 'inbox'>
-          <Inbox />
+          <Inbox sendMessage={sendMessage} />
         </Tab>
         <Tab
           onActive = {() => this.activateTab('call_log')}
