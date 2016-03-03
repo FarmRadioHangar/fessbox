@@ -22,7 +22,7 @@ class CallLog extends React.Component {
   render() {
     return (
       <Paper>
-        <Table>
+        <Table multiSelectable={true}>
           <TableHeader>
             <TableRow>
               <TableHeaderColumn>Activity</TableHeaderColumn>

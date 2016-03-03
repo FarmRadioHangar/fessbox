@@ -887,7 +887,7 @@ var CallLog = function (_React$Component) {
         null,
         _react2.default.createElement(
           _table2.default,
-          null,
+          { multiSelectable: true },
           _react2.default.createElement(
             _tableHeader2.default,
             null,
