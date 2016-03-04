@@ -1,8 +1,9 @@
-import React   from 'react'
-import Mixer   from './mixer'
-import CallLog from './call-log'
-import Inbox   from './inbox'
-import Toastr  from './toastr'
+import React             from 'react'
+import Mixer             from './mixer'
+import CallLog           from './call-log'
+import Inbox             from './inbox'
+import Toastr            from './toastr'
+import SendMessageDialog from './send-message-dialog'
 
 import { connect } 
   from 'react-redux'
@@ -15,14 +16,6 @@ import Tab
   from 'material-ui/lib/tabs/tab'
 import FloatingActionButton 
   from 'material-ui/lib/floating-action-button'
-import Dialog 
-  from 'material-ui/lib/dialog'
-import FlatButton 
-  from 'material-ui/lib/flat-button'
-import TextField 
-  from 'material-ui/lib/text-field'
-import AutoComplete 
-  from 'material-ui/lib/auto-complete'
 
 import IconCommunicationDialpad
   from 'material-ui/lib/svg-icons/communication/dialpad'
@@ -38,6 +31,7 @@ class App extends React.Component {
       dialog  : null,
     }
     this.renderFAB = this.renderFAB.bind(this)
+    this.renderDialog = this.renderDialog.bind(this)
     this.handleCloseDialog = this.handleCloseDialog.bind(this)
   }
   activateTab(tab) {
@@ -55,42 +49,14 @@ class App extends React.Component {
   }
   renderDialog() {
     const { dialog } = this.state
-    const actions = [
-      <FlatButton
-        label           = 'Cancel'
-        secondary       = {true}
-        onTouchTap      = {this.handleCloseDialog}
-      />,
-      <FlatButton
-        label           = 'Send'
-        primary         = {true}
-        keyboardFocused = {true}
-        onTouchTap      = {this.handleCloseDialog}
-      />,
-    ]
     return (
-      <Dialog
-        title          = 'Send message'
-        actions        = {actions}
-        modal          = {false}
-        open           = {!!dialog}
-        onRequestClose = {this.handleCloseDialog}>
-        <AutoComplete
-          hintText          = 'Type a contact name or phone number'
-          dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
-          onUpdateInput     = {() => {}}
-          floatingLabelText = 'Recepient'
-          fullWidth         = {true}
+      <div>
+        <SendMessageDialog 
+          onClose     = {this.handleCloseDialog} 
+          open        = {'send-message' == dialog} 
+          sendMessage = {this.props.sendMessage}
         />
-        {'send-message' == dialog && (
-          <TextField
-            hintText   = 'Message content'
-            fullWidth  = {true}
-            multiLine  = {true}
-            rows       = {3} 
-          />
-        )}
-      </Dialog>
+      </div>
     )
   }
   renderTabs() {
