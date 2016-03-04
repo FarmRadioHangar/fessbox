@@ -1,6 +1,7 @@
 import { 
   APP_INITIALIZE, 
   APP_UPDATE_STATUS, 
+  CHANNEL_UPDATE,
   MESSAGE_TOGGLE_PROPERTY,
 } from './constants'
 
@@ -41,5 +42,13 @@ export function toggleMessageFavorite(id) {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'favorite',
     id,
+  }
+}
+
+export function updateChannel(id, data) {
+  return {
+    type : CHANNEL_UPDATE, 
+    id,
+    data,
   }
 }
