@@ -6,3 +6,5 @@ export const APP_STATUS_ERROR            = 'APP_STATUS_ERROR'
 export const APP_STATUS_INITIALIZED      = 'APP_STATUS_INITIALIZED'
 
 export const MESSAGE_TOGGLE_PROPERTY     = 'MESSAGE_TOGGLE_PROPERTY'
+
+export const CHANNEL_UPDATE              = 'CHANNEL_UPDATE'
