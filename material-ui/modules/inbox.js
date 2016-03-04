@@ -86,7 +86,7 @@ class Inbox extends React.Component {
         <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
           {i => (
             <i className='material-icons' style={{
-              color     : '#757575',
+              color     : '#aed581',
               opacity   : i.opacity,
               transform : `scale(${i.zoom})`,
             }}>sms</i>
@@ -109,26 +109,22 @@ class Inbox extends React.Component {
               leftAvatar         = {message.read ? readIcon : unreadIcon}
               secondaryTextLines = {2}
               secondaryText      = {
-                <p style={styles.p}>
-                  {!!message.selected && (
-                    <i className='material-icons' style={{
-                      color       : 'rgb(0, 188, 212)',
-                      position    : 'absolute',
-                      marginLeft  : '-108px',
-                      marginTop   : '3px',
-                      transform   : 'scale(1.5)',
-                    }}>check</i>
-                  )}
+                <div style={styles.secondary}>
+                  <Checkbox checked={!!message.selected} style={{
+                    position    : 'absolute',
+                    marginLeft  : '-108px',
+                    marginTop   : '-3px',
+                  }} />
                   {!isNaN(message.timestamp) && (
                     <span style={{color: darkBlack}}>
                       <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
                     </span> 
                   )}
                   {message.content}
-                </p>
+                </div>
               }
               rightIconButton = {
-                <div style={{marginTop: '8px'}}>
+                <div style={{zIndex: 9999}}>
                   {message.read && (
                     <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
                       <i className='material-icons'>new_releasese</i>
@@ -156,8 +152,8 @@ class Inbox extends React.Component {
                 </div>
               }
               style = {{
-                backgroundColor : message.read ? (message.selected ? 'rgba(255, 255, 129, 0.4)' : 'rgba(255, 255, 255, 0)') : 'rgba(255, 64, 129, 0.05)',
-                paddingLeft     : message.selected ? '60px' : '0',
+                backgroundColor : message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
+                paddingLeft     : '60px',
               }} />
           </div>
         ))}
@@ -166,28 +162,17 @@ class Inbox extends React.Component {
   }
 }
 
-//              style = {message.read ? (message.selected ? styles.message.selected : {}) : styles.message.unread} />
-
 const styles = {
   icon: {
     color             : '#757575',
   },
-  p: {
+  secondary: {
     paddingRight      : '256px',
   },
   checkbox: {
     position          : 'absolute', 
     width             : '15px',
   },
-//  message: {
-//    unread: {
-//      backgroundColor : 'rgba(255, 64, 129, 0.05)',
-//    },
-//    selected: {
-//      backgroundColor : 'rgba(255, 255, 129, 0.4)',
-//      paddingLeft     : '60px',
-//    },
-//  },
 }
 
 const InboxComponent = connect(state => ({

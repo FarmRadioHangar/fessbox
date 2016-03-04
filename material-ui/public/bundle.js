@@ -1630,7 +1630,7 @@ var Inbox = function (_React$Component) {
             return _react2.default.createElement(
               'i',
               { className: 'material-icons', style: {
-                  color: '#757575',
+                  color: '#aed581',
                   opacity: i.opacity,
                   transform: 'scale(' + i.zoom + ')'
                 } },
@@ -1665,19 +1665,13 @@ var Inbox = function (_React$Component) {
               leftAvatar: message.read ? readIcon : unreadIcon,
               secondaryTextLines: 2,
               secondaryText: _react2.default.createElement(
-                'p',
-                { style: styles.p },
-                !!message.selected && _react2.default.createElement(
-                  'i',
-                  { className: 'material-icons', style: {
-                      color: 'rgb(0, 188, 212)',
-                      position: 'absolute',
-                      marginLeft: '-108px',
-                      marginTop: '3px',
-                      transform: 'scale(1.5)'
-                    } },
-                  'check'
-                ),
+                'div',
+                { style: styles.secondary },
+                _react2.default.createElement(_checkbox2.default, { checked: !!message.selected, style: {
+                    position: 'absolute',
+                    marginLeft: '-108px',
+                    marginTop: '-3px'
+                  } }),
                 !isNaN(message.timestamp) && _react2.default.createElement(
                   'span',
                   { style: { color: _colors.darkBlack } },
@@ -1688,7 +1682,7 @@ var Inbox = function (_React$Component) {
               ),
               rightIconButton: _react2.default.createElement(
                 'div',
-                { style: { marginTop: '8px' } },
+                { style: { zIndex: 9999 } },
                 message.read && _react2.default.createElement(
                   _iconButton2.default,
                   { onClick: function onClick(e) {
@@ -1753,8 +1747,8 @@ var Inbox = function (_React$Component) {
                 )
               ),
               style: {
-                backgroundColor: message.read ? message.selected ? 'rgba(255, 255, 129, 0.4)' : 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
-                paddingLeft: message.selected ? '60px' : '0'
+                backgroundColor: message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
+                paddingLeft: '60px'
               } })
           );
         })
@@ -1765,13 +1759,11 @@ var Inbox = function (_React$Component) {
   return Inbox;
 }(_react2.default.Component);
 
-//              style = {message.read ? (message.selected ? styles.message.selected : {}) : styles.message.unread} />
-
 var styles = {
   icon: {
     color: '#757575'
   },
-  p: {
+  secondary: {
     paddingRight: '256px'
   },
   checkbox: {
@@ -1780,15 +1772,6 @@ var styles = {
   }
 };
 
-//  message: {
-//    unread: {
-//      backgroundColor : 'rgba(255, 64, 129, 0.05)',
-//    },
-//    selected: {
-//      backgroundColor : 'rgba(255, 255, 129, 0.4)',
-//      paddingLeft     : '60px',
-//    },
-//  },
 var InboxComponent = (0, _reactRedux.connect)(function (state) {
   return {
     inbox: state.inbox
