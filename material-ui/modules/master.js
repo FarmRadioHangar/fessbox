@@ -21,6 +21,7 @@ class Master extends React.Component {
     super(props)
   }
   render() {
+    const { mixer : { master } } = this.props
     return (
       <Paper>
         <Subheader>Master</Subheader>
@@ -30,13 +31,21 @@ class Master extends React.Component {
             <IconVolumeUp />
           </div>
           <div style={styles.slider}>
-            <Slider />
+            <Slider 
+              min           = {1}
+              max           = {100}
+              defaultValue  = {master.out.level}
+            />
           </div>
           <div>
             <IconMic />
           </div>
           <div style={styles.slider}>
-            <Slider />
+            <Slider 
+              min           = {1}
+              max           = {100}
+              defaultValue  = {master.in.level}
+            />
           </div>
         </div>
       </Paper>

@@ -6,13 +6,15 @@ import ToolbarGroup
   from 'material-ui/lib/toolbar/toolbar-group'
 import ToolbarTitle 
   from 'material-ui/lib/toolbar/toolbar-title'
+import ToolbarSeparator 
+  from 'material-ui/lib/toolbar/toolbar-separator'
 
 class ChannelToolbar extends React.Component {
   constructor(props) {
     super(props)
   }
   render() {
-    const { id, label } = this.props
+    const { id, label, mode } = this.props
     return (
       <Toolbar style={{backgroundColor: 'white'}}>
         <ToolbarGroup 

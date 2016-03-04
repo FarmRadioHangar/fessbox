@@ -30,22 +30,30 @@ class Channel extends React.Component {
     }
   }
   renderControls() {
-    const { id, level, muted } = this.props
-    return (
-      <div style={styles.controls}>
-        <div style={styles.avatar}>
-          <Avatar icon={<i className='material-icons'>remove</i>} />
-        </div>
-        <div style={styles.slider}>
-          <Slider 
-            onChange      = {() => {}}
-            disabled      = {muted}
-            min           = {1}
-            max           = {100}
-            defaultValue  = {level} />
-        </div>
-      </div>
-    )
+    const { id, level, mode, muted } = this.props
+    switch (mode) {
+      case 'defunct':
+        return (
+          <span />
+        ) 
+      case 'free':
+      default:
+        return (
+          <div style={styles.controls}>
+            <div style={styles.avatar}>
+              <Avatar icon={<i className='material-icons'>remove</i>} />
+            </div>
+            <div style={styles.slider}>
+              <Slider 
+                onChange      = {() => {}}
+                disabled      = {muted}
+                min           = {1}
+                max           = {100}
+                defaultValue  = {level} />
+            </div>
+          </div>
+        )
+    }
   }
   renderActions() {
     const { mode } = this.props
@@ -88,15 +96,18 @@ class Channel extends React.Component {
   }
   render() {
     const { mode } = this.props
+    const colors = {
+      defunct : '#dedede',
+    }
     return (
       <div style={styles.component}>
         <Paper style={{
             ...styles.paper,
-            borderLeft : `12px solid ${green400}`,
+            borderLeft : `12px solid ${colors[mode] || green400}`,
           }}>
           <ChannelToolbar {...this.props} />
           {this.renderControls()}
-          <div>{''+this.props.mode}</div>
+          {/* <div>{''+this.props.mode}</div> */}
           {this.renderActions()}
         </Paper>
       </div>
