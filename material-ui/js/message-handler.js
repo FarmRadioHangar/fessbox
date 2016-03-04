@@ -1,7 +1,7 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification, initializeApp }
+import { showNotification, initializeApp, updateChannel }
   from './actions'
 
 export default function(eventType, data) {
@@ -20,12 +20,20 @@ export default function(eventType, data) {
       }
       break
     case 'channelUpdate':
+      Object.keys(data).forEach(key=> {
+        const chan = data[key]
+        if (chan) {
+          store.dispatch(updateChannel(key, chan))
+        } else {
+          //
+        }
+      })
       break
     case 'inboxUpdate':
       break
     case 'event_error':
     case 'input_error':
-      console.log(eventType)
+      console.log(`error: ${eventType}`)
       break
     default:
       console.error(`Unknown event type: ${eventType}.`)
