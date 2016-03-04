@@ -1,5 +1,6 @@
 import { 
   APP_INITIALIZE, 
+  CHANNEL_UPDATE,
 } from '../constants'
 
 const initialState = {
@@ -21,6 +22,16 @@ function reducer(state = initialState, action) {
       return {
         ...action.data.mixer,
         channelList : channelList(action.data.mixer.channels),
+      }
+    case CHANNEL_UPDATE:
+      const channels = {
+        ...state.channels,
+        [action.id]: action.data, 
+      }
+      return {
+        ...state, 
+        channels, 
+        channelList : channelList(channels),
       }
     default:
       return state
