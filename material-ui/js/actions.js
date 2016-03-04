@@ -3,6 +3,7 @@ import {
   APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
   MESSAGE_TOGGLE_PROPERTY,
+  MESSAGE_REMOVE,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -41,6 +42,13 @@ export function toggleMessageFavorite(id) {
   return {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'favorite',
+    id,
+  }
+}
+
+export function removeMessage(id) {
+  return {
+    type : MESSAGE_REMOVE, 
     id,
   }
 }
