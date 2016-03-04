@@ -34,7 +34,7 @@ class Master extends React.Component {
             <Slider 
               min           = {1}
               max           = {100}
-              defaultValue  = {master.out.level}
+              defaultValue  = {master.out ? master.out.level : 1}
             />
           </div>
           <div>
@@ -44,7 +44,7 @@ class Master extends React.Component {
             <Slider 
               min           = {1}
               max           = {100}
-              defaultValue  = {master.in.level}
+              defaultValue  = {master.in ? master.in.level : 1}
             />
           </div>
         </div>

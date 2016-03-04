@@ -9,6 +9,10 @@ import AutoComplete
   from 'material-ui/lib/auto-complete'
 import FlatButton 
   from 'material-ui/lib/flat-button'
+import SelectField 
+  from 'material-ui/lib/select-field'
+import MenuItem 
+  from 'material-ui/lib/menus/menu-item'
 
 class SendMessageDialog extends React.Component {
   constructor(props) {
@@ -19,7 +23,7 @@ class SendMessageDialog extends React.Component {
     this.props.sendMessage('addrBookSuggestions', text)
   }
   render() {
-    const { open, onClose } = this.props
+    const { open, onClose, channels } = this.props
     const actions = [
       <FlatButton
         label           = 'Cancel'
@@ -35,11 +39,23 @@ class SendMessageDialog extends React.Component {
     ]
     return (
       <Dialog
-        title          = 'Send'
+        title          = 'Send message'
         actions        = {actions}
         modal          = {false}
         open           = {open}
         onRequestClose = {() => {}}>
+        <SelectField 
+          floatingLabelText = 'SIM card'
+          style             = {{width: '100%'}}
+          value             = {1} 
+          onChange          = {() => {}}>
+          {channels.map((channel, i) => (
+            <MenuItem 
+              key         = {i}
+              value       = {i}
+              primaryText = {channel.id} />
+          ))}
+        </SelectField>
         <AutoComplete
           ref               = 'autoComplete'
           hintText          = 'Type a contact name or phone number'

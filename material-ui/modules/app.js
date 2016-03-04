@@ -51,12 +51,14 @@ class App extends React.Component {
   }
   renderDialog() {
     const { dialog } = this.state
+    const { mixer : { channelList }, sendMessage } = this.props
     return (
       <div>
         <SendMessageDialog 
+          channels    = {channelList}
           onClose     = {this.handleCloseDialog} 
           open        = {'send-message' == dialog} 
-          sendMessage = {this.props.sendMessage}
+          sendMessage = {sendMessage}
         />
       </div>
     )
@@ -164,6 +166,7 @@ const styles = {
 const AppComponent = connect(state => ({
   inbox : state.inbox,
   app   : state.app,
+  mixer : state.mixer,
 }))(App)
 
 export default AppComponent
