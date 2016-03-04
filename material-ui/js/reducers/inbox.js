@@ -1,6 +1,7 @@
 import { 
   APP_INITIALIZE, 
   MESSAGE_TOGGLE_PROPERTY,
+  MESSAGE_REMOVE,
 } from '../constants'
 
 const initialState = {
@@ -31,6 +32,20 @@ function reducer(state = initialState, action) {
         ...state,
         visibleMessages,
         unreadCount,
+      }
+    }
+    case MESSAGE_REMOVE: {
+      const ids = state.ids.filter(id => id != action.id)
+      const visibleMessages = ids.slice(0, 10).map(id => ({
+        ...state.messages[id],
+        id,
+      }))
+      return {
+        ...state,
+        ids, 
+        visibleMessages,
+        messageCount : ids.length,
+        unreadCount  : visibleMessages.filter(message => !message.read).length,
       }
     }
     default:
