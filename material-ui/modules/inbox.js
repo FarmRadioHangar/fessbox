@@ -3,7 +3,7 @@ import TimeAgo from 'react-timeago'
 
 import { connect } 
   from 'react-redux'
-import { toggleMessageRead, toggleMessageSelected, toggleMessageFavorite }
+import { toggleMessageRead, toggleMessageSelected, toggleMessageFavorite, removeMessage }
   from '../js/actions'
 import { TransitionMotion, Motion, spring, presets } 
   from 'react-motion'
@@ -50,10 +50,13 @@ class Inbox extends React.Component {
     })
   }
   handleConfirmDelete() {
-    this.props.sendMessage('messageDelete', { 
-      [this.state.confirmDeleteMessage]: null
-    })
+    const { dispatch, sendMessage } = this.props
+    const id = this.state.confirmDeleteMessage
     this.handleCloseDialog()
+    sendMessage('messageDelete', { 
+      [id]: null
+    })
+    dispatch(removeMessage(id))
   }
   renderDialog() {
     const actions = [
@@ -80,7 +83,7 @@ class Inbox extends React.Component {
     )
   }
   render() {
-    const { inbox : { visibleMessages }, dispatch } = this.props
+    const { inbox : { visibleMessages, messageCount, unreadCount }, dispatch } = this.props
     const readIcon = (
       <span>
         <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
@@ -100,7 +103,7 @@ class Inbox extends React.Component {
     return (
       <List>
         {this.renderDialog()}
-        <Subheader>SMS Messages</Subheader>
+        <Subheader>{`SMS Messages (${unreadCount}/${messageCount})`}</Subheader>
         {visibleMessages.map(message => (
           <div key={message.id}>
             <Divider />
