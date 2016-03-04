@@ -9,6 +9,14 @@ import ToolbarTitle
 import ToolbarSeparator 
   from 'material-ui/lib/toolbar/toolbar-separator'
 
+function getIconName(mode) {
+  if ('defunct' == mode) {
+    return 'error'
+  } else {
+    return 'sim_card'
+  }
+}
+
 class ChannelToolbar extends React.Component {
   constructor(props) {
     super(props)
@@ -28,7 +36,7 @@ class ChannelToolbar extends React.Component {
         <ToolbarGroup float='right'>
           <div style={styles.label}>{label && (
             <div style={styles.inner}>
-              <i style={styles.icon} className='material-icons'>sim_card</i>
+              <i style={styles.icon} className='material-icons'>{getIconName(mode)}</i>
               {label}
             </div>
           )}</div>
