@@ -17,8 +17,6 @@ import { APP_STATUS_ERROR, APP_STATUS_CONNECTED }
 import { updateAppStatus }
   from './actions'
 
-injectTapEventPlugin()
-
 const userId   = getUrlParam('user_id') 
 const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
 const language = getUrlParam('language') || 'en' 
@@ -68,6 +66,8 @@ function sendMessage(type, data) {
     data
   }))
 }
+
+injectTapEventPlugin()
 
 ReactDOM.render(
   <Provider store={store}>
