@@ -1630,14 +1630,19 @@ var Inbox = function (_React$Component) {
             return _react2.default.createElement(
               'i',
               { className: 'material-icons', style: {
-                  color: 'rgb(0, 188, 212)',
+                  color: '#757575',
                   opacity: i.opacity,
                   transform: 'scale(' + i.zoom + ')'
                 } },
-              'done'
+              'sms'
             );
           }
         )
+      );
+      var unreadIcon = _react2.default.createElement(
+        'i',
+        { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
+        'notifications'
       );
       return _react2.default.createElement(
         _list2.default,
@@ -1657,15 +1662,22 @@ var Inbox = function (_React$Component) {
               onClick: function onClick() {
                 return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));
               },
-              leftAvatar: message.read ? readIcon : _react2.default.createElement(
-                'i',
-                { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
-                'notifications'
-              ),
+              leftAvatar: message.read ? readIcon : unreadIcon,
               secondaryTextLines: 2,
               secondaryText: _react2.default.createElement(
                 'p',
                 { style: styles.p },
+                !!message.selected && _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons', style: {
+                      color: 'rgb(0, 188, 212)',
+                      position: 'absolute',
+                      marginLeft: '-108px',
+                      marginTop: '3px',
+                      transform: 'scale(1.5)'
+                    } },
+                  'check'
+                ),
                 !isNaN(message.timestamp) && _react2.default.createElement(
                   'span',
                   { style: { color: _colors.darkBlack } },
@@ -1740,11 +1752,9 @@ var Inbox = function (_React$Component) {
                   )
                 )
               ),
-              style: message.read ? message.selected ? {
-                backgroundColor: 'rgba(255, 255, 129, 0.4)',
-                paddingLeft: '60px'
-              } : {} : {
-                backgroundColor: 'rgba(255, 64, 129, 0.05)'
+              style: {
+                backgroundColor: message.read ? message.selected ? 'rgba(255, 255, 129, 0.4)' : 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
+                paddingLeft: message.selected ? '60px' : '0'
               } })
           );
         })
@@ -1754,6 +1764,8 @@ var Inbox = function (_React$Component) {
 
   return Inbox;
 }(_react2.default.Component);
+
+//              style = {message.read ? (message.selected ? styles.message.selected : {}) : styles.message.unread} />
 
 var styles = {
   icon: {
@@ -1768,6 +1780,15 @@ var styles = {
   }
 };
 
+//  message: {
+//    unread: {
+//      backgroundColor : 'rgba(255, 64, 129, 0.05)',
+//    },
+//    selected: {
+//      backgroundColor : 'rgba(255, 255, 129, 0.4)',
+//      paddingLeft     : '60px',
+//    },
+//  },
 var InboxComponent = (0, _reactRedux.connect)(function (state) {
   return {
     inbox: state.inbox

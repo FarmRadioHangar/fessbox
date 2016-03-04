@@ -86,13 +86,16 @@ class Inbox extends React.Component {
         <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
           {i => (
             <i className='material-icons' style={{
-              color     : 'rgb(0, 188, 212)',
+              color     : '#757575',
               opacity   : i.opacity,
               transform : `scale(${i.zoom})`,
-            }}>done</i>
+            }}>sms</i>
           )}
         </Motion>
       </span>
+    )
+    const unreadIcon = (
+      <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
     )
     return (
       <List>
@@ -103,12 +106,19 @@ class Inbox extends React.Component {
             <Divider />
             <ListItem
               onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
-              leftAvatar         = {message.read ? readIcon : (
-                <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
-              )}
+              leftAvatar         = {message.read ? readIcon : unreadIcon}
               secondaryTextLines = {2}
               secondaryText      = {
                 <p style={styles.p}>
+                  {!!message.selected && (
+                    <i className='material-icons' style={{
+                      color       : 'rgb(0, 188, 212)',
+                      position    : 'absolute',
+                      marginLeft  : '-108px',
+                      marginTop   : '3px',
+                      transform   : 'scale(1.5)',
+                    }}>check</i>
+                  )}
                   {!isNaN(message.timestamp) && (
                     <span style={{color: darkBlack}}>
                       <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
@@ -145,11 +155,9 @@ class Inbox extends React.Component {
                   </IconButton>
                 </div>
               }
-              style = {message.read ? message.selected ? {
-                backgroundColor : 'rgba(255, 255, 129, 0.4)',
-                paddingLeft     : '60px',
-              } : {} : {
-                backgroundColor : 'rgba(255, 64, 129, 0.05)',
+              style = {{
+                backgroundColor : message.read ? (message.selected ? 'rgba(255, 255, 129, 0.4)' : 'rgba(255, 255, 255, 0)') : 'rgba(255, 64, 129, 0.05)',
+                paddingLeft     : message.selected ? '60px' : '0',
               }} />
           </div>
         ))}
@@ -158,17 +166,28 @@ class Inbox extends React.Component {
   }
 }
 
+//              style = {message.read ? (message.selected ? styles.message.selected : {}) : styles.message.unread} />
+
 const styles = {
   icon: {
-    color        : '#757575',
+    color             : '#757575',
   },
   p: {
-    paddingRight : '256px',
+    paddingRight      : '256px',
   },
   checkbox: {
-    position     : 'absolute', 
-    width        : '15px',
+    position          : 'absolute', 
+    width             : '15px',
   },
+//  message: {
+//    unread: {
+//      backgroundColor : 'rgba(255, 64, 129, 0.05)',
+//    },
+//    selected: {
+//      backgroundColor : 'rgba(255, 255, 129, 0.4)',
+//      paddingLeft     : '60px',
+//    },
+//  },
 }
 
 const InboxComponent = connect(state => ({
