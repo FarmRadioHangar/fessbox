@@ -110,11 +110,13 @@ class Inbox extends React.Component {
               secondaryTextLines = {2}
               secondaryText      = {
                 <div style={styles.secondary}>
+                  {/*
                   <Checkbox checked={!!message.selected} style={{
                     position    : 'absolute',
                     marginLeft  : '-108px',
                     marginTop   : '-3px',
                   }} />
+                  */}
                   {!isNaN(message.timestamp) && (
                     <span style={{color: darkBlack}}>
                       <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
@@ -153,7 +155,7 @@ class Inbox extends React.Component {
               }
               style = {{
                 backgroundColor : message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
-                paddingLeft     : '60px',
+                paddingLeft     : '0',
               }} />
           </div>
         ))}
