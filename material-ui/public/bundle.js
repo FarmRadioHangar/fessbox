@@ -151,12 +151,12 @@ require("./main.js", entryId$$);
       "./message-handler": 5,
       "./actions": 2,
       "awesome-websocket": 23,
-      "react-redux": 433,
-      "./store": 12,
-      "react-tap-event-plugin": 444,
       "babel-polyfill": 27,
+      "./store": 12,
       "react": 580,
+      "react-tap-event-plugin": 444,
       "react-dom": 411,
+      "react-redux": 433,
       "../modules/ui": 22
     },
     "hash": "9ea5bd83fc4a6ce184e2a532d1e733bd"
@@ -179,12 +179,12 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/js/reducers.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _app = require('./reducers/app');\n\nvar _app2 = _interopRequireDefault(_app);\n\nvar _inbox = require('./reducers/inbox');\n\nvar _inbox2 = _interopRequireDefault(_inbox);\n\nvar _mixer = require('./reducers/mixer');\n\nvar _mixer2 = _interopRequireDefault(_mixer);\n\nvar _toastr = require('./reducers/toastr');\n\nvar _toastr2 = _interopRequireDefault(_toastr);\n\nvar _users = require('./reducers/users');\n\nvar _users2 = _interopRequireDefault(_users);\n\nvar _redux = require('redux');\n\nfunction _interopRequireDefault(obj) {\n  return obj && obj.__esModule ? obj : { default: obj };\n}\n\nexports.default = (0, _redux.combineReducers)({\n  mixer: _mixer2.default,\n  inbox: _inbox2.default,\n  app: _app2.default,\n  users: _users2.default,\n  toastr: _toastr2.default\n});\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInJlZHVjZXJzLmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzhDQVMrQixBQUM3QjtpQkFENkIsQUFFN0I7aUJBRjZCLEFBRzdCO2FBSDZCLEFBSTdCO2lCQUo2QixBQUs3QjttQkFMYSxBQUFnQjtDQUFoQiIsImZpbGUiOiJyZWR1Y2Vycy5qcyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBhcHAgICAgZnJvbSAnLi9yZWR1Y2Vycy9hcHAnXG5pbXBvcnQgaW5ib3ggIGZyb20gJy4vcmVkdWNlcnMvaW5ib3gnXG5pbXBvcnQgbWl4ZXIgIGZyb20gJy4vcmVkdWNlcnMvbWl4ZXInXG5pbXBvcnQgdG9hc3RyIGZyb20gJy4vcmVkdWNlcnMvdG9hc3RyJ1xuaW1wb3J0IHVzZXJzICBmcm9tICcuL3JlZHVjZXJzL3VzZXJzJ1xuXG5pbXBvcnQgeyBjb21iaW5lUmVkdWNlcnMgfSBcbiAgZnJvbSAncmVkdXgnXG5cbmV4cG9ydCBkZWZhdWx0IGNvbWJpbmVSZWR1Y2Vycyh7XG4gIG1peGVyLFxuICBpbmJveCxcbiAgYXBwLFxuICB1c2VycyxcbiAgdG9hc3RyLFxufSlcbiJdfQ==",
     "deps": {
-      "redux": 641,
       "./reducers/app": 7,
       "./reducers/mixer": 9,
       "./reducers/toastr": 10,
       "./reducers/users": 11,
-      "./reducers/inbox": 8
+      "./reducers/inbox": 8,
+      "redux": 641
     },
     "hash": "f65060a4dc64242a218e5de1cd27cd76"
   },
@@ -244,8 +244,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/js/store.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _reducers = require('./reducers');\n\nvar _reducers2 = _interopRequireDefault(_reducers);\n\nvar _redux = require('redux');\n\nfunction _interopRequireDefault(obj) {\n  return obj && obj.__esModule ? obj : { default: obj };\n}\n\nvar store = (0, _redux.createStore)(_reducers2.default, {});\n\nexports.default = store;\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0b3JlLmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7QUFLQSxJQUFNLFFBQVEsNENBQXNCLEFBQXRCLEFBQVI7O2tCQUVTIiwiZmlsZSI6InN0b3JlLmpzIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHJlZHVjZXJzIGZyb20gJy4vcmVkdWNlcnMnXG5cbmltcG9ydCB7IGNyZWF0ZVN0b3JlIH0gXG4gIGZyb20gJ3JlZHV4J1xuXG5jb25zdCBzdG9yZSA9IGNyZWF0ZVN0b3JlKHJlZHVjZXJzLCB7fSlcblxuZXhwb3J0IGRlZmF1bHQgc3RvcmVcbiJdfQ==",
     "deps": {
-      "./reducers": 6,
-      "redux": 641
+      "redux": 641,
+      "./reducers": 6
     },
     "hash": "67e42fb7eb3c64485915cda7a944ca48"
   },
@@ -267,18 +267,18 @@ require("./main.js", entryId$$);
       "react-redux": 433,
       "livereactload/babel-transform": 264,
       "material-ui/lib/dialog": 332,
-      "material-ui/lib/svg-icons/communication/message": 373,
+      "material-ui/lib/tabs/tab": 386,
       "material-ui/lib/tabs/tabs": 388,
-      "material-ui/lib/flat-button": 337,
-      "material-ui/lib/app-bar": 324,
       "material-ui/lib/floating-action-button": 338,
+      "material-ui/lib/flat-button": 337,
       "material-ui/lib/text-field": 389,
       "./mixer": 20,
+      "material-ui/lib/app-bar": 324,
+      "material-ui/lib/svg-icons/communication/dialpad": 372,
+      "material-ui/lib/svg-icons/communication/message": 373,
+      "./call-log": 15,
       "material-ui/lib/auto-complete": 325,
       "./toastr": 21,
-      "material-ui/lib/tabs/tab": 386,
-      "./call-log": 15,
-      "material-ui/lib/svg-icons/communication/dialpad": 372,
       "./inbox": 18
     },
     "hash": "4508784caa3482386b011ef5cf548c3c"
@@ -291,13 +291,13 @@ require("./main.js", entryId$$);
     "deps": {
       "react": 580,
       "livereactload/babel-transform": 264,
-      "material-ui/lib/paper": 349,
       "material-ui/lib/table/table-header-column": 381,
       "material-ui/lib/table/table-row": 384,
       "material-ui/lib/table/table-row-column": 383,
       "material-ui/lib/table/table": 385,
-      "material-ui/lib/table/table-header": 382,
-      "material-ui/lib/table/table-body": 380
+      "material-ui/lib/paper": 349,
+      "material-ui/lib/table/table-body": 380,
+      "material-ui/lib/table/table-header": 382
     },
     "hash": "c1817234d41c4a841706473dcd333b0a"
   },
@@ -309,8 +309,8 @@ require("./main.js", entryId$$);
     "deps": {
       "react": 580,
       "livereactload/babel-transform": 264,
-      "material-ui/lib/toolbar/toolbar-title": 391,
       "material-ui/lib/toolbar/toolbar-group": 390,
+      "material-ui/lib/toolbar/toolbar-title": 391,
       "material-ui/lib/toolbar/toolbar": 392
     },
     "hash": "098a88d704ea619f4a8de9c979104626"
@@ -325,11 +325,11 @@ require("./main.js", entryId$$);
       "livereactload/babel-transform": 264,
       "material-ui/lib/paper": 349,
       "material-ui/lib/flat-button": 337,
+      "material-ui/lib/avatar": 326,
       "material-ui/lib/divider": 333,
       "material-ui/lib/styles/colors": 359,
-      "material-ui/lib/avatar": 326,
-      "material-ui/lib/slider": 356,
-      "./channel-toolbar": 16
+      "./channel-toolbar": 16,
+      "material-ui/lib/slider": 356
     },
     "hash": "d43dd38470ca9ff399dd62e2da58254f"
   },
@@ -337,7 +337,7 @@ require("./main.js", entryId$$);
     "id": 18,
     "index": 18,
     "file": "/home/slack/Projects/fessbox/material-ui/modules/inbox.js",
-    "source": "'use strict';\n\nvar _typeof = typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol ? \"symbol\" : typeof obj; };\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _react2 = require('react');\n\nvar _react3 = _interopRequireDefault(_react2);\n\nvar _babelTransform = require('livereactload/babel-transform');\n\nvar _babelTransform2 = _interopRequireDefault(_babelTransform);\n\nvar _createClass = function () {\n  function defineProperties(target, props) {\n    for (var i = 0; i < props.length; i++) {\n      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if (\"value\" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);\n    }\n  }return function (Constructor, protoProps, staticProps) {\n    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;\n  };\n}();\n\nvar _reactTimeago = require('react-timeago');\n\nvar _reactTimeago2 = _interopRequireDefault(_reactTimeago);\n\nvar _reactRedux = require('react-redux');\n\nvar _actions = require('../js/actions');\n\nvar _reactMotion = require('react-motion');\n\nvar _iconButton = require('material-ui/lib/icon-button');\n\nvar _iconButton2 = _interopRequireDefault(_iconButton);\n\nvar _list = require('material-ui/lib/lists/list');\n\nvar _list2 = _interopRequireDefault(_list);\n\nvar _listItem = require('material-ui/lib/lists/list-item');\n\nvar _listItem2 = _interopRequireDefault(_listItem);\n\nvar _divider = require('material-ui/lib/divider');\n\nvar _divider2 = _interopRequireDefault(_divider);\n\nvar _Subheader = require('material-ui/lib/Subheader');\n\nvar _Subheader2 = _interopRequireDefault(_Subheader);\n\nvar _dialog = require('material-ui/lib/dialog');\n\nvar _dialog2 = _interopRequireDefault(_dialog);\n\nvar _flatButton = require('material-ui/lib/flat-button');\n\nvar _flatButton2 = _interopRequireDefault(_flatButton);\n\nvar _checkbox = require('material-ui/lib/checkbox');\n\nvar _checkbox2 = _interopRequireDefault(_checkbox);\n\nvar _colors = require('material-ui/lib/styles/colors');\n\nfunction _interopRequireDefault(obj) {\n  return obj && obj.__esModule ? obj : { default: obj };\n}\n\nfunction _defineProperty(obj, key, value) {\n  if (key in obj) {\n    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });\n  } else {\n    obj[key] = value;\n  }return obj;\n}\n\nfunction _classCallCheck(instance, Constructor) {\n  if (!(instance instanceof Constructor)) {\n    throw new TypeError(\"Cannot call a class as a function\");\n  }\n}\n\nfunction _possibleConstructorReturn(self, call) {\n  if (!self) {\n    throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");\n  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === \"object\" || typeof call === \"function\") ? call : self;\n}\n\nfunction _inherits(subClass, superClass) {\n  if (typeof superClass !== \"function\" && superClass !== null) {\n    throw new TypeError(\"Super expression must either be null or a function, not \" + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));\n  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;\n}\n\nvar _components = {\n  Inbox: {\n    displayName: 'Inbox'\n  }\n};\n\nvar _livereactloadBabelTransform2 = (0, _babelTransform2.default)({\n  filename: '/home/slack/Projects/fessbox/material-ui/modules/inbox.js',\n  components: _components,\n  locals: [],\n  imports: [_react3.default]\n});\n\nfunction _wrapComponent(id) {\n  return function (Component) {\n    return _livereactloadBabelTransform2(Component, id);\n  };\n}\n\nfunction messageType(key, read) {\n  if ('sms_in' == key) {\n    return 'Incoming SMS from';\n  } else {\n    return 'Outgoing SMS to';\n  }\n}\n\nvar Inbox = _wrapComponent('Inbox')(function (_React$Component) {\n  _inherits(Inbox, _React$Component);\n\n  function Inbox(props) {\n    _classCallCheck(this, Inbox);\n\n    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));\n\n    _this.state = {\n      confirmDeleteMessage: null\n    };\n    _this.handleCloseDialog = _this.handleCloseDialog.bind(_this);\n    return _this;\n  }\n\n  _createClass(Inbox, [{\n    key: 'handleCloseDialog',\n    value: function handleCloseDialog() {\n      this.setState({\n        confirmDeleteMessage: null\n      });\n    }\n  }, {\n    key: 'handleConfirmDelete',\n    value: function handleConfirmDelete() {\n      this.props.sendMessage('messageDelete', _defineProperty({}, this.state.confirmDeleteMessage, null));\n      this.handleCloseDialog();\n    }\n  }, {\n    key: 'renderDialog',\n    value: function renderDialog() {\n      var actions = [_react3.default.createElement(_flatButton2.default, {\n        label: 'Cancel',\n        secondary: true,\n        onTouchTap: this.handleCloseDialog\n      }), _react3.default.createElement(_flatButton2.default, {\n        label: 'Delete',\n        primary: true,\n        onTouchTap: this.handleConfirmDelete.bind(this)\n      })];\n      return _react3.default.createElement(_dialog2.default, {\n        title: 'Confirm action',\n        actions: actions,\n        modal: true,\n        open: !!this.state.confirmDeleteMessage,\n        onRequestClose: this.handleCloseDialog }, 'Do you really want to delete this message?');\n    }\n  }, {\n    key: 'render',\n    value: function render() {\n      var _this2 = this;\n\n      var _props = this.props;\n      var visibleMessages = _props.inbox.visibleMessages;\n      var dispatch = _props.dispatch;\n\n      var readIcon = _react3.default.createElement('span', null, _react3.default.createElement(_reactMotion.Motion, { defaultStyle: { opacity: 0, zoom: 3 }, style: { opacity: 1, zoom: (0, _reactMotion.spring)(1, { stiffness: 200, damping: 10 }) } }, function (i) {\n        return _react3.default.createElement('i', { className: 'material-icons', style: {\n            color: '#aed581',\n            opacity: i.opacity,\n            transform: 'scale(' + i.zoom + ')'\n          } }, 'sms');\n      }));\n      var unreadIcon = _react3.default.createElement('i', { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } }, 'notifications');\n      return _react3.default.createElement(_list2.default, null, this.renderDialog(), _react3.default.createElement(_Subheader2.default, null, 'SMS Messages'), visibleMessages.map(function (message) {\n        return _react3.default.createElement('div', { key: message.id }, _react3.default.createElement(_divider2.default, null), _react3.default.createElement(_listItem2.default, {\n          onClick: function onClick() {\n            return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));\n          },\n          leftAvatar: message.read ? readIcon : unreadIcon,\n          secondaryTextLines: 2,\n          secondaryText: _react3.default.createElement('div', { style: styles.secondary }, !isNaN(message.timestamp) && _react3.default.createElement('span', { style: { color: _colors.darkBlack } }, _react3.default.createElement(_reactTimeago2.default, { date: Number(message.timestamp) }), ' — '), message.content),\n          rightIconButton: _react3.default.createElement('div', { style: { zIndex: 9999 } }, message.read && _react3.default.createElement(_iconButton2.default, { onClick: function onClick(e) {\n              dispatch((0, _actions.toggleMessageRead)(message.id));e.stopPropagation();\n            }, style: styles.icon, tooltip: 'Mark as unread' }, _react3.default.createElement('i', { className: 'material-icons' }, 'new_releasese')), _react3.default.createElement(_iconButton2.default, { onClick: function onClick(e) {\n              return e.stopPropagation();\n            }, style: styles.icon, tooltip: 'Reply' }, _react3.default.createElement('i', { className: 'material-icons' }, 'reply')), _react3.default.createElement(_iconButton2.default, { onClick: function onClick(e) {\n              return e.stopPropagation();\n            }, style: styles.icon, tooltip: 'Forward' }, _react3.default.createElement('i', { className: 'material-icons' }, 'forward')), _react3.default.createElement(_iconButton2.default, {\n            onClick: function onClick(e) {\n              dispatch((0, _actions.toggleMessageFavorite)(message.id));e.stopPropagation();\n            },\n            style: styles.icon,\n            iconStyle: !!message.favorite ? { color: 'rgb(0, 188, 212)' } : {},\n            tooltip: 'Favorite' }, _react3.default.createElement('i', { className: 'material-icons' }, message.favorite ? 'favorite' : 'favorite_border')), _react3.default.createElement(_iconButton2.default, {\n            onClick: function onClick(e) {\n              _this2.setState({ confirmDeleteMessage: message.id });e.stopPropagation();\n            },\n            style: styles.icon,\n            tooltip: 'Delete' }, _react3.default.createElement('i', { className: 'material-icons' }, 'delete_forever'))),\n          style: {\n            backgroundColor: message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',\n            paddingLeft: '0'\n          } }));\n      }));\n    }\n  }]);\n\n  return Inbox;\n}(_react3.default.Component));\n\nvar styles = {\n  icon: {\n    color: '#757575'\n  },\n  secondary: {\n    paddingRight: '256px'\n  },\n  checkbox: {\n    position: 'absolute',\n    width: '15px'\n  }\n};\n\nvar InboxComponent = (0, _reactRedux.connect)(function (state) {\n  return {\n    inbox: state.inbox\n  };\n})(Inbox);\n\nexports.default = InboxComponent;\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluYm94LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBOEJBLFNBQUEsQUFBUyxZQUFULEFBQXFCLEtBQXJCLEFBQTBCLE1BQU0sQUFDOUI7TUFBSSxZQUFBLEFBQVksS0FBSyxBQUNuQjtXQURGLEFBQXFCLEFBQ25CLEFBQU87U0FDRixBQUNMO1dBSkosQUFDRSxBQUVPLEFBQ0wsQUFBTzs7Ozs7WUFJTCxPQUNKOztXQURJLEFBQ0osTUFBQSxBQUFZOzBCQURSLEFBQ2U7O3VFQURmLGtCQUNlLEFBQ1gsQUFDTjs7VUFBQSxBQUFLLFFBQVEsQUFDWDs0QkFIZSxBQUVqQixBQUNFLEFBQXVCLEFBRXpCO01BTGlCO1VBS2pCLEFBQUssb0JBQW9CLE1BQUEsQUFBSyxrQkFBTCxBQUF1QixLQUwvQixBQUtqQjtXQUxGOzs7ZUFESTs7O1dBU0YsQUFBSyxTQUFTLEFBQ1o7OEJBRmdCLEFBQ2xCLEFBQ0UsQUFBdUI7U0FGUCxBQUNsQjs7Ozs7V0FLQSxBQUFLLE1BQUwsQUFBVyxZQUFYLEFBQXVCLHFDQUNwQixLQUFBLEFBQUssTUFBTCxBQUFXLHNCQUZNLEFBQ3BCLEFBQ3FDLEFBRXJDO1dBSm9CLEFBSXBCLEFBQUssb0JBSmUsQUFDcEI7Ozs7O3lFQVFJO2VBQUEsQUFBYSxBQUNiO21CQUFBLEFBQWMsQUFDZDtvQkFBYyxLQUpGLEFBQ2QsQUFHZ0IsQUFBSztPQUhyQixDQURjLHNEQU9aO2VBQUEsQUFBYSxBQUNiO2lCQUFBLEFBQWMsQUFDZDtvQkFBYyxLQUFBLEFBQUssb0JBQUwsQUFBeUIsS0FWOUIsQUFDUCxBQUFVLEFBTWQsQUFHRSxBQUFjLEFBQThCLEFBR2hEO09BTkUsRUFOSSxDQURPLEFBQ2I7YUFhRSxnREFDRTtlQUFBLEFBQWlCLEFBQ2pCO2lCQUFBLEFBQWtCLEFBQ2xCO2VBQUEsQUFBa0IsQUFDbEI7Y0FBa0IsQ0FBQyxDQUFDLEtBQUEsQUFBSyxNQUFMLEFBQVcsQUFDL0I7d0JBQWtCLEtBTHBCLEFBS29CLEFBQUsscUJBbkJkLEFBYWI7Ozs7Ozs7bUJBWWtELEtBRDNDLEFBQzJDLEFBQUs7VUFBckMseUJBQVYsTUFERCxBQUNXO1VBQW1CLGtCQUQ5QixBQUVQOztpRUFFSSxxREFBUSxjQUFjLEVBQUMsU0FBQSxBQUFTLEdBQUcsTUFBM0IsQUFBMkIsQUFBTSxLQUFJLE9BQU8sRUFBQyxTQUFBLEFBQVMsR0FBRyxNQUFNLHlCQUFBLEFBQU8sR0FBRyxFQUFFLFdBQUEsQUFBVyxLQUFLLFNBQW5HLEFBQTZDLEFBQW9CLEFBQU0sQUFBNEIsQUFBUztvREFFckcsV0FBQSxBQUFVLHlCQUF3QixBQUNuQzttQkFBQSxBQUFZLEFBQ1o7cUJBQVksRUFBQSxBQUFFLEFBQ2Q7a0NBQXFCLEVBQUEsQUFBRSxPQUh6QixBQUE4QixBQUc1QjtXQUg0QixFQUE5QixFQU5ELEFBRUQsQUFDSixBQUVLLEFBVVA7T0FWTyxDQUZMLENBREksQ0FGQztVQWVELGFBQ0oscUNBQUcsV0FBQSxBQUFVLGtCQUFpQixPQUFPLEVBQUMsT0FBdEMsQUFBOEIsQUFBUSxBQUFPLHlCQWhCeEMsQUFlRCxBQUdOO2lFQUVLLEtBREgsQUFDRyxBQUFLLGdCQUNOLHlEQUZGLGlCQUdHLGdCQUFBLEFBQWdCO3NEQUNWLEtBQUssUUFBVixBQUFVLEFBQVEsTUFDaEIsaURBREYseURBR0k7O21CQUE0QixTQUFTLFFBQUEsQUFBUSxPQUFPLG9DQUFzQixRQUFyQyxBQUFxQyxBQUFRLE1BQU0sZ0NBQWtCLFFBQXBGLEFBQWUsQUFBcUUsQUFBUSxBQUNsSDtXQURzQjtzQkFDQSxRQUFBLEFBQVEsT0FBUixBQUFlLFdBQWYsQUFBMEIsQUFDaEQ7OEJBQUEsQUFBc0IsQUFDdEI7eUJBQ0UsdUNBQUssT0FBTyxPQUFaLEFBQVksQUFBTyxhQVFoQixDQUFDLE1BQU0sUUFBUCxBQUFPLEFBQVEsY0FDZCx3Q0FBTSxPQUFPLEVBQUMsZUFBZCxBQUFNLEFBQU8sZUFDWCx3REFBUyxNQUFNLE9BQU8sUUFEeEIsQUFDRSxBQUFTLEFBQWEsQUFBUSxlQUZqQyxRQUtBLFFBZEwsQUFjSyxBQUFRLEFBR2I7MkJBQ0UsdUNBQUssT0FBTyxFQUFDLFFBQWIsQUFBSyxBQUFRLEFBQVEsVUFDbEIsUUFBQSxBQUFRLDhEQUNLO3VCQUF5QixnQ0FBa0IsUUFBM0IsQUFBMkIsQUFBUSxLQUFyQyxBQUFFLENBQUYsQUFBNEMsQ0FBakQsQUFBSyxBQUE0QyxBQUFFO2FBQW5ELEVBQXdFLE9BQU8sT0FBQSxBQUFPLE1BQU0sU0FBakgsQUFBaUgsQUFBUSxrQkFBekgsRUFDRSxxQ0FBRyxXQUFILEFBQUcsQUFBVSxvQkFGaEIsQUFDQyx5RUFJVTtxQkFBYyxFQUFMLEFBQUssQUFBRTthQUFQLEVBQTBCLE9BQU8sT0FBQSxBQUFPLE1BQU0sU0FBbkUsQUFBbUUsQUFBUSxTQUEzRSxFQUNFLHFDQUFHLFdBQUgsQUFBRyxBQUFVLG9CQVBqQixBQU1FLGlFQUdZO3FCQUFjLEVBQUwsQUFBSyxBQUFFO2FBQVAsRUFBMEIsT0FBTyxPQUFBLEFBQU8sTUFBTSxTQUFuRSxBQUFtRSxBQUFRLFdBQTNFLEVBQ0UscUNBQUcsV0FBSCxBQUFHLEFBQVUsb0JBVmpCLEFBU0UsaUVBSUU7eUNBQWtCLEFBQUU7dUJBQVMsb0NBQXNCLFFBQS9CLEFBQStCLEFBQVEsTUFBekMsQUFBZ0QsQ0FBckQsQUFBSyxBQUFnRCxBQUFFLEFBQ3BFO2FBRGE7bUJBQ0EsT0FBQSxBQUFPLEFBQ3BCO3VCQUFhLENBQUMsQ0FBQyxRQUFBLEFBQVEsV0FBVyxFQUFDLE9BQXRCLEFBQXNCLEFBQU8sdUJBQTdCLEFBQW1ELEFBQ2hFO3FCQUpGLEFBSUUsQUFBWSxZQUpkLEVBS0UscUNBQUcsV0FBSCxBQUFHLEFBQVUsb0JBQWtCLFFBQUEsQUFBUSxXQUFSLEFBQW1CLGFBakJ0RCxBQVlFLEFBS2lDLEFBQWdDLHlFQUcvRDt5Q0FBa0IsQUFBRTtxQkFBQSxBQUFLLFNBQVMsRUFBQyxzQkFBc0IsUUFBckMsQUFBcUMsQUFBUSxPQUEvQyxBQUFzRCxDQUEzRCxBQUFLLEFBQXNELEFBQUUsQUFDMUU7YUFEYTttQkFDQSxPQUFBLEFBQU8sQUFDcEI7cUJBSEYsQUFHRSxBQUFZLFVBSGQsRUFJRSxxQ0FBRyxXQUFILEFBQUcsQUFBVSxvQkF4Qm5CLEFBQ0UsQUFtQkUsQUFRSjtpQkFBUyxBQUNQOzZCQUFrQixRQUFBLEFBQVEsT0FBUixBQUFlLDJCQUFmLEFBQTBDLEFBQzVEO3lCQTVFTCxBQWtCUCxBQUNFLEFBR3VCLEFBQ25CLEFBRUUsQUFpREUsQUFFRSxBQUFrQjthQW5EdEIsQ0FGRjtPQURtQixDQUh2Qjs7OztTQTlEQTtFQUFjLGdCQUFBLEFBQU07O0FBZ0kxQixhQUFlLEFBQ2I7UUFBTSxBQUNKO1dBREYsQUFDRSxBQUFvQixBQUV0Qjs7YUFBVyxBQUNUO2tCQURGLEFBQ0UsQUFBb0IsQUFFdEI7O1lBQVUsQUFDUjtjQUFBLEFBQW9CLEFBQ3BCO1dBVEUsQUFPSixBQUVFLEFBQW9COztDQVRsQjs7QUFhTixJQUFNO1NBQW1DLEFBQ3ZDO1dBQVEsTUFEYSxBQUFRLEFBQ3JCLEFBQU07O0NBRGUsQ0FBUixDQUFqQixBQUFpQixBQUVuQjs7a0JBRVciLCJmaWxlIjoiaW5ib3guanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgUmVhY3QgICBmcm9tICdyZWFjdCdcbmltcG9ydCBUaW1lQWdvIGZyb20gJ3JlYWN0LXRpbWVhZ28nXG5cbmltcG9ydCB7IGNvbm5lY3QgfSBcbiAgZnJvbSAncmVhY3QtcmVkdXgnXG5pbXBvcnQgeyB0b2dnbGVNZXNzYWdlUmVhZCwgdG9nZ2xlTWVzc2FnZVNlbGVjdGVkLCB0b2dnbGVNZXNzYWdlRmF2b3JpdGUgfVxuICBmcm9tICcuLi9qcy9hY3Rpb25zJ1xuaW1wb3J0IHsgVHJhbnNpdGlvbk1vdGlvbiwgTW90aW9uLCBzcHJpbmcsIHByZXNldHMgfSBcbiAgZnJvbSAncmVhY3QtbW90aW9uJ1xuXG5pbXBvcnQgSWNvbkJ1dHRvbiBcbiAgZnJvbSAnbWF0ZXJpYWwtdWkvbGliL2ljb24tYnV0dG9uJ1xuaW1wb3J0IExpc3QgXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9saXN0cy9saXN0J1xuaW1wb3J0IExpc3RJdGVtIFxuICBmcm9tICdtYXRlcmlhbC11aS9saWIvbGlzdHMvbGlzdC1pdGVtJ1xuaW1wb3J0IERpdmlkZXIgXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9kaXZpZGVyJ1xuaW1wb3J0IFN1YmhlYWRlciBcbiAgZnJvbSAnbWF0ZXJpYWwtdWkvbGliL1N1YmhlYWRlcidcbmltcG9ydCBEaWFsb2cgXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9kaWFsb2cnXG5pbXBvcnQgRmxhdEJ1dHRvbiBcbiAgZnJvbSAnbWF0ZXJpYWwtdWkvbGliL2ZsYXQtYnV0dG9uJ1xuaW1wb3J0IENoZWNrYm94XG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9jaGVja2JveCdcblxuaW1wb3J0IHsgZ3JleTQwMCwgZGFya0JsYWNrLCBsaWdodEJsYWNrIH0gXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9zdHlsZXMvY29sb3JzJ1xuXG5mdW5jdGlvbiBtZXNzYWdlVHlwZShrZXksIHJlYWQpIHtcbiAgaWYgKCdzbXNfaW4nID09IGtleSkge1xuICAgIHJldHVybiAnSW5jb21pbmcgU01TIGZyb20nXG4gIH0gZWxzZSB7XG4gICAgcmV0dXJuICdPdXRnb2luZyBTTVMgdG8nXG4gIH1cbn1cblxuY2xhc3MgSW5ib3ggZXh0ZW5kcyBSZWFjdC5Db21wb25lbnQge1xuICBjb25zdHJ1Y3Rvcihwcm9wcykge1xuICAgIHN1cGVyKHByb3BzKVxuICAgIHRoaXMuc3RhdGUgPSB7XG4gICAgICBjb25maXJtRGVsZXRlTWVzc2FnZSA6IG51bGwsXG4gICAgfVxuICAgIHRoaXMuaGFuZGxlQ2xvc2VEaWFsb2cgPSB0aGlzLmhhbmRsZUNsb3NlRGlhbG9nLmJpbmQodGhpcylcbiAgfVxuICBoYW5kbGVDbG9zZURpYWxvZygpIHtcbiAgICB0aGlzLnNldFN0YXRlKHtcbiAgICAgIGNvbmZpcm1EZWxldGVNZXNzYWdlIDogbnVsbCxcbiAgICB9KVxuICB9XG4gIGhhbmRsZUNvbmZpcm1EZWxldGUoKSB7XG4gICAgdGhpcy5wcm9wcy5zZW5kTWVzc2FnZSgnbWVzc2FnZURlbGV0ZScsIHsgXG4gICAgICBbdGhpcy5zdGF0ZS5jb25maXJtRGVsZXRlTWVzc2FnZV06IG51bGxcbiAgICB9KVxuICAgIHRoaXMuaGFuZGxlQ2xvc2VEaWFsb2coKVxuICB9XG4gIHJlbmRlckRpYWxvZygpIHtcbiAgICBjb25zdCBhY3Rpb25zID0gW1xuICAgICAgPEZsYXRCdXR0b25cbiAgICAgICAgbGFiZWwgICAgICA9ICdDYW5jZWwnXG4gICAgICAgIHNlY29uZGFyeSAgPSB7dHJ1ZX1cbiAgICAgICAgb25Ub3VjaFRhcCA9IHt0aGlzLmhhbmRsZUNsb3NlRGlhbG9nfVxuICAgICAgLz4sXG4gICAgICA8RmxhdEJ1dHRvblxuICAgICAgICBsYWJlbCAgICAgID0gJ0RlbGV0ZSdcbiAgICAgICAgcHJpbWFyeSAgICA9IHt0cnVlfVxuICAgICAgICBvblRvdWNoVGFwID0ge3RoaXMuaGFuZGxlQ29uZmlybURlbGV0ZS5iaW5kKHRoaXMpfVxuICAgICAgLz4sXG4gICAgXVxuICAgIHJldHVybiAoXG4gICAgICA8RGlhbG9nXG4gICAgICAgIHRpdGxlICAgICAgICAgID0gJ0NvbmZpcm0gYWN0aW9uJ1xuICAgICAgICBhY3Rpb25zICAgICAgICA9IHthY3Rpb25zfVxuICAgICAgICBtb2RhbCAgICAgICAgICA9IHt0cnVlfVxuICAgICAgICBvcGVuICAgICAgICAgICA9IHshIXRoaXMuc3RhdGUuY29uZmlybURlbGV0ZU1lc3NhZ2V9XG4gICAgICAgIG9uUmVxdWVzdENsb3NlID0ge3RoaXMuaGFuZGxlQ2xvc2VEaWFsb2d9PlxuICAgICAgICBEbyB5b3UgcmVhbGx5IHdhbnQgdG8gZGVsZXRlIHRoaXMgbWVzc2FnZT9cbiAgICAgIDwvRGlhbG9nPlxuICAgIClcbiAgfVxuICByZW5kZXIoKSB7XG4gICAgY29uc3QgeyBpbmJveCA6IHsgdmlzaWJsZU1lc3NhZ2VzIH0sIGRpc3BhdGNoIH0gPSB0aGlzLnByb3BzXG4gICAgY29uc3QgcmVhZEljb24gPSAoXG4gICAgICA8c3Bhbj5cbiAgICAgICAgPE1vdGlvbiBkZWZhdWx0U3R5bGU9e3tvcGFjaXR5OiAwLCB6b29tOiAzfX0gc3R5bGU9e3tvcGFjaXR5OiAxLCB6b29tOiBzcHJpbmcoMSwgeyBzdGlmZm5lc3M6IDIwMCwgZGFtcGluZzogMTAgfSl9fT5cbiAgICAgICAgICB7aSA9PiAoXG4gICAgICAgICAgICA8aSBjbGFzc05hbWU9J21hdGVyaWFsLWljb25zJyBzdHlsZT17e1xuICAgICAgICAgICAgICBjb2xvciAgICAgOiAnI2FlZDU4MScsXG4gICAgICAgICAgICAgIG9wYWNpdHkgICA6IGkub3BhY2l0eSxcbiAgICAgICAgICAgICAgdHJhbnNmb3JtIDogYHNjYWxlKCR7aS56b29tfSlgLFxuICAgICAgICAgICAgfX0+c21zPC9pPlxuICAgICAgICAgICl9XG4gICAgICAgIDwvTW90aW9uPlxuICAgICAgPC9zcGFuPlxuICAgIClcbiAgICBjb25zdCB1bnJlYWRJY29uID0gKFxuICAgICAgPGkgY2xhc3NOYW1lPSdtYXRlcmlhbC1pY29ucycgc3R5bGU9e3tjb2xvcjogJ3JnYigyNTUsIDY0LCAxMjkpJ319Pm5vdGlmaWNhdGlvbnM8L2k+XG4gICAgKVxuICAgIHJldHVybiAoXG4gICAgICA8TGlzdD5cbiAgICAgICAge3RoaXMucmVuZGVyRGlhbG9nKCl9XG4gICAgICAgIDxTdWJoZWFkZXI+U01TIE1lc3NhZ2VzPC9TdWJoZWFkZXI+XG4gICAgICAgIHt2aXNpYmxlTWVzc2FnZXMubWFwKG1lc3NhZ2UgPT4gKFxuICAgICAgICAgIDxkaXYga2V5PXttZXNzYWdlLmlkfT5cbiAgICAgICAgICAgIDxEaXZpZGVyIC8+XG4gICAgICAgICAgICA8TGlzdEl0ZW1cbiAgICAgICAgICAgICAgb25DbGljayAgICAgICAgICAgID0geygpID0+IGRpc3BhdGNoKG1lc3NhZ2UucmVhZCA/IHRvZ2dsZU1lc3NhZ2VTZWxlY3RlZChtZXNzYWdlLmlkKSA6IHRvZ2dsZU1lc3NhZ2VSZWFkKG1lc3NhZ2UuaWQpKX1cbiAgICAgICAgICAgICAgbGVmdEF2YXRhciAgICAgICAgID0ge21lc3NhZ2UucmVhZCA/IHJlYWRJY29uIDogdW5yZWFkSWNvbn1cbiAgICAgICAgICAgICAgc2Vjb25kYXJ5VGV4dExpbmVzID0gezJ9XG4gICAgICAgICAgICAgIHNlY29uZGFyeVRleHQgICAgICA9IHtcbiAgICAgICAgICAgICAgICA8ZGl2IHN0eWxlPXtzdHlsZXMuc2Vjb25kYXJ5fT5cbiAgICAgICAgICAgICAgICAgIHsvKlxuICAgICAgICAgICAgICAgICAgPENoZWNrYm94IGNoZWNrZWQ9eyEhbWVzc2FnZS5zZWxlY3RlZH0gc3R5bGU9e3tcbiAgICAgICAgICAgICAgICAgICAgcG9zaXRpb24gICAgOiAnYWJzb2x1dGUnLFxuICAgICAgICAgICAgICAgICAgICBtYXJnaW5MZWZ0ICA6ICctMTA4cHgnLFxuICAgICAgICAgICAgICAgICAgICBtYXJnaW5Ub3AgICA6ICctM3B4JyxcbiAgICAgICAgICAgICAgICAgIH19IC8+XG4gICAgICAgICAgICAgICAgICAqL31cbiAgICAgICAgICAgICAgICAgIHshaXNOYU4obWVzc2FnZS50aW1lc3RhbXApICYmIChcbiAgICAgICAgICAgICAgICAgICAgPHNwYW4gc3R5bGU9e3tjb2xvcjogZGFya0JsYWNrfX0+XG4gICAgICAgICAgICAgICAgICAgICAgPFRpbWVBZ28gZGF0ZT17TnVtYmVyKG1lc3NhZ2UudGltZXN0YW1wKX0gLz4gJm1kYXNoOyZuYnNwO1xuICAgICAgICAgICAgICAgICAgICA8L3NwYW4+IFxuICAgICAgICAgICAgICAgICAgKX1cbiAgICAgICAgICAgICAgICAgIHttZXNzYWdlLmNvbnRlbnR9XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgcmlnaHRJY29uQnV0dG9uID0ge1xuICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9e3t6SW5kZXg6IDk5OTl9fT5cbiAgICAgICAgICAgICAgICAgIHttZXNzYWdlLnJlYWQgJiYgKFxuICAgICAgICAgICAgICAgICAgICA8SWNvbkJ1dHRvbiBvbkNsaWNrPXtlID0+IHsgZGlzcGF0Y2godG9nZ2xlTWVzc2FnZVJlYWQobWVzc2FnZS5pZCkpIDsgZS5zdG9wUHJvcGFnYXRpb24oKSB9fSBzdHlsZT17c3R5bGVzLmljb259IHRvb2x0aXA9J01hcmsgYXMgdW5yZWFkJz5cbiAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzc05hbWU9J21hdGVyaWFsLWljb25zJz5uZXdfcmVsZWFzZXNlPC9pPlxuICAgICAgICAgICAgICAgICAgICA8L0ljb25CdXR0b24+XG4gICAgICAgICAgICAgICAgICApfVxuICAgICAgICAgICAgICAgICAgPEljb25CdXR0b24gb25DbGljaz17ZSA9PiBlLnN0b3BQcm9wYWdhdGlvbigpfSBzdHlsZT17c3R5bGVzLmljb259IHRvb2x0aXA9J1JlcGx5Jz5cbiAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3NOYW1lPSdtYXRlcmlhbC1pY29ucyc+cmVwbHk8L2k+XG4gICAgICAgICAgICAgICAgICA8L0ljb25CdXR0b24+XG4gICAgICAgICAgICAgICAgICA8SWNvbkJ1dHRvbiBvbkNsaWNrPXtlID0+IGUuc3RvcFByb3BhZ2F0aW9uKCl9IHN0eWxlPXtzdHlsZXMuaWNvbn0gdG9vbHRpcD0nRm9yd2FyZCc+XG4gICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzTmFtZT0nbWF0ZXJpYWwtaWNvbnMnPmZvcndhcmQ8L2k+XG4gICAgICAgICAgICAgICAgICA8L0ljb25CdXR0b24+XG4gICAgICAgICAgICAgICAgICA8SWNvbkJ1dHRvbiBcbiAgICAgICAgICAgICAgICAgICAgb25DbGljayAgID0ge2UgPT4geyBkaXNwYXRjaCh0b2dnbGVNZXNzYWdlRmF2b3JpdGUobWVzc2FnZS5pZCkpIDsgZS5zdG9wUHJvcGFnYXRpb24oKSB9fSBcbiAgICAgICAgICAgICAgICAgICAgc3R5bGUgICAgID0ge3N0eWxlcy5pY29ufVxuICAgICAgICAgICAgICAgICAgICBpY29uU3R5bGUgPSB7ISFtZXNzYWdlLmZhdm9yaXRlID8ge2NvbG9yOiAncmdiKDAsIDE4OCwgMjEyKSd9IDoge319XG4gICAgICAgICAgICAgICAgICAgIHRvb2x0aXAgICA9ICdGYXZvcml0ZSc+XG4gICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzTmFtZT0nbWF0ZXJpYWwtaWNvbnMnPnttZXNzYWdlLmZhdm9yaXRlID8gJ2Zhdm9yaXRlJyA6ICdmYXZvcml0ZV9ib3JkZXInfTwvaT5cbiAgICAgICAgICAgICAgICAgIDwvSWNvbkJ1dHRvbj5cbiAgICAgICAgICAgICAgICAgIDxJY29uQnV0dG9uIFxuICAgICAgICAgICAgICAgICAgICBvbkNsaWNrICAgPSB7ZSA9PiB7IHRoaXMuc2V0U3RhdGUoe2NvbmZpcm1EZWxldGVNZXNzYWdlOiBtZXNzYWdlLmlkfSkgOyBlLnN0b3BQcm9wYWdhdGlvbigpIH19IFxuICAgICAgICAgICAgICAgICAgICBzdHlsZSAgICAgPSB7c3R5bGVzLmljb259IFxuICAgICAgICAgICAgICAgICAgICB0b29sdGlwICAgPSAnRGVsZXRlJz5cbiAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3NOYW1lPSdtYXRlcmlhbC1pY29ucyc+ZGVsZXRlX2ZvcmV2ZXI8L2k+XG4gICAgICAgICAgICAgICAgICA8L0ljb25CdXR0b24+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgc3R5bGUgPSB7e1xuICAgICAgICAgICAgICAgIGJhY2tncm91bmRDb2xvciA6IG1lc3NhZ2UucmVhZCA/ICdyZ2JhKDI1NSwgMjU1LCAyNTUsIDApJyA6ICdyZ2JhKDI1NSwgNjQsIDEyOSwgMC4wNSknLFxuICAgICAgICAgICAgICAgIHBhZGRpbmdMZWZ0ICAgICA6ICcwJyxcbiAgICAgICAgICAgICAgfX0gLz5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgKSl9XG4gICAgICA8L0xpc3Q+XG4gICAgKVxuICB9XG59XG5cbmNvbnN0IHN0eWxlcyA9IHtcbiAgaWNvbjoge1xuICAgIGNvbG9yICAgICAgICAgICAgIDogJyM3NTc1NzUnLFxuICB9LFxuICBzZWNvbmRhcnk6IHtcbiAgICBwYWRkaW5nUmlnaHQgICAgICA6ICcyNTZweCcsXG4gIH0sXG4gIGNoZWNrYm94OiB7XG4gICAgcG9zaXRpb24gICAgICAgICAgOiAnYWJzb2x1dGUnLCBcbiAgICB3aWR0aCAgICAgICAgICAgICA6ICcxNXB4JyxcbiAgfSxcbn1cblxuY29uc3QgSW5ib3hDb21wb25lbnQgPSBjb25uZWN0KHN0YXRlID0+ICh7XG4gIGluYm94IDogc3RhdGUuaW5ib3gsXG59KSkoSW5ib3gpXG5cbmV4cG9ydCBkZWZhdWx0IEluYm94Q29tcG9uZW50XG4iXX0=",
+    "source": "'use strict';\n\nvar _typeof = typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol ? \"symbol\" : typeof obj; };\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _react2 = require('react');\n\nvar _react3 = _interopRequireDefault(_react2);\n\nvar _babelTransform = require('livereactload/babel-transform');\n\nvar _babelTransform2 = _interopRequireDefault(_babelTransform);\n\nvar _createClass = function () {\n  function defineProperties(target, props) {\n    for (var i = 0; i < props.length; i++) {\n      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if (\"value\" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);\n    }\n  }return function (Constructor, protoProps, staticProps) {\n    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;\n  };\n}();\n\nvar _reactTimeago = require('react-timeago');\n\nvar _reactTimeago2 = _interopRequireDefault(_reactTimeago);\n\nvar _reactRedux = require('react-redux');\n\nvar _actions = require('../js/actions');\n\nvar _reactMotion = require('react-motion');\n\nvar _iconButton = require('material-ui/lib/icon-button');\n\nvar _iconButton2 = _interopRequireDefault(_iconButton);\n\nvar _list = require('material-ui/lib/lists/list');\n\nvar _list2 = _interopRequireDefault(_list);\n\nvar _listItem = require('material-ui/lib/lists/list-item');\n\nvar _listItem2 = _interopRequireDefault(_listItem);\n\nvar _divider = require('material-ui/lib/divider');\n\nvar _divider2 = _interopRequireDefault(_divider);\n\nvar _Subheader = require('material-ui/lib/Subheader');\n\nvar _Subheader2 = _interopRequireDefault(_Subheader);\n\nvar _dialog = require('material-ui/lib/dialog');\n\nvar _dialog2 = _interopRequireDefault(_dialog);\n\nvar _flatButton = require('material-ui/lib/flat-button');\n\nvar _flatButton2 = _interopRequireDefault(_flatButton);\n\nvar _checkbox = require('material-ui/lib/checkbox');\n\nvar _checkbox2 = _interopRequireDefault(_checkbox);\n\nvar _colors = require('material-ui/lib/styles/colors');\n\nfunction _interopRequireDefault(obj) {\n  return obj && obj.__esModule ? obj : { default: obj };\n}\n\nfunction _defineProperty(obj, key, value) {\n  if (key in obj) {\n    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });\n  } else {\n    obj[key] = value;\n  }return obj;\n}\n\nfunction _classCallCheck(instance, Constructor) {\n  if (!(instance instanceof Constructor)) {\n    throw new TypeError(\"Cannot call a class as a function\");\n  }\n}\n\nfunction _possibleConstructorReturn(self, call) {\n  if (!self) {\n    throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");\n  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === \"object\" || typeof call === \"function\") ? call : self;\n}\n\nfunction _inherits(subClass, superClass) {\n  if (typeof superClass !== \"function\" && superClass !== null) {\n    throw new TypeError(\"Super expression must either be null or a function, not \" + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));\n  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;\n}\n\nvar _components = {\n  Inbox: {\n    displayName: 'Inbox'\n  }\n};\n\nvar _livereactloadBabelTransform2 = (0, _babelTransform2.default)({\n  filename: '/home/slack/Projects/fessbox/material-ui/modules/inbox.js',\n  components: _components,\n  locals: [],\n  imports: [_react3.default]\n});\n\nfunction _wrapComponent(id) {\n  return function (Component) {\n    return _livereactloadBabelTransform2(Component, id);\n  };\n}\n\nfunction messageType(key, read) {\n  if ('sms_in' == key) {\n    return 'Incoming SMS from';\n  } else {\n    return 'Outgoing SMS to';\n  }\n}\n\nvar Inbox = _wrapComponent('Inbox')(function (_React$Component) {\n  _inherits(Inbox, _React$Component);\n\n  function Inbox(props) {\n    _classCallCheck(this, Inbox);\n\n    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).call(this, props));\n\n    _this.state = {\n      confirmDeleteMessage: null\n    };\n    _this.handleCloseDialog = _this.handleCloseDialog.bind(_this);\n    return _this;\n  }\n\n  _createClass(Inbox, [{\n    key: 'handleCloseDialog',\n    value: function handleCloseDialog() {\n      this.setState({\n        confirmDeleteMessage: null\n      });\n    }\n  }, {\n    key: 'handleConfirmDelete',\n    value: function handleConfirmDelete() {\n      this.props.sendMessage('messageDelete', _defineProperty({}, this.state.confirmDeleteMessage, null));\n      this.handleCloseDialog();\n    }\n  }, {\n    key: 'renderDialog',\n    value: function renderDialog() {\n      var actions = [_react3.default.createElement(_flatButton2.default, {\n        label: 'Cancel',\n        secondary: true,\n        onTouchTap: this.handleCloseDialog\n      }), _react3.default.createElement(_flatButton2.default, {\n        label: 'Delete',\n        primary: true,\n        onTouchTap: this.handleConfirmDelete.bind(this)\n      })];\n      return _react3.default.createElement(_dialog2.default, {\n        title: 'Confirm action',\n        actions: actions,\n        modal: true,\n        open: !!this.state.confirmDeleteMessage,\n        onRequestClose: this.handleCloseDialog }, 'Do you really want to delete this message?');\n    }\n  }, {\n    key: 'render',\n    value: function render() {\n      var _this2 = this;\n\n      var _props = this.props;\n      var visibleMessages = _props.inbox.visibleMessages;\n      var dispatch = _props.dispatch;\n\n      var readIcon = _react3.default.createElement('span', null, _react3.default.createElement(_reactMotion.Motion, { defaultStyle: { opacity: 0, zoom: 3 }, style: { opacity: 1, zoom: (0, _reactMotion.spring)(1, { stiffness: 200, damping: 10 }) } }, function (i) {\n        return _react3.default.createElement('i', { className: 'material-icons', style: {\n            color: '#aed581',\n            opacity: i.opacity,\n            transform: 'scale(' + i.zoom + ')'\n          } }, 'check');\n      }));\n      var unreadIcon = _react3.default.createElement('i', { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } }, 'notifications');\n      return _react3.default.createElement(_list2.default, null, this.renderDialog(), _react3.default.createElement(_Subheader2.default, null, 'SMS Messages'), visibleMessages.map(function (message) {\n        return _react3.default.createElement('div', { key: message.id }, _react3.default.createElement(_divider2.default, null), _react3.default.createElement(_listItem2.default, {\n          onClick: function onClick() {\n            return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));\n          },\n          leftAvatar: message.read ? readIcon : unreadIcon,\n          secondaryTextLines: 2,\n          secondaryText: _react3.default.createElement('div', { style: styles.secondary }, !isNaN(message.timestamp) && _react3.default.createElement('span', { style: { color: _colors.darkBlack } }, _react3.default.createElement(_reactTimeago2.default, { date: Number(message.timestamp) }), ' — '), message.content),\n          rightIconButton: _react3.default.createElement('div', { style: { zIndex: 9999 } }, message.read && _react3.default.createElement(_iconButton2.default, { onClick: function onClick(e) {\n              dispatch((0, _actions.toggleMessageRead)(message.id));e.stopPropagation();\n            }, style: styles.icon, tooltip: 'Mark as unread' }, _react3.default.createElement('i', { className: 'material-icons' }, 'new_releasese')), _react3.default.createElement(_iconButton2.default, { onClick: function onClick(e) {\n              return e.stopPropagation();\n            }, style: styles.icon, tooltip: 'Reply' }, _react3.default.createElement('i', { className: 'material-icons' }, 'reply')), _react3.default.createElement(_iconButton2.default, { onClick: function onClick(e) {\n              return e.stopPropagation();\n            }, style: styles.icon, tooltip: 'Forward' }, _react3.default.createElement('i', { className: 'material-icons' }, 'forward')), _react3.default.createElement(_iconButton2.default, {\n            onClick: function onClick(e) {\n              dispatch((0, _actions.toggleMessageFavorite)(message.id));e.stopPropagation();\n            },\n            style: styles.icon,\n            iconStyle: !!message.favorite ? { color: 'rgb(0, 188, 212)' } : {},\n            tooltip: 'Favorite' }, _react3.default.createElement('i', { className: 'material-icons' }, message.favorite ? 'favorite' : 'favorite_border')), _react3.default.createElement(_iconButton2.default, {\n            onClick: function onClick(e) {\n              _this2.setState({ confirmDeleteMessage: message.id });e.stopPropagation();\n            },\n            style: styles.icon,\n            tooltip: 'Delete' }, _react3.default.createElement('i', { className: 'material-icons' }, 'delete_forever'))),\n          style: {\n            backgroundColor: message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',\n            paddingLeft: '0'\n          } }));\n      }));\n    }\n  }]);\n\n  return Inbox;\n}(_react3.default.Component));\n\nvar styles = {\n  icon: {\n    color: '#757575'\n  },\n  secondary: {\n    paddingRight: '256px'\n  },\n  checkbox: {\n    position: 'absolute',\n    width: '15px'\n  }\n};\n\nvar InboxComponent = (0, _reactRedux.connect)(function (state) {\n  return {\n    inbox: state.inbox\n  };\n})(Inbox);\n\nexports.default = InboxComponent;\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImluYm94LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBOEJBLFNBQUEsQUFBUyxZQUFULEFBQXFCLEtBQXJCLEFBQTBCLE1BQU0sQUFDOUI7TUFBSSxZQUFBLEFBQVksS0FBSyxBQUNuQjtXQURGLEFBQXFCLEFBQ25CLEFBQU87U0FDRixBQUNMO1dBSkosQUFDRSxBQUVPLEFBQ0wsQUFBTzs7Ozs7WUFJTCxPQUNKOztXQURJLEFBQ0osTUFBQSxBQUFZOzBCQURSLEFBQ2U7O3VFQURmLGtCQUNlLEFBQ1gsQUFDTjs7VUFBQSxBQUFLLFFBQVEsQUFDWDs0QkFIZSxBQUVqQixBQUNFLEFBQXVCLEFBRXpCO01BTGlCO1VBS2pCLEFBQUssb0JBQW9CLE1BQUEsQUFBSyxrQkFBTCxBQUF1QixLQUwvQixBQUtqQjtXQUxGOzs7ZUFESTs7O1dBU0YsQUFBSyxTQUFTLEFBQ1o7OEJBRmdCLEFBQ2xCLEFBQ0UsQUFBdUI7U0FGUCxBQUNsQjs7Ozs7V0FLQSxBQUFLLE1BQUwsQUFBVyxZQUFYLEFBQXVCLHFDQUNwQixLQUFBLEFBQUssTUFBTCxBQUFXLHNCQUZNLEFBQ3BCLEFBQ3FDLEFBRXJDO1dBSm9CLEFBSXBCLEFBQUssb0JBSmUsQUFDcEI7Ozs7O3lFQVFJO2VBQUEsQUFBYSxBQUNiO21CQUFBLEFBQWMsQUFDZDtvQkFBYyxLQUpGLEFBQ2QsQUFHZ0IsQUFBSztPQUhyQixDQURjLHNEQU9aO2VBQUEsQUFBYSxBQUNiO2lCQUFBLEFBQWMsQUFDZDtvQkFBYyxLQUFBLEFBQUssb0JBQUwsQUFBeUIsS0FWOUIsQUFDUCxBQUFVLEFBTWQsQUFHRSxBQUFjLEFBQThCLEFBR2hEO09BTkUsRUFOSSxDQURPLEFBQ2I7YUFhRSxnREFDRTtlQUFBLEFBQWlCLEFBQ2pCO2lCQUFBLEFBQWtCLEFBQ2xCO2VBQUEsQUFBa0IsQUFDbEI7Y0FBa0IsQ0FBQyxDQUFDLEtBQUEsQUFBSyxNQUFMLEFBQVcsQUFDL0I7d0JBQWtCLEtBTHBCLEFBS29CLEFBQUsscUJBbkJkLEFBYWI7Ozs7Ozs7bUJBWWtELEtBRDNDLEFBQzJDLEFBQUs7VUFBckMseUJBQVYsTUFERCxBQUNXO1VBQW1CLGtCQUQ5QixBQUVQOztpRUFFSSxxREFBUSxjQUFjLEVBQUMsU0FBQSxBQUFTLEdBQUcsTUFBM0IsQUFBMkIsQUFBTSxLQUFJLE9BQU8sRUFBQyxTQUFBLEFBQVMsR0FBRyxNQUFNLHlCQUFBLEFBQU8sR0FBRyxFQUFFLFdBQUEsQUFBVyxLQUFLLFNBQW5HLEFBQTZDLEFBQW9CLEFBQU0sQUFBNEIsQUFBUztvREFFckcsV0FBQSxBQUFVLHlCQUF3QixBQUNuQzttQkFBQSxBQUFZLEFBQ1o7cUJBQVksRUFBQSxBQUFFLEFBQ2Q7a0NBQXFCLEVBQUEsQUFBRSxPQUh6QixBQUE4QixBQUc1QjtXQUg0QixFQUE5QixFQU5ELEFBRUQsQUFDSixBQUVLLEFBVVA7T0FWTyxDQUZMLENBREksQ0FGQztVQWVELGFBQ0oscUNBQUcsV0FBQSxBQUFVLGtCQUFpQixPQUFPLEVBQUMsT0FBdEMsQUFBOEIsQUFBUSxBQUFPLHlCQWhCeEMsQUFlRCxBQUdOO2lFQUVLLEtBREgsQUFDRyxBQUFLLGdCQUNOLHlEQUZGLGlCQUdHLGdCQUFBLEFBQWdCO3NEQUNWLEtBQUssUUFBVixBQUFVLEFBQVEsTUFDaEIsaURBREYseURBR0k7O21CQUE0QixTQUFTLFFBQUEsQUFBUSxPQUFPLG9DQUFzQixRQUFyQyxBQUFxQyxBQUFRLE1BQU0sZ0NBQWtCLFFBQXBGLEFBQWUsQUFBcUUsQUFBUSxBQUNsSDtXQURzQjtzQkFDQSxRQUFBLEFBQVEsT0FBUixBQUFlLFdBQWYsQUFBMEIsQUFDaEQ7OEJBQUEsQUFBc0IsQUFDdEI7eUJBQ0UsdUNBQUssT0FBTyxPQUFaLEFBQVksQUFBTyxhQVFoQixDQUFDLE1BQU0sUUFBUCxBQUFPLEFBQVEsY0FDZCx3Q0FBTSxPQUFPLEVBQUMsZUFBZCxBQUFNLEFBQU8sZUFDWCx3REFBUyxNQUFNLE9BQU8sUUFEeEIsQUFDRSxBQUFTLEFBQWEsQUFBUSxlQUZqQyxRQUtBLFFBZEwsQUFjSyxBQUFRLEFBR2I7MkJBQ0UsdUNBQUssT0FBTyxFQUFDLFFBQWIsQUFBSyxBQUFRLEFBQVEsVUFDbEIsUUFBQSxBQUFRLDhEQUNLO3VCQUF5QixnQ0FBa0IsUUFBM0IsQUFBMkIsQUFBUSxLQUFyQyxBQUFFLENBQUYsQUFBNEMsQ0FBakQsQUFBSyxBQUE0QyxBQUFFO2FBQW5ELEVBQXdFLE9BQU8sT0FBQSxBQUFPLE1BQU0sU0FBakgsQUFBaUgsQUFBUSxrQkFBekgsRUFDRSxxQ0FBRyxXQUFILEFBQUcsQUFBVSxvQkFGaEIsQUFDQyx5RUFJVTtxQkFBYyxFQUFMLEFBQUssQUFBRTthQUFQLEVBQTBCLE9BQU8sT0FBQSxBQUFPLE1BQU0sU0FBbkUsQUFBbUUsQUFBUSxTQUEzRSxFQUNFLHFDQUFHLFdBQUgsQUFBRyxBQUFVLG9CQVBqQixBQU1FLGlFQUdZO3FCQUFjLEVBQUwsQUFBSyxBQUFFO2FBQVAsRUFBMEIsT0FBTyxPQUFBLEFBQU8sTUFBTSxTQUFuRSxBQUFtRSxBQUFRLFdBQTNFLEVBQ0UscUNBQUcsV0FBSCxBQUFHLEFBQVUsb0JBVmpCLEFBU0UsaUVBSUU7eUNBQWtCLEFBQUU7dUJBQVMsb0NBQXNCLFFBQS9CLEFBQStCLEFBQVEsTUFBekMsQUFBZ0QsQ0FBckQsQUFBSyxBQUFnRCxBQUFFLEFBQ3BFO2FBRGE7bUJBQ0EsT0FBQSxBQUFPLEFBQ3BCO3VCQUFhLENBQUMsQ0FBQyxRQUFBLEFBQVEsV0FBVyxFQUFDLE9BQXRCLEFBQXNCLEFBQU8sdUJBQTdCLEFBQW1ELEFBQ2hFO3FCQUpGLEFBSUUsQUFBWSxZQUpkLEVBS0UscUNBQUcsV0FBSCxBQUFHLEFBQVUsb0JBQWtCLFFBQUEsQUFBUSxXQUFSLEFBQW1CLGFBakJ0RCxBQVlFLEFBS2lDLEFBQWdDLHlFQUcvRDt5Q0FBa0IsQUFBRTtxQkFBQSxBQUFLLFNBQVMsRUFBQyxzQkFBc0IsUUFBckMsQUFBcUMsQUFBUSxPQUEvQyxBQUFzRCxDQUEzRCxBQUFLLEFBQXNELEFBQUUsQUFDMUU7YUFEYTttQkFDQSxPQUFBLEFBQU8sQUFDcEI7cUJBSEYsQUFHRSxBQUFZLFVBSGQsRUFJRSxxQ0FBRyxXQUFILEFBQUcsQUFBVSxvQkF4Qm5CLEFBQ0UsQUFtQkUsQUFRSjtpQkFBUyxBQUNQOzZCQUFrQixRQUFBLEFBQVEsT0FBUixBQUFlLDJCQUFmLEFBQTBDLEFBQzVEO3lCQTVFTCxBQWtCUCxBQUNFLEFBR3VCLEFBQ25CLEFBRUUsQUFpREUsQUFFRSxBQUFrQjthQW5EdEIsQ0FGRjtPQURtQixDQUh2Qjs7OztTQTlEQTtFQUFjLGdCQUFBLEFBQU07O0FBZ0kxQixhQUFlLEFBQ2I7UUFBTSxBQUNKO1dBREYsQUFDRSxBQUFvQixBQUV0Qjs7YUFBVyxBQUNUO2tCQURGLEFBQ0UsQUFBb0IsQUFFdEI7O1lBQVUsQUFDUjtjQUFBLEFBQW9CLEFBQ3BCO1dBVEUsQUFPSixBQUVFLEFBQW9COztDQVRsQjs7QUFhTixJQUFNO1NBQW1DLEFBQ3ZDO1dBQVEsTUFEYSxBQUFRLEFBQ3JCLEFBQU07O0NBRGUsQ0FBUixDQUFqQixBQUFpQixBQUVuQjs7a0JBRVciLCJmaWxlIjoiaW5ib3guanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgUmVhY3QgICBmcm9tICdyZWFjdCdcbmltcG9ydCBUaW1lQWdvIGZyb20gJ3JlYWN0LXRpbWVhZ28nXG5cbmltcG9ydCB7IGNvbm5lY3QgfSBcbiAgZnJvbSAncmVhY3QtcmVkdXgnXG5pbXBvcnQgeyB0b2dnbGVNZXNzYWdlUmVhZCwgdG9nZ2xlTWVzc2FnZVNlbGVjdGVkLCB0b2dnbGVNZXNzYWdlRmF2b3JpdGUgfVxuICBmcm9tICcuLi9qcy9hY3Rpb25zJ1xuaW1wb3J0IHsgVHJhbnNpdGlvbk1vdGlvbiwgTW90aW9uLCBzcHJpbmcsIHByZXNldHMgfSBcbiAgZnJvbSAncmVhY3QtbW90aW9uJ1xuXG5pbXBvcnQgSWNvbkJ1dHRvbiBcbiAgZnJvbSAnbWF0ZXJpYWwtdWkvbGliL2ljb24tYnV0dG9uJ1xuaW1wb3J0IExpc3QgXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9saXN0cy9saXN0J1xuaW1wb3J0IExpc3RJdGVtIFxuICBmcm9tICdtYXRlcmlhbC11aS9saWIvbGlzdHMvbGlzdC1pdGVtJ1xuaW1wb3J0IERpdmlkZXIgXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9kaXZpZGVyJ1xuaW1wb3J0IFN1YmhlYWRlciBcbiAgZnJvbSAnbWF0ZXJpYWwtdWkvbGliL1N1YmhlYWRlcidcbmltcG9ydCBEaWFsb2cgXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9kaWFsb2cnXG5pbXBvcnQgRmxhdEJ1dHRvbiBcbiAgZnJvbSAnbWF0ZXJpYWwtdWkvbGliL2ZsYXQtYnV0dG9uJ1xuaW1wb3J0IENoZWNrYm94XG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9jaGVja2JveCdcblxuaW1wb3J0IHsgZ3JleTQwMCwgZGFya0JsYWNrLCBsaWdodEJsYWNrIH0gXG4gIGZyb20gJ21hdGVyaWFsLXVpL2xpYi9zdHlsZXMvY29sb3JzJ1xuXG5mdW5jdGlvbiBtZXNzYWdlVHlwZShrZXksIHJlYWQpIHtcbiAgaWYgKCdzbXNfaW4nID09IGtleSkge1xuICAgIHJldHVybiAnSW5jb21pbmcgU01TIGZyb20nXG4gIH0gZWxzZSB7XG4gICAgcmV0dXJuICdPdXRnb2luZyBTTVMgdG8nXG4gIH1cbn1cblxuY2xhc3MgSW5ib3ggZXh0ZW5kcyBSZWFjdC5Db21wb25lbnQge1xuICBjb25zdHJ1Y3Rvcihwcm9wcykge1xuICAgIHN1cGVyKHByb3BzKVxuICAgIHRoaXMuc3RhdGUgPSB7XG4gICAgICBjb25maXJtRGVsZXRlTWVzc2FnZSA6IG51bGwsXG4gICAgfVxuICAgIHRoaXMuaGFuZGxlQ2xvc2VEaWFsb2cgPSB0aGlzLmhhbmRsZUNsb3NlRGlhbG9nLmJpbmQodGhpcylcbiAgfVxuICBoYW5kbGVDbG9zZURpYWxvZygpIHtcbiAgICB0aGlzLnNldFN0YXRlKHtcbiAgICAgIGNvbmZpcm1EZWxldGVNZXNzYWdlIDogbnVsbCxcbiAgICB9KVxuICB9XG4gIGhhbmRsZUNvbmZpcm1EZWxldGUoKSB7XG4gICAgdGhpcy5wcm9wcy5zZW5kTWVzc2FnZSgnbWVzc2FnZURlbGV0ZScsIHsgXG4gICAgICBbdGhpcy5zdGF0ZS5jb25maXJtRGVsZXRlTWVzc2FnZV06IG51bGxcbiAgICB9KVxuICAgIHRoaXMuaGFuZGxlQ2xvc2VEaWFsb2coKVxuICB9XG4gIHJlbmRlckRpYWxvZygpIHtcbiAgICBjb25zdCBhY3Rpb25zID0gW1xuICAgICAgPEZsYXRCdXR0b25cbiAgICAgICAgbGFiZWwgICAgICA9ICdDYW5jZWwnXG4gICAgICAgIHNlY29uZGFyeSAgPSB7dHJ1ZX1cbiAgICAgICAgb25Ub3VjaFRhcCA9IHt0aGlzLmhhbmRsZUNsb3NlRGlhbG9nfVxuICAgICAgLz4sXG4gICAgICA8RmxhdEJ1dHRvblxuICAgICAgICBsYWJlbCAgICAgID0gJ0RlbGV0ZSdcbiAgICAgICAgcHJpbWFyeSAgICA9IHt0cnVlfVxuICAgICAgICBvblRvdWNoVGFwID0ge3RoaXMuaGFuZGxlQ29uZmlybURlbGV0ZS5iaW5kKHRoaXMpfVxuICAgICAgLz4sXG4gICAgXVxuICAgIHJldHVybiAoXG4gICAgICA8RGlhbG9nXG4gICAgICAgIHRpdGxlICAgICAgICAgID0gJ0NvbmZpcm0gYWN0aW9uJ1xuICAgICAgICBhY3Rpb25zICAgICAgICA9IHthY3Rpb25zfVxuICAgICAgICBtb2RhbCAgICAgICAgICA9IHt0cnVlfVxuICAgICAgICBvcGVuICAgICAgICAgICA9IHshIXRoaXMuc3RhdGUuY29uZmlybURlbGV0ZU1lc3NhZ2V9XG4gICAgICAgIG9uUmVxdWVzdENsb3NlID0ge3RoaXMuaGFuZGxlQ2xvc2VEaWFsb2d9PlxuICAgICAgICBEbyB5b3UgcmVhbGx5IHdhbnQgdG8gZGVsZXRlIHRoaXMgbWVzc2FnZT9cbiAgICAgIDwvRGlhbG9nPlxuICAgIClcbiAgfVxuICByZW5kZXIoKSB7XG4gICAgY29uc3QgeyBpbmJveCA6IHsgdmlzaWJsZU1lc3NhZ2VzIH0sIGRpc3BhdGNoIH0gPSB0aGlzLnByb3BzXG4gICAgY29uc3QgcmVhZEljb24gPSAoXG4gICAgICA8c3Bhbj5cbiAgICAgICAgPE1vdGlvbiBkZWZhdWx0U3R5bGU9e3tvcGFjaXR5OiAwLCB6b29tOiAzfX0gc3R5bGU9e3tvcGFjaXR5OiAxLCB6b29tOiBzcHJpbmcoMSwgeyBzdGlmZm5lc3M6IDIwMCwgZGFtcGluZzogMTAgfSl9fT5cbiAgICAgICAgICB7aSA9PiAoXG4gICAgICAgICAgICA8aSBjbGFzc05hbWU9J21hdGVyaWFsLWljb25zJyBzdHlsZT17e1xuICAgICAgICAgICAgICBjb2xvciAgICAgOiAnI2FlZDU4MScsXG4gICAgICAgICAgICAgIG9wYWNpdHkgICA6IGkub3BhY2l0eSxcbiAgICAgICAgICAgICAgdHJhbnNmb3JtIDogYHNjYWxlKCR7aS56b29tfSlgLFxuICAgICAgICAgICAgfX0+Y2hlY2s8L2k+XG4gICAgICAgICAgKX1cbiAgICAgICAgPC9Nb3Rpb24+XG4gICAgICA8L3NwYW4+XG4gICAgKVxuICAgIGNvbnN0IHVucmVhZEljb24gPSAoXG4gICAgICA8aSBjbGFzc05hbWU9J21hdGVyaWFsLWljb25zJyBzdHlsZT17e2NvbG9yOiAncmdiKDI1NSwgNjQsIDEyOSknfX0+bm90aWZpY2F0aW9uczwvaT5cbiAgICApXG4gICAgcmV0dXJuIChcbiAgICAgIDxMaXN0PlxuICAgICAgICB7dGhpcy5yZW5kZXJEaWFsb2coKX1cbiAgICAgICAgPFN1YmhlYWRlcj5TTVMgTWVzc2FnZXM8L1N1YmhlYWRlcj5cbiAgICAgICAge3Zpc2libGVNZXNzYWdlcy5tYXAobWVzc2FnZSA9PiAoXG4gICAgICAgICAgPGRpdiBrZXk9e21lc3NhZ2UuaWR9PlxuICAgICAgICAgICAgPERpdmlkZXIgLz5cbiAgICAgICAgICAgIDxMaXN0SXRlbVxuICAgICAgICAgICAgICBvbkNsaWNrICAgICAgICAgICAgPSB7KCkgPT4gZGlzcGF0Y2gobWVzc2FnZS5yZWFkID8gdG9nZ2xlTWVzc2FnZVNlbGVjdGVkKG1lc3NhZ2UuaWQpIDogdG9nZ2xlTWVzc2FnZVJlYWQobWVzc2FnZS5pZCkpfVxuICAgICAgICAgICAgICBsZWZ0QXZhdGFyICAgICAgICAgPSB7bWVzc2FnZS5yZWFkID8gcmVhZEljb24gOiB1bnJlYWRJY29ufVxuICAgICAgICAgICAgICBzZWNvbmRhcnlUZXh0TGluZXMgPSB7Mn1cbiAgICAgICAgICAgICAgc2Vjb25kYXJ5VGV4dCAgICAgID0ge1xuICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9e3N0eWxlcy5zZWNvbmRhcnl9PlxuICAgICAgICAgICAgICAgICAgey8qXG4gICAgICAgICAgICAgICAgICA8Q2hlY2tib3ggY2hlY2tlZD17ISFtZXNzYWdlLnNlbGVjdGVkfSBzdHlsZT17e1xuICAgICAgICAgICAgICAgICAgICBwb3NpdGlvbiAgICA6ICdhYnNvbHV0ZScsXG4gICAgICAgICAgICAgICAgICAgIG1hcmdpbkxlZnQgIDogJy0xMDhweCcsXG4gICAgICAgICAgICAgICAgICAgIG1hcmdpblRvcCAgIDogJy0zcHgnLFxuICAgICAgICAgICAgICAgICAgfX0gLz5cbiAgICAgICAgICAgICAgICAgICovfVxuICAgICAgICAgICAgICAgICAgeyFpc05hTihtZXNzYWdlLnRpbWVzdGFtcCkgJiYgKFxuICAgICAgICAgICAgICAgICAgICA8c3BhbiBzdHlsZT17e2NvbG9yOiBkYXJrQmxhY2t9fT5cbiAgICAgICAgICAgICAgICAgICAgICA8VGltZUFnbyBkYXRlPXtOdW1iZXIobWVzc2FnZS50aW1lc3RhbXApfSAvPiAmbWRhc2g7Jm5ic3A7XG4gICAgICAgICAgICAgICAgICAgIDwvc3Bhbj4gXG4gICAgICAgICAgICAgICAgICApfVxuICAgICAgICAgICAgICAgICAge21lc3NhZ2UuY29udGVudH1cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICByaWdodEljb25CdXR0b24gPSB7XG4gICAgICAgICAgICAgICAgPGRpdiBzdHlsZT17e3pJbmRleDogOTk5OX19PlxuICAgICAgICAgICAgICAgICAge21lc3NhZ2UucmVhZCAmJiAoXG4gICAgICAgICAgICAgICAgICAgIDxJY29uQnV0dG9uIG9uQ2xpY2s9e2UgPT4geyBkaXNwYXRjaCh0b2dnbGVNZXNzYWdlUmVhZChtZXNzYWdlLmlkKSkgOyBlLnN0b3BQcm9wYWdhdGlvbigpIH19IHN0eWxlPXtzdHlsZXMuaWNvbn0gdG9vbHRpcD0nTWFyayBhcyB1bnJlYWQnPlxuICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzTmFtZT0nbWF0ZXJpYWwtaWNvbnMnPm5ld19yZWxlYXNlc2U8L2k+XG4gICAgICAgICAgICAgICAgICAgIDwvSWNvbkJ1dHRvbj5cbiAgICAgICAgICAgICAgICAgICl9XG4gICAgICAgICAgICAgICAgICA8SWNvbkJ1dHRvbiBvbkNsaWNrPXtlID0+IGUuc3RvcFByb3BhZ2F0aW9uKCl9IHN0eWxlPXtzdHlsZXMuaWNvbn0gdG9vbHRpcD0nUmVwbHknPlxuICAgICAgICAgICAgICAgICAgICA8aSBjbGFzc05hbWU9J21hdGVyaWFsLWljb25zJz5yZXBseTwvaT5cbiAgICAgICAgICAgICAgICAgIDwvSWNvbkJ1dHRvbj5cbiAgICAgICAgICAgICAgICAgIDxJY29uQnV0dG9uIG9uQ2xpY2s9e2UgPT4gZS5zdG9wUHJvcGFnYXRpb24oKX0gc3R5bGU9e3N0eWxlcy5pY29ufSB0b29sdGlwPSdGb3J3YXJkJz5cbiAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3NOYW1lPSdtYXRlcmlhbC1pY29ucyc+Zm9yd2FyZDwvaT5cbiAgICAgICAgICAgICAgICAgIDwvSWNvbkJ1dHRvbj5cbiAgICAgICAgICAgICAgICAgIDxJY29uQnV0dG9uIFxuICAgICAgICAgICAgICAgICAgICBvbkNsaWNrICAgPSB7ZSA9PiB7IGRpc3BhdGNoKHRvZ2dsZU1lc3NhZ2VGYXZvcml0ZShtZXNzYWdlLmlkKSkgOyBlLnN0b3BQcm9wYWdhdGlvbigpIH19IFxuICAgICAgICAgICAgICAgICAgICBzdHlsZSAgICAgPSB7c3R5bGVzLmljb259XG4gICAgICAgICAgICAgICAgICAgIGljb25TdHlsZSA9IHshIW1lc3NhZ2UuZmF2b3JpdGUgPyB7Y29sb3I6ICdyZ2IoMCwgMTg4LCAyMTIpJ30gOiB7fX1cbiAgICAgICAgICAgICAgICAgICAgdG9vbHRpcCAgID0gJ0Zhdm9yaXRlJz5cbiAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3NOYW1lPSdtYXRlcmlhbC1pY29ucyc+e21lc3NhZ2UuZmF2b3JpdGUgPyAnZmF2b3JpdGUnIDogJ2Zhdm9yaXRlX2JvcmRlcid9PC9pPlxuICAgICAgICAgICAgICAgICAgPC9JY29uQnV0dG9uPlxuICAgICAgICAgICAgICAgICAgPEljb25CdXR0b24gXG4gICAgICAgICAgICAgICAgICAgIG9uQ2xpY2sgICA9IHtlID0+IHsgdGhpcy5zZXRTdGF0ZSh7Y29uZmlybURlbGV0ZU1lc3NhZ2U6IG1lc3NhZ2UuaWR9KSA7IGUuc3RvcFByb3BhZ2F0aW9uKCkgfX0gXG4gICAgICAgICAgICAgICAgICAgIHN0eWxlICAgICA9IHtzdHlsZXMuaWNvbn0gXG4gICAgICAgICAgICAgICAgICAgIHRvb2x0aXAgICA9ICdEZWxldGUnPlxuICAgICAgICAgICAgICAgICAgICA8aSBjbGFzc05hbWU9J21hdGVyaWFsLWljb25zJz5kZWxldGVfZm9yZXZlcjwvaT5cbiAgICAgICAgICAgICAgICAgIDwvSWNvbkJ1dHRvbj5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICBzdHlsZSA9IHt7XG4gICAgICAgICAgICAgICAgYmFja2dyb3VuZENvbG9yIDogbWVzc2FnZS5yZWFkID8gJ3JnYmEoMjU1LCAyNTUsIDI1NSwgMCknIDogJ3JnYmEoMjU1LCA2NCwgMTI5LCAwLjA1KScsXG4gICAgICAgICAgICAgICAgcGFkZGluZ0xlZnQgICAgIDogJzAnLFxuICAgICAgICAgICAgICB9fSAvPlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICApKX1cbiAgICAgIDwvTGlzdD5cbiAgICApXG4gIH1cbn1cblxuY29uc3Qgc3R5bGVzID0ge1xuICBpY29uOiB7XG4gICAgY29sb3IgICAgICAgICAgICAgOiAnIzc1NzU3NScsXG4gIH0sXG4gIHNlY29uZGFyeToge1xuICAgIHBhZGRpbmdSaWdodCAgICAgIDogJzI1NnB4JyxcbiAgfSxcbiAgY2hlY2tib3g6IHtcbiAgICBwb3NpdGlvbiAgICAgICAgICA6ICdhYnNvbHV0ZScsIFxuICAgIHdpZHRoICAgICAgICAgICAgIDogJzE1cHgnLFxuICB9LFxufVxuXG5jb25zdCBJbmJveENvbXBvbmVudCA9IGNvbm5lY3Qoc3RhdGUgPT4gKHtcbiAgaW5ib3ggOiBzdGF0ZS5pbmJveCxcbn0pKShJbmJveClcblxuZXhwb3J0IGRlZmF1bHQgSW5ib3hDb21wb25lbnRcbiJdfQ==",
     "deps": {
       "../js/actions": 2,
       "react": 580,
@@ -350,12 +350,12 @@ require("./main.js", entryId$$);
       "material-ui/lib/dialog": 332,
       "material-ui/lib/checkbox": 329,
       "material-ui/lib/flat-button": 337,
-      "material-ui/lib/lists/list": 343,
       "material-ui/lib/lists/list-item": 342,
+      "material-ui/lib/lists/list": 343,
       "material-ui/lib/styles/colors": 359,
       "material-ui/lib/Subheader": 318
     },
-    "hash": "a322738e032b4830460d9287f49d9fe6"
+    "hash": "60b342dd3a15baa2b4392cc11ca99370"
   },
   "19": {
     "id": 19,
@@ -367,11 +367,11 @@ require("./main.js", entryId$$);
       "react-redux": 433,
       "livereactload/babel-transform": 264,
       "material-ui/lib/paper": 349,
-      "material-ui/lib/slider": 356,
       "material-ui/lib/divider": 333,
+      "material-ui/lib/slider": 356,
+      "material-ui/lib/Subheader": 318,
       "material-ui/lib/svg-icons/av/volume-up": 371,
-      "material-ui/lib/svg-icons/av/mic": 370,
-      "material-ui/lib/Subheader": 318
+      "material-ui/lib/svg-icons/av/mic": 370
     },
     "hash": "940ec500c6d7e86ad277cd2335e5eb1f"
   },
@@ -399,8 +399,8 @@ require("./main.js", entryId$$);
       "react": 580,
       "react-redux": 433,
       "livereactload/babel-transform": 264,
-      "material-ui/lib/enhanced-button": 334,
-      "react-motion": 419
+      "react-motion": 419,
+      "material-ui/lib/enhanced-button": 334
     },
     "hash": "497f322a8acbbbb41cece47c0d0378bf"
   },
@@ -413,8 +413,8 @@ require("./main.js", entryId$$);
       "../js/constants": 3,
       "react": 580,
       "react-redux": 433,
-      "material-ui/lib/dialog": 332,
       "material-ui/lib/circular-progress": 330,
+      "material-ui/lib/dialog": 332,
       "livereactload/babel-transform": 264,
       "./app": 14
     },
@@ -574,8 +574,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/core-js/modules/$.array-species-create.js",
     "source": "// 9.4.2.3 ArraySpeciesCreate(originalArray, length)\nvar isObject = require('./$.is-object')\n  , isArray  = require('./$.is-array')\n  , SPECIES  = require('./$.wks')('species');\nmodule.exports = function(original, length){\n  var C;\n  if(isArray(original)){\n    C = original.constructor;\n    // cross-realm fallback\n    if(typeof C == 'function' && (C === Array || isArray(C.prototype)))C = undefined;\n    if(isObject(C)){\n      C = C[SPECIES];\n      if(C === null)C = undefined;\n    }\n  } return new (C === undefined ? Array : C)(length);\n};",
     "deps": {
-      "./$.is-array": 64,
       "./$.is-object": 66,
+      "./$.is-array": 64,
       "./$.wks": 111
     },
     "hash": "562b4c145015647537f9b24e3559a3c2"
@@ -663,8 +663,8 @@ require("./main.js", entryId$$);
       "./$.redefine-all": 88,
       "./$.for-of": 55,
       "./$.strict-new": 97,
-      "./$.fails": 52,
       "./$.is-object": 66,
+      "./$.fails": 52,
       "./$.iter-detect": 71,
       "./$.set-to-string-tag": 94
     },
@@ -735,8 +735,8 @@ require("./main.js", entryId$$);
     "deps": {
       "./$.global": 57,
       "./$.core": 44,
-      "./$.redefine": 89,
       "./$.hide": 59,
+      "./$.redefine": 89,
       "./$.ctx": 45
     },
     "hash": "65ea139748224729137df47507f2d8a4"
@@ -952,8 +952,8 @@ require("./main.js", entryId$$);
       "./$.hide": 59,
       "./$.has": 58,
       "./$.iterators": 73,
-      "./$.set-to-string-tag": 94,
       "./$.iter-create": 69,
+      "./$.set-to-string-tag": 94,
       "./$": 74,
       "./$.wks": 111
     },
@@ -1459,9 +1459,9 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/core-js/modules/es6.array.find-index.js",
     "source": "'use strict';\n// 22.1.3.9 Array.prototype.findIndex(predicate, thisArg = undefined)\nvar $export = require('./$.export')\n  , $find   = require('./$.array-methods')(6)\n  , KEY     = 'findIndex'\n  , forced  = true;\n// Shouldn't skip holes\nif(KEY in [])Array(1)[KEY](function(){ forced = false; });\n$export($export.P + $export.F * forced, 'Array', {\n  findIndex: function findIndex(callbackfn/*, that = undefined */){\n    return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);\n  }\n});\nrequire('./$.add-to-unscopables')(KEY);",
     "deps": {
+      "./$.array-methods": 36,
       "./$.export": 50,
-      "./$.add-to-unscopables": 31,
-      "./$.array-methods": 36
+      "./$.add-to-unscopables": 31
     },
     "hash": "d69aac9515f8de6f552eacef3d6b9bd2"
   },
@@ -1500,11 +1500,11 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/core-js/modules/es6.array.iterator.js",
     "source": "'use strict';\nvar addToUnscopables = require('./$.add-to-unscopables')\n  , step             = require('./$.iter-step')\n  , Iterators        = require('./$.iterators')\n  , toIObject        = require('./$.to-iobject');\n\n// 22.1.3.4 Array.prototype.entries()\n// 22.1.3.13 Array.prototype.keys()\n// 22.1.3.29 Array.prototype.values()\n// 22.1.3.30 Array.prototype[@@iterator]()\nmodule.exports = require('./$.iter-define')(Array, 'Array', function(iterated, kind){\n  this._t = toIObject(iterated); // target\n  this._i = 0;                   // next index\n  this._k = kind;                // kind\n// 22.1.5.2.1 %ArrayIteratorPrototype%.next()\n}, function(){\n  var O     = this._t\n    , kind  = this._k\n    , index = this._i++;\n  if(!O || index >= O.length){\n    this._t = undefined;\n    return step(1);\n  }\n  if(kind == 'keys'  )return step(0, index);\n  if(kind == 'values')return step(0, O[index]);\n  return step(0, [index, O[index]]);\n}, 'values');\n\n// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)\nIterators.Arguments = Iterators.Array;\n\naddToUnscopables('keys');\naddToUnscopables('values');\naddToUnscopables('entries');",
     "deps": {
+      "./$.to-iobject": 106,
+      "./$.iter-define": 70,
       "./$.iter-step": 72,
       "./$.iterators": 73,
-      "./$.to-iobject": 106,
-      "./$.add-to-unscopables": 31,
-      "./$.iter-define": 70
+      "./$.add-to-unscopables": 31
     },
     "hash": "6d617ba730e62f58eb5984ed2fee22aa"
   },
@@ -1779,8 +1779,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/core-js/modules/es6.number.is-finite.js",
     "source": "// 20.1.2.2 Number.isFinite(number)\nvar $export   = require('./$.export')\n  , _isFinite = require('./$.global').isFinite;\n\n$export($export.S, 'Number', {\n  isFinite: function isFinite(it){\n    return typeof it == 'number' && _isFinite(it);\n  }\n});",
     "deps": {
-      "./$.global": 57,
-      "./$.export": 50
+      "./$.export": 50,
+      "./$.global": 57
     },
     "hash": "db7380f00e662df2fdbbe96e407a44a9"
   },
@@ -1961,8 +1961,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/core-js/modules/es6.object.keys.js",
     "source": "// 19.1.2.14 Object.keys(O)\nvar toObject = require('./$.to-object');\n\nrequire('./$.object-sap')('keys', function($keys){\n  return function keys(it){\n    return $keys(toObject(it));\n  };\n});",
     "deps": {
-      "./$.object-sap": 82,
-      "./$.to-object": 108
+      "./$.to-object": 108,
+      "./$.object-sap": 82
     },
     "hash": "9487e6496e6f29012c24e3e8406e4607"
   },
@@ -2076,8 +2076,8 @@ require("./main.js", entryId$$);
     "deps": {
       "./$": 74,
       "./$.export": 50,
-      "./$.fails": 52,
-      "./$.an-object": 32
+      "./$.an-object": 32,
+      "./$.fails": 52
     },
     "hash": "09ba73f862af940fe3b89659e8e69837"
   },
@@ -2288,8 +2288,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/core-js/modules/es6.set.js",
     "source": "'use strict';\nvar strong = require('./$.collection-strong');\n\n// 23.2 Set Objects\nrequire('./$.collection')('Set', function(get){\n  return function Set(){ return get(this, arguments.length > 0 ? arguments[0] : undefined); };\n}, {\n  // 23.2.3.1 Set.prototype.add(value)\n  add: function add(value){\n    return strong.def(this, value = value === 0 ? 0 : value, value);\n  }\n}, strong);",
     "deps": {
-      "./$.collection": 43,
-      "./$.collection-strong": 40
+      "./$.collection-strong": 40,
+      "./$.collection": 43
     },
     "hash": "43c83fbe90ff0b513e3edae7f262e66e"
   },
@@ -2312,8 +2312,8 @@ require("./main.js", entryId$$);
     "deps": {
       "./$.export": 50,
       "./$.to-length": 107,
-      "./$.fails-is-regexp": 51,
-      "./$.string-context": 99
+      "./$.string-context": 99,
+      "./$.fails-is-regexp": 51
     },
     "hash": "13222c2f111f637a890988244071cde5"
   },
@@ -2358,8 +2358,8 @@ require("./main.js", entryId$$);
     "source": "var $export   = require('./$.export')\n  , toIObject = require('./$.to-iobject')\n  , toLength  = require('./$.to-length');\n\n$export($export.S, 'String', {\n  // 21.1.2.4 String.raw(callSite, ...substitutions)\n  raw: function raw(callSite){\n    var tpl   = toIObject(callSite.raw)\n      , len   = toLength(tpl.length)\n      , $$    = arguments\n      , $$len = $$.length\n      , res   = []\n      , i     = 0;\n    while(len > i){\n      res.push(String(tpl[i++]));\n      if(i < $$len)res.push(String($$[i]));\n    } return res.join('');\n  }\n});",
     "deps": {
       "./$.export": 50,
-      "./$.to-length": 107,
-      "./$.to-iobject": 106
+      "./$.to-iobject": 106,
+      "./$.to-length": 107
     },
     "hash": "d2cebc46302315794ed80e806581670c"
   },
@@ -2416,8 +2416,8 @@ require("./main.js", entryId$$);
       "./$.library": 76,
       "./$.wks": 111,
       "./$.get-names": 56,
-      "./$.redefine": 89,
       "./$.is-array": 64,
+      "./$.redefine": 89,
       "./$.shared": 95,
       "./$.set-to-string-tag": 94,
       "./$.keyof": 75,
@@ -2432,11 +2432,11 @@ require("./main.js", entryId$$);
     "source": "'use strict';\nvar $            = require('./$')\n  , redefine     = require('./$.redefine')\n  , weak         = require('./$.collection-weak')\n  , isObject     = require('./$.is-object')\n  , has          = require('./$.has')\n  , frozenStore  = weak.frozenStore\n  , WEAK         = weak.WEAK\n  , isExtensible = Object.isExtensible || isObject\n  , tmp          = {};\n\n// 23.3 WeakMap Objects\nvar $WeakMap = require('./$.collection')('WeakMap', function(get){\n  return function WeakMap(){ return get(this, arguments.length > 0 ? arguments[0] : undefined); };\n}, {\n  // 23.3.3.3 WeakMap.prototype.get(key)\n  get: function get(key){\n    if(isObject(key)){\n      if(!isExtensible(key))return frozenStore(this).get(key);\n      if(has(key, WEAK))return key[WEAK][this._i];\n    }\n  },\n  // 23.3.3.5 WeakMap.prototype.set(key, value)\n  set: function set(key, value){\n    return weak.def(this, key, value);\n  }\n}, weak, true, true);\n\n// IE11 WeakMap frozen keys fix\nif(new $WeakMap().set((Object.freeze || Object)(tmp), 7).get(tmp) != 7){\n  $.each.call(['delete', 'has', 'get', 'set'], function(key){\n    var proto  = $WeakMap.prototype\n      , method = proto[key];\n    redefine(proto, key, function(a, b){\n      // store frozen objects on leaky map\n      if(isObject(a) && !isExtensible(a)){\n        var result = frozenStore(this)[key](a, b);\n        return key == 'set' ? this : result;\n      // store all the rest on native weakmap\n      } return method.call(this, a, b);\n    });\n  });\n}",
     "deps": {
       "./$": 74,
+      "./$.redefine": 89,
       "./$.is-object": 66,
       "./$.has": 58,
       "./$.collection": 43,
-      "./$.collection-weak": 42,
-      "./$.redefine": 89
+      "./$.collection-weak": 42
     },
     "hash": "987fabb391f90ee5bad575a061b94735"
   },
@@ -2643,6 +2643,16 @@ require("./main.js", entryId$$);
     "source": "require('./modules/es5');\nrequire('./modules/es6.symbol');\nrequire('./modules/es6.object.assign');\nrequire('./modules/es6.object.is');\nrequire('./modules/es6.object.set-prototype-of');\nrequire('./modules/es6.object.to-string');\nrequire('./modules/es6.object.freeze');\nrequire('./modules/es6.object.seal');\nrequire('./modules/es6.object.prevent-extensions');\nrequire('./modules/es6.object.is-frozen');\nrequire('./modules/es6.object.is-sealed');\nrequire('./modules/es6.object.is-extensible');\nrequire('./modules/es6.object.get-own-property-descriptor');\nrequire('./modules/es6.object.get-prototype-of');\nrequire('./modules/es6.object.keys');\nrequire('./modules/es6.object.get-own-property-names');\nrequire('./modules/es6.function.name');\nrequire('./modules/es6.function.has-instance');\nrequire('./modules/es6.number.constructor');\nrequire('./modules/es6.number.epsilon');\nrequire('./modules/es6.number.is-finite');\nrequire('./modules/es6.number.is-integer');\nrequire('./modules/es6.number.is-nan');\nrequire('./modules/es6.number.is-safe-integer');\nrequire('./modules/es6.number.max-safe-integer');\nrequire('./modules/es6.number.min-safe-integer');\nrequire('./modules/es6.number.parse-float');\nrequire('./modules/es6.number.parse-int');\nrequire('./modules/es6.math.acosh');\nrequire('./modules/es6.math.asinh');\nrequire('./modules/es6.math.atanh');\nrequire('./modules/es6.math.cbrt');\nrequire('./modules/es6.math.clz32');\nrequire('./modules/es6.math.cosh');\nrequire('./modules/es6.math.expm1');\nrequire('./modules/es6.math.fround');\nrequire('./modules/es6.math.hypot');\nrequire('./modules/es6.math.imul');\nrequire('./modules/es6.math.log10');\nrequire('./modules/es6.math.log1p');\nrequire('./modules/es6.math.log2');\nrequire('./modules/es6.math.sign');\nrequire('./modules/es6.math.sinh');\nrequire('./modules/es6.math.tanh');\nrequire('./modules/es6.math.trunc');\nrequire('./modules/es6.string.from-code-point');\nrequire('./modules/es6.string.raw');\nrequire('./modules/es6.string.trim');\nrequire('./modules/es6.string.iterator');\nrequire('./modules/es6.string.code-point-at');\nrequire('./modules/es6.string.ends-with');\nrequire('./modules/es6.string.includes');\nrequire('./modules/es6.string.repeat');\nrequire('./modules/es6.string.starts-with');\nrequire('./modules/es6.array.from');\nrequire('./modules/es6.array.of');\nrequire('./modules/es6.array.iterator');\nrequire('./modules/es6.array.species');\nrequire('./modules/es6.array.copy-within');\nrequire('./modules/es6.array.fill');\nrequire('./modules/es6.array.find');\nrequire('./modules/es6.array.find-index');\nrequire('./modules/es6.regexp.constructor');\nrequire('./modules/es6.regexp.flags');\nrequire('./modules/es6.regexp.match');\nrequire('./modules/es6.regexp.replace');\nrequire('./modules/es6.regexp.search');\nrequire('./modules/es6.regexp.split');\nrequire('./modules/es6.promise');\nrequire('./modules/es6.map');\nrequire('./modules/es6.set');\nrequire('./modules/es6.weak-map');\nrequire('./modules/es6.weak-set');\nrequire('./modules/es6.reflect.apply');\nrequire('./modules/es6.reflect.construct');\nrequire('./modules/es6.reflect.define-property');\nrequire('./modules/es6.reflect.delete-property');\nrequire('./modules/es6.reflect.enumerate');\nrequire('./modules/es6.reflect.get');\nrequire('./modules/es6.reflect.get-own-property-descriptor');\nrequire('./modules/es6.reflect.get-prototype-of');\nrequire('./modules/es6.reflect.has');\nrequire('./modules/es6.reflect.is-extensible');\nrequire('./modules/es6.reflect.own-keys');\nrequire('./modules/es6.reflect.prevent-extensions');\nrequire('./modules/es6.reflect.set');\nrequire('./modules/es6.reflect.set-prototype-of');\nrequire('./modules/es7.array.includes');\nrequire('./modules/es7.string.at');\nrequire('./modules/es7.string.pad-left');\nrequire('./modules/es7.string.pad-right');\nrequire('./modules/es7.string.trim-left');\nrequire('./modules/es7.string.trim-right');\nrequire('./modules/es7.regexp.escape');\nrequire('./modules/es7.object.get-own-property-descriptors');\nrequire('./modules/es7.object.values');\nrequire('./modules/es7.object.entries');\nrequire('./modules/es7.map.to-json');\nrequire('./modules/es7.set.to-json');\nrequire('./modules/js.array.statics');\nrequire('./modules/web.timers');\nrequire('./modules/web.immediate');\nrequire('./modules/web.dom.iterable');\nmodule.exports = require('./modules/$.core');",
     "deps": {
       "./modules/$.core": 44,
+      "./modules/es6.object.prevent-extensions": 162,
+      "./modules/es6.object.is-frozen": 158,
+      "./modules/es6.object.is-sealed": 159,
+      "./modules/es6.object.is-extensible": 157,
+      "./modules/es6.object.keys": 161,
+      "./modules/es6.number.is-finite": 144,
+      "./modules/es6.number.is-nan": 146,
+      "./modules/es6.number.max-safe-integer": 148,
+      "./modules/es6.number.min-safe-integer": 149,
+      "./modules/es6.number.parse-float": 150,
       "./modules/es6.number.parse-int": 151,
       "./modules/es6.math.asinh": 126,
       "./modules/es6.math.atanh": 127,
@@ -2658,81 +2668,71 @@ require("./main.js", entryId$$);
       "./modules/es6.math.sinh": 139,
       "./modules/es6.math.tanh": 140,
       "./modules/es6.math.trunc": 141,
+      "./modules/es6.string.starts-with": 195,
       "./modules/es6.array.of": 120,
+      "./modules/es6.array.find-index": 116,
+      "./modules/es6.regexp.search": 185,
+      "./modules/es6.regexp.split": 186,
       "./modules/es6.reflect.apply": 167,
+      "./modules/es6.reflect.define-property": 169,
+      "./modules/es6.reflect.delete-property": 170,
+      "./modules/es6.reflect.get": 174,
+      "./modules/es6.reflect.get-own-property-descriptor": 172,
+      "./modules/es6.reflect.get-prototype-of": 173,
       "./modules/es6.reflect.has": 175,
       "./modules/es6.reflect.is-extensible": 176,
       "./modules/es6.reflect.prevent-extensions": 178,
       "./modules/es6.reflect.set": 180,
+      "./modules/es7.string.at": 207,
+      "./modules/es7.string.trim-left": 210,
+      "./modules/es7.string.trim-right": 211,
       "./modules/es6.object.is": 160,
       "./modules/es6.math.acosh": 125,
       "./modules/es6.math.cbrt": 128,
       "./modules/es6.math.expm1": 131,
       "./modules/es7.regexp.escape": 205,
-      "./modules/es6.object.seal": 163,
-      "./modules/es6.number.epsilon": 143,
-      "./modules/es6.reflect.construct": 168,
-      "./modules/es6.object.prevent-extensions": 162,
-      "./modules/es6.number.is-finite": 144,
-      "./modules/es6.reflect.define-property": 169,
-      "./modules/es6.object.is-frozen": 158,
-      "./modules/es6.number.is-nan": 146,
-      "./modules/es6.regexp.split": 186,
-      "./modules/es6.reflect.delete-property": 170,
-      "./modules/es6.object.is-sealed": 159,
-      "./modules/es6.number.max-safe-integer": 148,
-      "./modules/es6.reflect.get": 174,
-      "./modules/es6.regexp.match": 183,
-      "./modules/es6.string.trim": 196,
-      "./modules/es6.string.includes": 191,
-      "./modules/es6.object.is-extensible": 157,
-      "./modules/es6.number.min-safe-integer": 149,
-      "./modules/es6.reflect.get-own-property-descriptor": 172,
-      "./modules/es6.regexp.replace": 184,
-      "./modules/es6.string.starts-with": 195,
-      "./modules/es7.string.trim-left": 210,
-      "./modules/es6.object.get-own-property-descriptor": 154,
-      "./modules/es6.object.get-prototype-of": 156,
-      "./modules/es6.number.is-safe-integer": 147,
-      "./modules/es6.string.code-point-at": 188,
-      "./modules/es6.set": 187,
-      "./modules/es6.reflect.set-prototype-of": 179,
-      "./modules/es7.string.pad-right": 209,
-      "./modules/es7.object.get-own-property-descriptors": 203,
-      "./modules/es7.object.entries": 202,
-      "./modules/es7.set.to-json": 206,
-      "./modules/es6.string.iterator": 192,
-      "./modules/es6.array.find": 117,
-      "./modules/es6.number.parse-float": 150,
-      "./modules/es6.reflect.get-prototype-of": 173,
-      "./modules/es6.object.freeze": 153,
-      "./modules/es6.regexp.search": 185,
-      "./modules/es7.string.trim-right": 211,
-      "./modules/es6.string.ends-with": 189,
-      "./modules/es6.string.raw": 193,
-      "./modules/es6.object.keys": 161,
-      "./modules/es7.string.at": 207,
       "./modules/es6.object.set-prototype-of": 164,
+      "./modules/es6.object.freeze": 153,
       "./modules/es6.number.is-integer": 145,
+      "./modules/es6.string.ends-with": 189,
       "./modules/es6.array.iterator": 119,
+      "./modules/es6.regexp.match": 183,
       "./modules/es6.map": 124,
+      "./modules/es6.weak-map": 198,
       "./modules/es6.reflect.own-keys": 177,
       "./modules/es7.string.pad-left": 208,
       "./modules/es7.object.values": 204,
       "./modules/es7.map.to-json": 201,
-      "./modules/es6.weak-set": 199,
-      "./modules/es6.weak-map": 198,
+      "./modules/es6.object.seal": 163,
+      "./modules/es6.object.get-own-property-descriptor": 154,
+      "./modules/es6.object.get-prototype-of": 156,
       "./modules/es6.object.get-own-property-names": 155,
       "./modules/es6.function.name": 123,
       "./modules/es6.function.has-instance": 122,
+      "./modules/es6.number.epsilon": 143,
+      "./modules/es6.number.is-safe-integer": 147,
       "./modules/es6.string.from-code-point": 190,
+      "./modules/es6.string.raw": 193,
+      "./modules/es6.string.trim": 196,
+      "./modules/es6.string.code-point-at": 188,
+      "./modules/es6.string.includes": 191,
       "./modules/es6.regexp.flags": 182,
+      "./modules/es6.regexp.replace": 184,
+      "./modules/es6.set": 187,
+      "./modules/es6.weak-set": 199,
+      "./modules/es6.reflect.construct": 168,
+      "./modules/es6.reflect.set-prototype-of": 179,
       "./modules/es7.array.includes": 200,
+      "./modules/es7.string.pad-right": 209,
+      "./modules/es7.object.get-own-property-descriptors": 203,
+      "./modules/es7.object.entries": 202,
+      "./modules/es7.set.to-json": 206,
       "./modules/js.array.statics": 212,
       "./modules/es6.symbol": 197,
       "./modules/es6.object.assign": 152,
       "./modules/es6.object.to-string": 165,
       "./modules/es6.number.constructor": 142,
+      "./modules/es6.string.iterator": 192,
       "./modules/es6.string.repeat": 194,
       "./modules/es6.array.from": 118,
       "./modules/es6.array.species": 121,
@@ -2744,7 +2744,7 @@ require("./main.js", entryId$$);
       "./modules/web.immediate": 214,
       "./modules/web.dom.iterable": 213,
       "./modules/es5": 113,
-      "./modules/es6.array.find-index": 116,
+      "./modules/es6.array.find": 117,
       "./modules/web.timers": 215
     },
     "hash": "18ffed72271f554a9efaeb4bdd8eb3be"
@@ -3248,8 +3248,8 @@ require("./main.js", entryId$$);
     "source": "function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { \"default\": obj }; }\n\nvar _startClient = require(\"./startClient\");\n\nvar _startClient2 = _interopRequireDefault(_startClient);\n\nvar _handleChange = require(\"./handleChange\");\n\nvar _handleChange2 = _interopRequireDefault(_handleChange);\n\nvar _console = require(\"./console\");\n\nmodule.exports = function client(opts) {\n  var start = arguments.length <= 1 || arguments[1] === undefined ? _startClient2[\"default\"] : arguments[1];\n\n  var scope$$ = window.__livereactload$$;\n  scope$$.options = opts;\n  start(scope$$, {\n    change: function change(msg) {\n      (0, _console.info)(\"Bundle changed\");\n      (0, _handleChange2[\"default\"])(scope$$, msg.data);\n    },\n    bundle_error: function bundle_error(msg) {\n      (0, _console.error)(msg.data.error);\n    }\n  });\n};",
     "deps": {
       "./console": 267,
-      "./startClient": 271,
-      "./handleChange": 268
+      "./handleChange": 268,
+      "./startClient": 271
     },
     "hash": "2ca69629fb81079d237678ec528fcd20"
   },
@@ -3369,10 +3369,10 @@ require("./main.js", entryId$$);
     "source": "var baseDifference = require('../internal/baseDifference'),\n    baseFlatten = require('../internal/baseFlatten'),\n    isArrayLike = require('../internal/isArrayLike'),\n    isObjectLike = require('../internal/isObjectLike'),\n    restParam = require('../function/restParam');\n\n/**\n * Creates an array of unique `array` values not included in the other\n * provided arrays using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)\n * for equality comparisons.\n *\n * @static\n * @memberOf _\n * @category Array\n * @param {Array} array The array to inspect.\n * @param {...Array} [values] The arrays of values to exclude.\n * @returns {Array} Returns the new array of filtered values.\n * @example\n *\n * _.difference([1, 2, 3], [4, 2]);\n * // => [1, 3]\n */\nvar difference = restParam(function(array, values) {\n  return (isObjectLike(array) && isArrayLike(array))\n    ? baseDifference(array, baseFlatten(values, false, true))\n    : [];\n});\n\nmodule.exports = difference;\n",
     "deps": {
       "../internal/isObjectLike": 305,
-      "../function/restParam": 283,
       "../internal/isArrayLike": 301,
-      "../internal/baseDifference": 289,
-      "../internal/baseFlatten": 290
+      "../function/restParam": 283,
+      "../internal/baseFlatten": 290,
+      "../internal/baseDifference": 289
     },
     "hash": "32f4a10178de5c6710e255fae15fd9dc"
   },
@@ -3450,8 +3450,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/lodash/internal/baseFlatten.js",
     "source": "var arrayPush = require('./arrayPush'),\n    isArguments = require('../lang/isArguments'),\n    isArray = require('../lang/isArray'),\n    isArrayLike = require('./isArrayLike'),\n    isObjectLike = require('./isObjectLike');\n\n/**\n * The base implementation of `_.flatten` with added support for restricting\n * flattening and specifying the start index.\n *\n * @private\n * @param {Array} array The array to flatten.\n * @param {boolean} [isDeep] Specify a deep flatten.\n * @param {boolean} [isStrict] Restrict flattening to arrays-like objects.\n * @param {Array} [result=[]] The initial result value.\n * @returns {Array} Returns the new flattened array.\n */\nfunction baseFlatten(array, isDeep, isStrict, result) {\n  result || (result = []);\n\n  var index = -1,\n      length = array.length;\n\n  while (++index < length) {\n    var value = array[index];\n    if (isObjectLike(value) && isArrayLike(value) &&\n        (isStrict || isArray(value) || isArguments(value))) {\n      if (isDeep) {\n        // Recursively flatten arrays (susceptible to call stack limits).\n        baseFlatten(value, isDeep, isStrict, result);\n      } else {\n        arrayPush(result, value);\n      }\n    } else if (!isStrict) {\n      result[result.length] = value;\n    }\n  }\n  return result;\n}\n\nmodule.exports = baseFlatten;\n",
     "deps": {
-      "./isArrayLike": 301,
       "./isObjectLike": 305,
+      "./isArrayLike": 301,
       "./arrayPush": 285,
       "../lang/isArguments": 307,
       "../lang/isArray": 308
@@ -3524,8 +3524,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/lodash/internal/createCache.js",
     "source": "(function (global){\nvar SetCache = require('./SetCache'),\n    getNative = require('./getNative');\n\n/** Native method references. */\nvar Set = getNative(global, 'Set');\n\n/* Native method references for those with the same name as other `lodash` methods. */\nvar nativeCreate = getNative(Object, 'create');\n\n/**\n * Creates a `Set` cache object to optimize linear searches of large arrays.\n *\n * @private\n * @param {Array} [values] The values to cache.\n * @returns {null|Object} Returns the new cache object if `Set` is supported, else `null`.\n */\nfunction createCache(values) {\n  return (nativeCreate && Set) ? new SetCache(values) : null;\n}\n\nmodule.exports = createCache;\n\n}).call(this,typeof global !== \"undefined\" ? global : typeof self !== \"undefined\" ? self : typeof window !== \"undefined\" ? window : {})",
     "deps": {
-      "./getNative": 299,
-      "./SetCache": 284
+      "./SetCache": 284,
+      "./getNative": 299
     },
     "hash": "b8e13dfcfac4fcffdd470116d54404e8"
   },
@@ -3610,11 +3610,11 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/lodash/internal/shimKeys.js",
     "source": "var isArguments = require('../lang/isArguments'),\n    isArray = require('../lang/isArray'),\n    isIndex = require('./isIndex'),\n    isLength = require('./isLength'),\n    keysIn = require('../object/keysIn');\n\n/** Used for native method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * A fallback implementation of `Object.keys` which creates an array of the\n * own enumerable property names of `object`.\n *\n * @private\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names.\n */\nfunction shimKeys(object) {\n  var props = keysIn(object),\n      propsLength = props.length,\n      length = propsLength && object.length;\n\n  var allowIndexes = !!length && isLength(length) &&\n    (isArray(object) || isArguments(object));\n\n  var index = -1,\n      result = [];\n\n  while (++index < propsLength) {\n    var key = props[index];\n    if ((allowIndexes && isIndex(key, length)) || hasOwnProperty.call(object, key)) {\n      result.push(key);\n    }\n  }\n  return result;\n}\n\nmodule.exports = shimKeys;\n",
     "deps": {
-      "./isLength": 304,
       "./isIndex": 302,
-      "../lang/isArguments": 307,
+      "./isLength": 304,
       "../lang/isArray": 308,
-      "../object/keysIn": 314
+      "../object/keysIn": 314,
+      "../lang/isArguments": 307
     },
     "hash": "56beb495b9be59bebee47f00236ede83"
   },
@@ -3624,8 +3624,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/lodash/lang/isArguments.js",
     "source": "var isArrayLike = require('../internal/isArrayLike'),\n    isObjectLike = require('../internal/isObjectLike');\n\n/** Used for native method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/** Native method references. */\nvar propertyIsEnumerable = objectProto.propertyIsEnumerable;\n\n/**\n * Checks if `value` is classified as an `arguments` object.\n *\n * @static\n * @memberOf _\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.\n * @example\n *\n * _.isArguments(function() { return arguments; }());\n * // => true\n *\n * _.isArguments([1, 2, 3]);\n * // => false\n */\nfunction isArguments(value) {\n  return isObjectLike(value) && isArrayLike(value) &&\n    hasOwnProperty.call(value, 'callee') && !propertyIsEnumerable.call(value, 'callee');\n}\n\nmodule.exports = isArguments;\n",
     "deps": {
-      "../internal/isObjectLike": 305,
-      "../internal/isArrayLike": 301
+      "../internal/isArrayLike": 301,
+      "../internal/isObjectLike": 305
     },
     "hash": "264a761e53cfb4fcd6f71a2af1b82fd6"
   },
@@ -3635,9 +3635,9 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/lodash/lang/isArray.js",
     "source": "var getNative = require('../internal/getNative'),\n    isLength = require('../internal/isLength'),\n    isObjectLike = require('../internal/isObjectLike');\n\n/** `Object#toString` result references. */\nvar arrayTag = '[object Array]';\n\n/** Used for native method references. */\nvar objectProto = Object.prototype;\n\n/**\n * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)\n * of values.\n */\nvar objToString = objectProto.toString;\n\n/* Native method references for those with the same name as other `lodash` methods. */\nvar nativeIsArray = getNative(Array, 'isArray');\n\n/**\n * Checks if `value` is classified as an `Array` object.\n *\n * @static\n * @memberOf _\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.\n * @example\n *\n * _.isArray([1, 2, 3]);\n * // => true\n *\n * _.isArray(function() { return arguments; }());\n * // => false\n */\nvar isArray = nativeIsArray || function(value) {\n  return isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag;\n};\n\nmodule.exports = isArray;\n",
     "deps": {
+      "../internal/getNative": 299,
       "../internal/isLength": 304,
-      "../internal/isObjectLike": 305,
-      "../internal/getNative": 299
+      "../internal/isObjectLike": 305
     },
     "hash": "9336cb10a84097f05216c16c698ecb20"
   },
@@ -3677,8 +3677,8 @@ require("./main.js", entryId$$);
     "source": "var assignWith = require('../internal/assignWith'),\n    baseAssign = require('../internal/baseAssign'),\n    createAssigner = require('../internal/createAssigner');\n\n/**\n * Assigns own enumerable properties of source object(s) to the destination\n * object. Subsequent sources overwrite property assignments of previous sources.\n * If `customizer` is provided it's invoked to produce the assigned values.\n * The `customizer` is bound to `thisArg` and invoked with five arguments:\n * (objectValue, sourceValue, key, object, source).\n *\n * **Note:** This method mutates `object` and is based on\n * [`Object.assign`](http://ecma-international.org/ecma-262/6.0/#sec-object.assign).\n *\n * @static\n * @memberOf _\n * @alias extend\n * @category Object\n * @param {Object} object The destination object.\n * @param {...Object} [sources] The source objects.\n * @param {Function} [customizer] The function to customize assigned values.\n * @param {*} [thisArg] The `this` binding of `customizer`.\n * @returns {Object} Returns `object`.\n * @example\n *\n * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });\n * // => { 'user': 'fred', 'age': 40 }\n *\n * // using a customizer callback\n * var defaults = _.partialRight(_.assign, function(value, other) {\n *   return _.isUndefined(value) ? other : value;\n * });\n *\n * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });\n * // => { 'user': 'barney', 'age': 36 }\n */\nvar assign = createAssigner(function(object, source, customizer) {\n  return customizer\n    ? assignWith(object, source, customizer)\n    : baseAssign(object, source);\n});\n\nmodule.exports = assign;\n",
     "deps": {
       "../internal/baseAssign": 287,
-      "../internal/createAssigner": 296,
-      "../internal/assignWith": 286
+      "../internal/assignWith": 286,
+      "../internal/createAssigner": 296
     },
     "hash": "7af845e14cc459565a5b917870e4aea3"
   },
@@ -3689,8 +3689,8 @@ require("./main.js", entryId$$);
     "source": "var getNative = require('../internal/getNative'),\n    isArrayLike = require('../internal/isArrayLike'),\n    isObject = require('../lang/isObject'),\n    shimKeys = require('../internal/shimKeys');\n\n/* Native method references for those with the same name as other `lodash` methods. */\nvar nativeKeys = getNative(Object, 'keys');\n\n/**\n * Creates an array of the own enumerable property names of `object`.\n *\n * **Note:** Non-object values are coerced to objects. See the\n * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)\n * for more details.\n *\n * @static\n * @memberOf _\n * @category Object\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names.\n * @example\n *\n * function Foo() {\n *   this.a = 1;\n *   this.b = 2;\n * }\n *\n * Foo.prototype.c = 3;\n *\n * _.keys(new Foo);\n * // => ['a', 'b'] (iteration order is not guaranteed)\n *\n * _.keys('hi');\n * // => ['0', '1']\n */\nvar keys = !nativeKeys ? shimKeys : function(object) {\n  var Ctor = object == null ? undefined : object.constructor;\n  if ((typeof Ctor == 'function' && Ctor.prototype === object) ||\n      (typeof object != 'function' && isArrayLike(object))) {\n    return shimKeys(object);\n  }\n  return isObject(object) ? nativeKeys(object) : [];\n};\n\nmodule.exports = keys;\n",
     "deps": {
       "../internal/isArrayLike": 301,
-      "../lang/isObject": 311,
       "../internal/getNative": 299,
+      "../lang/isObject": 311,
       "../internal/shimKeys": 306
     },
     "hash": "bbe3bd25c9b6523b544528661fe00980"
@@ -3723,8 +3723,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/ClickAwayListener.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactDom = require('react-dom');\n\nvar _reactDom2 = _interopRequireDefault(_reactDom);\n\nvar _events = require('./utils/events');\n\nvar _events2 = _interopRequireDefault(_events);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return call && (typeof call === \"object\" || typeof call === \"function\") ? call : self; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function, not \" + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }\n\nvar isDescendant = function isDescendant(el, target) {\n  if (target !== null) {\n    return el === target || isDescendant(el, target.parentNode);\n  }\n  return false;\n};\n\nvar clickAwayEvents = ['mousedown', 'touchstart'];\nvar bind = function bind(callback) {\n  return clickAwayEvents.forEach(function (event) {\n    return _events2.default.on(document, event, callback);\n  });\n};\nvar unbind = function unbind(callback) {\n  return clickAwayEvents.forEach(function (event) {\n    return _events2.default.off(document, event, callback);\n  });\n};\n\nvar ClickAwayListener = function (_React$Component) {\n  _inherits(ClickAwayListener, _React$Component);\n\n  function ClickAwayListener() {\n    var _Object$getPrototypeO;\n\n    var _temp, _this, _ret;\n\n    _classCallCheck(this, ClickAwayListener);\n\n    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {\n      args[_key] = arguments[_key];\n    }\n\n    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(ClickAwayListener)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.handleClickAway = function (event) {\n      if (event.defaultPrevented) {\n        return;\n      }\n\n      var el = _reactDom2.default.findDOMNode(_this);\n\n      if (document.documentElement.contains(event.target) && !isDescendant(el, event.target)) {\n        _this.props.onClickAway(event);\n      }\n    }, _temp), _possibleConstructorReturn(_this, _ret);\n  }\n\n  _createClass(ClickAwayListener, [{\n    key: 'componentDidMount',\n    value: function componentDidMount() {\n      if (this.props.onClickAway) {\n        bind(this.handleClickAway);\n      }\n    }\n  }, {\n    key: 'componentDidUpdate',\n    value: function componentDidUpdate(prevProps) {\n      if (prevProps.onClickAway !== this.props.onClickAway) {\n        unbind(this.handleClickAway);\n        if (this.props.onClickAway) {\n          bind(this.handleClickAway);\n        }\n      }\n    }\n  }, {\n    key: 'componentWillUnmount',\n    value: function componentWillUnmount() {\n      unbind(this.handleClickAway);\n    }\n  }, {\n    key: 'render',\n    value: function render() {\n      return this.props.children;\n    }\n  }]);\n\n  return ClickAwayListener;\n}(_react2.default.Component);\n\nClickAwayListener.propTypes = {\n  children: _react2.default.PropTypes.node,\n  onClickAway: _react2.default.PropTypes.any\n};\nexports.default = ClickAwayListener;\nmodule.exports = exports['default'];",
     "deps": {
-      "react-dom": 411,
       "react": 580,
+      "react-dom": 411,
       "./utils/events": 400
     },
     "hash": "04b233def83b68496236eff761ab6df1"
@@ -3736,8 +3736,8 @@ require("./main.js", entryId$$);
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };\n\nvar _simpleAssign = require('simple-assign');\n\nvar _simpleAssign2 = _interopRequireDefault(_simpleAssign);\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _muiThemeable = require('./../muiThemeable');\n\nvar _muiThemeable2 = _interopRequireDefault(_muiThemeable);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }\n\nvar propTypes = {\n  /**\n   * Node that will be placed inside the `Subheader`.\n   */\n  children: _react2.default.PropTypes.node,\n\n  /**\n   * If true, the `Subheader` will be indented by `72px`.\n   */\n  inset: _react2.default.PropTypes.bool,\n\n  /**\n   * The material-ui theme applied to this component.\n   * @ignore\n   */\n  muiTheme: _react2.default.PropTypes.object.isRequired,\n\n  /**\n   * Override the inline-styles of the root element.\n   */\n  style: _react2.default.PropTypes.object\n};\n\nvar defaultProps = {\n  inset: false\n};\n\nvar Subheader = function Subheader(props) {\n  var muiTheme = props.muiTheme;\n  var children = props.children;\n  var inset = props.inset;\n  var style = props.style;\n\n  var other = _objectWithoutProperties(props, ['muiTheme', 'children', 'inset', 'style']);\n\n  var prepareStyles = muiTheme.prepareStyles;\n  var subheader = muiTheme.subheader;\n\n\n  var styles = {\n    root: {\n      boxSizing: 'border-box',\n      color: subheader.color,\n      fontSize: 14,\n      fontWeight: subheader.fontWeight,\n      lineHeight: '48px',\n      paddingLeft: inset ? 72 : 16,\n      width: '100%'\n    }\n  };\n\n  return _react2.default.createElement(\n    'div',\n    _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)({}, styles.root, style)) }),\n    children\n  );\n};\n\nSubheader.propTypes = propTypes;\nSubheader.defaultProps = defaultProps;\n\nSubheader = (0, _muiThemeable2.default)()(Subheader);\nSubheader.displayName = 'Subheader';\n\nexports.default = Subheader;\nmodule.exports = exports['default'];",
     "deps": {
       "./../muiThemeable": 347,
-      "simple-assign": 646,
-      "react": 580
+      "react": 580,
+      "simple-assign": 646
     },
     "hash": "f134283f2785ddb1e03f32674a7ebaf7"
   },
@@ -3762,8 +3762,8 @@ require("./main.js", entryId$$);
       "../utils/deprecatedPropType": 398,
       "../styles/getMuiTheme": 360,
       "../utils/unique-id": 402,
-      "simple-assign": 646,
       "react": 580,
+      "simple-assign": 646,
       "react-dom": 411,
       "keycode": 263,
       "../enhanced-textarea": 336,
@@ -3831,9 +3831,9 @@ require("./main.js", entryId$$);
       "react": 580,
       "warning": 647,
       "./styles/getMuiTheme": 360,
+      "./icon-button": 340,
       "./utils/prop-types": 401,
-      "./svg-icons/navigation/menu": 377,
-      "./icon-button": 340
+      "./svg-icons/navigation/menu": 377
     },
     "hash": "40ae7398f39918f8b95df33cefdb3e72"
   },
@@ -3850,10 +3850,10 @@ require("./main.js", entryId$$);
       "react-dom": 411,
       "keycode": 263,
       "warning": 647,
+      "./divider": 333,
       "./styles/getMuiTheme": 360,
       "./utils/prop-types": 401,
       "./utils/deprecatedPropType": 398,
-      "./divider": 333,
       "./popover/popover": 351,
       "./menus/menu": 346,
       "./menus/menu-item": 345
@@ -3907,9 +3907,9 @@ require("./main.js", entryId$$);
       "./styles/transitions": 366,
       "./styles/getMuiTheme": 360,
       "./utils/deprecatedPropType": 398,
-      "./svg-icons/toggle/check-box": 379,
+      "./enhanced-switch": 335,
       "./svg-icons/toggle/check-box-outline-blank": 378,
-      "./enhanced-switch": 335
+      "./svg-icons/toggle/check-box": 379
     },
     "hash": "553bbe62fa524a6150b27c15aa2cda83"
   },
@@ -3922,8 +3922,8 @@ require("./main.js", entryId$$);
       "simple-assign": 646,
       "react": 580,
       "./styles/transitions": 366,
-      "./styles/auto-prefix": 357,
-      "./styles/getMuiTheme": 360
+      "./styles/getMuiTheme": 360,
+      "./styles/auto-prefix": 357
     },
     "hash": "525e58c3037f2f323746b78943b4da65"
   },
@@ -3948,13 +3948,13 @@ require("./main.js", entryId$$);
       "react-dom": 411,
       "simple-assign": 646,
       "keycode": 263,
+      "./paper": 349,
       "./styles/transitions": 366,
-      "./styles/getMuiTheme": 360,
       "./overlay": 348,
+      "react-addons-transition-group": 408,
       "react-event-listener": 412,
       "./render-to-layer": 352,
-      "react-addons-transition-group": 408,
-      "./paper": 349
+      "./styles/getMuiTheme": 360
     },
     "hash": "adaed0b1d4b6386f7925551fb769ad2b"
   },
@@ -4003,11 +4003,11 @@ require("./main.js", entryId$$);
       "warning": 647,
       "./styles/transitions": 366,
       "./styles/getMuiTheme": 360,
+      "./clearfix": 331,
       "react-event-listener": 412,
       "./utils/unique-id": 402,
       "./ripples/focus-ripple": 354,
-      "./ripples/touch-ripple": 355,
-      "./clearfix": 331
+      "./ripples/touch-ripple": 355
     },
     "hash": "81fde9aaf815a853d9a450ce75cba3b8"
   },
@@ -4030,13 +4030,13 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/flat-button.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };\n\nvar _simpleAssign = require('simple-assign');\n\nvar _simpleAssign2 = _interopRequireDefault(_simpleAssign);\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _transitions = require('./styles/transitions');\n\nvar _transitions2 = _interopRequireDefault(_transitions);\n\nvar _children = require('./utils/children');\n\nvar _children2 = _interopRequireDefault(_children);\n\nvar _colorManipulator = require('./utils/color-manipulator');\n\nvar _colorManipulator2 = _interopRequireDefault(_colorManipulator);\n\nvar _enhancedButton = require('./enhanced-button');\n\nvar _enhancedButton2 = _interopRequireDefault(_enhancedButton);\n\nvar _flatButtonLabel = require('./buttons/flat-button-label');\n\nvar _flatButtonLabel2 = _interopRequireDefault(_flatButtonLabel);\n\nvar _getMuiTheme = require('./styles/getMuiTheme');\n\nvar _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }\n\nfunction validateLabel(props, propName, componentName) {\n  if (!props.children && !props.label) {\n    return new Error('Required prop label or children was not specified in ' + componentName + '.');\n  }\n}\n\nvar FlatButton = _react2.default.createClass({\n  displayName: 'FlatButton',\n\n\n  propTypes: {\n    /**\n     * Color of button when mouse is not hovering over it.\n     */\n    backgroundColor: _react2.default.PropTypes.string,\n\n    /**\n     * This is what will be displayed inside the button.\n     * If a label is specified, the text within the label prop will\n     * be displayed. Otherwise, the component will expect children\n     * which will then be displayed. (In our example,\n     * we are nesting an `<input type=\"file\" />` and a `span`\n     * that acts as our label to be displayed.) This only\n     * applies to flat and raised buttons.\n     */\n    children: _react2.default.PropTypes.node,\n\n    /**\n     * Disables the button if set to true.\n     */\n    disabled: _react2.default.PropTypes.bool,\n\n    /**\n     * Color of button when mouse hovers over.\n     */\n    hoverColor: _react2.default.PropTypes.string,\n\n    /**\n     * URL to link to when button clicked if `linkButton` is set to true.\n     */\n    href: _react2.default.PropTypes.string,\n\n    /**\n     * Use this property to display an icon.\n     */\n    icon: _react2.default.PropTypes.node,\n\n    /**\n     * Label for the button.\n     */\n    label: validateLabel,\n\n    /**\n     * Place label before or after the passed children.\n     */\n    labelPosition: _react2.default.PropTypes.oneOf(['before', 'after']),\n\n    /**\n     * Override the inline-styles of the button's label element.\n     */\n    labelStyle: _react2.default.PropTypes.object,\n\n    /**\n     * Enables use of `href` property to provide a URL to link to if set to true.\n     */\n    linkButton: _react2.default.PropTypes.bool,\n\n    /**\n     * Called when element is focused by the keyboard.\n     */\n    onKeyboardFocus: _react2.default.PropTypes.func,\n\n    /**\n     * Called when the mouse enters the element.\n     */\n    onMouseEnter: _react2.default.PropTypes.func,\n\n    /**\n     * Called when the mouse leaves the element.\n     */\n    onMouseLeave: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a touch event is started inside the element.\n     */\n    onTouchStart: _react2.default.PropTypes.func,\n\n    /**\n     * If true, colors button according to\n     * primaryTextColor from the Theme.\n     */\n    primary: _react2.default.PropTypes.bool,\n\n    /**\n     * Color for the ripple after button is clicked.\n     */\n    rippleColor: _react2.default.PropTypes.string,\n\n    /**\n     * If true, colors button according to secondaryTextColor from the theme.\n     * The primary prop has precendent if set to true.\n     */\n    secondary: _react2.default.PropTypes.bool,\n\n    /**\n     * Override the inline-styles of the root element.\n     */\n    style: _react2.default.PropTypes.object\n  },\n\n  contextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  childContextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  getDefaultProps: function getDefaultProps() {\n    return {\n      disabled: false,\n      labelStyle: {},\n      labelPosition: 'after',\n      onKeyboardFocus: function onKeyboardFocus() {},\n      onMouseEnter: function onMouseEnter() {},\n      onMouseLeave: function onMouseLeave() {},\n      onTouchStart: function onTouchStart() {},\n      primary: false,\n      secondary: false\n    };\n  },\n  getInitialState: function getInitialState() {\n    return {\n      hovered: false,\n      isKeyboardFocused: false,\n      touch: false,\n      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)()\n    };\n  },\n  getChildContext: function getChildContext() {\n    return {\n      muiTheme: this.state.muiTheme\n    };\n  },\n  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {\n    this.setState({\n      muiTheme: nextContext.muiTheme || this.state.muiTheme\n    });\n  },\n  _handleKeyboardFocus: function _handleKeyboardFocus(event, isKeyboardFocused) {\n    this.setState({ isKeyboardFocused: isKeyboardFocused });\n    this.props.onKeyboardFocus(event, isKeyboardFocused);\n  },\n  _handleMouseEnter: function _handleMouseEnter(event) {\n    //Cancel hover styles for touch devices\n    if (!this.state.touch) this.setState({ hovered: true });\n    this.props.onMouseEnter(event);\n  },\n  _handleMouseLeave: function _handleMouseLeave(event) {\n    this.setState({ hovered: false });\n    this.props.onMouseLeave(event);\n  },\n  _handleTouchStart: function _handleTouchStart(event) {\n    this.setState({ touch: true });\n    this.props.onTouchStart(event);\n  },\n  render: function render() {\n    var _props = this.props;\n    var children = _props.children;\n    var disabled = _props.disabled;\n    var hoverColor = _props.hoverColor;\n    var backgroundColor = _props.backgroundColor;\n    var icon = _props.icon;\n    var label = _props.label;\n    var labelStyle = _props.labelStyle;\n    var labelPosition = _props.labelPosition;\n    var primary = _props.primary;\n    var rippleColor = _props.rippleColor;\n    var secondary = _props.secondary;\n    var style = _props.style;\n\n    var other = _objectWithoutProperties(_props, ['children', 'disabled', 'hoverColor', 'backgroundColor', 'icon', 'label', 'labelStyle', 'labelPosition', 'primary', 'rippleColor', 'secondary', 'style']);\n\n    var _state$muiTheme = this.state.muiTheme;\n    var _state$muiTheme$butto = _state$muiTheme.button;\n    var buttonHeight = _state$muiTheme$butto.height;\n    var buttonMinWidth = _state$muiTheme$butto.minWidth;\n    var buttonTextTransform = _state$muiTheme$butto.textTransform;\n    var _state$muiTheme$flatB = _state$muiTheme.flatButton;\n    var buttonFilterColor = _state$muiTheme$flatB.buttonFilterColor;\n    var buttonColor = _state$muiTheme$flatB.color;\n    var disabledTextColor = _state$muiTheme$flatB.disabledTextColor;\n    var fontSize = _state$muiTheme$flatB.fontSize;\n    var fontWeight = _state$muiTheme$flatB.fontWeight;\n    var primaryTextColor = _state$muiTheme$flatB.primaryTextColor;\n    var secondaryTextColor = _state$muiTheme$flatB.secondaryTextColor;\n    var textColor = _state$muiTheme$flatB.textColor;\n    var _state$muiTheme$flatB2 = _state$muiTheme$flatB.textTransform;\n    var textTransform = _state$muiTheme$flatB2 === undefined ? buttonTextTransform || 'uppercase' : _state$muiTheme$flatB2;\n\n    var defaultTextColor = disabled ? disabledTextColor : primary ? primaryTextColor : secondary ? secondaryTextColor : textColor;\n\n    var defaultHoverColor = _colorManipulator2.default.fade(buttonFilterColor, 0.2);\n    var defaultRippleColor = buttonFilterColor;\n    var buttonHoverColor = hoverColor || defaultHoverColor;\n    var buttonRippleColor = rippleColor || defaultRippleColor;\n    var buttonBackgroundColor = backgroundColor || buttonColor;\n    var hovered = (this.state.hovered || this.state.isKeyboardFocused) && !disabled;\n\n    var mergedRootStyles = (0, _simpleAssign2.default)({}, {\n      color: defaultTextColor,\n      transition: _transitions2.default.easeOut(),\n      fontSize: fontSize,\n      letterSpacing: 0,\n      textTransform: textTransform,\n      fontWeight: fontWeight,\n      borderRadius: 2,\n      userSelect: 'none',\n      position: 'relative',\n      overflow: 'hidden',\n      backgroundColor: hovered ? buttonHoverColor : buttonBackgroundColor,\n      lineHeight: buttonHeight + 'px',\n      minWidth: buttonMinWidth,\n      padding: 0,\n      margin: 0\n    }, style);\n\n    var iconCloned = undefined;\n    var labelStyleIcon = {};\n\n    if (icon) {\n      iconCloned = _react2.default.cloneElement(icon, {\n        color: mergedRootStyles.color,\n        style: {\n          verticalAlign: 'middle',\n          marginLeft: labelPosition === 'before' ? 0 : 12,\n          marginRight: labelPosition === 'before' ? 12 : 0\n        }\n      });\n\n      if (labelPosition === 'before') {\n        labelStyleIcon.paddingRight = 8;\n      } else {\n        labelStyleIcon.paddingLeft = 8;\n      }\n    }\n\n    var labelElement = label ? _react2.default.createElement(_flatButtonLabel2.default, { label: label, style: (0, _simpleAssign2.default)({}, labelStyleIcon, labelStyle) }) : undefined;\n\n    // Place label before or after children.\n    var childrenFragment = labelPosition === 'before' ? {\n      labelElement: labelElement,\n      iconCloned: iconCloned,\n      children: children\n    } : {\n      children: children,\n      iconCloned: iconCloned,\n      labelElement: labelElement\n    };\n    var enhancedButtonChildren = _children2.default.create(childrenFragment);\n\n    return _react2.default.createElement(\n      _enhancedButton2.default,\n      _extends({}, other, {\n        disabled: disabled,\n        focusRippleColor: buttonRippleColor,\n        focusRippleOpacity: 0.3,\n        onKeyboardFocus: this._handleKeyboardFocus,\n        onMouseLeave: this._handleMouseLeave,\n        onMouseEnter: this._handleMouseEnter,\n        onTouchStart: this._handleTouchStart,\n        style: mergedRootStyles,\n        touchRippleColor: buttonRippleColor,\n        touchRippleOpacity: 0.3\n      }),\n      enhancedButtonChildren\n    );\n  }\n});\n\nexports.default = FlatButton;\nmodule.exports = exports['default'];",
     "deps": {
+      "./enhanced-button": 334,
       "simple-assign": 646,
       "react": 580,
       "./styles/transitions": 366,
       "./styles/getMuiTheme": 360,
-      "./utils/color-manipulator": 397,
       "./utils/children": 396,
-      "./enhanced-button": 334,
+      "./utils/color-manipulator": 397,
       "./buttons/flat-button-label": 328
     },
     "hash": "e03fc40a61e3e14e8eca5e2e251b6207"
@@ -4055,9 +4055,9 @@ require("./main.js", entryId$$);
       "./enhanced-button": 334,
       "./styles/transitions": 366,
       "./styles/getMuiTheme": 360,
+      "./font-icon": 339,
       "./utils/color-manipulator": 397,
       "./utils/prop-types": 401,
-      "./font-icon": 339,
       "./utils/children": 396
     },
     "hash": "8f09f1d602704d842c74f061729704df"
@@ -4087,9 +4087,9 @@ require("./main.js", entryId$$);
       "react": 580,
       "./styles/transitions": 366,
       "./styles/getMuiTheme": 360,
+      "./tooltip": 393,
       "./utils/prop-types": 401,
-      "./utils/children": 396,
-      "./tooltip": 393
+      "./utils/children": 396
     },
     "hash": "8232c325d199a410eae862ed7dcddcd7"
   },
@@ -4122,8 +4122,8 @@ require("./main.js", entryId$$);
       "react-dom": 411,
       "react-addons-pure-render-mixin": 407,
       "./nested-list": 344,
-      "../svg-icons/navigation/arrow-drop-down": 374,
-      "../svg-icons/navigation/arrow-drop-up": 375
+      "../svg-icons/navigation/arrow-drop-up": 375,
+      "../svg-icons/navigation/arrow-drop-down": 374
     },
     "hash": "9dc88d92fd305b8cff0fbf517d8a6cf6"
   },
@@ -4181,8 +4181,8 @@ require("./main.js", entryId$$);
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };\n\nvar _simpleAssign = require('simple-assign');\n\nvar _simpleAssign2 = _interopRequireDefault(_simpleAssign);\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactDom = require('react-dom');\n\nvar _reactDom2 = _interopRequireDefault(_reactDom);\n\nvar _reactAddonsUpdate = require('react-addons-update');\n\nvar _reactAddonsUpdate2 = _interopRequireDefault(_reactAddonsUpdate);\n\nvar _ClickAwayListener = require('../ClickAwayListener');\n\nvar _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);\n\nvar _autoPrefix = require('../styles/auto-prefix');\n\nvar _autoPrefix2 = _interopRequireDefault(_autoPrefix);\n\nvar _transitions = require('../styles/transitions');\n\nvar _transitions2 = _interopRequireDefault(_transitions);\n\nvar _keycode = require('keycode');\n\nvar _keycode2 = _interopRequireDefault(_keycode);\n\nvar _propTypes = require('../utils/prop-types');\n\nvar _propTypes2 = _interopRequireDefault(_propTypes);\n\nvar _list = require('../lists/list');\n\nvar _list2 = _interopRequireDefault(_list);\n\nvar _paper = require('../paper');\n\nvar _paper2 = _interopRequireDefault(_paper);\n\nvar _getMuiTheme = require('../styles/getMuiTheme');\n\nvar _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);\n\nvar _deprecatedPropType = require('../utils/deprecatedPropType');\n\nvar _deprecatedPropType2 = _interopRequireDefault(_deprecatedPropType);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }\n\nvar Menu = _react2.default.createClass({\n  displayName: 'Menu',\n\n\n  propTypes: {\n    /**\n     * If true, the menu will apply transitions when added it\n     * gets added to the DOM. In order for transitions to\n     * work, wrap the menu inside a ReactTransitionGroup.\n     */\n    animated: (0, _deprecatedPropType2.default)(_react2.default.PropTypes.bool, 'Instead, use a [Popover](/#/components/popover).'),\n\n    /**\n     * If true, the width will automatically be\n     * set according to the items inside the menu\n     * using the proper keyline increment.\n     */\n    autoWidth: _react2.default.PropTypes.bool,\n\n    /**\n     * Children for the Menu. Usually MenuItems.\n     */\n    children: _react2.default.PropTypes.node,\n\n    /**\n     * Indicates if the menu should render with compact desktop styles.\n     */\n    desktop: _react2.default.PropTypes.bool,\n\n    /**\n     * Disable the auto focus feature.\n     */\n    disableAutoFocus: _react2.default.PropTypes.bool,\n\n    /**\n     * True if this item should be focused by the keyboard initially.\n     */\n    initiallyKeyboardFocused: _react2.default.PropTypes.bool,\n\n    /**\n     * The style object to use to override underlying list style.\n     */\n    listStyle: _react2.default.PropTypes.object,\n\n    /**\n     * The maxHeight of the menu in pixels. If\n     * specified, the menu will scroll if larger than the maxHeight.\n     */\n    maxHeight: _react2.default.PropTypes.number,\n\n    /**\n     * If true, the value can be an array and allow the menu to be a multi-select.\n     */\n    multiple: _react2.default.PropTypes.bool,\n\n    /**\n     * Fired when a menu item is touchTapped and the menu item\n     * value is not equal to the current menu value.\n     */\n    onChange: _react2.default.PropTypes.func,\n\n    /**\n     * Fired when an Esc key is keyed down.\n     */\n    onEscKeyDown: _react2.default.PropTypes.func,\n\n    /**\n     * Fired when a menu item is touchTapped.\n     */\n    onItemTouchTap: _react2.default.PropTypes.func,\n\n    /**\n     * Fired when a key is pressed.\n     */\n    onKeyDown: _react2.default.PropTypes.func,\n\n    /**\n     * This is the placement of the menu relative to the IconButton.\n     */\n    openDirection: _propTypes2.default.corners,\n\n    /**\n     * Style for the selected Menu Item.\n     */\n    selectedMenuItemStyle: _react2.default.PropTypes.object,\n\n    /**\n     * Override the inline-styles of the root element.\n     */\n    style: _react2.default.PropTypes.object,\n\n    /**\n     * The value of the selected menu item. If passed in,\n     * this will make the menu a controlled component.\n     * This component also supports valueLink.\n     */\n    value: _react2.default.PropTypes.any,\n\n    /**\n     * ValueLink for this component when controlled.\n     */\n    valueLink: _react2.default.PropTypes.object,\n\n    /**\n     * Sets the width of the menu. If not specified, the menu\n     * width will be dictated by its children. The rendered\n     * width will always be a keyline increment\n     * (64px for desktop, 56px otherwise).\n     */\n    width: _propTypes2.default.stringOrNumber,\n\n    /**\n     * Sets the width of the menu. If not specified,\n     * the menu width will be dictated by its children.\n     * The rendered width will always be a keyline increment\n     * (64px for desktop, 56px otherwise).\n     */\n    zDepth: _propTypes2.default.zDepth\n  },\n\n  contextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  childContextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  getDefaultProps: function getDefaultProps() {\n    return {\n      autoWidth: true,\n      desktop: false,\n      disableAutoFocus: false,\n      initiallyKeyboardFocused: false,\n      maxHeight: null,\n      multiple: false,\n      onChange: function onChange() {},\n      onEscKeyDown: function onEscKeyDown() {},\n      onItemTouchTap: function onItemTouchTap() {},\n      onKeyDown: function onKeyDown() {},\n      openDirection: 'bottom-left',\n      zDepth: 1\n    };\n  },\n  getInitialState: function getInitialState() {\n    var filteredChildren = this._getFilteredChildren(this.props.children);\n    var selectedIndex = this._getSelectedIndex(this.props, filteredChildren);\n\n    return {\n      focusIndex: this.props.disableAutoFocus ? -1 : selectedIndex >= 0 ? selectedIndex : 0,\n      isKeyboardFocused: this.props.initiallyKeyboardFocused,\n      keyWidth: this.props.desktop ? 64 : 56,\n      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)()\n    };\n  },\n  getChildContext: function getChildContext() {\n    return {\n      muiTheme: this.state.muiTheme\n    };\n  },\n  componentDidMount: function componentDidMount() {\n    if (this.props.autoWidth) this._setWidth();\n    if (!this.props.animated) this._animateOpen();\n    this._setScollPosition();\n  },\n  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {\n    var filteredChildren = this._getFilteredChildren(nextProps.children);\n    var selectedIndex = this._getSelectedIndex(nextProps, filteredChildren);\n\n    this.setState({\n      focusIndex: nextProps.disableAutoFocus ? -1 : selectedIndex >= 0 ? selectedIndex : 0,\n      keyWidth: nextProps.desktop ? 64 : 56,\n      muiTheme: nextContext.muiTheme || this.state.muiTheme\n    });\n  },\n  componentDidUpdate: function componentDidUpdate() {\n    if (this.props.autoWidth) this._setWidth();\n  },\n  componentClickAway: function componentClickAway(event) {\n    if (event.defaultPrevented) {\n      return;\n    }\n\n    this._setFocusIndex(-1, false);\n  },\n\n\n  // Do not use outside of this component, it will be removed once valueLink is deprecated\n  getValueLink: function getValueLink(props) {\n    return props.valueLink || {\n      value: props.value,\n      requestChange: props.onChange\n    };\n  },\n  setKeyboardFocused: function setKeyboardFocused(keyboardFocused) {\n    this.setState({\n      isKeyboardFocused: keyboardFocused\n    });\n  },\n  _getFilteredChildren: function _getFilteredChildren(children) {\n    var filteredChildren = [];\n    _react2.default.Children.forEach(children, function (child) {\n      if (child) {\n        filteredChildren.push(child);\n      }\n    });\n    return filteredChildren;\n  },\n  _animateOpen: function _animateOpen() {\n    var rootStyle = _reactDom2.default.findDOMNode(this).style;\n    var scrollContainerStyle = _reactDom2.default.findDOMNode(this.refs.scrollContainer).style;\n    var menuContainers = _reactDom2.default.findDOMNode(this.refs.list).childNodes;\n\n    _autoPrefix2.default.set(rootStyle, 'transform', 'scaleX(1)', this.state.muiTheme);\n    _autoPrefix2.default.set(scrollContainerStyle, 'transform', 'scaleY(1)', this.state.muiTheme);\n    scrollContainerStyle.opacity = 1;\n\n    for (var i = 0; i < menuContainers.length; ++i) {\n      menuContainers[i].style.opacity = 1;\n    }\n  },\n  _cloneMenuItem: function _cloneMenuItem(child, childIndex, styles) {\n    var _this = this;\n\n    var _props = this.props;\n    var desktop = _props.desktop;\n    var selectedMenuItemStyle = _props.selectedMenuItemStyle;\n\n\n    var selected = this._isChildSelected(child, this.props);\n    var selectedChildrenStyles = {};\n\n    if (selected) {\n      selectedChildrenStyles = (0, _simpleAssign2.default)(styles.selectedMenuItem, selectedMenuItemStyle);\n    }\n\n    var mergedChildrenStyles = (0, _simpleAssign2.default)({}, child.props.style, selectedChildrenStyles);\n\n    var isFocused = childIndex === this.state.focusIndex;\n    var focusState = 'none';\n    if (isFocused) {\n      focusState = this.state.isKeyboardFocused ? 'keyboard-focused' : 'focused';\n    }\n\n    return _react2.default.cloneElement(child, {\n      desktop: desktop,\n      focusState: focusState,\n      onTouchTap: function onTouchTap(event) {\n        _this._handleMenuItemTouchTap(event, child);\n        if (child.props.onTouchTap) child.props.onTouchTap(event);\n      },\n      ref: isFocused ? 'focusedMenuItem' : null,\n      style: mergedChildrenStyles\n    });\n  },\n  _decrementKeyboardFocusIndex: function _decrementKeyboardFocusIndex() {\n    var index = this.state.focusIndex;\n\n    index--;\n    if (index < 0) index = 0;\n\n    this._setFocusIndex(index, true);\n  },\n  _getCascadeChildrenCount: function _getCascadeChildrenCount(filteredChildren) {\n    var _props2 = this.props;\n    var desktop = _props2.desktop;\n    var maxHeight = _props2.maxHeight;\n\n    var count = 1;\n    var currentHeight = desktop ? 16 : 8;\n    var menuItemHeight = desktop ? 32 : 48;\n\n    //MaxHeight isn't set - cascade all of the children\n    if (!maxHeight) return filteredChildren.length;\n\n    //Count all the children that will fit inside the\n    //max menu height\n    filteredChildren.forEach(function (child) {\n      if (currentHeight < maxHeight) {\n        var childIsADivider = child.type && child.type.displayName === 'Divider';\n\n        currentHeight += childIsADivider ? 16 : menuItemHeight;\n        count++;\n      }\n    });\n\n    return count;\n  },\n  _getMenuItemCount: function _getMenuItemCount(filteredChildren) {\n    var menuItemCount = 0;\n    filteredChildren.forEach(function (child) {\n      var childIsADivider = child.type && child.type.displayName === 'Divider';\n      var childIsDisabled = child.props.disabled;\n      if (!childIsADivider && !childIsDisabled) menuItemCount++;\n    });\n    return menuItemCount;\n  },\n  _getSelectedIndex: function _getSelectedIndex(props, filteredChildren) {\n    var _this2 = this;\n\n    var selectedIndex = -1;\n    var menuItemIndex = 0;\n\n    filteredChildren.forEach(function (child) {\n      var childIsADivider = child.type && child.type.displayName === 'Divider';\n\n      if (_this2._isChildSelected(child, props)) selectedIndex = menuItemIndex;\n      if (!childIsADivider) menuItemIndex++;\n    });\n\n    return selectedIndex;\n  },\n  _handleKeyDown: function _handleKeyDown(event) {\n    var filteredChildren = this._getFilteredChildren(this.props.children);\n    switch ((0, _keycode2.default)(event)) {\n      case 'down':\n        event.preventDefault();\n        this._incrementKeyboardFocusIndex(filteredChildren);\n        break;\n      case 'esc':\n        this.props.onEscKeyDown(event);\n        break;\n      case 'tab':\n        event.preventDefault();\n        if (event.shiftKey) {\n          this._decrementKeyboardFocusIndex();\n        } else {\n          this._incrementKeyboardFocusIndex(filteredChildren);\n        }\n        break;\n      case 'up':\n        event.preventDefault();\n        this._decrementKeyboardFocusIndex();\n        break;\n    }\n    this.props.onKeyDown(event);\n  },\n  _handleMenuItemTouchTap: function _handleMenuItemTouchTap(event, item) {\n    var children = this.props.children;\n    var multiple = this.props.multiple;\n    var valueLink = this.getValueLink(this.props);\n    var menuValue = valueLink.value;\n    var itemValue = item.props.value;\n    var focusIndex = _react2.default.isValidElement(children) ? 0 : children.indexOf(item);\n\n    this._setFocusIndex(focusIndex, false);\n\n    if (multiple) {\n      var index = menuValue.indexOf(itemValue);\n      var newMenuValue = index === -1 ? (0, _reactAddonsUpdate2.default)(menuValue, { $push: [itemValue] }) : (0, _reactAddonsUpdate2.default)(menuValue, { $splice: [[index, 1]] });\n\n      valueLink.requestChange(event, newMenuValue);\n    } else if (!multiple && itemValue !== menuValue) {\n      valueLink.requestChange(event, itemValue);\n    }\n\n    this.props.onItemTouchTap(event, item);\n  },\n  _incrementKeyboardFocusIndex: function _incrementKeyboardFocusIndex(filteredChildren) {\n    var index = this.state.focusIndex;\n    var maxIndex = this._getMenuItemCount(filteredChildren) - 1;\n\n    index++;\n    if (index > maxIndex) index = maxIndex;\n\n    this._setFocusIndex(index, true);\n  },\n  _isChildSelected: function _isChildSelected(child, props) {\n    var menuValue = this.getValueLink(props).value;\n    var childValue = child.props.value;\n\n    if (props.multiple) {\n      return menuValue.length && menuValue.indexOf(childValue) !== -1;\n    } else {\n      return child.props.hasOwnProperty('value') && menuValue === childValue;\n    }\n  },\n  _setFocusIndex: function _setFocusIndex(newIndex, isKeyboardFocused) {\n    this.setState({\n      focusIndex: newIndex,\n      isKeyboardFocused: isKeyboardFocused\n    });\n  },\n  _setScollPosition: function _setScollPosition() {\n    var desktop = this.props.desktop;\n    var focusedMenuItem = this.refs.focusedMenuItem;\n    var menuItemHeight = desktop ? 32 : 48;\n\n    if (focusedMenuItem) {\n      var selectedOffSet = _reactDom2.default.findDOMNode(focusedMenuItem).offsetTop;\n\n      //Make the focused item be the 2nd item in the list the\n      //user sees\n      var scrollTop = selectedOffSet - menuItemHeight;\n      if (scrollTop < menuItemHeight) scrollTop = 0;\n\n      _reactDom2.default.findDOMNode(this.refs.scrollContainer).scrollTop = scrollTop;\n    }\n  },\n  _setWidth: function _setWidth() {\n    var el = _reactDom2.default.findDOMNode(this);\n    var listEl = _reactDom2.default.findDOMNode(this.refs.list);\n    var elWidth = el.offsetWidth;\n    var keyWidth = this.state.keyWidth;\n    var minWidth = keyWidth * 1.5;\n    var keyIncrements = elWidth / keyWidth;\n    var newWidth = undefined;\n\n    keyIncrements = keyIncrements <= 1.5 ? 1.5 : Math.ceil(keyIncrements);\n    newWidth = keyIncrements * keyWidth;\n\n    if (newWidth < minWidth) newWidth = minWidth;\n\n    el.style.width = newWidth + 'px';\n    listEl.style.width = newWidth + 'px';\n  },\n  render: function render() {\n    var _this3 = this;\n\n    var _props3 = this.props;\n    var animated = _props3.animated;\n    var autoWidth = _props3.autoWidth;\n    var children = _props3.children;\n    var desktop = _props3.desktop;\n    var initiallyKeyboardFocused = _props3.initiallyKeyboardFocused;\n    var listStyle = _props3.listStyle;\n    var maxHeight = _props3.maxHeight;\n    var multiple = _props3.multiple;\n    var openDirection = _props3.openDirection;\n    var selectedMenuItemStyle = _props3.selectedMenuItemStyle;\n    var style = _props3.style;\n    var value = _props3.value;\n    var valueLink = _props3.valueLink;\n    var width = _props3.width;\n    var zDepth = _props3.zDepth;\n\n    var other = _objectWithoutProperties(_props3, ['animated', 'autoWidth', 'children', 'desktop', 'initiallyKeyboardFocused', 'listStyle', 'maxHeight', 'multiple', 'openDirection', 'selectedMenuItemStyle', 'style', 'value', 'valueLink', 'width', 'zDepth']);\n\n    var _state = this.state;\n    var focusIndex = _state.focusIndex;\n    var muiTheme = _state.muiTheme;\n    var prepareStyles = muiTheme.prepareStyles;\n\n\n    var openDown = openDirection.split('-')[0] === 'bottom';\n    var openLeft = openDirection.split('-')[1] === 'left';\n\n    var rawTheme = muiTheme.rawTheme;\n\n    var styles = {\n      root: {\n        //Nested div bacause the List scales x faster than\n        //it scales y\n        transition: animated ? _transitions2.default.easeOut('250ms', 'transform') : null,\n        zIndex: muiTheme.zIndex.menu,\n        top: openDown ? 0 : null,\n        bottom: !openDown ? 0 : null,\n        left: !openLeft ? 0 : null,\n        right: openLeft ? 0 : null,\n        transform: animated ? 'scaleX(0)' : null,\n        transformOrigin: openLeft ? 'right' : 'left'\n      },\n\n      divider: {\n        marginTop: 7,\n        marginBottom: 8\n      },\n\n      list: {\n        display: 'table-cell',\n        paddingBottom: desktop ? 16 : 8,\n        paddingTop: desktop ? 16 : 8,\n        userSelect: 'none',\n        width: width\n      },\n\n      menuItemContainer: {\n        transition: animated ? _transitions2.default.easeOut(null, 'opacity') : null,\n        opacity: 0\n      },\n\n      paper: {\n        transition: animated ? _transitions2.default.easeOut('500ms', ['transform', 'opacity']) : null,\n        transform: animated ? 'scaleY(0)' : null,\n        transformOrigin: openDown ? 'top' : 'bottom',\n        opacity: 0,\n        maxHeight: maxHeight,\n        overflowY: maxHeight ? 'auto' : null\n      },\n\n      selectedMenuItem: {\n        color: rawTheme.palette.accent1Color\n      }\n    };\n\n    var mergedRootStyles = (0, _simpleAssign2.default)(styles.root, style);\n    var mergedListStyles = (0, _simpleAssign2.default)(styles.list, listStyle);\n\n    var filteredChildren = this._getFilteredChildren(children);\n\n    //Cascade children opacity\n    var cumulativeDelay = openDown ? 175 : 325;\n    var cascadeChildrenCount = this._getCascadeChildrenCount(filteredChildren);\n    var cumulativeDelayIncrement = Math.ceil(150 / cascadeChildrenCount);\n\n    var menuItemIndex = 0;\n    var newChildren = _react2.default.Children.map(filteredChildren, function (child) {\n      var childIsADivider = child.type && child.type.displayName === 'Divider';\n      var childIsDisabled = child.props.disabled;\n      var childrenContainerStyles = {};\n\n      if (animated) {\n        var transitionDelay = 0;\n\n        //Only cascade the visible menu items\n        if (menuItemIndex >= focusIndex - 1 && menuItemIndex <= focusIndex + cascadeChildrenCount - 1) {\n          cumulativeDelay = openDown ? cumulativeDelay + cumulativeDelayIncrement : cumulativeDelay - cumulativeDelayIncrement;\n          transitionDelay = cumulativeDelay;\n        }\n\n        childrenContainerStyles = (0, _simpleAssign2.default)({}, styles.menuItemContainer, {\n          transitionDelay: transitionDelay + 'ms'\n        });\n      }\n\n      var clonedChild = childIsADivider ? _react2.default.cloneElement(child, { style: styles.divider }) : childIsDisabled ? _react2.default.cloneElement(child, { desktop: desktop }) : _this3._cloneMenuItem(child, menuItemIndex, styles);\n\n      if (!childIsADivider && !childIsDisabled) menuItemIndex++;\n\n      return animated ? _react2.default.createElement(\n        'div',\n        { style: prepareStyles(childrenContainerStyles) },\n        clonedChild\n      ) : clonedChild;\n    });\n\n    return _react2.default.createElement(\n      _ClickAwayListener2.default,\n      { onClickAway: this.componentClickAway },\n      _react2.default.createElement(\n        'div',\n        { onKeyDown: this._handleKeyDown, style: prepareStyles(mergedRootStyles) },\n        _react2.default.createElement(\n          _paper2.default,\n          {\n            ref: 'scrollContainer',\n            style: styles.paper,\n            zDepth: zDepth\n          },\n          _react2.default.createElement(\n            _list2.default,\n            _extends({}, other, {\n              ref: 'list',\n              style: mergedListStyles\n            }),\n            newChildren\n          )\n        )\n      )\n    );\n  }\n});\n\nexports.default = Menu;\nmodule.exports = exports['default'];",
     "deps": {
       "../paper": 349,
-      "../styles/transitions": 366,
       "../styles/auto-prefix": 357,
+      "../styles/transitions": 366,
       "../utils/prop-types": 401,
       "../styles/getMuiTheme": 360,
       "../utils/deprecatedPropType": 398,
@@ -4191,8 +4191,8 @@ require("./main.js", entryId$$);
       "react-dom": 411,
       "keycode": 263,
       "../ClickAwayListener": 316,
-      "../lists/list": 343,
-      "react-addons-update": 409
+      "react-addons-update": 409,
+      "../lists/list": 343
     },
     "hash": "2b7ac29ae8dd04f8d85810b96ab158e4"
   },
@@ -4228,10 +4228,10 @@ require("./main.js", entryId$$);
     "deps": {
       "simple-assign": 646,
       "react": 580,
+      "react-addons-pure-render-mixin": 407,
       "./styles/transitions": 366,
       "./styles/getMuiTheme": 360,
-      "./utils/prop-types": 401,
-      "react-addons-pure-render-mixin": 407
+      "./utils/prop-types": 401
     },
     "hash": "7193fc5d25f593e298c6a0b39de37112"
   },
@@ -4245,8 +4245,8 @@ require("./main.js", entryId$$);
       "../styles/transitions": 366,
       "../utils/prop-types": 401,
       "../styles/getMuiTheme": 360,
-      "react": 580,
-      "simple-assign": 646
+      "simple-assign": 646,
+      "react": 580
     },
     "hash": "024793198092ec752d8a42ccb6c6dcf5"
   },
@@ -4274,8 +4274,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/render-to-layer.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactDom = require('react-dom');\n\nvar _reactDom2 = _interopRequireDefault(_reactDom);\n\nvar _dom = require('./utils/dom');\n\nvar _dom2 = _interopRequireDefault(_dom);\n\nvar _getMuiTheme = require('./styles/getMuiTheme');\n\nvar _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n// heavily inspired by https://github.com/Khan/react-components/blob/master/js/layered-component-mixin.jsx\nvar RenderToLayer = _react2.default.createClass({\n  displayName: 'RenderToLayer',\n\n\n  propTypes: {\n    componentClickAway: _react2.default.PropTypes.func,\n    open: _react2.default.PropTypes.bool.isRequired,\n    render: _react2.default.PropTypes.func.isRequired,\n    useLayerForClickAway: _react2.default.PropTypes.bool\n  },\n\n  contextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  //for passing default theme context to children\n  childContextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  getDefaultProps: function getDefaultProps() {\n    return {\n      useLayerForClickAway: true\n    };\n  },\n  getInitialState: function getInitialState() {\n    return {\n      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)()\n    };\n  },\n  getChildContext: function getChildContext() {\n    return {\n      muiTheme: this.state.muiTheme\n    };\n  },\n  componentDidMount: function componentDidMount() {\n    this._renderLayer();\n  },\n\n\n  //to update theme inside state whenever a new theme is passed down\n  //from the parent / owner using context\n  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {\n    var newMuiTheme = nextContext.muiTheme ? nextContext.muiTheme : this.state.muiTheme;\n    this.setState({\n      muiTheme: newMuiTheme\n    });\n  },\n  componentDidUpdate: function componentDidUpdate() {\n    this._renderLayer();\n  },\n  componentWillUnmount: function componentWillUnmount() {\n    this._unrenderLayer();\n  },\n  onClickAway: function onClickAway(event) {\n    if (event.defaultPrevented) {\n      return;\n    }\n\n    if (!this.props.componentClickAway) {\n      return;\n    }\n\n    if (!this.props.open) {\n      return;\n    }\n\n    var el = this._layer;\n    if (event.target !== el && event.target === window || document.documentElement.contains(event.target) && !_dom2.default.isDescendant(el, event.target)) {\n      this.props.componentClickAway(event);\n    }\n  },\n  getLayer: function getLayer() {\n    return this._layer;\n  },\n\n\n  _unrenderLayer: function _unrenderLayer() {\n    if (!this._layer) {\n      return;\n    }\n\n    if (this.props.useLayerForClickAway) {\n      this._layer.style.position = 'relative';\n      this._layer.removeEventListener('touchstart', this.onClickAway);\n      this._layer.removeEventListener('click', this.onClickAway);\n    } else {\n      window.removeEventListener('touchstart', this.onClickAway);\n      window.removeEventListener('click', this.onClickAway);\n    }\n\n    _reactDom2.default.unmountComponentAtNode(this._layer);\n    document.body.removeChild(this._layer);\n    this._layer = null;\n  },\n\n  _renderLayer: function _renderLayer() {\n    var _this = this;\n\n    var _props = this.props;\n    var open = _props.open;\n    var render = _props.render;\n\n\n    if (open) {\n      if (!this._layer) {\n        this._layer = document.createElement('div');\n        document.body.appendChild(this._layer);\n\n        if (this.props.useLayerForClickAway) {\n          this._layer.addEventListener('touchstart', this.onClickAway);\n          this._layer.addEventListener('click', this.onClickAway);\n          this._layer.style.position = 'fixed';\n          this._layer.style.top = 0;\n          this._layer.style.bottom = 0;\n          this._layer.style.left = 0;\n          this._layer.style.right = 0;\n          this._layer.style.zIndex = this.state.muiTheme.zIndex.layer;\n        } else {\n          setTimeout(function () {\n            window.addEventListener('touchstart', _this.onClickAway);\n            window.addEventListener('click', _this.onClickAway);\n          }, 0);\n        }\n      }\n\n      // By calling this method in componentDidMount() and\n      // componentDidUpdate(), you're effectively creating a \"wormhole\" that\n      // funnels React's hierarchical updates through to a DOM node on an\n      // entirely different part of the page.\n\n      var layerElement = render();\n\n      if (layerElement === null) {\n        this.layerElement = _reactDom2.default.unstable_renderSubtreeIntoContainer(this, null, this._layer);\n      } else {\n        this.layerElement = _reactDom2.default.unstable_renderSubtreeIntoContainer(this, layerElement, this._layer);\n      }\n    } else {\n      this._unrenderLayer();\n    }\n  },\n  render: function render() {\n    return null;\n  }\n});\n\nexports.default = RenderToLayer;\nmodule.exports = exports['default'];",
     "deps": {
-      "react-dom": 411,
       "react": 580,
+      "react-dom": 411,
       "./styles/getMuiTheme": 360,
       "./utils/dom": 399
     },
@@ -4319,8 +4319,8 @@ require("./main.js", entryId$$);
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _simpleAssign = require('simple-assign');\n\nvar _simpleAssign2 = _interopRequireDefault(_simpleAssign);\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactDom = require('react-dom');\n\nvar _reactDom2 = _interopRequireDefault(_reactDom);\n\nvar _reactAddonsPureRenderMixin = require('react-addons-pure-render-mixin');\n\nvar _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);\n\nvar _reactAddonsTransitionGroup = require('react-addons-transition-group');\n\nvar _reactAddonsTransitionGroup2 = _interopRequireDefault(_reactAddonsTransitionGroup);\n\nvar _dom = require('../utils/dom');\n\nvar _dom2 = _interopRequireDefault(_dom);\n\nvar _circleRipple = require('./circle-ripple');\n\nvar _circleRipple2 = _interopRequireDefault(_circleRipple);\n\nvar _reactAddonsUpdate = require('react-addons-update');\n\nvar _reactAddonsUpdate2 = _interopRequireDefault(_reactAddonsUpdate);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction push(array, obj) {\n  var newObj = Array.isArray(obj) ? obj : [obj];\n  return (0, _reactAddonsUpdate2.default)(array, { $push: newObj });\n}\n\nfunction shift(array) {\n  //Remove the first element in the array using React immutability helpers\n  return (0, _reactAddonsUpdate2.default)(array, { $splice: [[0, 1]] });\n}\n\nvar TouchRipple = _react2.default.createClass({\n  displayName: 'TouchRipple',\n\n\n  propTypes: {\n    abortOnScroll: _react2.default.PropTypes.bool,\n    centerRipple: _react2.default.PropTypes.bool,\n    children: _react2.default.PropTypes.node,\n    color: _react2.default.PropTypes.string,\n\n    /**\n     * @ignore\n     * The material-ui theme applied to this component.\n     */\n    muiTheme: _react2.default.PropTypes.object.isRequired,\n\n    opacity: _react2.default.PropTypes.number,\n\n    /**\n     * Override the inline-styles of the root element.\n     */\n    style: _react2.default.PropTypes.object\n  },\n\n  mixins: [_reactAddonsPureRenderMixin2.default],\n\n  getDefaultProps: function getDefaultProps() {\n    return {\n      abortOnScroll: true\n    };\n  },\n  getInitialState: function getInitialState() {\n    //Touch start produces a mouse down event for compat reasons. To avoid\n    //showing ripples twice we skip showing a ripple for the first mouse down\n    //after a touch start. Note we don't store ignoreNextMouseDown in this.state\n    //to avoid re-rendering when we change it\n    this._ignoreNextMouseDown = false;\n\n    return {\n      //This prop allows us to only render the ReactTransitionGroup\n      //on the first click of the component, making the inital\n      //render faster\n      hasRipples: false,\n      nextKey: 0,\n      ripples: []\n    };\n  },\n  start: function start(event, isRippleTouchGenerated) {\n    var theme = this.props.muiTheme.ripple;\n\n    if (this._ignoreNextMouseDown && !isRippleTouchGenerated) {\n      this._ignoreNextMouseDown = false;\n      return;\n    }\n\n    var ripples = this.state.ripples;\n\n    //Add a ripple to the ripples array\n    ripples = push(ripples, _react2.default.createElement(_circleRipple2.default, {\n      key: this.state.nextKey,\n      muiTheme: this.props.muiTheme,\n      style: !this.props.centerRipple ? this._getRippleStyle(event) : {},\n      color: this.props.color || theme.color,\n      opacity: this.props.opacity,\n      touchGenerated: isRippleTouchGenerated\n    }));\n\n    this._ignoreNextMouseDown = isRippleTouchGenerated;\n    this.setState({\n      hasRipples: true,\n      nextKey: this.state.nextKey + 1,\n      ripples: ripples\n    });\n  },\n  end: function end() {\n    var currentRipples = this.state.ripples;\n    this.setState({\n      ripples: shift(currentRipples)\n    });\n    if (this.props.abortOnScroll) {\n      this._stopListeningForScrollAbort();\n    }\n  },\n  _handleMouseDown: function _handleMouseDown(event) {\n    //only listen to left clicks\n    if (event.button === 0) this.start(event, false);\n  },\n  _handleMouseUp: function _handleMouseUp() {\n    this.end();\n  },\n  _handleMouseLeave: function _handleMouseLeave() {\n    this.end();\n  },\n  _handleTouchStart: function _handleTouchStart(event) {\n    //If the user is swiping (not just tapping), save the position so we can\n    //abort ripples if the user appears to be scrolling\n    if (this.props.abortOnScroll && event.touches) {\n      this._startListeningForScrollAbort(event);\n      this._startTime = Date.now();\n    }\n    this.start(event, true);\n  },\n  _handleTouchEnd: function _handleTouchEnd() {\n    this.end();\n  },\n\n\n  //Check if the user seems to be scrolling and abort the animation if so\n  _handleTouchMove: function _handleTouchMove(event) {\n    var _this = this;\n\n    //Stop trying to abort if we're already 300ms into the animation\n    var timeSinceStart = Math.abs(Date.now() - this._startTime);\n    if (timeSinceStart > 300) {\n      this._stopListeningForScrollAbort();\n      return;\n    }\n\n    //If the user is scrolling...\n    var deltaY = Math.abs(event.touches[0].clientY - this._firstTouchY);\n    var deltaX = Math.abs(event.touches[0].clientX - this._firstTouchX);\n    //Call it a scroll after an arbitrary 6px (feels reasonable in testing)\n    if (deltaY > 6 || deltaX > 6) {\n      var currentRipples = this.state.ripples;\n      var ripple = currentRipples[0];\n      //This clone will replace the ripple in ReactTransitionGroup with a\n      //version that will disappear immediately when removed from the DOM\n      var abortedRipple = _react2.default.cloneElement(ripple, { aborted: true });\n      //Remove the old ripple and replace it with the new updated one\n      currentRipples = shift(currentRipples);\n      currentRipples = push(currentRipples, abortedRipple);\n      this.setState({ ripples: currentRipples }, function () {\n        //Call end after we've set the ripple to abort otherwise the setState\n        //in end() merges with this and the ripple abort fails\n        _this.end();\n      });\n    }\n  },\n  _startListeningForScrollAbort: function _startListeningForScrollAbort(event) {\n    this._firstTouchY = event.touches[0].clientY;\n    this._firstTouchX = event.touches[0].clientX;\n    //Note that when scolling Chrome throttles this event to every 200ms\n    //Also note we don't listen for scroll events directly as there's no general\n    //way to cover cases like scrolling within containers on the page\n    document.body.addEventListener('touchmove', this._handleTouchMove);\n  },\n  _stopListeningForScrollAbort: function _stopListeningForScrollAbort() {\n    document.body.removeEventListener('touchmove', this._handleTouchMove);\n  },\n  _getRippleStyle: function _getRippleStyle(event) {\n    var style = {};\n    var el = _reactDom2.default.findDOMNode(this);\n    var elHeight = el.offsetHeight;\n    var elWidth = el.offsetWidth;\n    var offset = _dom2.default.offset(el);\n    var isTouchEvent = event.touches && event.touches.length;\n    var pageX = isTouchEvent ? event.touches[0].pageX : event.pageX;\n    var pageY = isTouchEvent ? event.touches[0].pageY : event.pageY;\n    var pointerX = pageX - offset.left;\n    var pointerY = pageY - offset.top;\n    var topLeftDiag = this._calcDiag(pointerX, pointerY);\n    var topRightDiag = this._calcDiag(elWidth - pointerX, pointerY);\n    var botRightDiag = this._calcDiag(elWidth - pointerX, elHeight - pointerY);\n    var botLeftDiag = this._calcDiag(pointerX, elHeight - pointerY);\n    var rippleRadius = Math.max(topLeftDiag, topRightDiag, botRightDiag, botLeftDiag);\n    var rippleSize = rippleRadius * 2;\n    var left = pointerX - rippleRadius;\n    var top = pointerY - rippleRadius;\n\n    style.height = rippleSize + 'px';\n    style.width = rippleSize + 'px';\n    style.top = top + 'px';\n    style.left = left + 'px';\n\n    return style;\n  },\n  _calcDiag: function _calcDiag(a, b) {\n    return Math.sqrt(a * a + b * b);\n  },\n  render: function render() {\n    var _props = this.props;\n    var children = _props.children;\n    var prepareStyles = _props.muiTheme.prepareStyles;\n    var style = _props.style;\n    var _state = this.state;\n    var hasRipples = _state.hasRipples;\n    var ripples = _state.ripples;\n\n\n    var rippleGroup = undefined;\n    if (hasRipples) {\n      var mergedStyles = (0, _simpleAssign2.default)({\n        height: '100%',\n        width: '100%',\n        position: 'absolute',\n        top: 0,\n        left: 0,\n        overflow: 'hidden'\n      }, style);\n\n      rippleGroup = _react2.default.createElement(\n        _reactAddonsTransitionGroup2.default,\n        { style: prepareStyles(mergedStyles) },\n        ripples\n      );\n    }\n\n    return _react2.default.createElement(\n      'div',\n      {\n        onMouseUp: this._handleMouseUp,\n        onMouseDown: this._handleMouseDown,\n        onMouseLeave: this._handleMouseLeave,\n        onTouchStart: this._handleTouchStart,\n        onTouchEnd: this._handleTouchEnd\n      },\n      rippleGroup,\n      children\n    );\n  }\n});\n\nexports.default = TouchRipple;\nmodule.exports = exports['default'];",
     "deps": {
       "../utils/dom": 399,
-      "simple-assign": 646,
       "react": 580,
+      "simple-assign": 646,
       "react-dom": 411,
       "react-addons-pure-render-mixin": 407,
       "react-addons-transition-group": 408,
@@ -4358,8 +4358,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/styles/baseThemes/lightBaseTheme.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _colors = require('../colors');\n\nvar _colorManipulator = require('../../utils/color-manipulator');\n\nvar _colorManipulator2 = _interopRequireDefault(_colorManipulator);\n\nvar _spacing = require('../spacing');\n\nvar _spacing2 = _interopRequireDefault(_spacing);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n/*\n *  Light Theme is the default theme used in material-ui. It is guaranteed to\n *  have all theme variables needed for every component. Variables not defined\n *  in a custom theme will default to these values.\n */\n\nexports.default = {\n  spacing: _spacing2.default,\n  fontFamily: 'Roboto, sans-serif',\n  palette: {\n    primary1Color: _colors.cyan500,\n    primary2Color: _colors.cyan700,\n    primary3Color: _colors.grey400,\n    accent1Color: _colors.pinkA200,\n    accent2Color: _colors.grey100,\n    accent3Color: _colors.grey500,\n    textColor: _colors.darkBlack,\n    alternateTextColor: _colors.white,\n    canvasColor: _colors.white,\n    borderColor: _colors.grey300,\n    disabledColor: _colorManipulator2.default.fade(_colors.darkBlack, 0.3),\n    pickerHeaderColor: _colors.cyan500,\n    clockCircleColor: _colorManipulator2.default.fade(_colors.darkBlack, 0.07),\n    shadowColor: _colors.fullBlack\n  }\n};\nmodule.exports = exports['default'];",
     "deps": {
-      "../colors": 359,
       "../../utils/color-manipulator": 397,
+      "../colors": 359,
       "../spacing": 361
     },
     "hash": "5dc5313540f61c0ae9e1f6c6fcee2bad"
@@ -4509,8 +4509,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/svg-icons/communication/dialpad.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _pure = require('recompose/pure');\n\nvar _pure2 = _interopRequireDefault(_pure);\n\nvar _svgIcon = require('../../svg-icon');\n\nvar _svgIcon2 = _interopRequireDefault(_svgIcon);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nvar CommunicationDialpad = function CommunicationDialpad(props) {\n  return _react2.default.createElement(\n    _svgIcon2.default,\n    props,\n    _react2.default.createElement('path', { d: 'M12 19c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 1c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12-8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-6 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z' })\n  );\n};\nCommunicationDialpad = (0, _pure2.default)(CommunicationDialpad);\nCommunicationDialpad.displayName = 'CommunicationDialpad';\n\nexports.default = CommunicationDialpad;\nmodule.exports = exports['default'];",
     "deps": {
-      "react": 580,
       "../../svg-icon": 369,
+      "react": 580,
       "recompose/pure": 632
     },
     "hash": "dd98a7fec8e27e63527eb7ba9a2390b6"
@@ -4605,12 +4605,12 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/table/table-body.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _typeof = typeof Symbol === \"function\" && typeof Symbol.iterator === \"symbol\" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === \"function\" && obj.constructor === Symbol ? \"symbol\" : typeof obj; };\n\nvar _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };\n\nvar _simpleAssign = require('simple-assign');\n\nvar _simpleAssign2 = _interopRequireDefault(_simpleAssign);\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _checkbox = require('../checkbox');\n\nvar _checkbox2 = _interopRequireDefault(_checkbox);\n\nvar _tableRowColumn = require('./table-row-column');\n\nvar _tableRowColumn2 = _interopRequireDefault(_tableRowColumn);\n\nvar _ClickAwayListener = require('../ClickAwayListener');\n\nvar _ClickAwayListener2 = _interopRequireDefault(_ClickAwayListener);\n\nvar _getMuiTheme = require('../styles/getMuiTheme');\n\nvar _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }\n\nfunction _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }\n\nvar TableBody = _react2.default.createClass({\n  displayName: 'TableBody',\n\n\n  propTypes: {\n    /**\n     * Set to true to indicate that all rows should be selected.\n     */\n    allRowsSelected: _react2.default.PropTypes.bool,\n\n    /**\n     * Children passed to table body.\n     */\n    children: _react2.default.PropTypes.node,\n\n    /**\n     * The css class name of the root element.\n     */\n    className: _react2.default.PropTypes.string,\n\n    /**\n     * Controls whether or not to deselect all selected\n     * rows after clicking outside the table.\n     */\n    deselectOnClickaway: _react2.default.PropTypes.bool,\n\n    /**\n     * Controls the display of the row checkbox. The default value is true.\n     */\n    displayRowCheckbox: _react2.default.PropTypes.bool,\n\n    /**\n     * If true, multiple table rows can be selected.\n     * CTRL/CMD+Click and SHIFT+Click are valid actions.\n     * The default value is false.\n     */\n    multiSelectable: _react2.default.PropTypes.bool,\n\n    /**\n     * Callback function for when a cell is clicked.\n     */\n    onCellClick: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table cell is hovered. rowNumber\n     * is the row number of the hovered row and columnId\n     * is the column number or the column key of the cell.\n     */\n    onCellHover: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table cell is no longer hovered.\n     * rowNumber is the row number of the row and columnId\n     * is the column number or the column key of the cell.\n     */\n    onCellHoverExit: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table row is hovered.\n     * rowNumber is the row number of the hovered row.\n     */\n    onRowHover: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table row is no longer\n     * hovered. rowNumber is the row number of the row\n     * that is no longer hovered.\n     */\n    onRowHoverExit: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a row is selected. selectedRows is an\n     * array of all row selections. IF all rows have been selected,\n     * the string \"all\" will be returned instead to indicate that\n     * all rows have been selected.\n     */\n    onRowSelection: _react2.default.PropTypes.func,\n\n    /**\n     * Controls whether or not the rows are pre-scanned to determine\n     * initial state. If your table has a large number of rows and\n     * you are experiencing a delay in rendering, turn off this property.\n     */\n    preScanRows: _react2.default.PropTypes.bool,\n\n    /**\n     * If true, table rows can be selected. If multiple\n     * row selection is desired, enable multiSelectable.\n     * The default value is true.\n     */\n    selectable: _react2.default.PropTypes.bool,\n\n    /**\n     * If true, table rows will be highlighted when\n     * the cursor is hovering over the row. The default\n     * value is false.\n     */\n    showRowHover: _react2.default.PropTypes.bool,\n\n    /**\n     * If true, every other table row starting\n     * with the first row will be striped. The default value is false.\n     */\n    stripedRows: _react2.default.PropTypes.bool,\n\n    /**\n     * Override the inline-styles of the root element.\n     */\n    style: _react2.default.PropTypes.object\n  },\n\n  contextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  childContextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  getDefaultProps: function getDefaultProps() {\n    return {\n      allRowsSelected: false,\n      deselectOnClickaway: true,\n      displayRowCheckbox: true,\n      multiSelectable: false,\n      preScanRows: true,\n      selectable: true,\n      style: {}\n    };\n  },\n  getInitialState: function getInitialState() {\n    return {\n      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)(),\n      selectedRows: this._calculatePreselectedRows(this.props)\n    };\n  },\n  getChildContext: function getChildContext() {\n    return {\n      muiTheme: this.state.muiTheme\n    };\n  },\n  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {\n    var newState = {\n      muiTheme: nextContext.muiTheme || this.state.muiTheme\n    };\n\n    if (this.props.allRowsSelected && !nextProps.allRowsSelected) {\n      newState.selectedRows = this.state.selectedRows.length > 0 ? [this.state.selectedRows[this.state.selectedRows.length - 1]] : [];\n    } else {\n      newState.selectedRows = this._calculatePreselectedRows(nextProps);\n    }\n\n    this.setState(newState);\n  },\n  componentClickAway: function componentClickAway() {\n    if (this.props.deselectOnClickaway && this.state.selectedRows.length) {\n      this.setState({ selectedRows: [] });\n      if (this.props.onRowSelection) this.props.onRowSelection([]);\n    }\n  },\n  _createRows: function _createRows() {\n    var _this = this;\n\n    var numChildren = _react2.default.Children.count(this.props.children);\n    var rowNumber = 0;\n    var handlers = {\n      onCellClick: this._onCellClick,\n      onCellHover: this._onCellHover,\n      onCellHoverExit: this._onCellHoverExit,\n      onRowHover: this._onRowHover,\n      onRowHoverExit: this._onRowHoverExit,\n      onRowClick: this._onRowClick\n    };\n\n    return _react2.default.Children.map(this.props.children, function (child) {\n      if (_react2.default.isValidElement(child)) {\n        var _ret = function () {\n          var props = {\n            displayRowCheckbox: _this.props.displayRowCheckbox,\n            hoverable: _this.props.showRowHover,\n            selected: _this._isRowSelected(rowNumber),\n            striped: _this.props.stripedRows && rowNumber % 2 === 0,\n            rowNumber: rowNumber++\n          };\n          var checkboxColumn = _this._createRowCheckboxColumn(props);\n\n          if (rowNumber === numChildren) {\n            props.displayBorder = false;\n          }\n\n          var children = [checkboxColumn];\n          _react2.default.Children.forEach(child.props.children, function (child) {\n            children.push(child);\n          });\n\n          return {\n            v: _react2.default.cloneElement(child, _extends({}, props, handlers), children)\n          };\n        }();\n\n        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === \"object\") return _ret.v;\n      }\n    });\n  },\n  _createRowCheckboxColumn: function _createRowCheckboxColumn(rowProps) {\n    if (!this.props.displayRowCheckbox) return null;\n\n    var key = rowProps.rowNumber + '-cb';\n    var checkbox = _react2.default.createElement(_checkbox2.default, {\n      ref: 'rowSelectCB',\n      name: key,\n      value: 'selected',\n      disabled: !this.props.selectable,\n      checked: rowProps.selected\n    });\n\n    return _react2.default.createElement(\n      _tableRowColumn2.default,\n      {\n        key: key,\n        columnNumber: 0,\n        style: { width: 24 }\n      },\n      checkbox\n    );\n  },\n  _calculatePreselectedRows: function _calculatePreselectedRows(props) {\n    // Determine what rows are 'pre-selected'.\n    var preSelectedRows = [];\n\n    if (props.selectable && props.preScanRows) {\n      (function () {\n        var index = 0;\n        _react2.default.Children.forEach(props.children, function (child) {\n          if (_react2.default.isValidElement(child)) {\n            if (child.props.selected && (preSelectedRows.length === 0 || props.multiSelectable)) {\n              preSelectedRows.push(index);\n            }\n\n            index++;\n          }\n        });\n      })();\n    }\n\n    return preSelectedRows;\n  },\n  _isRowSelected: function _isRowSelected(rowNumber) {\n    if (this.props.allRowsSelected) {\n      return true;\n    }\n\n    for (var i = 0; i < this.state.selectedRows.length; i++) {\n      var selection = this.state.selectedRows[i];\n\n      if ((typeof selection === 'undefined' ? 'undefined' : _typeof(selection)) === 'object') {\n        if (this._isValueInRange(rowNumber, selection)) return true;\n      } else {\n        if (selection === rowNumber) return true;\n      }\n    }\n\n    return false;\n  },\n  _isValueInRange: function _isValueInRange(value, range) {\n    if (!range) return false;\n\n    if (range.start <= value && value <= range.end || range.end <= value && value <= range.start) {\n      return true;\n    }\n\n    return false;\n  },\n  _onRowClick: function _onRowClick(event, rowNumber) {\n    event.stopPropagation();\n\n    if (this.props.selectable) {\n      // Prevent text selection while selecting rows.\n      window.getSelection().removeAllRanges();\n      this._processRowSelection(event, rowNumber);\n    }\n  },\n  _processRowSelection: function _processRowSelection(event, rowNumber) {\n    var selectedRows = this.state.selectedRows;\n\n    if (event.shiftKey && this.props.multiSelectable && selectedRows.length) {\n      var lastIndex = selectedRows.length - 1;\n      var lastSelection = selectedRows[lastIndex];\n\n      if ((typeof lastSelection === 'undefined' ? 'undefined' : _typeof(lastSelection)) === 'object') {\n        lastSelection.end = rowNumber;\n      } else {\n        selectedRows.splice(lastIndex, 1, { start: lastSelection, end: rowNumber });\n      }\n    } else if ((event.ctrlKey && !event.metaKey || event.metaKey && !event.ctrlKey) && this.props.multiSelectable) {\n      var idx = selectedRows.indexOf(rowNumber);\n      if (idx < 0) {\n        var foundRange = false;\n        for (var i = 0; i < selectedRows.length; i++) {\n          var range = selectedRows[i];\n          if ((typeof range === 'undefined' ? 'undefined' : _typeof(range)) !== 'object') continue;\n\n          if (this._isValueInRange(rowNumber, range)) {\n            var _selectedRows;\n\n            foundRange = true;\n            var values = this._splitRange(range, rowNumber);\n            (_selectedRows = selectedRows).splice.apply(_selectedRows, [i, 1].concat(_toConsumableArray(values)));\n          }\n        }\n\n        if (!foundRange) selectedRows.push(rowNumber);\n      } else {\n        selectedRows.splice(idx, 1);\n      }\n    } else {\n      if (selectedRows.length === 1 && selectedRows[0] === rowNumber) {\n        selectedRows = [];\n      } else {\n        selectedRows = [rowNumber];\n      }\n    }\n\n    this.setState({ selectedRows: selectedRows });\n    if (this.props.onRowSelection) this.props.onRowSelection(this._flattenRanges(selectedRows));\n  },\n  _splitRange: function _splitRange(range, splitPoint) {\n    var splitValues = [];\n    var startOffset = range.start - splitPoint;\n    var endOffset = range.end - splitPoint;\n\n    // Process start half\n    splitValues.push.apply(splitValues, _toConsumableArray(this._genRangeOfValues(splitPoint, startOffset)));\n\n    // Process end half\n    splitValues.push.apply(splitValues, _toConsumableArray(this._genRangeOfValues(splitPoint, endOffset)));\n\n    return splitValues;\n  },\n  _genRangeOfValues: function _genRangeOfValues(start, offset) {\n    var values = [];\n    var dir = offset > 0 ? -1 : 1; // This forces offset to approach 0 from either direction.\n    while (offset !== 0) {\n      values.push(start + offset);\n      offset += dir;\n    }\n\n    return values;\n  },\n  _flattenRanges: function _flattenRanges(selectedRows) {\n    var rows = [];\n    var _iteratorNormalCompletion = true;\n    var _didIteratorError = false;\n    var _iteratorError = undefined;\n\n    try {\n      for (var _iterator = selectedRows[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {\n        var selection = _step.value;\n\n        if ((typeof selection === 'undefined' ? 'undefined' : _typeof(selection)) === 'object') {\n          var values = this._genRangeOfValues(selection.end, selection.start - selection.end);\n          rows.push.apply(rows, [selection.end].concat(_toConsumableArray(values)));\n        } else {\n          rows.push(selection);\n        }\n      }\n    } catch (err) {\n      _didIteratorError = true;\n      _iteratorError = err;\n    } finally {\n      try {\n        if (!_iteratorNormalCompletion && _iterator.return) {\n          _iterator.return();\n        }\n      } finally {\n        if (_didIteratorError) {\n          throw _iteratorError;\n        }\n      }\n    }\n\n    return rows.sort();\n  },\n  _onCellClick: function _onCellClick(event, rowNumber, columnNumber) {\n    event.stopPropagation();\n    if (this.props.onCellClick) this.props.onCellClick(rowNumber, this._getColumnId(columnNumber), event);\n  },\n  _onCellHover: function _onCellHover(event, rowNumber, columnNumber) {\n    if (this.props.onCellHover) this.props.onCellHover(rowNumber, this._getColumnId(columnNumber), event);\n    this._onRowHover(event, rowNumber);\n  },\n  _onCellHoverExit: function _onCellHoverExit(event, rowNumber, columnNumber) {\n    if (this.props.onCellHoverExit) this.props.onCellHoverExit(rowNumber, this._getColumnId(columnNumber), event);\n    this._onRowHoverExit(event, rowNumber);\n  },\n  _onRowHover: function _onRowHover(event, rowNumber) {\n    if (this.props.onRowHover) this.props.onRowHover(rowNumber);\n  },\n  _onRowHoverExit: function _onRowHoverExit(event, rowNumber) {\n    if (this.props.onRowHoverExit) this.props.onRowHoverExit(rowNumber);\n  },\n  _getColumnId: function _getColumnId(columnNumber) {\n    var columnId = columnNumber;\n    if (this.props.displayRowCheckbox) columnId--;\n\n    return columnId;\n  },\n  render: function render() {\n    var _props = this.props;\n    var className = _props.className;\n    var style = _props.style;\n\n    var other = _objectWithoutProperties(_props, ['className', 'style']);\n\n    var prepareStyles = this.state.muiTheme.prepareStyles;\n\n\n    var rows = this._createRows();\n\n    return _react2.default.createElement(\n      _ClickAwayListener2.default,\n      { onClickAway: this.componentClickAway },\n      _react2.default.createElement(\n        'tbody',\n        { className: className, style: prepareStyles((0, _simpleAssign2.default)({}, style)) },\n        rows\n      )\n    );\n  }\n});\n\nexports.default = TableBody;\nmodule.exports = exports['default'];",
     "deps": {
+      "../checkbox": 329,
       "./table-row-column": 383,
       "simple-assign": 646,
       "react": 580,
       "../styles/getMuiTheme": 360,
-      "../ClickAwayListener": 316,
-      "../checkbox": 329
+      "../ClickAwayListener": 316
     },
     "hash": "5f2ea9d5419f805baf4a9a542f9ca580"
   },
@@ -4659,8 +4659,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/table/table-row.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };\n\nvar _simpleAssign = require('simple-assign');\n\nvar _simpleAssign2 = _interopRequireDefault(_simpleAssign);\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _getMuiTheme = require('../styles/getMuiTheme');\n\nvar _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }\n\nfunction getStyles(props, state) {\n  var tableRow = state.muiTheme.tableRow;\n\n\n  var cellBgColor = 'inherit';\n  if (props.hovered || state.hovered) {\n    cellBgColor = tableRow.hoverColor;\n  } else if (props.selected) {\n    cellBgColor = tableRow.selectedColor;\n  } else if (props.striped) {\n    cellBgColor = tableRow.stripeColor;\n  }\n\n  return {\n    root: {\n      borderBottom: props.displayBorder && '1px solid ' + tableRow.borderColor,\n      color: tableRow.textColor,\n      height: tableRow.height\n    },\n    cell: {\n      backgroundColor: cellBgColor\n    }\n  };\n}\n\nvar TableRow = _react2.default.createClass({\n  displayName: 'TableRow',\n\n\n  propTypes: {\n    /**\n     * Children passed to table row.\n     */\n    children: _react2.default.PropTypes.node,\n\n    /**\n     * The css class name of the root element.\n     */\n    className: _react2.default.PropTypes.string,\n\n    /**\n     * If true, row border will be displayed for the row.\n     * If false, no border will be drawn.\n     */\n    displayBorder: _react2.default.PropTypes.bool,\n\n    /**\n     * Controls whether or not the row reponseds to hover events.\n     */\n    hoverable: _react2.default.PropTypes.bool,\n\n    /**\n     * Controls whether or not the row should be rendered as being\n     * hovered. This property is evaluated in addition to this.state.hovered\n     * and can be used to synchronize the hovered state with some other\n     * external events.\n     */\n    hovered: _react2.default.PropTypes.bool,\n\n    /**\n     * Called when a row cell is clicked.\n     * rowNumber is the row number and columnId is\n     * the column number or the column key.\n     */\n    onCellClick: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table cell is hovered.\n     * rowNumber is the row number of the hovered row\n     * and columnId is the column number or the column key of the cell.\n     */\n    onCellHover: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table cell is no longer hovered.\n     * rowNumber is the row number of the row and columnId\n     * is the column number or the column key of the cell.\n     */\n    onCellHoverExit: _react2.default.PropTypes.func,\n\n    /**\n     * Called when row is clicked.\n     */\n    onRowClick: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table row is hovered.\n     * rowNumber is the row number of the hovered row.\n     */\n    onRowHover: _react2.default.PropTypes.func,\n\n    /**\n     * Called when a table row is no longer hovered.\n     * rowNumber is the row number of the row that is no longer hovered.\n     */\n    onRowHoverExit: _react2.default.PropTypes.func,\n\n    /**\n     * Number to identify the row. This property is\n     * automatically populated when used with the TableBody component.\n     */\n    rowNumber: _react2.default.PropTypes.number,\n\n    /**\n     * If true, table rows can be selected. If multiple row\n     * selection is desired, enable multiSelectable.\n     * The default value is true.\n     */\n    selectable: _react2.default.PropTypes.bool,\n\n    /**\n     * Indicates that a particular row is selected.\n     * This property can be used to programmatically select rows.\n     */\n    selected: _react2.default.PropTypes.bool,\n\n    /**\n     * Indicates whether or not the row is striped.\n     */\n    striped: _react2.default.PropTypes.bool,\n\n    /**\n     * Override the inline-styles of the root element.\n     */\n    style: _react2.default.PropTypes.object\n  },\n\n  contextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  childContextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  getDefaultProps: function getDefaultProps() {\n    return {\n      displayBorder: true,\n      hoverable: false,\n      hovered: false,\n      selectable: true,\n      selected: false,\n      striped: false\n    };\n  },\n  getInitialState: function getInitialState() {\n    return {\n      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)(),\n      hovered: false\n    };\n  },\n  getChildContext: function getChildContext() {\n    return {\n      muiTheme: this.state.muiTheme\n    };\n  },\n  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {\n    this.setState({\n      muiTheme: nextContext.muiTheme || this.state.muiTheme\n    });\n  },\n  _onRowClick: function _onRowClick(event) {\n    if (this.props.selectable && this.props.onRowClick) this.props.onRowClick(event, this.props.rowNumber);\n  },\n  _onRowHover: function _onRowHover(event) {\n    if (this.props.onRowHover) this.props.onRowHover(event, this.props.rowNumber);\n  },\n  _onRowHoverExit: function _onRowHoverExit(event) {\n    if (this.props.onRowHoverExit) this.props.onRowHoverExit(event, this.props.rowNumber);\n  },\n  _onCellClick: function _onCellClick(event, columnIndex) {\n    if (this.props.selectable && this.props.onCellClick) {\n      this.props.onCellClick(event, this.props.rowNumber, columnIndex);\n    }\n    event.ctrlKey = true;\n    this._onRowClick(event);\n  },\n  _onCellHover: function _onCellHover(event, columnIndex) {\n    if (this.props.hoverable) {\n      this.setState({ hovered: true });\n      if (this.props.onCellHover) this.props.onCellHover(event, this.props.rowNumber, columnIndex);\n      this._onRowHover(event);\n    }\n  },\n  _onCellHoverExit: function _onCellHoverExit(event, columnIndex) {\n    if (this.props.hoverable) {\n      this.setState({ hovered: false });\n      if (this.props.onCellHoverExit) this.props.onCellHoverExit(event, this.props.rowNumber, columnIndex);\n      this._onRowHoverExit(event);\n    }\n  },\n  render: function render() {\n    var _this = this;\n\n    var _props = this.props;\n    var className = _props.className;\n    var displayBorder = _props.displayBorder;\n    var hoverable = _props.hoverable;\n    var onCellClick = _props.onCellClick;\n    var onCellHover = _props.onCellHover;\n    var onCellHoverExit = _props.onCellHoverExit;\n    var onRowClick = _props.onRowClick;\n    var onRowHover = _props.onRowHover;\n    var onRowHoverExit = _props.onRowHoverExit;\n    var rowNumber = _props.rowNumber;\n    var selectable = _props.selectable;\n    var selected = _props.selected;\n    var striped = _props.striped;\n    var style = _props.style;\n\n    var other = _objectWithoutProperties(_props, ['className', 'displayBorder', 'hoverable', 'onCellClick', 'onCellHover', 'onCellHoverExit', 'onRowClick', 'onRowHover', 'onRowHoverExit', 'rowNumber', 'selectable', 'selected', 'striped', 'style']);\n\n    var prepareStyles = this.state.muiTheme.prepareStyles;\n\n\n    var styles = getStyles(this.props, this.state);\n\n    var rowColumns = _react2.default.Children.map(this.props.children, function (child, columnNumber) {\n      if (_react2.default.isValidElement(child)) {\n        return _react2.default.cloneElement(child, {\n          columnNumber: columnNumber,\n          hoverable: _this.props.hoverable,\n          key: child.props.key || _this.props.rowNumber + '-' + columnNumber,\n          onClick: _this._onCellClick,\n          onHover: _this._onCellHover,\n          onHoverExit: _this._onCellHoverExit,\n          style: (0, _simpleAssign2.default)({}, styles.cell, child.props.style)\n        });\n      }\n    });\n\n    return _react2.default.createElement(\n      'tr',\n      _extends({\n        className: className,\n        style: prepareStyles((0, _simpleAssign2.default)(styles.root, style))\n      }, other),\n      rowColumns\n    );\n  }\n});\n\nexports.default = TableRow;\nmodule.exports = exports['default'];",
     "deps": {
-      "react": 580,
       "simple-assign": 646,
+      "react": 580,
       "../styles/getMuiTheme": 360
     },
     "hash": "cdaf3342a586946140994903e3e1438a"
@@ -4683,9 +4683,9 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/material-ui/lib/tabs/tab.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _getMuiTheme = require('../styles/getMuiTheme');\n\nvar _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);\n\nvar _enhancedButton = require('../enhanced-button');\n\nvar _enhancedButton2 = _interopRequireDefault(_enhancedButton);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }\n\nfunction getStyles(props, state) {\n  var tabs = state.muiTheme.tabs;\n\n\n  return {\n    root: {\n      padding: '0px 12px',\n      height: props.label && props.icon ? 72 : 48,\n      color: props.selected ? tabs.selectedTextColor : tabs.textColor,\n      fontWeight: 500,\n      fontSize: 14,\n      width: props.width,\n      textTransform: 'uppercase'\n    }\n  };\n}\n\nvar Tab = _react2.default.createClass({\n  displayName: 'Tab',\n\n\n  propTypes: {\n    /**\n     * The css class name of the root element.\n     */\n    className: _react2.default.PropTypes.string,\n\n    /**\n     * Sets the icon of the tab, you can pass `FontIcon` or `SvgIcon` elements.\n     */\n    icon: _react2.default.PropTypes.node,\n\n    /**\n     * Sets the text value of the tab item to the string specified.\n     */\n    label: _react2.default.PropTypes.node,\n\n    /**\n     * Fired when the active tab changes by touch or tap.\n     * Use this event to specify any functionality when an active tab changes.\n     * For example - we are using this to route to home when the third tab becomes active.\n     * This function will always recieve the active tab as it\\'s first argument.\n     */\n    onActive: _react2.default.PropTypes.func,\n\n    /**\n     * This property is overriden by the Tabs component.\n     */\n    onTouchTap: _react2.default.PropTypes.func,\n\n    /**\n     * Defines if the current tab is selected or not.\n     * The Tabs component is responsible for setting this property.\n     */\n    selected: _react2.default.PropTypes.bool,\n\n    /**\n     * Override the inline-styles of the root element.\n     */\n    style: _react2.default.PropTypes.object,\n\n    /**\n     * If value prop passed to Tabs component, this value prop is also required.\n     * It assigns a value to the tab so that it can be selected by the Tabs.\n     */\n    value: _react2.default.PropTypes.any,\n\n    /**\n     * This property is overriden by the Tabs component.\n     */\n    width: _react2.default.PropTypes.string\n  },\n\n  contextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  childContextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  getInitialState: function getInitialState() {\n    return {\n      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)()\n    };\n  },\n  getChildContext: function getChildContext() {\n    return {\n      muiTheme: this.state.muiTheme\n    };\n  },\n  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {\n    this.setState({\n      muiTheme: nextContext.muiTheme || this.state.muiTheme\n    });\n  },\n  _handleTouchTap: function _handleTouchTap(event) {\n    if (this.props.onTouchTap) {\n      this.props.onTouchTap(this.props.value, event, this);\n    }\n  },\n  render: function render() {\n    var _props = this.props;\n    var label = _props.label;\n    var onActive = _props.onActive;\n    var onTouchTap = _props.onTouchTap;\n    var selected = _props.selected;\n    var style = _props.style;\n    var value = _props.value;\n    var width = _props.width;\n    var icon = _props.icon;\n\n    var other = _objectWithoutProperties(_props, ['label', 'onActive', 'onTouchTap', 'selected', 'style', 'value', 'width', 'icon']);\n\n    var styles = getStyles(this.props, this.state);\n\n    var iconElement = undefined;\n    if (icon && _react2.default.isValidElement(icon)) {\n      var params = {\n        style: {\n          fontSize: 24,\n          marginBottom: label ? 5 : 0,\n          display: label ? 'block' : 'inline-block',\n          color: styles.root.color\n        }\n      };\n      // If it's svg icon set color via props\n      if (icon.type.displayName !== 'FontIcon') {\n        params.color = styles.root.color;\n      }\n      iconElement = _react2.default.cloneElement(icon, params);\n    }\n\n    var rippleColor = styles.color;\n    var rippleOpacity = 0.3;\n\n    return _react2.default.createElement(\n      _enhancedButton2.default,\n      _extends({}, other, {\n        style: styles.root,\n        focusRippleColor: rippleColor,\n        touchRippleColor: rippleColor,\n        focusRippleOpacity: rippleOpacity,\n        touchRippleOpacity: rippleOpacity,\n        onTouchTap: this._handleTouchTap\n      }),\n      iconElement,\n      label\n    );\n  }\n});\n\nexports.default = Tab;\nmodule.exports = exports['default'];",
     "deps": {
+      "../enhanced-button": 334,
       "react": 580,
-      "../styles/getMuiTheme": 360,
-      "../enhanced-button": 334
+      "../styles/getMuiTheme": 360
     },
     "hash": "18a31e12bd1234e164238136f670e8c4"
   },
@@ -4710,8 +4710,8 @@ require("./main.js", entryId$$);
       "react": 580,
       "react-dom": 411,
       "warning": 647,
-      "../styles/getMuiTheme": 360,
       "./tabTemplate": 387,
+      "../styles/getMuiTheme": 360,
       "../ink-bar": 341
     },
     "hash": "05c2894f20ad766c38a80de3f82bc9b3"
@@ -4759,8 +4759,8 @@ require("./main.js", entryId$$);
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };\n\nvar _simpleAssign = require('simple-assign');\n\nvar _simpleAssign2 = _interopRequireDefault(_simpleAssign);\n\nvar _react = require('react');\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _getMuiTheme = require('../styles/getMuiTheme');\n\nvar _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }\n\nfunction getStyles(props, state) {\n  var noGutter = props.noGutter;\n  var _state$muiTheme = state.muiTheme;\n  var baseTheme = _state$muiTheme.baseTheme;\n  var toolbar = _state$muiTheme.toolbar;\n\n\n  return {\n    root: {\n      boxSizing: 'border-box',\n      WebkitTapHighlightColor: 'rgba(0,0,0,0)', // Remove mobile color flashing (deprecated)\n      backgroundColor: toolbar.backgroundColor,\n      height: toolbar.height,\n      width: '100%',\n      padding: noGutter ? 0 : '0px ' + baseTheme.spacing.desktopGutter + 'px'\n    }\n  };\n}\n\nvar Toolbar = _react2.default.createClass({\n  displayName: 'Toolbar',\n\n\n  propTypes: {\n    /**\n     * Can be a `ToolbarGroup` to render a group of related items.\n     */\n    children: _react2.default.PropTypes.node,\n\n    /**\n     * The css class name of the root element.\n     */\n    className: _react2.default.PropTypes.string,\n\n    /**\n     * Do not apply `desktopGutter` to the `Toolbar`.\n     */\n    noGutter: _react2.default.PropTypes.bool,\n\n    /**\n     * Override the inline-styles of the root element.\n     */\n    style: _react2.default.PropTypes.object\n  },\n\n  contextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  childContextTypes: {\n    muiTheme: _react2.default.PropTypes.object\n  },\n\n  getDefaultProps: function getDefaultProps() {\n    return {\n      noGutter: false\n    };\n  },\n  getInitialState: function getInitialState() {\n    return {\n      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)()\n    };\n  },\n  getChildContext: function getChildContext() {\n    return {\n      muiTheme: this.state.muiTheme\n    };\n  },\n  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {\n    this.setState({\n      muiTheme: nextContext.muiTheme || this.state.muiTheme\n    });\n  },\n  render: function render() {\n    var _props = this.props;\n    var children = _props.children;\n    var className = _props.className;\n    var style = _props.style;\n\n    var other = _objectWithoutProperties(_props, ['children', 'className', 'style']);\n\n    var prepareStyles = this.state.muiTheme.prepareStyles;\n\n\n    var styles = getStyles(this.props, this.state);\n\n    return _react2.default.createElement(\n      'div',\n      _extends({}, other, { className: className, style: prepareStyles((0, _simpleAssign2.default)({}, styles.root, style)) }),\n      children\n    );\n  }\n});\n\nexports.default = Toolbar;\nmodule.exports = exports['default'];",
     "deps": {
       "../styles/getMuiTheme": 360,
-      "react": 580,
-      "simple-assign": 646
+      "simple-assign": 646,
+      "react": 580
     },
     "hash": "91f66a1a3865416cb6cf7eb883b22110"
   },
@@ -4801,8 +4801,8 @@ require("./main.js", entryId$$);
     "deps": {
       "../styles/getMuiTheme": 360,
       "simple-assign": 646,
-      "react-addons-pure-render-mixin": 407,
       "react": 580,
+      "react-addons-pure-render-mixin": 407,
       "react-addons-transition-group": 408,
       "./scale-in-child": 394
     },
@@ -4982,8 +4982,8 @@ require("./main.js", entryId$$);
       "./stepper": 423,
       "./shouldStopAnimation": 421,
       "react": 580,
-      "performance-now": 403,
-      "raf": 405
+      "raf": 405,
+      "performance-now": 403
     },
     "hash": "99fac0ce78dbcd68f9376ed10dbff6ff"
   },
@@ -4998,8 +4998,8 @@ require("./main.js", entryId$$);
       "./stepper": 423,
       "./shouldStopAnimation": 421,
       "react": 580,
-      "performance-now": 403,
-      "raf": 405
+      "raf": 405,
+      "performance-now": 403
     },
     "hash": "d020445bad9fdc19fa0c9c1daffcaea5"
   },
@@ -5014,9 +5014,9 @@ require("./main.js", entryId$$);
       "./stepper": 423,
       "./shouldStopAnimation": 421,
       "./mergeDiff": 417,
+      "raf": 405,
       "react": 580,
-      "performance-now": 403,
-      "raf": 405
+      "performance-now": 403
     },
     "hash": "a034c7e5de05025c7100a6d92b446048"
   },
@@ -5053,9 +5053,9 @@ require("./main.js", entryId$$);
       "./presets": 418,
       "./reorderKeys": 420,
       "./spring": 422,
-      "./StaggeredMotion": 414,
       "./TransitionMotion": 415,
-      "./Motion": 413
+      "./Motion": 413,
+      "./StaggeredMotion": 414
     },
     "hash": "6c0a52fa4202a7cf38246eaa5c20dd5a"
   },
@@ -5130,8 +5130,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/react-proxy/modules/createPrototypeProxy.js",
     "source": "'use strict';\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.default = createPrototypeProxy;\n\nvar _assign = require('lodash/object/assign');\n\nvar _assign2 = _interopRequireDefault(_assign);\n\nvar _difference = require('lodash/array/difference');\n\nvar _difference2 = _interopRequireDefault(_difference);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction createPrototypeProxy() {\n  var proxy = {};\n  var current = null;\n  var mountedInstances = [];\n\n  /**\n   * Creates a proxied toString() method pointing to the current version's toString().\n   */\n  function proxyToString(name) {\n    // Wrap to always call the current version\n    return function toString() {\n      if (typeof current[name] === 'function') {\n        return current[name].toString();\n      } else {\n        return '<method was deleted>';\n      }\n    };\n  }\n\n  /**\n   * Creates a proxied method that calls the current version, whenever available.\n   */\n  function proxyMethod(name) {\n    // Wrap to always call the current version\n    var proxiedMethod = function proxiedMethod() {\n      if (typeof current[name] === 'function') {\n        return current[name].apply(this, arguments);\n      }\n    };\n\n    // Copy properties of the original function, if any\n    (0, _assign2.default)(proxiedMethod, current[name]);\n    proxiedMethod.toString = proxyToString(name);\n\n    return proxiedMethod;\n  }\n\n  /**\n   * Augments the original componentDidMount with instance tracking.\n   */\n  function proxiedComponentDidMount() {\n    mountedInstances.push(this);\n    if (typeof current.componentDidMount === 'function') {\n      return current.componentDidMount.apply(this, arguments);\n    }\n  }\n  proxiedComponentDidMount.toString = proxyToString('componentDidMount');\n\n  /**\n   * Augments the original componentWillUnmount with instance tracking.\n   */\n  function proxiedComponentWillUnmount() {\n    var index = mountedInstances.indexOf(this);\n    // Unless we're in a weird environment without componentDidMount\n    if (index !== -1) {\n      mountedInstances.splice(index, 1);\n    }\n    if (typeof current.componentWillUnmount === 'function') {\n      return current.componentWillUnmount.apply(this, arguments);\n    }\n  }\n  proxiedComponentWillUnmount.toString = proxyToString('componentWillUnmount');\n\n  /**\n   * Defines a property on the proxy.\n   */\n  function defineProxyProperty(name, descriptor) {\n    Object.defineProperty(proxy, name, descriptor);\n  }\n\n  /**\n   * Defines a property, attempting to keep the original descriptor configuration.\n   */\n  function defineProxyPropertyWithValue(name, value) {\n    var _ref = Object.getOwnPropertyDescriptor(current, name) || {};\n\n    var _ref$enumerable = _ref.enumerable;\n    var enumerable = _ref$enumerable === undefined ? false : _ref$enumerable;\n    var _ref$writable = _ref.writable;\n    var writable = _ref$writable === undefined ? true : _ref$writable;\n\n    defineProxyProperty(name, {\n      configurable: true,\n      enumerable: enumerable,\n      writable: writable,\n      value: value\n    });\n  }\n\n  /**\n   * Creates an auto-bind map mimicking the original map, but directed at proxy.\n   */\n  function createAutoBindMap() {\n    if (!current.__reactAutoBindMap) {\n      return;\n    }\n\n    var __reactAutoBindMap = {};\n    for (var name in current.__reactAutoBindMap) {\n      if (typeof proxy[name] === 'function' && current.__reactAutoBindMap.hasOwnProperty(name)) {\n        __reactAutoBindMap[name] = proxy[name];\n      }\n    }\n\n    return __reactAutoBindMap;\n  }\n\n  /**\n   * Applies the updated prototype.\n   */\n  function update(next) {\n    // Save current source of truth\n    current = next;\n\n    // Find changed property names\n    var currentNames = Object.getOwnPropertyNames(current);\n    var previousName = Object.getOwnPropertyNames(proxy);\n    var removedNames = (0, _difference2.default)(previousName, currentNames);\n\n    // Remove properties and methods that are no longer there\n    removedNames.forEach(function (name) {\n      delete proxy[name];\n    });\n\n    // Copy every descriptor\n    currentNames.forEach(function (name) {\n      var descriptor = Object.getOwnPropertyDescriptor(current, name);\n      if (typeof descriptor.value === 'function') {\n        // Functions require additional wrapping so they can be bound later\n        defineProxyPropertyWithValue(name, proxyMethod(name));\n      } else {\n        // Other values can be copied directly\n        defineProxyProperty(name, descriptor);\n      }\n    });\n\n    // Track mounting and unmounting\n    defineProxyPropertyWithValue('componentDidMount', proxiedComponentDidMount);\n    defineProxyPropertyWithValue('componentWillUnmount', proxiedComponentWillUnmount);\n    defineProxyPropertyWithValue('__reactAutoBindMap', createAutoBindMap());\n\n    // Set up the prototype chain\n    proxy.__proto__ = next;\n\n    return mountedInstances;\n  }\n\n  /**\n   * Returns the up-to-date proxy prototype.\n   */\n  function get() {\n    return proxy;\n  }\n\n  return {\n    update: update,\n    get: get\n  };\n};",
     "deps": {
-      "lodash/object/assign": 312,
-      "lodash/array/difference": 282
+      "lodash/array/difference": 282,
+      "lodash/object/assign": 312
     },
     "hash": "1314b631ea1de5714aa3627dbc58f01c"
   },
@@ -5185,9 +5185,9 @@ require("./main.js", entryId$$);
       "react": 580,
       "hoist-non-react-statics": 244,
       "invariant": 262,
+      "lodash/isPlainObject": 439,
       "../utils/shallowEqual": 434,
       "../utils/storeShape": 435,
-      "lodash/isPlainObject": 439,
       "../utils/wrapActionCreators": 436
     },
     "hash": "c8b353db84fa6b4ad89ef9a6ae05a2ff"
@@ -5198,8 +5198,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/react-redux/lib/index.js",
     "source": "'use strict';\n\nexports.__esModule = true;\nexports.connect = exports.Provider = undefined;\n\nvar _Provider = require('./components/Provider');\n\nvar _Provider2 = _interopRequireDefault(_Provider);\n\nvar _connect = require('./components/connect');\n\nvar _connect2 = _interopRequireDefault(_connect);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { \"default\": obj }; }\n\nexports.Provider = _Provider2[\"default\"];\nexports.connect = _connect2[\"default\"];",
     "deps": {
-      "./components/Provider": 431,
-      "./components/connect": 432
+      "./components/connect": 432,
+      "./components/Provider": 431
     },
     "hash": "267bf3d0571e079d76c679baede0dd50"
   },
@@ -5278,8 +5278,8 @@ require("./main.js", entryId$$);
       "./TouchEventUtils": 442,
       "react/lib/ViewportMetrics": 550,
       "fbjs/lib/keyOf": 440,
-      "react/lib/EventPluginUtils": 462,
       "react/lib/EventPropagators": 463,
+      "react/lib/EventPluginUtils": 462,
       "react/lib/SyntheticUIEvent": 547,
       "react/lib/EventConstants": 459
     },
@@ -5344,10 +5344,10 @@ require("./main.js", entryId$$);
     "deps": {
       "./EventConstants": 459,
       "./EventPropagators": 463,
-      "fbjs/lib/ExecutionEnvironment": 218,
-      "fbjs/lib/keyOf": 236,
       "./SyntheticCompositionEvent": 539,
       "./SyntheticInputEvent": 543,
+      "fbjs/lib/ExecutionEnvironment": 218,
+      "fbjs/lib/keyOf": 236,
       "./FallbackCompositionState": 464
     },
     "hash": "5291d9757209c74a7c518f03100a47fa"
@@ -5369,10 +5369,10 @@ require("./main.js", entryId$$);
       "_process": 404,
       "./ReactPerf": 518,
       "./CSSProperty": 448,
+      "./dangerousStyleValue": 554,
       "fbjs/lib/ExecutionEnvironment": 218,
       "fbjs/lib/warning": 243,
       "fbjs/lib/memoizeStringOnly": 238,
-      "./dangerousStyleValue": 554,
       "fbjs/lib/camelizeStyleName": 220,
       "fbjs/lib/hyphenateStyleName": 231
     },
@@ -5454,8 +5454,8 @@ require("./main.js", entryId$$);
       "_process": 404,
       "./DOMProperty": 454,
       "./ReactPerf": 518,
-      "fbjs/lib/warning": 243,
-      "./quoteAttributeValueForBrowser": 571
+      "./quoteAttributeValueForBrowser": 571,
+      "fbjs/lib/warning": 243
     },
     "hash": "254f497f13e1ed1df2ab8e2d9f350a60"
   },
@@ -5466,8 +5466,8 @@ require("./main.js", entryId$$);
     "source": "(function (process){\n/**\n * Copyright 2013-2015, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule Danger\n * @typechecks static-only\n */\n\n'use strict';\n\nvar ExecutionEnvironment = require('fbjs/lib/ExecutionEnvironment');\n\nvar createNodesFromMarkup = require('fbjs/lib/createNodesFromMarkup');\nvar emptyFunction = require('fbjs/lib/emptyFunction');\nvar getMarkupWrap = require('fbjs/lib/getMarkupWrap');\nvar invariant = require('fbjs/lib/invariant');\n\nvar OPEN_TAG_NAME_EXP = /^(<[^ \\/>]+)/;\nvar RESULT_INDEX_ATTR = 'data-danger-index';\n\n/**\n * Extracts the `nodeName` from a string of markup.\n *\n * NOTE: Extracting the `nodeName` does not require a regular expression match\n * because we make assumptions about React-generated markup (i.e. there are no\n * spaces surrounding the opening tag and there is at least one attribute).\n *\n * @param {string} markup String of markup.\n * @return {string} Node name of the supplied markup.\n * @see http://jsperf.com/extract-nodename\n */\nfunction getNodeName(markup) {\n  return markup.substring(1, markup.indexOf(' '));\n}\n\nvar Danger = {\n\n  /**\n   * Renders markup into an array of nodes. The markup is expected to render\n   * into a list of root nodes. Also, the length of `resultList` and\n   * `markupList` should be the same.\n   *\n   * @param {array<string>} markupList List of markup strings to render.\n   * @return {array<DOMElement>} List of rendered nodes.\n   * @internal\n   */\n  dangerouslyRenderMarkup: function (markupList) {\n    !ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? invariant(false, 'dangerouslyRenderMarkup(...): Cannot render markup in a worker ' + 'thread. Make sure `window` and `document` are available globally ' + 'before requiring React when unit testing or use ' + 'ReactDOMServer.renderToString for server rendering.') : invariant(false) : undefined;\n    var nodeName;\n    var markupByNodeName = {};\n    // Group markup by `nodeName` if a wrap is necessary, else by '*'.\n    for (var i = 0; i < markupList.length; i++) {\n      !markupList[i] ? process.env.NODE_ENV !== 'production' ? invariant(false, 'dangerouslyRenderMarkup(...): Missing markup.') : invariant(false) : undefined;\n      nodeName = getNodeName(markupList[i]);\n      nodeName = getMarkupWrap(nodeName) ? nodeName : '*';\n      markupByNodeName[nodeName] = markupByNodeName[nodeName] || [];\n      markupByNodeName[nodeName][i] = markupList[i];\n    }\n    var resultList = [];\n    var resultListAssignmentCount = 0;\n    for (nodeName in markupByNodeName) {\n      if (!markupByNodeName.hasOwnProperty(nodeName)) {\n        continue;\n      }\n      var markupListByNodeName = markupByNodeName[nodeName];\n\n      // This for-in loop skips the holes of the sparse array. The order of\n      // iteration should follow the order of assignment, which happens to match\n      // numerical index order, but we don't rely on that.\n      var resultIndex;\n      for (resultIndex in markupListByNodeName) {\n        if (markupListByNodeName.hasOwnProperty(resultIndex)) {\n          var markup = markupListByNodeName[resultIndex];\n\n          // Push the requested markup with an additional RESULT_INDEX_ATTR\n          // attribute.  If the markup does not start with a < character, it\n          // will be discarded below (with an appropriate console.error).\n          markupListByNodeName[resultIndex] = markup.replace(OPEN_TAG_NAME_EXP,\n          // This index will be parsed back out below.\n          '$1 ' + RESULT_INDEX_ATTR + '=\"' + resultIndex + '\" ');\n        }\n      }\n\n      // Render each group of markup with similar wrapping `nodeName`.\n      var renderNodes = createNodesFromMarkup(markupListByNodeName.join(''), emptyFunction // Do nothing special with <script> tags.\n      );\n\n      for (var j = 0; j < renderNodes.length; ++j) {\n        var renderNode = renderNodes[j];\n        if (renderNode.hasAttribute && renderNode.hasAttribute(RESULT_INDEX_ATTR)) {\n\n          resultIndex = +renderNode.getAttribute(RESULT_INDEX_ATTR);\n          renderNode.removeAttribute(RESULT_INDEX_ATTR);\n\n          !!resultList.hasOwnProperty(resultIndex) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Danger: Assigning to an already-occupied result index.') : invariant(false) : undefined;\n\n          resultList[resultIndex] = renderNode;\n\n          // This should match resultList.length and markupList.length when\n          // we're done.\n          resultListAssignmentCount += 1;\n        } else if (process.env.NODE_ENV !== 'production') {\n          console.error('Danger: Discarding unexpected node:', renderNode);\n        }\n      }\n    }\n\n    // Although resultList was populated out of order, it should now be a dense\n    // array.\n    !(resultListAssignmentCount === resultList.length) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Danger: Did not assign to every index of resultList.') : invariant(false) : undefined;\n\n    !(resultList.length === markupList.length) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Danger: Expected markup to render %s nodes, but rendered %s.', markupList.length, resultList.length) : invariant(false) : undefined;\n\n    return resultList;\n  },\n\n  /**\n   * Replaces a node with a string of markup at its current position within its\n   * parent. The markup must render into a single root node.\n   *\n   * @param {DOMElement} oldChild Child node to replace.\n   * @param {string} markup Markup to render in place of the child node.\n   * @internal\n   */\n  dangerouslyReplaceNodeWithMarkup: function (oldChild, markup) {\n    !ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? invariant(false, 'dangerouslyReplaceNodeWithMarkup(...): Cannot render markup in a ' + 'worker thread. Make sure `window` and `document` are available ' + 'globally before requiring React when unit testing or use ' + 'ReactDOMServer.renderToString() for server rendering.') : invariant(false) : undefined;\n    !markup ? process.env.NODE_ENV !== 'production' ? invariant(false, 'dangerouslyReplaceNodeWithMarkup(...): Missing markup.') : invariant(false) : undefined;\n    !(oldChild.tagName.toLowerCase() !== 'html') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'dangerouslyReplaceNodeWithMarkup(...): Cannot replace markup of the ' + '<html> node. This is because browser quirks make this unreliable ' + 'and/or slow. If you want to render to the root you must use ' + 'server rendering. See ReactDOMServer.renderToString().') : invariant(false) : undefined;\n\n    var newChild;\n    if (typeof markup === 'string') {\n      newChild = createNodesFromMarkup(markup, emptyFunction)[0];\n    } else {\n      newChild = markup;\n    }\n    oldChild.parentNode.replaceChild(newChild, oldChild);\n  }\n\n};\n\nmodule.exports = Danger;\n}).call(this,require('_process'))",
     "deps": {
       "_process": 404,
-      "fbjs/lib/emptyFunction": 224,
       "fbjs/lib/ExecutionEnvironment": 218,
+      "fbjs/lib/emptyFunction": 224,
       "fbjs/lib/invariant": 232,
       "fbjs/lib/getMarkupWrap": 228,
       "fbjs/lib/createNodesFromMarkup": 223
@@ -5493,8 +5493,8 @@ require("./main.js", entryId$$);
       "./EventConstants": 459,
       "./EventPropagators": 463,
       "./ReactMount": 512,
-      "fbjs/lib/keyOf": 236,
-      "./SyntheticMouseEvent": 545
+      "./SyntheticMouseEvent": 545,
+      "fbjs/lib/keyOf": 236
     },
     "hash": "3d90480d09b671390dc41cb9d54f7498"
   },
@@ -5515,13 +5515,13 @@ require("./main.js", entryId$$);
     "source": "(function (process){\n/**\n * Copyright 2013-2015, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule EventPluginHub\n */\n\n'use strict';\n\nvar EventPluginRegistry = require('./EventPluginRegistry');\nvar EventPluginUtils = require('./EventPluginUtils');\nvar ReactErrorUtils = require('./ReactErrorUtils');\n\nvar accumulateInto = require('./accumulateInto');\nvar forEachAccumulated = require('./forEachAccumulated');\nvar invariant = require('fbjs/lib/invariant');\nvar warning = require('fbjs/lib/warning');\n\n/**\n * Internal store for event listeners\n */\nvar listenerBank = {};\n\n/**\n * Internal queue of events that have accumulated their dispatches and are\n * waiting to have their dispatches executed.\n */\nvar eventQueue = null;\n\n/**\n * Dispatches an event and releases it back into the pool, unless persistent.\n *\n * @param {?object} event Synthetic event to be dispatched.\n * @param {boolean} simulated If the event is simulated (changes exn behavior)\n * @private\n */\nvar executeDispatchesAndRelease = function (event, simulated) {\n  if (event) {\n    EventPluginUtils.executeDispatchesInOrder(event, simulated);\n\n    if (!event.isPersistent()) {\n      event.constructor.release(event);\n    }\n  }\n};\nvar executeDispatchesAndReleaseSimulated = function (e) {\n  return executeDispatchesAndRelease(e, true);\n};\nvar executeDispatchesAndReleaseTopLevel = function (e) {\n  return executeDispatchesAndRelease(e, false);\n};\n\n/**\n * - `InstanceHandle`: [required] Module that performs logical traversals of DOM\n *   hierarchy given ids of the logical DOM elements involved.\n */\nvar InstanceHandle = null;\n\nfunction validateInstanceHandle() {\n  var valid = InstanceHandle && InstanceHandle.traverseTwoPhase && InstanceHandle.traverseEnterLeave;\n  process.env.NODE_ENV !== 'production' ? warning(valid, 'InstanceHandle not injected before use!') : undefined;\n}\n\n/**\n * This is a unified interface for event plugins to be installed and configured.\n *\n * Event plugins can implement the following properties:\n *\n *   `extractEvents` {function(string, DOMEventTarget, string, object): *}\n *     Required. When a top-level event is fired, this method is expected to\n *     extract synthetic events that will in turn be queued and dispatched.\n *\n *   `eventTypes` {object}\n *     Optional, plugins that fire events must publish a mapping of registration\n *     names that are used to register listeners. Values of this mapping must\n *     be objects that contain `registrationName` or `phasedRegistrationNames`.\n *\n *   `executeDispatch` {function(object, function, string)}\n *     Optional, allows plugins to override how an event gets dispatched. By\n *     default, the listener is simply invoked.\n *\n * Each plugin that is injected into `EventsPluginHub` is immediately operable.\n *\n * @public\n */\nvar EventPluginHub = {\n\n  /**\n   * Methods for injecting dependencies.\n   */\n  injection: {\n\n    /**\n     * @param {object} InjectedMount\n     * @public\n     */\n    injectMount: EventPluginUtils.injection.injectMount,\n\n    /**\n     * @param {object} InjectedInstanceHandle\n     * @public\n     */\n    injectInstanceHandle: function (InjectedInstanceHandle) {\n      InstanceHandle = InjectedInstanceHandle;\n      if (process.env.NODE_ENV !== 'production') {\n        validateInstanceHandle();\n      }\n    },\n\n    getInstanceHandle: function () {\n      if (process.env.NODE_ENV !== 'production') {\n        validateInstanceHandle();\n      }\n      return InstanceHandle;\n    },\n\n    /**\n     * @param {array} InjectedEventPluginOrder\n     * @public\n     */\n    injectEventPluginOrder: EventPluginRegistry.injectEventPluginOrder,\n\n    /**\n     * @param {object} injectedNamesToPlugins Map from names to plugin modules.\n     */\n    injectEventPluginsByName: EventPluginRegistry.injectEventPluginsByName\n\n  },\n\n  eventNameDispatchConfigs: EventPluginRegistry.eventNameDispatchConfigs,\n\n  registrationNameModules: EventPluginRegistry.registrationNameModules,\n\n  /**\n   * Stores `listener` at `listenerBank[registrationName][id]`. Is idempotent.\n   *\n   * @param {string} id ID of the DOM element.\n   * @param {string} registrationName Name of listener (e.g. `onClick`).\n   * @param {?function} listener The callback to store.\n   */\n  putListener: function (id, registrationName, listener) {\n    !(typeof listener === 'function') ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Expected %s listener to be a function, instead got type %s', registrationName, typeof listener) : invariant(false) : undefined;\n\n    var bankForRegistrationName = listenerBank[registrationName] || (listenerBank[registrationName] = {});\n    bankForRegistrationName[id] = listener;\n\n    var PluginModule = EventPluginRegistry.registrationNameModules[registrationName];\n    if (PluginModule && PluginModule.didPutListener) {\n      PluginModule.didPutListener(id, registrationName, listener);\n    }\n  },\n\n  /**\n   * @param {string} id ID of the DOM element.\n   * @param {string} registrationName Name of listener (e.g. `onClick`).\n   * @return {?function} The stored callback.\n   */\n  getListener: function (id, registrationName) {\n    var bankForRegistrationName = listenerBank[registrationName];\n    return bankForRegistrationName && bankForRegistrationName[id];\n  },\n\n  /**\n   * Deletes a listener from the registration bank.\n   *\n   * @param {string} id ID of the DOM element.\n   * @param {string} registrationName Name of listener (e.g. `onClick`).\n   */\n  deleteListener: function (id, registrationName) {\n    var PluginModule = EventPluginRegistry.registrationNameModules[registrationName];\n    if (PluginModule && PluginModule.willDeleteListener) {\n      PluginModule.willDeleteListener(id, registrationName);\n    }\n\n    var bankForRegistrationName = listenerBank[registrationName];\n    // TODO: This should never be null -- when is it?\n    if (bankForRegistrationName) {\n      delete bankForRegistrationName[id];\n    }\n  },\n\n  /**\n   * Deletes all listeners for the DOM element with the supplied ID.\n   *\n   * @param {string} id ID of the DOM element.\n   */\n  deleteAllListeners: function (id) {\n    for (var registrationName in listenerBank) {\n      if (!listenerBank[registrationName][id]) {\n        continue;\n      }\n\n      var PluginModule = EventPluginRegistry.registrationNameModules[registrationName];\n      if (PluginModule && PluginModule.willDeleteListener) {\n        PluginModule.willDeleteListener(id, registrationName);\n      }\n\n      delete listenerBank[registrationName][id];\n    }\n  },\n\n  /**\n   * Allows registered plugins an opportunity to extract events from top-level\n   * native browser events.\n   *\n   * @param {string} topLevelType Record from `EventConstants`.\n   * @param {DOMEventTarget} topLevelTarget The listening component root node.\n   * @param {string} topLevelTargetID ID of `topLevelTarget`.\n   * @param {object} nativeEvent Native browser event.\n   * @return {*} An accumulation of synthetic events.\n   * @internal\n   */\n  extractEvents: function (topLevelType, topLevelTarget, topLevelTargetID, nativeEvent, nativeEventTarget) {\n    var events;\n    var plugins = EventPluginRegistry.plugins;\n    for (var i = 0; i < plugins.length; i++) {\n      // Not every plugin in the ordering may be loaded at runtime.\n      var possiblePlugin = plugins[i];\n      if (possiblePlugin) {\n        var extractedEvents = possiblePlugin.extractEvents(topLevelType, topLevelTarget, topLevelTargetID, nativeEvent, nativeEventTarget);\n        if (extractedEvents) {\n          events = accumulateInto(events, extractedEvents);\n        }\n      }\n    }\n    return events;\n  },\n\n  /**\n   * Enqueues a synthetic event that should be dispatched when\n   * `processEventQueue` is invoked.\n   *\n   * @param {*} events An accumulation of synthetic events.\n   * @internal\n   */\n  enqueueEvents: function (events) {\n    if (events) {\n      eventQueue = accumulateInto(eventQueue, events);\n    }\n  },\n\n  /**\n   * Dispatches all synthetic events on the event queue.\n   *\n   * @internal\n   */\n  processEventQueue: function (simulated) {\n    // Set `eventQueue` to null before processing it so that we can tell if more\n    // events get enqueued while processing.\n    var processingEventQueue = eventQueue;\n    eventQueue = null;\n    if (simulated) {\n      forEachAccumulated(processingEventQueue, executeDispatchesAndReleaseSimulated);\n    } else {\n      forEachAccumulated(processingEventQueue, executeDispatchesAndReleaseTopLevel);\n    }\n    !!eventQueue ? process.env.NODE_ENV !== 'production' ? invariant(false, 'processEventQueue(): Additional events were enqueued while processing ' + 'an event queue. Support for this has not yet been implemented.') : invariant(false) : undefined;\n    // This would be a good time to rethrow if any of the event handlers threw.\n    ReactErrorUtils.rethrowCaughtError();\n  },\n\n  /**\n   * These are needed for tests only. Do not use!\n   */\n  __purge: function () {\n    listenerBank = {};\n  },\n\n  __getListenerBank: function () {\n    return listenerBank;\n  }\n\n};\n\nmodule.exports = EventPluginHub;\n}).call(this,require('_process'))",
     "deps": {
       "_process": 404,
+      "./EventPluginUtils": 462,
       "./forEachAccumulated": 559,
       "./ReactErrorUtils": 502,
-      "fbjs/lib/invariant": 232,
-      "./EventPluginUtils": 462,
       "fbjs/lib/warning": 243,
-      "./EventPluginRegistry": 461,
-      "./accumulateInto": 551
+      "fbjs/lib/invariant": 232,
+      "./accumulateInto": 551,
+      "./EventPluginRegistry": 461
     },
     "hash": "0c4b14913d798b5025f5a4880be0b232"
   },
@@ -5545,8 +5545,8 @@ require("./main.js", entryId$$);
       "_process": 404,
       "./EventConstants": 459,
       "./ReactErrorUtils": 502,
-      "fbjs/lib/warning": 243,
-      "fbjs/lib/invariant": 232
+      "fbjs/lib/invariant": 232,
+      "fbjs/lib/warning": 243
     },
     "hash": "42f3dfa09f939f2513bd6f6daed6d137"
   },
@@ -5571,8 +5571,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/react/lib/FallbackCompositionState.js",
     "source": "/**\n * Copyright 2013-2015, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule FallbackCompositionState\n * @typechecks static-only\n */\n\n'use strict';\n\nvar PooledClass = require('./PooledClass');\n\nvar assign = require('./Object.assign');\nvar getTextContentAccessor = require('./getTextContentAccessor');\n\n/**\n * This helper class stores information about text content of a target node,\n * allowing comparison of content before and after a given event.\n *\n * Identify the node where selection currently begins, then observe\n * both its text content and its current position in the DOM. Since the\n * browser may natively replace the target node during composition, we can\n * use its position to find its replacement.\n *\n * @param {DOMEventTarget} root\n */\nfunction FallbackCompositionState(root) {\n  this._root = root;\n  this._startText = this.getText();\n  this._fallbackText = null;\n}\n\nassign(FallbackCompositionState.prototype, {\n  destructor: function () {\n    this._root = null;\n    this._startText = null;\n    this._fallbackText = null;\n  },\n\n  /**\n   * Get current text of input.\n   *\n   * @return {string}\n   */\n  getText: function () {\n    if ('value' in this._root) {\n      return this._root.value;\n    }\n    return this._root[getTextContentAccessor()];\n  },\n\n  /**\n   * Determine the differing substring between the initially stored\n   * text content and the current content.\n   *\n   * @return {string}\n   */\n  getData: function () {\n    if (this._fallbackText) {\n      return this._fallbackText;\n    }\n\n    var start;\n    var startValue = this._startText;\n    var startLength = startValue.length;\n    var end;\n    var endValue = this.getText();\n    var endLength = endValue.length;\n\n    for (start = 0; start < startLength; start++) {\n      if (startValue[start] !== endValue[start]) {\n        break;\n      }\n    }\n\n    var minEnd = startLength - start;\n    for (end = 1; end <= minEnd; end++) {\n      if (startValue[startLength - end] !== endValue[endLength - end]) {\n        break;\n      }\n    }\n\n    var sliceTail = end > 1 ? 1 - end : undefined;\n    this._fallbackText = endValue.slice(start, sliceTail);\n    return this._fallbackText;\n  }\n});\n\nPooledClass.addPoolingTo(FallbackCompositionState);\n\nmodule.exports = FallbackCompositionState;",
     "deps": {
-      "./Object.assign": 467,
       "./PooledClass": 468,
+      "./Object.assign": 467,
       "./getTextContentAccessor": 566
     },
     "hash": "1902d64e1be0958cd0b1fd2ec20603dc"
@@ -5702,15 +5702,15 @@ require("./main.js", entryId$$);
       "_process": 404,
       "./ReactComponent": 475,
       "./ReactElement": 498,
+      "./ReactNoopUpdateQueue": 516,
       "./Object.assign": 467,
       "./ReactPropTypeLocationNames": 519,
+      "./ReactPropTypeLocations": 520,
       "fbjs/lib/emptyObject": 225,
       "fbjs/lib/invariant": 232,
       "fbjs/lib/keyMirror": 235,
       "fbjs/lib/warning": 243,
-      "fbjs/lib/keyOf": 236,
-      "./ReactNoopUpdateQueue": 516,
-      "./ReactPropTypeLocations": 520
+      "fbjs/lib/keyOf": 236
     },
     "hash": "bd0d7cbfa8c9a3a9ba19b96e448acbb1"
   },
@@ -5803,13 +5803,13 @@ require("./main.js", entryId$$);
       "./ReactCurrentOwner": 480,
       "./ReactVersion": 533,
       "./ReactPerf": 518,
-      "fbjs/lib/ExecutionEnvironment": 218,
-      "fbjs/lib/warning": 243,
       "./renderSubtreeIntoContainer": 572,
       "./ReactInstanceHandles": 508,
       "./findDOMNode": 557,
       "./ReactUpdates": 532,
       "./ReactReconciler": 523,
+      "fbjs/lib/ExecutionEnvironment": 218,
+      "fbjs/lib/warning": 243,
       "./ReactMount": 512,
       "./ReactDefaultInjection": 495,
       "./ReactDOMTextComponent": 492
@@ -5840,22 +5840,22 @@ require("./main.js", entryId$$);
       "./ReactPerf": 518,
       "./ReactUpdateQueue": 531,
       "./Object.assign": 467,
-      "./canDefineProperty": 553,
       "./escapeTextContentForBrowser": 556,
+      "./canDefineProperty": 553,
       "./isEventSupported": 568,
-      "./setTextContent": 574,
       "./setInnerHTML": 573,
+      "./setTextContent": 574,
       "./validateDOMNesting": 579,
       "./ReactDOMButton": 482,
       "fbjs/lib/invariant": 232,
-      "fbjs/lib/keyOf": 236,
       "fbjs/lib/warning": 243,
+      "fbjs/lib/keyOf": 236,
       "fbjs/lib/shallowEqual": 241,
       "./ReactDOMOption": 488,
-      "./AutoFocusUtils": 446,
-      "./ReactDOMSelect": 489,
       "./ReactDOMTextarea": 493,
+      "./AutoFocusUtils": 446,
       "./ReactDOMInput": 487,
+      "./ReactDOMSelect": 489,
       "./ReactMultiChild": 513,
       "./CSSPropertyOperations": 449
     },
@@ -5906,10 +5906,10 @@ require("./main.js", entryId$$);
       "_process": 404,
       "./ReactDOMIDOperations": 486,
       "./ReactMount": 512,
-      "./ReactUpdates": 532,
       "./Object.assign": 467,
-      "fbjs/lib/invariant": 232,
-      "./LinkedValueUtils": 466
+      "./ReactUpdates": 532,
+      "./LinkedValueUtils": 466,
+      "fbjs/lib/invariant": 232
     },
     "hash": "1b1e4e28a8bda42a3201c82b37bd9d18"
   },
@@ -5978,8 +5978,8 @@ require("./main.js", entryId$$);
       "./escapeTextContentForBrowser": 556,
       "./validateDOMNesting": 579,
       "./ReactComponentBrowserEnvironment": 476,
-      "./setTextContent": 574,
       "./DOMPropertyOperations": 455,
+      "./setTextContent": 574,
       "./DOMChildrenOperations": 453
     },
     "hash": "0c9542c6b14b5943d613b19b9e81c1b2"
@@ -5991,12 +5991,12 @@ require("./main.js", entryId$$);
     "source": "(function (process){\n/**\n * Copyright 2013-2015, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule ReactDOMTextarea\n */\n\n'use strict';\n\nvar LinkedValueUtils = require('./LinkedValueUtils');\nvar ReactDOMIDOperations = require('./ReactDOMIDOperations');\nvar ReactUpdates = require('./ReactUpdates');\n\nvar assign = require('./Object.assign');\nvar invariant = require('fbjs/lib/invariant');\nvar warning = require('fbjs/lib/warning');\n\nfunction forceUpdateIfMounted() {\n  if (this._rootNodeID) {\n    // DOM component is still mounted; update\n    ReactDOMTextarea.updateWrapper(this);\n  }\n}\n\n/**\n * Implements a <textarea> native component that allows setting `value`, and\n * `defaultValue`. This differs from the traditional DOM API because value is\n * usually set as PCDATA children.\n *\n * If `value` is not supplied (or null/undefined), user actions that affect the\n * value will trigger updates to the element.\n *\n * If `value` is supplied (and not null/undefined), the rendered element will\n * not trigger updates to the element. Instead, the `value` prop must change in\n * order for the rendered element to be updated.\n *\n * The rendered element will be initialized with an empty value, the prop\n * `defaultValue` if specified, or the children content (deprecated).\n */\nvar ReactDOMTextarea = {\n  getNativeProps: function (inst, props, context) {\n    !(props.dangerouslySetInnerHTML == null) ? process.env.NODE_ENV !== 'production' ? invariant(false, '`dangerouslySetInnerHTML` does not make sense on <textarea>.') : invariant(false) : undefined;\n\n    // Always set children to the same thing. In IE9, the selection range will\n    // get reset if `textContent` is mutated.\n    var nativeProps = assign({}, props, {\n      defaultValue: undefined,\n      value: undefined,\n      children: inst._wrapperState.initialValue,\n      onChange: inst._wrapperState.onChange\n    });\n\n    return nativeProps;\n  },\n\n  mountWrapper: function (inst, props) {\n    if (process.env.NODE_ENV !== 'production') {\n      LinkedValueUtils.checkPropTypes('textarea', props, inst._currentElement._owner);\n    }\n\n    var defaultValue = props.defaultValue;\n    // TODO (yungsters): Remove support for children content in <textarea>.\n    var children = props.children;\n    if (children != null) {\n      if (process.env.NODE_ENV !== 'production') {\n        process.env.NODE_ENV !== 'production' ? warning(false, 'Use the `defaultValue` or `value` props instead of setting ' + 'children on <textarea>.') : undefined;\n      }\n      !(defaultValue == null) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'If you supply `defaultValue` on a <textarea>, do not pass children.') : invariant(false) : undefined;\n      if (Array.isArray(children)) {\n        !(children.length <= 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, '<textarea> can only have at most one child.') : invariant(false) : undefined;\n        children = children[0];\n      }\n\n      defaultValue = '' + children;\n    }\n    if (defaultValue == null) {\n      defaultValue = '';\n    }\n    var value = LinkedValueUtils.getValue(props);\n\n    inst._wrapperState = {\n      // We save the initial value so that `ReactDOMComponent` doesn't update\n      // `textContent` (unnecessary since we update value).\n      // The initial value can be a boolean or object so that's why it's\n      // forced to be a string.\n      initialValue: '' + (value != null ? value : defaultValue),\n      onChange: _handleChange.bind(inst)\n    };\n  },\n\n  updateWrapper: function (inst) {\n    var props = inst._currentElement.props;\n    var value = LinkedValueUtils.getValue(props);\n    if (value != null) {\n      // Cast `value` to a string to ensure the value is set correctly. While\n      // browsers typically do this as necessary, jsdom doesn't.\n      ReactDOMIDOperations.updatePropertyByID(inst._rootNodeID, 'value', '' + value);\n    }\n  }\n};\n\nfunction _handleChange(event) {\n  var props = this._currentElement.props;\n  var returnValue = LinkedValueUtils.executeOnChange(props, event);\n  ReactUpdates.asap(forceUpdateIfMounted, this);\n  return returnValue;\n}\n\nmodule.exports = ReactDOMTextarea;\n}).call(this,require('_process'))",
     "deps": {
       "_process": 404,
+      "./LinkedValueUtils": 466,
       "./ReactDOMIDOperations": 486,
       "./ReactUpdates": 532,
       "./Object.assign": 467,
       "fbjs/lib/invariant": 232,
-      "fbjs/lib/warning": 243,
-      "./LinkedValueUtils": 466
+      "fbjs/lib/warning": 243
     },
     "hash": "25eb2195921e94a43cf21a31705a1533"
   },
@@ -6025,19 +6025,19 @@ require("./main.js", entryId$$);
       "./ReactMount": 512,
       "./ClientReactRootIndex": 452,
       "./ServerReactRootIndex": 536,
-      "fbjs/lib/ExecutionEnvironment": 218,
       "./SVGDOMPropertyConfig": 534,
+      "./ReactReconcileTransaction": 522,
+      "fbjs/lib/ExecutionEnvironment": 218,
       "./DefaultEventPluginOrder": 457,
       "./HTMLDOMPropertyConfig": 465,
       "./ReactBrowserComponentMixin": 470,
       "./ReactDefaultBatchingStrategy": 494,
-      "./ChangeEventPlugin": 451,
-      "./SelectEventPlugin": 535,
       "./EnterLeaveEventPlugin": 458,
+      "./ChangeEventPlugin": 451,
       "./ReactEventListener": 504,
       "./ReactComponentBrowserEnvironment": 476,
       "./ReactInjection": 506,
-      "./ReactReconcileTransaction": 522,
+      "./SelectEventPlugin": 535,
       "./BeforeInputEventPlugin": 447,
       "./SimpleEventPlugin": 537,
       "./ReactDOMComponent": 483,
@@ -6051,9 +6051,9 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/react/lib/ReactDefaultPerf.js",
     "source": "/**\n * Copyright 2013-2015, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule ReactDefaultPerf\n * @typechecks static-only\n */\n\n'use strict';\n\nvar DOMProperty = require('./DOMProperty');\nvar ReactDefaultPerfAnalysis = require('./ReactDefaultPerfAnalysis');\nvar ReactMount = require('./ReactMount');\nvar ReactPerf = require('./ReactPerf');\n\nvar performanceNow = require('fbjs/lib/performanceNow');\n\nfunction roundFloat(val) {\n  return Math.floor(val * 100) / 100;\n}\n\nfunction addValue(obj, key, val) {\n  obj[key] = (obj[key] || 0) + val;\n}\n\nvar ReactDefaultPerf = {\n  _allMeasurements: [], // last item in the list is the current one\n  _mountStack: [0],\n  _injected: false,\n\n  start: function () {\n    if (!ReactDefaultPerf._injected) {\n      ReactPerf.injection.injectMeasure(ReactDefaultPerf.measure);\n    }\n\n    ReactDefaultPerf._allMeasurements.length = 0;\n    ReactPerf.enableMeasure = true;\n  },\n\n  stop: function () {\n    ReactPerf.enableMeasure = false;\n  },\n\n  getLastMeasurements: function () {\n    return ReactDefaultPerf._allMeasurements;\n  },\n\n  printExclusive: function (measurements) {\n    measurements = measurements || ReactDefaultPerf._allMeasurements;\n    var summary = ReactDefaultPerfAnalysis.getExclusiveSummary(measurements);\n    console.table(summary.map(function (item) {\n      return {\n        'Component class name': item.componentName,\n        'Total inclusive time (ms)': roundFloat(item.inclusive),\n        'Exclusive mount time (ms)': roundFloat(item.exclusive),\n        'Exclusive render time (ms)': roundFloat(item.render),\n        'Mount time per instance (ms)': roundFloat(item.exclusive / item.count),\n        'Render time per instance (ms)': roundFloat(item.render / item.count),\n        'Instances': item.count\n      };\n    }));\n    // TODO: ReactDefaultPerfAnalysis.getTotalTime() does not return the correct\n    // number.\n  },\n\n  printInclusive: function (measurements) {\n    measurements = measurements || ReactDefaultPerf._allMeasurements;\n    var summary = ReactDefaultPerfAnalysis.getInclusiveSummary(measurements);\n    console.table(summary.map(function (item) {\n      return {\n        'Owner > component': item.componentName,\n        'Inclusive time (ms)': roundFloat(item.time),\n        'Instances': item.count\n      };\n    }));\n    console.log('Total time:', ReactDefaultPerfAnalysis.getTotalTime(measurements).toFixed(2) + ' ms');\n  },\n\n  getMeasurementsSummaryMap: function (measurements) {\n    var summary = ReactDefaultPerfAnalysis.getInclusiveSummary(measurements, true);\n    return summary.map(function (item) {\n      return {\n        'Owner > component': item.componentName,\n        'Wasted time (ms)': item.time,\n        'Instances': item.count\n      };\n    });\n  },\n\n  printWasted: function (measurements) {\n    measurements = measurements || ReactDefaultPerf._allMeasurements;\n    console.table(ReactDefaultPerf.getMeasurementsSummaryMap(measurements));\n    console.log('Total time:', ReactDefaultPerfAnalysis.getTotalTime(measurements).toFixed(2) + ' ms');\n  },\n\n  printDOM: function (measurements) {\n    measurements = measurements || ReactDefaultPerf._allMeasurements;\n    var summary = ReactDefaultPerfAnalysis.getDOMSummary(measurements);\n    console.table(summary.map(function (item) {\n      var result = {};\n      result[DOMProperty.ID_ATTRIBUTE_NAME] = item.id;\n      result.type = item.type;\n      result.args = JSON.stringify(item.args);\n      return result;\n    }));\n    console.log('Total time:', ReactDefaultPerfAnalysis.getTotalTime(measurements).toFixed(2) + ' ms');\n  },\n\n  _recordWrite: function (id, fnName, totalTime, args) {\n    // TODO: totalTime isn't that useful since it doesn't count paints/reflows\n    var writes = ReactDefaultPerf._allMeasurements[ReactDefaultPerf._allMeasurements.length - 1].writes;\n    writes[id] = writes[id] || [];\n    writes[id].push({\n      type: fnName,\n      time: totalTime,\n      args: args\n    });\n  },\n\n  measure: function (moduleName, fnName, func) {\n    return function () {\n      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {\n        args[_key] = arguments[_key];\n      }\n\n      var totalTime;\n      var rv;\n      var start;\n\n      if (fnName === '_renderNewRootComponent' || fnName === 'flushBatchedUpdates') {\n        // A \"measurement\" is a set of metrics recorded for each flush. We want\n        // to group the metrics for a given flush together so we can look at the\n        // components that rendered and the DOM operations that actually\n        // happened to determine the amount of \"wasted work\" performed.\n        ReactDefaultPerf._allMeasurements.push({\n          exclusive: {},\n          inclusive: {},\n          render: {},\n          counts: {},\n          writes: {},\n          displayNames: {},\n          totalTime: 0,\n          created: {}\n        });\n        start = performanceNow();\n        rv = func.apply(this, args);\n        ReactDefaultPerf._allMeasurements[ReactDefaultPerf._allMeasurements.length - 1].totalTime = performanceNow() - start;\n        return rv;\n      } else if (fnName === '_mountImageIntoNode' || moduleName === 'ReactBrowserEventEmitter' || moduleName === 'ReactDOMIDOperations' || moduleName === 'CSSPropertyOperations' || moduleName === 'DOMChildrenOperations' || moduleName === 'DOMPropertyOperations') {\n        start = performanceNow();\n        rv = func.apply(this, args);\n        totalTime = performanceNow() - start;\n\n        if (fnName === '_mountImageIntoNode') {\n          var mountID = ReactMount.getID(args[1]);\n          ReactDefaultPerf._recordWrite(mountID, fnName, totalTime, args[0]);\n        } else if (fnName === 'dangerouslyProcessChildrenUpdates') {\n          // special format\n          args[0].forEach(function (update) {\n            var writeArgs = {};\n            if (update.fromIndex !== null) {\n              writeArgs.fromIndex = update.fromIndex;\n            }\n            if (update.toIndex !== null) {\n              writeArgs.toIndex = update.toIndex;\n            }\n            if (update.textContent !== null) {\n              writeArgs.textContent = update.textContent;\n            }\n            if (update.markupIndex !== null) {\n              writeArgs.markup = args[1][update.markupIndex];\n            }\n            ReactDefaultPerf._recordWrite(update.parentID, update.type, totalTime, writeArgs);\n          });\n        } else {\n          // basic format\n          var id = args[0];\n          if (typeof id === 'object') {\n            id = ReactMount.getID(args[0]);\n          }\n          ReactDefaultPerf._recordWrite(id, fnName, totalTime, Array.prototype.slice.call(args, 1));\n        }\n        return rv;\n      } else if (moduleName === 'ReactCompositeComponent' && (fnName === 'mountComponent' || fnName === 'updateComponent' || // TODO: receiveComponent()?\n      fnName === '_renderValidatedComponent')) {\n\n        if (this._currentElement.type === ReactMount.TopLevelWrapper) {\n          return func.apply(this, args);\n        }\n\n        var rootNodeID = fnName === 'mountComponent' ? args[0] : this._rootNodeID;\n        var isRender = fnName === '_renderValidatedComponent';\n        var isMount = fnName === 'mountComponent';\n\n        var mountStack = ReactDefaultPerf._mountStack;\n        var entry = ReactDefaultPerf._allMeasurements[ReactDefaultPerf._allMeasurements.length - 1];\n\n        if (isRender) {\n          addValue(entry.counts, rootNodeID, 1);\n        } else if (isMount) {\n          entry.created[rootNodeID] = true;\n          mountStack.push(0);\n        }\n\n        start = performanceNow();\n        rv = func.apply(this, args);\n        totalTime = performanceNow() - start;\n\n        if (isRender) {\n          addValue(entry.render, rootNodeID, totalTime);\n        } else if (isMount) {\n          var subMountTime = mountStack.pop();\n          mountStack[mountStack.length - 1] += totalTime;\n          addValue(entry.exclusive, rootNodeID, totalTime - subMountTime);\n          addValue(entry.inclusive, rootNodeID, totalTime);\n        } else {\n          addValue(entry.inclusive, rootNodeID, totalTime);\n        }\n\n        entry.displayNames[rootNodeID] = {\n          current: this.getName(),\n          owner: this._currentElement._owner ? this._currentElement._owner.getName() : '<root>'\n        };\n\n        return rv;\n      } else {\n        return func.apply(this, args);\n      }\n    };\n  }\n};\n\nmodule.exports = ReactDefaultPerf;",
     "deps": {
+      "./DOMProperty": 454,
       "./ReactMount": 512,
       "./ReactPerf": 518,
-      "./DOMProperty": 454,
       "./ReactDefaultPerfAnalysis": 497,
       "fbjs/lib/performanceNow": 240
     },
@@ -6169,8 +6169,8 @@ require("./main.js", entryId$$);
       "./ReactChildren": 473,
       "./ReactElement": 498,
       "fbjs/lib/emptyFunction": 224,
-      "fbjs/lib/warning": 243,
-      "fbjs/lib/invariant": 232
+      "fbjs/lib/invariant": 232,
+      "fbjs/lib/warning": 243
     },
     "hash": "e6440ec4e549d506656c24284e72a21f"
   },
@@ -6200,8 +6200,8 @@ require("./main.js", entryId$$);
     "source": "/**\n * Copyright 2013-2015, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule ReactInputSelection\n */\n\n'use strict';\n\nvar ReactDOMSelection = require('./ReactDOMSelection');\n\nvar containsNode = require('fbjs/lib/containsNode');\nvar focusNode = require('fbjs/lib/focusNode');\nvar getActiveElement = require('fbjs/lib/getActiveElement');\n\nfunction isInDocument(node) {\n  return containsNode(document.documentElement, node);\n}\n\n/**\n * @ReactInputSelection: React input selection module. Based on Selection.js,\n * but modified to be suitable for react and has a couple of bug fixes (doesn't\n * assume buttons have range selections allowed).\n * Input selection module for React.\n */\nvar ReactInputSelection = {\n\n  hasSelectionCapabilities: function (elem) {\n    var nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();\n    return nodeName && (nodeName === 'input' && elem.type === 'text' || nodeName === 'textarea' || elem.contentEditable === 'true');\n  },\n\n  getSelectionInformation: function () {\n    var focusedElem = getActiveElement();\n    return {\n      focusedElem: focusedElem,\n      selectionRange: ReactInputSelection.hasSelectionCapabilities(focusedElem) ? ReactInputSelection.getSelection(focusedElem) : null\n    };\n  },\n\n  /**\n   * @restoreSelection: If any selection information was potentially lost,\n   * restore it. This is useful when performing operations that could remove dom\n   * nodes and place them back in, resulting in focus being lost.\n   */\n  restoreSelection: function (priorSelectionInformation) {\n    var curFocusedElem = getActiveElement();\n    var priorFocusedElem = priorSelectionInformation.focusedElem;\n    var priorSelectionRange = priorSelectionInformation.selectionRange;\n    if (curFocusedElem !== priorFocusedElem && isInDocument(priorFocusedElem)) {\n      if (ReactInputSelection.hasSelectionCapabilities(priorFocusedElem)) {\n        ReactInputSelection.setSelection(priorFocusedElem, priorSelectionRange);\n      }\n      focusNode(priorFocusedElem);\n    }\n  },\n\n  /**\n   * @getSelection: Gets the selection bounds of a focused textarea, input or\n   * contentEditable node.\n   * -@input: Look up selection bounds of this input\n   * -@return {start: selectionStart, end: selectionEnd}\n   */\n  getSelection: function (input) {\n    var selection;\n\n    if ('selectionStart' in input) {\n      // Modern browser with input or textarea.\n      selection = {\n        start: input.selectionStart,\n        end: input.selectionEnd\n      };\n    } else if (document.selection && (input.nodeName && input.nodeName.toLowerCase() === 'input')) {\n      // IE8 input.\n      var range = document.selection.createRange();\n      // There can only be one selection per document in IE, so it must\n      // be in our element.\n      if (range.parentElement() === input) {\n        selection = {\n          start: -range.moveStart('character', -input.value.length),\n          end: -range.moveEnd('character', -input.value.length)\n        };\n      }\n    } else {\n      // Content editable or old IE textarea.\n      selection = ReactDOMSelection.getOffsets(input);\n    }\n\n    return selection || { start: 0, end: 0 };\n  },\n\n  /**\n   * @setSelection: Sets the selection bounds of a textarea or input and focuses\n   * the input.\n   * -@input     Set selection bounds of this input or textarea\n   * -@offsets   Object of same form that is returned from get*\n   */\n  setSelection: function (input, offsets) {\n    var start = offsets.start;\n    var end = offsets.end;\n    if (typeof end === 'undefined') {\n      end = start;\n    }\n\n    if ('selectionStart' in input) {\n      input.selectionStart = start;\n      input.selectionEnd = Math.min(end, input.value.length);\n    } else if (document.selection && (input.nodeName && input.nodeName.toLowerCase() === 'input')) {\n      var range = input.createTextRange();\n      range.collapse(true);\n      range.moveStart('character', start);\n      range.moveEnd('character', end - start);\n      range.select();\n    } else {\n      ReactDOMSelection.setOffsets(input, offsets);\n    }\n  }\n};\n\nmodule.exports = ReactInputSelection;",
     "deps": {
       "fbjs/lib/containsNode": 221,
-      "fbjs/lib/focusNode": 226,
       "fbjs/lib/getActiveElement": 227,
+      "fbjs/lib/focusNode": 226,
       "./ReactDOMSelection": 490
     },
     "hash": "ec295cd1681219e791dcdc05beb2441a"
@@ -6239,10 +6239,10 @@ require("./main.js", entryId$$);
       "./ReactPropTypes": 521,
       "./onlyChild": 570,
       "./ReactDOMFactories": 484,
-      "./ReactElementValidator": 499,
-      "./ReactComponent": 475,
       "./ReactClass": 474,
-      "./ReactChildren": 473
+      "./ReactElementValidator": 499,
+      "./ReactChildren": 473,
+      "./ReactComponent": 475
     },
     "hash": "a0fdb154176ac7686041c3c6b3412fae"
   },
@@ -6274,10 +6274,10 @@ require("./main.js", entryId$$);
       "./ReactInstanceMap": 509,
       "./shouldUpdateReactComponent": 576,
       "./ReactElement": 498,
+      "./ReactMarkupChecksum": 511,
       "fbjs/lib/invariant": 232,
       "fbjs/lib/warning": 243,
       "fbjs/lib/emptyObject": 225,
-      "./ReactMarkupChecksum": 511,
       "./validateDOMNesting": 579,
       "./DOMProperty": 454,
       "./ReactUpdateQueue": 531,
@@ -6470,8 +6470,8 @@ require("./main.js", entryId$$);
     "source": "/**\n * Copyright 2014-2015, Facebook, Inc.\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule ReactServerRenderingTransaction\n * @typechecks\n */\n\n'use strict';\n\nvar PooledClass = require('./PooledClass');\nvar CallbackQueue = require('./CallbackQueue');\nvar Transaction = require('./Transaction');\n\nvar assign = require('./Object.assign');\nvar emptyFunction = require('fbjs/lib/emptyFunction');\n\n/**\n * Provides a `CallbackQueue` queue for collecting `onDOMReady` callbacks\n * during the performing of the transaction.\n */\nvar ON_DOM_READY_QUEUEING = {\n  /**\n   * Initializes the internal `onDOMReady` queue.\n   */\n  initialize: function () {\n    this.reactMountReady.reset();\n  },\n\n  close: emptyFunction\n};\n\n/**\n * Executed within the scope of the `Transaction` instance. Consider these as\n * being member methods, but with an implied ordering while being isolated from\n * each other.\n */\nvar TRANSACTION_WRAPPERS = [ON_DOM_READY_QUEUEING];\n\n/**\n * @class ReactServerRenderingTransaction\n * @param {boolean} renderToStaticMarkup\n */\nfunction ReactServerRenderingTransaction(renderToStaticMarkup) {\n  this.reinitializeTransaction();\n  this.renderToStaticMarkup = renderToStaticMarkup;\n  this.reactMountReady = CallbackQueue.getPooled(null);\n  this.useCreateElement = false;\n}\n\nvar Mixin = {\n  /**\n   * @see Transaction\n   * @abstract\n   * @final\n   * @return {array} Empty list of operation wrap procedures.\n   */\n  getTransactionWrappers: function () {\n    return TRANSACTION_WRAPPERS;\n  },\n\n  /**\n   * @return {object} The queue to collect `onDOMReady` callbacks with.\n   */\n  getReactMountReady: function () {\n    return this.reactMountReady;\n  },\n\n  /**\n   * `PooledClass` looks for this, and will invoke this before allowing this\n   * instance to be reused.\n   */\n  destructor: function () {\n    CallbackQueue.release(this.reactMountReady);\n    this.reactMountReady = null;\n  }\n};\n\nassign(ReactServerRenderingTransaction.prototype, Transaction.Mixin, Mixin);\n\nPooledClass.addPoolingTo(ReactServerRenderingTransaction);\n\nmodule.exports = ReactServerRenderingTransaction;",
     "deps": {
       "./PooledClass": 468,
-      "./Transaction": 549,
       "./CallbackQueue": 450,
+      "./Transaction": 549,
       "./Object.assign": 467,
       "fbjs/lib/emptyFunction": 224
     },
@@ -6495,8 +6495,8 @@ require("./main.js", entryId$$);
     "deps": {
       "./React": 469,
       "./Object.assign": 467,
-      "fbjs/lib/emptyFunction": 224,
-      "./ReactTransitionChildMapping": 529
+      "./ReactTransitionChildMapping": 529,
+      "fbjs/lib/emptyFunction": 224
     },
     "hash": "d3bd0023bc15130ff9f14e64ad2ad116"
   },
@@ -6592,16 +6592,16 @@ require("./main.js", entryId$$);
       "./SyntheticMouseEvent": 545,
       "./SyntheticUIEvent": 547,
       "./getEventCharCode": 560,
-      "fbjs/lib/emptyFunction": 224,
-      "fbjs/lib/invariant": 232,
-      "fbjs/lib/keyOf": 236,
-      "fbjs/lib/EventListener": 217,
       "./SyntheticClipboardEvent": 538,
       "./SyntheticFocusEvent": 542,
       "./SyntheticDragEvent": 540,
       "./SyntheticTouchEvent": 546,
       "./SyntheticWheelEvent": 548,
-      "./SyntheticKeyboardEvent": 544
+      "./SyntheticKeyboardEvent": 544,
+      "fbjs/lib/emptyFunction": 224,
+      "fbjs/lib/invariant": 232,
+      "fbjs/lib/keyOf": 236,
+      "fbjs/lib/EventListener": 217
     },
     "hash": "91482bb600f79cb70b32210549ff76d1"
   },
@@ -6907,9 +6907,9 @@ require("./main.js", entryId$$);
     "deps": {
       "_process": 404,
       "./Object.assign": 467,
+      "./ReactEmptyComponent": 500,
       "fbjs/lib/invariant": 232,
       "fbjs/lib/warning": 243,
-      "./ReactEmptyComponent": 500,
       "./ReactNativeComponent": 515,
       "./ReactCompositeComponent": 479
     },
@@ -7016,8 +7016,8 @@ require("./main.js", entryId$$);
       "./ReactElement": 498,
       "./ReactInstanceHandles": 508,
       "./getIteratorFn": 564,
-      "fbjs/lib/invariant": 232,
-      "fbjs/lib/warning": 243
+      "fbjs/lib/warning": 243,
+      "fbjs/lib/invariant": 232
     },
     "hash": "a3d172c896e112ad92272b157b08eee2"
   },
@@ -7123,8 +7123,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/recompose/node_modules/lodash/_LodashWrapper.js",
     "source": "var baseCreate = require('./_baseCreate'),\n    baseLodash = require('./_baseLodash');\n\n/**\n * The base constructor for creating `lodash` wrapper objects.\n *\n * @private\n * @param {*} value The value to wrap.\n * @param {boolean} [chainAll] Enable chaining for all wrapper methods.\n */\nfunction LodashWrapper(value, chainAll) {\n  this.__wrapped__ = value;\n  this.__actions__ = [];\n  this.__chain__ = !!chainAll;\n  this.__index__ = 0;\n  this.__values__ = undefined;\n}\n\nLodashWrapper.prototype = baseCreate(baseLodash.prototype);\nLodashWrapper.prototype.constructor = LodashWrapper;\n\nmodule.exports = LodashWrapper;\n",
     "deps": {
-      "./_baseCreate": 590,
-      "./_baseLodash": 591
+      "./_baseLodash": 591,
+      "./_baseCreate": 590
     },
     "hash": "c9b928c6b6e4697fba5e978a7d27d95d"
   },
@@ -7267,8 +7267,8 @@ require("./main.js", entryId$$);
       "./_composeArgs": 594,
       "./_composeArgsRight": 595,
       "./_countHolders": 597,
-      "./_createRecurryWrapper": 603,
-      "./_reorder": 615
+      "./_reorder": 615,
+      "./_createRecurryWrapper": 603
     },
     "hash": "af4408934d6134dd1213372f04fd9bc2"
   },
@@ -7290,8 +7290,8 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/recompose/node_modules/lodash/_createRecurryWrapper.js",
     "source": "var copyArray = require('./_copyArray'),\n    isLaziable = require('./_isLaziable'),\n    setData = require('./_setData');\n\n/** Used to compose bitmasks for wrapper metadata. */\nvar BIND_FLAG = 1,\n    BIND_KEY_FLAG = 2,\n    CURRY_BOUND_FLAG = 4,\n    CURRY_FLAG = 8,\n    PARTIAL_FLAG = 32,\n    PARTIAL_RIGHT_FLAG = 64;\n\n/**\n * Creates a function that wraps `func` to continue currying.\n *\n * @private\n * @param {Function} func The function to wrap.\n * @param {number} bitmask The bitmask of wrapper flags. See `createWrapper` for more details.\n * @param {Function} wrapFunc The function to create the `func` wrapper.\n * @param {*} placeholder The placeholder value.\n * @param {*} [thisArg] The `this` binding of `func`.\n * @param {Array} [partials] The arguments to prepend to those provided to the new function.\n * @param {Array} [holders] The `partials` placeholder indexes.\n * @param {Array} [argPos] The argument positions of the new function.\n * @param {number} [ary] The arity cap of `func`.\n * @param {number} [arity] The arity of `func`.\n * @returns {Function} Returns the new wrapped function.\n */\nfunction createRecurryWrapper(func, bitmask, wrapFunc, placeholder, thisArg, partials, holders, argPos, ary, arity) {\n  var isCurry = bitmask & CURRY_FLAG,\n      newArgPos = argPos ? copyArray(argPos) : undefined,\n      newHolders = isCurry ? holders : undefined,\n      newHoldersRight = isCurry ? undefined : holders,\n      newPartials = isCurry ? partials : undefined,\n      newPartialsRight = isCurry ? undefined : partials;\n\n  bitmask |= (isCurry ? PARTIAL_FLAG : PARTIAL_RIGHT_FLAG);\n  bitmask &= ~(isCurry ? PARTIAL_RIGHT_FLAG : PARTIAL_FLAG);\n\n  if (!(bitmask & CURRY_BOUND_FLAG)) {\n    bitmask &= ~(BIND_FLAG | BIND_KEY_FLAG);\n  }\n  var newData = [\n    func, bitmask, thisArg, newPartials, newHolders, newPartialsRight,\n    newHoldersRight, newArgPos, ary, arity\n  ];\n\n  var result = wrapFunc.apply(undefined, newData);\n  if (isLaziable(func)) {\n    setData(result, newData);\n  }\n  result.placeholder = placeholder;\n  return result;\n}\n\nmodule.exports = createRecurryWrapper;\n",
     "deps": {
-      "./_setData": 618,
       "./_copyArray": 596,
+      "./_setData": 618,
       "./_isLaziable": 611
     },
     "hash": "4385d1e63467e439509fe4ca09896440"
@@ -7304,13 +7304,13 @@ require("./main.js", entryId$$);
     "deps": {
       "./_mergeData": 612,
       "./_setData": 618,
-      "./_createPartialWrapper": 602,
-      "./_getData": 605,
-      "./_createHybridWrapper": 601,
       "./_createBaseWrapper": 598,
-      "./toInteger": 629,
       "./_createCurryWrapper": 600,
-      "./_baseSetData": 592
+      "./_baseSetData": 592,
+      "./_createPartialWrapper": 602,
+      "./toInteger": 629,
+      "./_getData": 605,
+      "./_createHybridWrapper": 601
     },
     "hash": "e4530a57b6843e096fce942931c93b60"
   },
@@ -7463,8 +7463,8 @@ require("./main.js", entryId$$);
     "source": "var LazyWrapper = require('./_LazyWrapper'),\n    LodashWrapper = require('./_LodashWrapper'),\n    copyArray = require('./_copyArray');\n\n/**\n * Creates a clone of `wrapper`.\n *\n * @private\n * @param {Object} wrapper The wrapper to clone.\n * @returns {Object} Returns the cloned wrapper.\n */\nfunction wrapperClone(wrapper) {\n  if (wrapper instanceof LazyWrapper) {\n    return wrapper.clone();\n  }\n  var result = new LodashWrapper(wrapper.__wrapped__, wrapper.__chain__);\n  result.__actions__ = copyArray(wrapper.__actions__);\n  result.__index__  = wrapper.__index__;\n  result.__values__ = wrapper.__values__;\n  return result;\n}\n\nmodule.exports = wrapperClone;\n",
     "deps": {
       "./_LazyWrapper": 586,
-      "./_LodashWrapper": 587,
-      "./_copyArray": 596
+      "./_copyArray": 596,
+      "./_LodashWrapper": 587
     },
     "hash": "4ed3e078e09a34cf095f14f66d634a3a"
   },
@@ -7578,10 +7578,10 @@ require("./main.js", entryId$$);
     "file": "/home/slack/Projects/fessbox/material-ui/node_modules/recompose/node_modules/lodash/wrapperLodash.js",
     "source": "var LazyWrapper = require('./_LazyWrapper'),\n    LodashWrapper = require('./_LodashWrapper'),\n    baseLodash = require('./_baseLodash'),\n    isArray = require('./isArray'),\n    isObjectLike = require('./isObjectLike'),\n    wrapperClone = require('./_wrapperClone');\n\n/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * Creates a `lodash` object which wraps `value` to enable implicit method\n * chaining. Methods that operate on and return arrays, collections, and\n * functions can be chained together. Methods that retrieve a single value or\n * may return a primitive value will automatically end the chain sequence and\n * return the unwrapped value. Otherwise, the value must be unwrapped with\n * `_#value`.\n *\n * Explicit chaining, which must be unwrapped with `_#value` in all cases,\n * may be enabled using `_.chain`.\n *\n * The execution of chained methods is lazy, that is, it's deferred until\n * `_#value` is implicitly or explicitly called.\n *\n * Lazy evaluation allows several methods to support shortcut fusion. Shortcut\n * fusion is an optimization to merge iteratee calls; this avoids the creation\n * of intermediate arrays and can greatly reduce the number of iteratee executions.\n * Sections of a chain sequence qualify for shortcut fusion if the section is\n * applied to an array of at least two hundred elements and any iteratees\n * accept only one argument. The heuristic for whether a section qualifies\n * for shortcut fusion is subject to change.\n *\n * Chaining is supported in custom builds as long as the `_#value` method is\n * directly or indirectly included in the build.\n *\n * In addition to lodash methods, wrappers have `Array` and `String` methods.\n *\n * The wrapper `Array` methods are:\n * `concat`, `join`, `pop`, `push`, `shift`, `sort`, `splice`, and `unshift`\n *\n * The wrapper `String` methods are:\n * `replace` and `split`\n *\n * The wrapper methods that support shortcut fusion are:\n * `at`, `compact`, `drop`, `dropRight`, `dropWhile`, `filter`, `find`,\n * `findLast`, `head`, `initial`, `last`, `map`, `reject`, `reverse`, `slice`,\n * `tail`, `take`, `takeRight`, `takeRightWhile`, `takeWhile`, and `toArray`\n *\n * The chainable wrapper methods are:\n * `after`, `ary`, `assign`, `assignIn`, `assignInWith`, `assignWith`, `at`,\n * `before`, `bind`, `bindAll`, `bindKey`, `castArray`, `chain`, `chunk`,\n * `commit`, `compact`, `concat`, `conforms`, `constant`, `countBy`, `create`,\n * `curry`, `debounce`, `defaults`, `defaultsDeep`, `defer`, `delay`, `difference`,\n * `differenceBy`, `differenceWith`, `drop`, `dropRight`, `dropRightWhile`,\n * `dropWhile`, `fill`, `filter`, `flatten`, `flattenDeep`, `flattenDepth`,\n * `flip`, `flow`, `flowRight`, `fromPairs`, `functions`, `functionsIn`,\n * `groupBy`, `initial`, `intersection`, `intersectionBy`, `intersectionWith`,\n * `invert`, `invertBy`, `invokeMap`, `iteratee`, `keyBy`, `keys`, `keysIn`,\n * `map`, `mapKeys`, `mapValues`, `matches`, `matchesProperty`, `memoize`,\n * `merge`, `mergeWith`, `method`, `methodOf`, `mixin`, `negate`, `nthArg`,\n * `omit`, `omitBy`, `once`, `orderBy`, `over`, `overArgs`, `overEvery`,\n * `overSome`, `partial`, `partialRight`, `partition`, `pick`, `pickBy`, `plant`,\n * `property`, `propertyOf`, `pull`, `pullAll`, `pullAllBy`, `pullAt`, `push`,\n * `range`, `rangeRight`, `rearg`, `reject`, `remove`, `rest`, `reverse`,\n * `sampleSize`, `set`, `setWith`, `shuffle`, `slice`, `sort`, `sortBy`,\n * `splice`, `spread`, `tail`, `take`, `takeRight`, `takeRightWhile`,\n * `takeWhile`, `tap`, `throttle`, `thru`, `toArray`, `toPairs`, `toPairsIn`,\n * `toPath`, `toPlainObject`, `transform`, `unary`, `union`, `unionBy`,\n * `unionWith`, `uniq`, `uniqBy`, `uniqWith`, `unset`, `unshift`, `unzip`,\n * `unzipWith`, `values`, `valuesIn`, `without`, `wrap`, `xor`, `xorBy`,\n * `xorWith`, `zip`, `zipObject`, `zipObjectDeep`, and `zipWith`\n *\n * The wrapper methods that are **not** chainable by default are:\n * `add`, `attempt`, `camelCase`, `capitalize`, `ceil`, `clamp`, `clone`,\n * `cloneDeep`, `cloneDeepWith`, `cloneWith`, `deburr`, `endsWith`, `eq`,\n * `escape`, `escapeRegExp`, `every`, `find`, `findIndex`, `findKey`, `findLast`,\n * `findLastIndex`, `findLastKey`, `floor`, `forEach`, `forEachRight`, `forIn`,\n * `forInRight`, `forOwn`, `forOwnRight`, `get`, `gt`, `gte`, `has`, `hasIn`,\n * `head`, `identity`, `includes`, `indexOf`, `inRange`, `invoke`, `isArguments`,\n * `isArray`, `isArrayBuffer`, `isArrayLike`, `isArrayLikeObject`, `isBoolean`,\n * `isBuffer`, `isDate`, `isElement`, `isEmpty`, `isEqual`, `isEqualWith`,\n * `isError`, `isFinite`, `isFunction`, `isInteger`, `isLength`, `isMap`,\n * `isMatch`, `isMatchWith`, `isNaN`, `isNative`, `isNil`, `isNull`, `isNumber`,\n * `isObject`, `isObjectLike`, `isPlainObject`, `isRegExp`, `isSafeInteger`,\n * `isSet`, `isString`, `isUndefined`, `isTypedArray`, `isWeakMap`, `isWeakSet`,\n * `join`, `kebabCase`, `last`, `lastIndexOf`, `lowerCase`, `lowerFirst`,\n * `lt`, `lte`, `max`, `maxBy`, `mean`, `min`, `minBy`, `noConflict`, `noop`,\n * `now`, `pad`, `padEnd`, `padStart`, `parseInt`, `pop`, `random`, `reduce`,\n * `reduceRight`, `repeat`, `result`, `round`, `runInContext`, `sample`,\n * `shift`, `size`, `snakeCase`, `some`, `sortedIndex`, `sortedIndexBy`,\n * `sortedLastIndex`, `sortedLastIndexBy`, `startCase`, `startsWith`, `subtract`,\n * `sum`, `sumBy`, `template`, `times`, `toLower`, `toInteger`, `toLength`,\n * `toNumber`, `toSafeInteger`, `toString`, `toUpper`, `trim`, `trimEnd`,\n * `trimStart`, `truncate`, `unescape`, `uniqueId`, `upperCase`, `upperFirst`,\n * `value`, and `words`\n *\n * @name _\n * @constructor\n * @category Seq\n * @param {*} value The value to wrap in a `lodash` instance.\n * @returns {Object} Returns the new `lodash` wrapper instance.\n * @example\n *\n * function square(n) {\n *   return n * n;\n * }\n *\n * var wrapped = _([1, 2, 3]);\n *\n * // Returns an unwrapped value.\n * wrapped.reduce(_.add);\n * // => 6\n *\n * // Returns a wrapped value.\n * var squares = wrapped.map(square);\n *\n * _.isArray(squares);\n * // => false\n *\n * _.isArray(squares.value());\n * // => true\n */\nfunction lodash(value) {\n  if (isObjectLike(value) && !isArray(value) && !(value instanceof LazyWrapper)) {\n    if (value instanceof LodashWrapper) {\n      return value;\n    }\n    if (hasOwnProperty.call(value, '__wrapped__')) {\n      return wrapperClone(value);\n    }\n  }\n  return new LodashWrapper(value);\n}\n\n// Ensure wrappers are instances of `baseLodash`.\nlodash.prototype = baseLodash.prototype;\n\nmodule.exports = lodash;\n",
     "deps": {
-      "./_baseLodash": 591,
       "./_LazyWrapper": 586,
-      "./isArray": 622,
+      "./_baseLodash": 591,
       "./isObjectLike": 626,
+      "./isArray": 622,
       "./_LodashWrapper": 587,
       "./_wrapperClone": 619
     },
@@ -7655,8 +7655,8 @@ require("./main.js", entryId$$);
     "deps": {
       "_process": 404,
       "./createStore": 640,
-      "./utils/warning": 642,
-      "lodash/isPlainObject": 645
+      "lodash/isPlainObject": 645,
+      "./utils/warning": 642
     },
     "hash": "aacd979f5b81ac6e28d5e55b4b2d6a1f"
   },
@@ -7687,10 +7687,10 @@ require("./main.js", entryId$$);
       "_process": 404,
       "./bindActionCreators": 637,
       "./compose": 639,
-      "./utils/warning": 642,
       "./applyMiddleware": 636,
+      "./createStore": 640,
       "./combineReducers": 638,
-      "./createStore": 640
+      "./utils/warning": 642
     },
     "hash": "40978056e45f2cd61925273e0e793888"
   },

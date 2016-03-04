@@ -89,7 +89,7 @@ class Inbox extends React.Component {
               color     : '#aed581',
               opacity   : i.opacity,
               transform : `scale(${i.zoom})`,
-            }}>sms</i>
+            }}>check</i>
           )}
         </Motion>
       </span>
