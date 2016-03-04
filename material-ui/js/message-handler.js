@@ -24,6 +24,8 @@ export default function(eventType, data) {
     case 'inboxUpdate':
       break
     case 'event_error':
+    case 'input_error':
+      console.log(eventType)
       break
     default:
       console.error(`Unknown event type: ${eventType}.`)
