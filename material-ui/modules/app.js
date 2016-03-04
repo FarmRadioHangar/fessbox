@@ -16,6 +16,8 @@ import Tab
   from 'material-ui/lib/tabs/tab'
 import FloatingActionButton 
   from 'material-ui/lib/floating-action-button'
+import Badge 
+  from 'material-ui/lib/badge'
 
 import IconCommunicationDialpad
   from 'material-ui/lib/svg-icons/communication/dialpad'
@@ -61,7 +63,7 @@ class App extends React.Component {
   }
   renderTabs() {
     const { tab } = this.state
-    const { sendMessage } = this.props
+    const { sendMessage, inbox : { unreadCount } } = this.props
     return (
       <Tabs value={tab}>
         <Tab
@@ -73,7 +75,18 @@ class App extends React.Component {
         </Tab>
         <Tab
           onActive = {() => this.activateTab('inbox')}
-          icon     = {<i className='material-icons'>message</i>}
+          icon     = {
+            <span>
+              <i className='material-icons'>message</i>
+              {!!unreadCount && (
+                <Badge
+                  style        = {styles.badge}
+                  badgeContent = {unreadCount}
+                  primary      = {true}>
+                </Badge>
+              )}
+            </span>
+          }
           label    = 'Inbox' 
           value    = 'inbox'>
           <Inbox sendMessage={sendMessage} />
@@ -140,6 +153,10 @@ const styles = {
     position         : 'fixed',
     bottom           : '30px',
     right            : '30px',
+  },
+  badge: {
+    position         : 'absolute',
+    marginTop        : '15px',
   },
 }
 
