@@ -1,7 +1,7 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification, initializeApp, updateChannel }
+import { showNotification, initializeApp, updateChannel, removeMessage }
   from './actions'
 
 export default function(eventType, data) {
@@ -24,12 +24,23 @@ export default function(eventType, data) {
         const chan = data[key]
         if (chan) {
           store.dispatch(updateChannel(key, chan))
+          if ('ring' == chan.mode) {
+            new Notification(`Incoming call from ${chan.number}.`)
+          }
         } else {
           //
         }
       })
       break
     case 'inboxUpdate':
+      Object.keys(data).forEach(id => {
+        const message = data[id]
+        if (message) {
+          //
+        } else {
+          store.dispatch(removeMessage(id))
+        }
+      })
       break
     case 'event_error':
     case 'input_error':
