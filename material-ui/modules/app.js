@@ -4,6 +4,7 @@ import CallLog           from './call-log'
 import Inbox             from './inbox'
 import Toastr            from './toastr'
 import SendMessageDialog from './send-message-dialog'
+import CallDialog        from './call-dialog'
 
 import { connect } 
   from 'react-redux'
@@ -34,9 +35,6 @@ class App extends React.Component {
     }
     this.renderFAB = this.renderFAB.bind(this)
     this.renderDialog = this.renderDialog.bind(this)
-    this.handleCloseDialog = this.handleCloseDialog.bind(this)
-    this.replyToMessage = this.replyToMessage.bind(this)
-    this.forwardMessage = this.forwardMessage.bind(this)
   }
   activateTab(tab) {
     this.setState({ tab })
@@ -46,26 +44,20 @@ class App extends React.Component {
       <AppBar title='The Box' />
     )
   }
-  handleCloseDialog() {
-    this.setState({
-      dialog : null
-    })
-  }
-  replyToMessage() {
-    this.setState({dialog: 'reply-to-message'})
-  }
-  forwardMessage() {
-    this.setState({dialog: 'forward-message'})
-  }
   renderDialog() {
     const { dialog } = this.state
     const { mixer : { channelList }, sendMessage } = this.props
     return (
       <div>
+        <CallDialog 
+          onClose     = {() => this.setState({dialog: null})} 
+          open        = {'call' == dialog} 
+          sendMessage = {sendMessage}
+        />
         <SendMessageDialog 
           channels    = {channelList}
-          onClose     = {this.handleCloseDialog} 
-          open        = {!!dialog} 
+          onClose     = {() => this.setState({dialog: null})} 
+          open        = {['send-message', 'forward-message', 'reply-to-message'].indexOf(dialog) > -1} 
           dialog      = {dialog}
           sendMessage = {sendMessage}
         />
@@ -101,8 +93,8 @@ class App extends React.Component {
           label    = 'Inbox' 
           value    = 'inbox'>
           <Inbox 
-            onReply     = {this.replyToMessage}
-            onForward   = {this.forwardMessage}
+            onReply     = {() => this.setState({dialog: 'reply-to-message'})}
+            onForward   = {() => this.setState({dialog: 'forward-message'})}
             sendMessage = {sendMessage} 
           />
         </Tab>
@@ -121,7 +113,7 @@ class App extends React.Component {
       case 'mixer':
         return (
           <FloatingActionButton 
-            onClick = {() => {}}
+            onClick = {() => this.setState({dialog: 'call'})}
             style   = {styles.fab}>
             <IconCommunicationDialpad />
           </FloatingActionButton>

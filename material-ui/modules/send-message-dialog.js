@@ -57,7 +57,7 @@ class SendMessageDialog extends React.Component {
         actions        = {actions}
         modal          = {false}
         open           = {open}
-        onRequestClose = {() => {}}>
+        onRequestClose = {onClose}>
         <SelectField 
           floatingLabelText = 'SIM card'
           style             = {{width: '100%'}}
