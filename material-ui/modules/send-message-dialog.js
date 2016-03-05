@@ -13,6 +13,20 @@ import SelectField
   from 'material-ui/lib/select-field'
 import MenuItem 
   from 'material-ui/lib/menus/menu-item'
+import Subheader 
+  from 'material-ui/lib/Subheader'
+
+function getTitle(dialog) {
+  switch (dialog) {
+    case 'reply-to-message':
+      return 'Reply to message'
+    case 'forward-message':
+      return 'Forward message'
+    case 'send-message':
+    default:
+      return 'Send message'
+  }
+}
 
 class SendMessageDialog extends React.Component {
   constructor(props) {
@@ -23,7 +37,7 @@ class SendMessageDialog extends React.Component {
     this.props.sendMessage('addrBookSuggestions', text)
   }
   render() {
-    const { open, onClose, channels } = this.props
+    const { open, onClose, channels, dialog } = this.props
     const actions = [
       <FlatButton
         label           = 'Cancel'
@@ -39,7 +53,7 @@ class SendMessageDialog extends React.Component {
     ]
     return (
       <Dialog
-        title          = 'Send message'
+        title          = {getTitle(dialog)}
         actions        = {actions}
         modal          = {false}
         open           = {open}
@@ -70,6 +84,7 @@ class SendMessageDialog extends React.Component {
           multiLine         = {true}
           rows              = {3} 
         />
+        <div>Characters remaining: 240</div>
       </Dialog>
     )
   }
