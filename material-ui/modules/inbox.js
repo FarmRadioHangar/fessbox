@@ -113,13 +113,6 @@ class Inbox extends React.Component {
               secondaryTextLines = {2}
               secondaryText      = {
                 <div style={styles.secondary}>
-                  {/*
-                  <Checkbox checked={!!message.selected} style={{
-                    position    : 'absolute',
-                    marginLeft  : '-108px',
-                    marginTop   : '-3px',
-                  }} />
-                  */}
                   {!isNaN(message.timestamp) && (
                     <span style={{color: darkBlack}}>
                       <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
@@ -135,10 +128,10 @@ class Inbox extends React.Component {
                       <i className='material-icons'>new_releasese</i>
                     </IconButton>
                   )}
-                  <IconButton onClick={e => e.stopPropagation()} style={styles.icon} tooltip='Reply'>
+                  <IconButton onClick={ e => { this.props.onReply() ; e.stopPropagation() }} style={styles.icon} tooltip='Reply'>
                     <i className='material-icons'>reply</i>
                   </IconButton>
-                  <IconButton onClick={e => e.stopPropagation()} style={styles.icon} tooltip='Forward'>
+                  <IconButton onClick={ e => { this.props.onForward() ; e.stopPropagation() } } style={styles.icon} tooltip='Forward'>
                     <i className='material-icons'>forward</i>
                   </IconButton>
                   <IconButton 

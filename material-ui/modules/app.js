@@ -35,6 +35,8 @@ class App extends React.Component {
     this.renderFAB = this.renderFAB.bind(this)
     this.renderDialog = this.renderDialog.bind(this)
     this.handleCloseDialog = this.handleCloseDialog.bind(this)
+    this.replyToMessage = this.replyToMessage.bind(this)
+    this.forwardMessage = this.forwardMessage.bind(this)
   }
   activateTab(tab) {
     this.setState({ tab })
@@ -49,6 +51,12 @@ class App extends React.Component {
       dialog : null
     })
   }
+  replyToMessage() {
+    this.setState({dialog: 'reply-to-message'})
+  }
+  forwardMessage() {
+    this.setState({dialog: 'forward-message'})
+  }
   renderDialog() {
     const { dialog } = this.state
     const { mixer : { channelList }, sendMessage } = this.props
@@ -57,7 +65,8 @@ class App extends React.Component {
         <SendMessageDialog 
           channels    = {channelList}
           onClose     = {this.handleCloseDialog} 
-          open        = {'send-message' == dialog} 
+          open        = {!!dialog} 
+          dialog      = {dialog}
           sendMessage = {sendMessage}
         />
       </div>
@@ -91,7 +100,11 @@ class App extends React.Component {
           }
           label    = 'Inbox' 
           value    = 'inbox'>
-          <Inbox sendMessage={sendMessage} />
+          <Inbox 
+            onReply     = {this.replyToMessage}
+            onForward   = {this.forwardMessage}
+            sendMessage = {sendMessage} 
+          />
         </Tab>
         <Tab
           onActive = {() => this.activateTab('call_log')}
@@ -161,7 +174,6 @@ const styles = {
     marginTop        : '15px',
   },
 }
-
 
 const AppComponent = connect(state => ({
   inbox : state.inbox,
