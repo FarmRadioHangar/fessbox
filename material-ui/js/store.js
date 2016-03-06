@@ -10,6 +10,7 @@ const store = createStore(reducers, {})
  */
 if (module.onReload) {
   module.onReload(() => {
+    console.log('LiveReactload reload')
     const nextReducer = require('./reducers')
     store.replaceReducer(nextReducer.default || nextReducer)
     return true

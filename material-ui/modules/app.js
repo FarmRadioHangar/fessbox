@@ -32,6 +32,7 @@ class App extends React.Component {
       tab     : 'mixer',
       opacity : 0,
       dialog  : null,
+      message : null,
     }
     this.renderFAB = this.renderFAB.bind(this)
     this.renderDialog = this.renderDialog.bind(this)
@@ -45,11 +46,12 @@ class App extends React.Component {
     )
   }
   renderDialog() {
-    const { dialog } = this.state
+    const { dialog, message } = this.state
     const { mixer : { channelList }, sendMessage } = this.props
     return (
       <div>
         <CallDialog 
+          channels    = {channelList}
           onClose     = {() => this.setState({dialog: null})} 
           open        = {'call' == dialog} 
           sendMessage = {sendMessage}
@@ -59,6 +61,7 @@ class App extends React.Component {
           onClose     = {() => this.setState({dialog: null})} 
           open        = {['send-message', 'forward-message', 'reply-to-message'].indexOf(dialog) > -1} 
           dialog      = {dialog}
+          message     = {message}
           sendMessage = {sendMessage}
         />
       </div>
@@ -93,8 +96,8 @@ class App extends React.Component {
           label    = 'Inbox' 
           value    = 'inbox'>
           <Inbox 
-            onReply     = {() => this.setState({dialog: 'reply-to-message'})}
-            onForward   = {() => this.setState({dialog: 'forward-message'})}
+            onReply     = {message => this.setState({dialog: 'reply-to-message', message})}
+            onForward   = {message => this.setState({dialog: 'forward-message', message})}
             sendMessage = {sendMessage} 
           />
         </Tab>
@@ -121,7 +124,7 @@ class App extends React.Component {
       case 'inbox':
         return (
           <FloatingActionButton 
-            onClick = {() => this.setState({dialog: 'send-message'})}
+            onClick = {() => this.setState({dialog: 'send-message', message: null})}
             style   = {styles.fab}>
             <IconCommunicationMessage />
           </FloatingActionButton>

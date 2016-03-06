@@ -24,6 +24,8 @@ import FlatButton
   from 'material-ui/lib/flat-button'
 import Checkbox
   from 'material-ui/lib/checkbox'
+import Paper
+  from 'material-ui/lib/paper'
 
 import { grey400, darkBlack, lightBlack } 
   from 'material-ui/lib/styles/colors'
@@ -100,6 +102,15 @@ class Inbox extends React.Component {
     const unreadIcon = (
       <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
     )
+    if (!messageCount) {
+      return (
+        <List>
+          <Subheader>SMS Messages</Subheader>
+          <Divider />
+          <p style={{padding: '16px'}}>No messages.</p>
+        </List>
+      )
+    }
     return (
       <List>
         {this.renderDialog()}
@@ -110,6 +121,7 @@ class Inbox extends React.Component {
             <ListItem
               onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
               leftAvatar         = {message.read ? readIcon : unreadIcon}
+              primaryText        = {message.source}
               secondaryTextLines = {2}
               secondaryText      = {
                 <div style={styles.secondary}>
@@ -128,10 +140,10 @@ class Inbox extends React.Component {
                       <i className='material-icons'>new_releasese</i>
                     </IconButton>
                   )}
-                  <IconButton onClick={ e => { this.props.onReply() ; e.stopPropagation() }} style={styles.icon} tooltip='Reply'>
+                  <IconButton onClick={ e => { this.props.onReply(message) ; e.stopPropagation() }} style={styles.icon} tooltip='Reply'>
                     <i className='material-icons'>reply</i>
                   </IconButton>
-                  <IconButton onClick={ e => { this.props.onForward() ; e.stopPropagation() } } style={styles.icon} tooltip='Forward'>
+                  <IconButton onClick={ e => { this.props.onForward(message) ; e.stopPropagation() } } style={styles.icon} tooltip='Forward'>
                     <i className='material-icons'>forward</i>
                   </IconButton>
                   <IconButton 

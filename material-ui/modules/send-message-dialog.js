@@ -31,13 +31,106 @@ function getTitle(dialog) {
 class SendMessageDialog extends React.Component {
   constructor(props) {
     super(props)
+    this.renderFormFields = this.renderFormFields.bind(this)
   }
   handleUpdate() {
     const text = this.refs.autoComplete.state.searchText
     this.props.sendMessage('addrBookSuggestions', text)
   }
+  renderFormFields() {
+    const { dialog, message, channels } = this.props
+    const simSelect = (
+      <SelectField 
+        floatingLabelText = 'SIM card'
+        style             = {{width: '100%'}}
+        value             = {1} 
+        onChange          = {() => {}}>
+        {channels.map((channel, i) => (
+          <MenuItem 
+            key           = {i}
+            value         = {i}
+            primaryText   = {channel.id} />
+        ))} 
+      </SelectField>
+    )
+    switch (dialog) {
+      case 'forward-message':
+        return (
+          <div>
+            {simSelect}
+            <AutoComplete
+              ref               = 'autoComplete'
+              hintText          = {'Recipient\'s phone number'}
+              dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
+              onUpdateInput     = {this.handleUpdate.bind(this)}
+              floatingLabelText = 'Send to'
+              fullWidth         = {true}
+            />
+            <TextField
+              defaultValue      = {message.content}
+              floatingLabelText = 'Message content'
+              hintText          = 'Forwarded message'
+              fullWidth         = {true}
+              multiLine         = {true}
+              rows              = {3} 
+            />
+            <div>Characters remaining: 255</div>
+          </div>
+        )
+      case 'reply-to-message':
+        return (
+          <div>
+            <TextField
+              disabled          = {true}
+              value             = {message.content}
+              floatingLabelText = 'Original message'
+              fullWidth         = {true}
+              multiLine         = {true}
+              rows              = {3} 
+            />
+            {simSelect}
+            <TextField
+              disabled          = {true}
+              value             = {message.source}
+              floatingLabelText = 'Send to'
+              fullWidth         = {true}
+            />
+            <TextField
+              floatingLabelText = 'Your reply'
+              hintText          = 'Type your message here'
+              fullWidth         = {true}
+              multiLine         = {true}
+              rows              = {3} 
+            />
+            <div>Characters remaining: 255</div>
+          </div>
+        )
+      case 'send-message':
+        return (
+          <div>
+            {simSelect}
+            <AutoComplete
+              ref               = 'autoComplete'
+              hintText          = {'Recipient\'s phone number'}
+              dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
+              onUpdateInput     = {this.handleUpdate.bind(this)}
+              floatingLabelText = 'Send to'
+              fullWidth         = {true}
+            />
+            <TextField
+              floatingLabelText = 'Message content'
+              hintText          = 'Type your message here'
+              fullWidth         = {true}
+              multiLine         = {true}
+              rows              = {3} 
+            />
+            <div>Characters remaining: 240</div>
+          </div>
+        )
+    }
+  }
   render() {
-    const { open, onClose, channels, dialog } = this.props
+    const { open, onClose, dialog } = this.props
     const actions = [
       <FlatButton
         label           = 'Cancel'
@@ -51,6 +144,18 @@ class SendMessageDialog extends React.Component {
         onTouchTap      = {onClose}
       />,
     ]
+    /*
+    const originalMessage = message ? (
+      <TextField
+        floatingLabelText = 'Original message'
+        disabled          = {true}
+        fullWidth         = {true}
+        multiLine         = {true}
+        value             = {message.content}
+        rows              = {3} 
+      />
+    ) : <span />
+    */
     return (
       <Dialog
         title          = {getTitle(dialog)}
@@ -58,33 +163,7 @@ class SendMessageDialog extends React.Component {
         modal          = {false}
         open           = {open}
         onRequestClose = {onClose}>
-        <SelectField 
-          floatingLabelText = 'SIM card'
-          style             = {{width: '100%'}}
-          value             = {1} 
-          onChange          = {() => {}}>
-          {channels.map((channel, i) => (
-            <MenuItem 
-              key         = {i}
-              value       = {i}
-              primaryText = {channel.id} />
-          ))}
-        </SelectField>
-        <AutoComplete
-          ref               = 'autoComplete'
-          hintText          = 'Type a contact name or phone number'
-          dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
-          onUpdateInput     = {this.handleUpdate.bind(this)}
-          floatingLabelText = 'Recepient'
-          fullWidth         = {true}
-        />
-        <TextField
-          hintText          = 'Message content'
-          fullWidth         = {true}
-          multiLine         = {true}
-          rows              = {3} 
-        />
-        <div>Characters remaining: 240</div>
+        {this.renderFormFields()}
       </Dialog>
     )
   }
