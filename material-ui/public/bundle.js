@@ -727,8 +727,6 @@ var App = _wrapComponent('App')(function (_React$Component) {
       dialog: null,
       message: null
     };
-    _this.renderFAB = _this.renderFAB.bind(_this);
-    _this.renderDialog = _this.renderDialog.bind(_this);
     return _this;
   }
 
@@ -909,10 +907,10 @@ var App = _wrapComponent('App')(function (_React$Component) {
       return _react3.default.createElement(
         'div',
         { style: _extends({ opacity: opacity }, styles.component) },
-        this.renderDialog(),
-        this.renderAppBar(),
-        this.renderTabs(),
-        this.renderFAB()
+        this.renderDialog.call(this),
+        this.renderAppBar.call(this),
+        this.renderTabs.call(this),
+        this.renderFAB.call(this)
       );
     }
   }]);
@@ -1653,11 +1651,7 @@ var Channel = _wrapComponent('Channel')(function (_React$Component) {
   function Channel(props) {
     _classCallCheck(this, Channel);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
-
-    _this.renderControls = _this.renderControls.bind(_this);
-    _this.renderActions = _this.renderActions.bind(_this);
-    return _this;
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
   }
 
   _createClass(Channel, [{
@@ -1790,8 +1784,8 @@ var Channel = _wrapComponent('Channel')(function (_React$Component) {
               borderLeft: '12px solid ' + (colors[mode] || _colors.green400)
             }) },
           _react3.default.createElement(_channelToolbar2.default, this.props),
-          this.renderControls(),
-          this.renderActions()
+          this.renderControls.call(this),
+          this.renderActions.call(this)
         )
       );
     }
@@ -1939,7 +1933,6 @@ var Inbox = _wrapComponent('Inbox')(function (_React$Component) {
     _this.state = {
       confirmDeleteMessage: null
     };
-    _this.handleCloseDialog = _this.handleCloseDialog.bind(_this);
     return _this;
   }
 
@@ -1968,7 +1961,7 @@ var Inbox = _wrapComponent('Inbox')(function (_React$Component) {
       var actions = [_react3.default.createElement(_flatButton2.default, {
         label: 'Cancel',
         secondary: true,
-        onTouchTap: this.handleCloseDialog
+        onTouchTap: this.handleCloseDialog.bind(this)
       }), _react3.default.createElement(_flatButton2.default, {
         label: 'Delete',
         primary: true,
@@ -1981,7 +1974,7 @@ var Inbox = _wrapComponent('Inbox')(function (_React$Component) {
           actions: actions,
           modal: true,
           open: !!this.state.confirmDeleteMessage,
-          onRequestClose: this.handleCloseDialog },
+          onRequestClose: this.handleCloseDialog.bind(this) },
         'Do you really want to delete this message?'
       );
     }
@@ -2517,10 +2510,7 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
   function SendMessageDialog(props) {
     _classCallCheck(this, SendMessageDialog);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SendMessageDialog).call(this, props));
-
-    _this.renderFormFields = _this.renderFormFields.bind(_this);
-    return _this;
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SendMessageDialog).call(this, props));
   }
 
   _createClass(SendMessageDialog, [{
@@ -2677,7 +2667,7 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
           modal: false,
           open: open,
           onRequestClose: onClose },
-        this.renderFormFields()
+        this.renderFormFields.call(this)
       );
     }
   }]);
