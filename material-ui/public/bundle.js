@@ -363,7 +363,7 @@ function reducer() {
         return Object.assign({}, state, _extends({}, action.data.inbox, {
           messageCount: ids.length,
           unreadCount: ids.length,
-          visibleMessages: ids.slice(0, 10).map(function (id) {
+          visibleMessages: ids.slice(0, 100).map(function (id) {
             return _extends({}, action.data.inbox.messages[id], {
               id: id
             });
@@ -388,7 +388,7 @@ function reducer() {
         var ids = state.ids.filter(function (id) {
           return id != action.id;
         });
-        var visibleMessages = ids.slice(0, 10).map(function (id) {
+        var visibleMessages = ids.slice(0, 100).map(function (id) {
           return _extends({}, state.messages[id], {
             id: id
           });
@@ -797,9 +797,13 @@ var App = _wrapComponent('App')(function (_React$Component) {
               return _this3.activateTab('mixer');
             },
             icon: _react3.default.createElement(
-              'i',
-              { className: 'material-icons' },
-              'volume_up'
+              'span',
+              null,
+              _react3.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'volume_up'
+              )
             ),
             label: 'Mixer',
             value: 'mixer' },
@@ -843,9 +847,13 @@ var App = _wrapComponent('App')(function (_React$Component) {
               return _this3.activateTab('call_log');
             },
             icon: _react3.default.createElement(
-              'i',
-              { className: 'material-icons' },
-              'history'
+              'span',
+              null,
+              _react3.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'history'
+              )
             ),
             label: 'Call log',
             value: 'call_log' },

@@ -18,7 +18,7 @@ function reducer(state = initialState, action) {
         ...action.data.inbox,
         messageCount    : ids.length,
         unreadCount     : ids.length,
-        visibleMessages : ids.slice(0, 10).map(id => ({
+        visibleMessages : ids.slice(0, 100).map(id => ({
           ...action.data.inbox.messages[id],
           id,
         })),
@@ -36,7 +36,7 @@ function reducer(state = initialState, action) {
     }
     case MESSAGE_REMOVE: {
       const ids = state.ids.filter(id => id != action.id)
-      const visibleMessages = ids.slice(0, 10).map(id => ({
+      const visibleMessages = ids.slice(0, 100).map(id => ({
         ...state.messages[id],
         id,
       }))
