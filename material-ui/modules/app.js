@@ -34,8 +34,6 @@ class App extends React.Component {
       dialog  : null,
       message : null,
     }
-    this.renderFAB = this.renderFAB.bind(this)
-    this.renderDialog = this.renderDialog.bind(this)
   }
   activateTab(tab) {
     this.setState({ tab })
@@ -143,10 +141,10 @@ class App extends React.Component {
     const { opacity } = this.state
     return (
       <div style={{opacity, ...styles.component}}>
-        {this.renderDialog()}
-        {this.renderAppBar()}
-        {this.renderTabs()}
-        {this.renderFAB()}
+        {::this.renderDialog()}
+        {::this.renderAppBar()}
+        {::this.renderTabs()}
+        {::this.renderFAB()}
       </div>
     )
   }

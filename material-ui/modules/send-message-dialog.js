@@ -31,7 +31,6 @@ function getTitle(dialog) {
 class SendMessageDialog extends React.Component {
   constructor(props) {
     super(props)
-    this.renderFormFields = this.renderFormFields.bind(this)
   }
   handleUpdate() {
     const text = this.refs.autoComplete.state.searchText
@@ -163,7 +162,7 @@ class SendMessageDialog extends React.Component {
         modal          = {false}
         open           = {open}
         onRequestClose = {onClose}>
-        {this.renderFormFields()}
+        {::this.renderFormFields()}
       </Dialog>
     )
   }

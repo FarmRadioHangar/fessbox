@@ -81,7 +81,7 @@ class Inbox extends React.Component {
         actions        = {actions}
         modal          = {true}
         open           = {!!this.state.confirmDeleteMessage}
-        onRequestClose = {this.handleCloseDialog}>
+        onRequestClose = {::this.handleCloseDialog}>
         Do you really want to delete this message?
       </Dialog>
     )
