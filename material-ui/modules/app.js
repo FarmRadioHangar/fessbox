@@ -74,7 +74,7 @@ class App extends React.Component {
       <Tabs value={tab}>
         <Tab
           onActive = {() => this.activateTab('mixer')}
-          icon     = {<i className='material-icons'>volume_up</i>}
+          icon     = {<span><i className='material-icons'>volume_up</i></span>}
           label    = 'Mixer' 
           value    = 'mixer'>
           <Mixer />
@@ -103,7 +103,7 @@ class App extends React.Component {
         </Tab>
         <Tab
           onActive = {() => this.activateTab('call_log')}
-          icon     = {<i className='material-icons'>history</i>}
+          icon     = {<span><i className='material-icons'>history</i></span>}
           label    = 'Call log' 
           value    = 'call_log'>
           <CallLog />
