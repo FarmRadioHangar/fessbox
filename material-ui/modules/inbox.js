@@ -11,10 +11,6 @@ import { TransitionMotion, Motion, spring, presets }
 
 import IconButton 
   from 'material-ui/lib/icon-button'
-import List 
-  from 'material-ui/lib/lists/list'
-import ListItem 
-  from 'material-ui/lib/lists/list-item'
 import Divider 
   from 'material-ui/lib/divider'
 import Subheader 
@@ -23,12 +19,6 @@ import Dialog
   from 'material-ui/lib/dialog'
 import FlatButton 
   from 'material-ui/lib/flat-button'
-import Checkbox
-  from 'material-ui/lib/checkbox'
-import Paper
-  from 'material-ui/lib/paper'
-import EnhancedButton
-  from 'material-ui/lib/enhanced-button'
 
 import { grey400, darkBlack, lightBlack } 
   from 'material-ui/lib/styles/colors'
@@ -89,165 +79,104 @@ class Inbox extends React.Component {
   renderItem(index, key) {
     const { inbox : { visibleMessages }, dispatch } = this.props
     const message = visibleMessages[index]
+    const readIcon = (
+      <span>
+        <i className='material-icons' style={{color: '#aed581'}}>check</i>
+      </span>
+    )
+    const unreadIcon = (
+      <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
+    )
     return (
-      <Paper key={key}>
-
-        <div>
-          {message.source}
-        </div>
-
-      {/*
-        <div style={{zIndex: 9999, float: 'right'}}>
-          {message.read && (
-            <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) }} style={styles.icon} tooltip='Mark as unread'>
-              <i className='material-icons'>new_releasese</i>
+      <div key={key} style={{
+        width           : '100%',
+        height          : '80px',
+      }}>
+        <div 
+          onClick = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))} 
+          style   = {{
+            height          : '80px',
+            paddingRight    : '300px',
+            backgroundColor : message.read ? 'rgb(255, 255, 255)' : 'rgba(255, 64, 129, 0.05)',
+          }}>
+          <div style={{
+            textAlign : 'right',
+            position  : 'absolute',
+            right     : 0,
+            overflow  : 'hidden',
+            width     : '300px',
+            height    : '80px'
+          }}>
+            {message.read && (
+              <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) }} style={styles.icon} tooltip='Mark as unread'>
+                <i className='material-icons'>new_releasese</i>
+              </IconButton>
+            )}
+            <IconButton onClick={ e => { this.props.onReply(message) }} style={styles.icon} tooltip='Reply'>
+              <i className='material-icons'>reply</i>
             </IconButton>
-          )}
-          <IconButton onClick={ e => { this.props.onReply(message) }} style={styles.icon} tooltip='Reply'>
-            <i className='material-icons'>reply</i>
-          </IconButton>
-          <IconButton onClick={ e => { this.props.onForward(message) } } style={styles.icon} tooltip='Forward'>
-            <i className='material-icons'>forward</i>
-          </IconButton>
-          <IconButton 
-            onClick   = {e => { dispatch(toggleMessageFavorite(message.id))  }} 
-            style     = {styles.icon}
-            iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}
-            tooltip   = 'Favorite'>
-            <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
-          </IconButton>
-          <IconButton 
-            onClick   = {e => { this.setState({confirmDeleteMessage: message.id}) }} 
-            style     = {styles.icon} 
-            tooltip   = 'Delete'>
-            <i className='material-icons'>delete_forever</i>
-          </IconButton>
+            <IconButton onClick={ e => { this.props.onForward(message) } } style={styles.icon} tooltip='Forward'>
+              <i className='material-icons'>forward</i>
+            </IconButton>
+            <IconButton 
+              onClick   = {e => { dispatch(toggleMessageFavorite(message.id))  }} 
+              style     = {styles.icon}
+              iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}
+              tooltip   = 'Favorite'>
+              <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
+            </IconButton>
+            <IconButton 
+              onClick   = {e => { this.setState({confirmDeleteMessage: message.id}) }} 
+              style     = {styles.icon} 
+              tooltip   = 'Delete'>
+              <i className='material-icons'>delete_forever</i>
+            </IconButton>
+          </div>
+          <span style={{position: 'absolute', padding: '10px'}}>
+            {message.read ? readIcon : unreadIcon}
+          </span>
+          <div style={{padding: '10px 10px 10px 50px', lineHeight: '19px'}}>
+            <div>
+              {message.source}
+            </div>
+            <div style={styles.secondary}>
+              {!isNaN(message.timestamp) && (
+                <span style={{color: darkBlack}}>
+                  <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
+                </span> 
+              )}
+              {message.content}
+            </div>
+          </div>
         </div>
-
-        <span>
-          <i className='material-icons' style={{color: '#aed581'}}>check</i>
-        </span>
-    
-        <div>
-          {message.source}
-        </div>
-
-        <div style={styles.secondary}>
-          {!isNaN(message.timestamp) && (
-            <span style={{color: darkBlack}}>
-              <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
-            </span> 
-          )}
-          {message.content}
-        </div>
-        */}
-
-      </Paper>
+        <Divider />
+      </div>
     )
   }
   render() {
     const { inbox : { visibleMessages, messageCount, unreadCount }, dispatch } = this.props
-//    const { inbox : { visibleMessages, messageCount, unreadCount }, dispatch } = this.props
-//    const readIcon = (
-//      <span>
-//        <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
-//          {i => (
-//            <i className='material-icons' style={{
-//              color     : '#aed581',
-//              opacity   : i.opacity,
-//              transform : `scale(${i.zoom})`,
-//            }}>check</i>
-//          )}
-//        </Motion>
-//      </span>
-//    )
-//    const unreadIcon = (
-//      <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
-//    )
-//    if (!messageCount) {
-//      return (
-//        <List>
-//          <Subheader>SMS Messages</Subheader>
-//          <Divider />
-//          <p style={{padding: '16px'}}>No messages.</p>
-//        </List>
-//      )
-//    }
     return (
-      <div>
+      <div style={{backgroundColor: '#ffffff'}}>
         {this.renderDialog()}
+        <Subheader>{`SMS Messages (${unreadCount}/${messageCount})`}</Subheader>
+        <Divider />
         <ReactList
           itemRenderer = {::this.renderItem}
           length       = {visibleMessages.length}
+          type         = 'uniform'
         />
       </div>
     )
   }
 }
 
-//      <List>
-//        {this.renderDialog()}
-//        <Subheader>{`SMS Messages (${unreadCount}/${messageCount})`}</Subheader>
-//        {visibleMessages.map(message => (
-//          <div key={message.id}>
-//            <Divider />
-//            <ListItem
-//              onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
-//              leftAvatar         = {message.read ? readIcon : unreadIcon}
-//              primaryText        = {message.source}
-//              secondaryTextLines = {2}
-//              secondaryText      = {
-//                <div style={styles.secondary}>
-//                  {!isNaN(message.timestamp) && (
-//                    <span style={{color: darkBlack}}>
-//                      <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
-//                    </span> 
-//                  )}
-//                  {message.content}
-//                </div>
-//              }
-//              rightIconButton = {
-//                <div style={{zIndex: 9999}}>
-//                  {message.read && (
-//                    <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
-//                      <i className='material-icons'>new_releasese</i>
-//                    </IconButton>
-//                  )}
-//                  <IconButton onClick={ e => { this.props.onReply(message) ; e.stopPropagation() }} style={styles.icon} tooltip='Reply'>
-//                    <i className='material-icons'>reply</i>
-//                  </IconButton>
-//                  <IconButton onClick={ e => { this.props.onForward(message) ; e.stopPropagation() } } style={styles.icon} tooltip='Forward'>
-//                    <i className='material-icons'>forward</i>
-//                  </IconButton>
-//                  <IconButton 
-//                    onClick   = {e => { dispatch(toggleMessageFavorite(message.id)) ; e.stopPropagation() }} 
-//                    style     = {styles.icon}
-//                    iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}
-//                    tooltip   = 'Favorite'>
-//                    <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
-//                  </IconButton>
-//                  <IconButton 
-//                    onClick   = {e => { this.setState({confirmDeleteMessage: message.id}) ; e.stopPropagation() }} 
-//                    style     = {styles.icon} 
-//                    tooltip   = 'Delete'>
-//                    <i className='material-icons'>delete_forever</i>
-//                  </IconButton>
-//                </div>
-//              }
-//              style = {{
-//                backgroundColor : message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
-//                paddingLeft     : '0',
-//              }} />
-//          </div>
-//        ))}
-//      </List>
-
 const styles = {
   icon: {
     color             : '#757575',
   },
   secondary: {
-    paddingRight      : '256px',
+    fontSize          : '14px',
+    color             : 'rgba(0, 0, 0, 0.54)',
   },
   checkbox: {
     position          : 'absolute', 

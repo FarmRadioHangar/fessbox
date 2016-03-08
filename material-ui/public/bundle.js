@@ -1855,14 +1855,6 @@ var _iconButton = require('material-ui/lib/icon-button');
 
 var _iconButton2 = _interopRequireDefault(_iconButton);
 
-var _list = require('material-ui/lib/lists/list');
-
-var _list2 = _interopRequireDefault(_list);
-
-var _listItem = require('material-ui/lib/lists/list-item');
-
-var _listItem2 = _interopRequireDefault(_listItem);
-
 var _divider = require('material-ui/lib/divider');
 
 var _divider2 = _interopRequireDefault(_divider);
@@ -1878,18 +1870,6 @@ var _dialog2 = _interopRequireDefault(_dialog);
 var _flatButton = require('material-ui/lib/flat-button');
 
 var _flatButton2 = _interopRequireDefault(_flatButton);
-
-var _checkbox = require('material-ui/lib/checkbox');
-
-var _checkbox2 = _interopRequireDefault(_checkbox);
-
-var _paper = require('material-ui/lib/paper');
-
-var _paper2 = _interopRequireDefault(_paper);
-
-var _enhancedButton = require('material-ui/lib/enhanced-button');
-
-var _enhancedButton2 = _interopRequireDefault(_enhancedButton);
 
 var _colors = require('material-ui/lib/styles/colors');
 
@@ -1989,19 +1969,144 @@ var Inbox = _wrapComponent('Inbox')(function (_React$Component) {
   }, {
     key: 'renderItem',
     value: function renderItem(index, key) {
+      var _this2 = this;
+
       var _props2 = this.props;
       var visibleMessages = _props2.inbox.visibleMessages;
       var dispatch = _props2.dispatch;
 
       var message = visibleMessages[index];
+      var readIcon = _react3.default.createElement(
+        'span',
+        null,
+        _react3.default.createElement(
+          'i',
+          { className: 'material-icons', style: { color: '#aed581' } },
+          'check'
+        )
+      );
+      var unreadIcon = _react3.default.createElement(
+        'i',
+        { className: 'material-icons', style: { color: 'rgb(255, 64, 129)' } },
+        'notifications'
+      );
       return _react3.default.createElement(
-        _paper2.default,
-        { key: key },
+        'div',
+        { key: key, style: {
+            width: '100%',
+            height: '80px'
+          } },
         _react3.default.createElement(
           'div',
-          null,
-          message.source
-        )
+          {
+            onClick: function onClick() {
+              return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));
+            },
+            style: {
+              height: '80px',
+              paddingRight: '300px',
+              backgroundColor: message.read ? 'rgb(255, 255, 255)' : 'rgba(255, 64, 129, 0.05)'
+            } },
+          _react3.default.createElement(
+            'div',
+            { style: {
+                textAlign: 'right',
+                position: 'absolute',
+                right: 0,
+                overflow: 'hidden',
+                width: '300px',
+                height: '80px'
+              } },
+            message.read && _react3.default.createElement(
+              _iconButton2.default,
+              { onClick: function onClick(e) {
+                  dispatch((0, _actions.toggleMessageRead)(message.id));
+                }, style: styles.icon, tooltip: 'Mark as unread' },
+              _react3.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'new_releasese'
+              )
+            ),
+            _react3.default.createElement(
+              _iconButton2.default,
+              { onClick: function onClick(e) {
+                  _this2.props.onReply(message);
+                }, style: styles.icon, tooltip: 'Reply' },
+              _react3.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'reply'
+              )
+            ),
+            _react3.default.createElement(
+              _iconButton2.default,
+              { onClick: function onClick(e) {
+                  _this2.props.onForward(message);
+                }, style: styles.icon, tooltip: 'Forward' },
+              _react3.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'forward'
+              )
+            ),
+            _react3.default.createElement(
+              _iconButton2.default,
+              {
+                onClick: function onClick(e) {
+                  dispatch((0, _actions.toggleMessageFavorite)(message.id));
+                },
+                style: styles.icon,
+                iconStyle: !!message.favorite ? { color: 'rgb(0, 188, 212)' } : {},
+                tooltip: 'Favorite' },
+              _react3.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                message.favorite ? 'favorite' : 'favorite_border'
+              )
+            ),
+            _react3.default.createElement(
+              _iconButton2.default,
+              {
+                onClick: function onClick(e) {
+                  _this2.setState({ confirmDeleteMessage: message.id });
+                },
+                style: styles.icon,
+                tooltip: 'Delete' },
+              _react3.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'delete_forever'
+              )
+            )
+          ),
+          _react3.default.createElement(
+            'span',
+            { style: { position: 'absolute', padding: '10px' } },
+            message.read ? readIcon : unreadIcon
+          ),
+          _react3.default.createElement(
+            'div',
+            { style: { padding: '10px 10px 10px 50px', lineHeight: '19px' } },
+            _react3.default.createElement(
+              'div',
+              null,
+              message.source
+            ),
+            _react3.default.createElement(
+              'div',
+              { style: styles.secondary },
+              !isNaN(message.timestamp) && _react3.default.createElement(
+                'span',
+                { style: { color: _colors.darkBlack } },
+                _react3.default.createElement(_reactTimeago2.default, { date: Number(message.timestamp) }),
+                ' — '
+              ),
+              message.content
+            )
+          )
+        ),
+        _react3.default.createElement(_divider2.default, null)
       );
     }
   }, {
@@ -2013,40 +2118,21 @@ var Inbox = _wrapComponent('Inbox')(function (_React$Component) {
       var messageCount = _props3$inbox.messageCount;
       var unreadCount = _props3$inbox.unreadCount;
       var dispatch = _props3.dispatch;
-      //    const { inbox : { visibleMessages, messageCount, unreadCount }, dispatch } = this.props
-      //    const readIcon = (
-      //      <span>
-      //        <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
-      //          {i => (
-      //            <i className='material-icons' style={{
-      //              color     : '#aed581',
-      //              opacity   : i.opacity,
-      //              transform : `scale(${i.zoom})`,
-      //            }}>check</i>
-      //          )}
-      //        </Motion>
-      //      </span>
-      //    )
-      //    const unreadIcon = (
-      //      <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
-      //    )
-      //    if (!messageCount) {
-      //      return (
-      //        <List>
-      //          <Subheader>SMS Messages</Subheader>
-      //          <Divider />
-      //          <p style={{padding: '16px'}}>No messages.</p>
-      //        </List>
-      //      )
-      //    }
 
       return _react3.default.createElement(
         'div',
-        null,
+        { style: { backgroundColor: '#ffffff' } },
         this.renderDialog(),
+        _react3.default.createElement(
+          _Subheader2.default,
+          null,
+          'SMS Messages (' + unreadCount + '/' + messageCount + ')'
+        ),
+        _react3.default.createElement(_divider2.default, null),
         _react3.default.createElement(_reactList2.default, {
           itemRenderer: this.renderItem.bind(this),
-          length: visibleMessages.length
+          length: visibleMessages.length,
+          type: 'uniform'
         })
       );
     }
@@ -2055,69 +2141,13 @@ var Inbox = _wrapComponent('Inbox')(function (_React$Component) {
   return Inbox;
 }(_react3.default.Component));
 
-//      <List>
-//        {this.renderDialog()}
-//        <Subheader>{`SMS Messages (${unreadCount}/${messageCount})`}</Subheader>
-//        {visibleMessages.map(message => (
-//          <div key={message.id}>
-//            <Divider />
-//            <ListItem
-//              onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
-//              leftAvatar         = {message.read ? readIcon : unreadIcon}
-//              primaryText        = {message.source}
-//              secondaryTextLines = {2}
-//              secondaryText      = {
-//                <div style={styles.secondary}>
-//                  {!isNaN(message.timestamp) && (
-//                    <span style={{color: darkBlack}}>
-//                      <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
-//                    </span>
-//                  )}
-//                  {message.content}
-//                </div>
-//              }
-//              rightIconButton = {
-//                <div style={{zIndex: 9999}}>
-//                  {message.read && (
-//                    <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
-//                      <i className='material-icons'>new_releasese</i>
-//                    </IconButton>
-//                  )}
-//                  <IconButton onClick={ e => { this.props.onReply(message) ; e.stopPropagation() }} style={styles.icon} tooltip='Reply'>
-//                    <i className='material-icons'>reply</i>
-//                  </IconButton>
-//                  <IconButton onClick={ e => { this.props.onForward(message) ; e.stopPropagation() } } style={styles.icon} tooltip='Forward'>
-//                    <i className='material-icons'>forward</i>
-//                  </IconButton>
-//                  <IconButton
-//                    onClick   = {e => { dispatch(toggleMessageFavorite(message.id)) ; e.stopPropagation() }}
-//                    style     = {styles.icon}
-//                    iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}
-//                    tooltip   = 'Favorite'>
-//                    <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
-//                  </IconButton>
-//                  <IconButton
-//                    onClick   = {e => { this.setState({confirmDeleteMessage: message.id}) ; e.stopPropagation() }}
-//                    style     = {styles.icon}
-//                    tooltip   = 'Delete'>
-//                    <i className='material-icons'>delete_forever</i>
-//                  </IconButton>
-//                </div>
-//              }
-//              style = {{
-//                backgroundColor : message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
-//                paddingLeft     : '0',
-//              }} />
-//          </div>
-//        ))}
-//      </List>
-
 var styles = {
   icon: {
     color: '#757575'
   },
   secondary: {
-    paddingRight: '256px'
+    fontSize: '14px',
+    color: 'rgba(0, 0, 0, 0.54)'
   },
   checkbox: {
     position: 'absolute',
@@ -2133,7 +2163,7 @@ var InboxComponent = (0, _reactRedux.connect)(function (state) {
 
 exports.default = InboxComponent;
 
-},{"../js/actions":1,"livereactload/babel-transform":265,"material-ui/lib/Subheader":316,"material-ui/lib/checkbox":328,"material-ui/lib/dialog":331,"material-ui/lib/divider":332,"material-ui/lib/enhanced-button":333,"material-ui/lib/flat-button":336,"material-ui/lib/icon-button":339,"material-ui/lib/lists/list":342,"material-ui/lib/lists/list-item":341,"material-ui/lib/paper":348,"material-ui/lib/styles/colors":360,"react":583,"react-list":415,"react-motion":422,"react-redux":436,"react-timeago":448}],19:[function(require,module,exports){
+},{"../js/actions":1,"livereactload/babel-transform":265,"material-ui/lib/Subheader":316,"material-ui/lib/dialog":331,"material-ui/lib/divider":332,"material-ui/lib/flat-button":336,"material-ui/lib/icon-button":339,"material-ui/lib/styles/colors":360,"react":583,"react-list":415,"react-motion":422,"react-redux":436,"react-timeago":448}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
