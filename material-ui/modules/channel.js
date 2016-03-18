@@ -18,8 +18,6 @@ import { green400 }
 class Channel extends React.Component {
   constructor(props) {
     super(props)
-    this.renderControls = this.renderControls.bind(this)
-    this.renderActions = this.renderActions.bind(this)
   }
   setMode(newMode) {
     const { id, mode, sendMessage } = this.props
@@ -106,9 +104,9 @@ class Channel extends React.Component {
             borderLeft : `12px solid ${colors[mode] || green400}`,
           }}>
           <ChannelToolbar {...this.props} />
-          {this.renderControls()}
+          {::this.renderControls()}
           {/* <div>{''+this.props.mode}</div> */}
-          {this.renderActions()}
+          {::this.renderActions()}
         </Paper>
       </div>
     )
