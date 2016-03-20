@@ -29,3 +29,13 @@ exports.getCurrentState = function (response, params) {
 		}
 	});
 };
+
+exports.messageSend = function (response, params) {
+	api.messageSend(params, function (err) {
+		if (err) {
+			myLib.httpGeneric(513, err, response, "DEBUG::messageSend");
+		} else {
+			myLib.httpGeneric(200, "ok", response, "DEBUG::messageSend");
+		}
+	});
+};

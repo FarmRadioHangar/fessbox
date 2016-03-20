@@ -13,6 +13,7 @@ ami.keepConnected();
 
 	s.asterisk = {
 	//	hosts: {},
+		sms_out: {},
 		channels: {},
 		conference: {
 //			input: null,
@@ -332,7 +333,6 @@ ami.on('devicestatechange', function(evt) {
 					});
 					s.loadOperator(channelInfo[1]);
 				}
-
 				break;
 		}
 	}
@@ -345,7 +345,13 @@ ami.on('donglecallstatechange', function(evt) {
 
 ami.on('donglenewsmsbase64', function(evt) {
 	var prefix = new RegExp('^\\' + amiConf.country_prefix);
-	api.inboxUpdate('sms_in', Date.now(), evt.from.replace(prefix, '0'), new Buffer(evt.message, 'base64').toString("utf8"));
+	api.inboxUpdate({
+		type: 'sms_in',
+		timestamp: Date.now(),
+		channel_id: evt.device,
+		endpoint: evt.from.replace(prefix, '0'),
+		content: new Buffer(evt.message, 'base64').toString("utf8")
+	});
 //	console.error(JSON.stringify(evt));
 });
 
@@ -536,7 +542,12 @@ ami.on('newchannel', function(evt) {
 
 ami.on('confbridgestoprecord', function (evt) {
 	if (evt.conference === astConf.virtual.master) {
-		api.inboxUpdate('recording', Date.now(), 'master', s.asterisk.conference.file_name);
+		api.inboxUpdate({
+			type: 'recording',
+			timestamp: Date.now(),
+			endpoint: 'master',
+			content: s.asterisk.conference.file_name
+		});
 		s.asterisk.conference.file_name = null;
 	}
 });
@@ -720,17 +731,22 @@ function setAmiChannelVolume(channel, level, direction, cb) {
 	}
 }
 
-function sendSMS(device, number, content) {
+function sendSMS(device, number, content, cb) {
 	ami.action({
 		action: 'DongleSendSMS',
 		Device: device,
 		"Number": number,
-		Message: content
+		Message: content,
+		Report: 'yes'
 	}, function(err, res) {
 		if (!err) {
+			// {"response":"Success","actionid":"1458358510030","message":"[airtel1] SMS queued for send","id":"0x73c4dcc8"}
 			console.log('sms ok', JSON.stringify(res));
+			cb(null, res.id);
 		} else {
+			// {"response":"Error","actionid":"1458491768683","message":"Number not specified"}
 			console.error('sms err', JSON.stringify(err));
+			cb(err.message);
 		}
 	});
 }
@@ -995,6 +1011,25 @@ exports.setPhoneBookEntry = function (number, label, cb) {
 exports.setMasterRecording = function (value, cb) {
 };
 
+exports.sendContent = function(data, cb) {
+	var dongle_id = data.channel_id ? data.channel_id : astConf.defaultSMS;
+	var timeout = 40; //seconds
+	sendSMS(dongle_id, data.endpoint, data.content, function(err, key){
+		if (!err) {
+			s.asterisk.sms_out[key] = {
+				data: data,
+				cb: cb,
+				timeout: setTimeout(function() {
+					s.asterisk.sms_out[key].cb("Timeout");
+					delete s.asterisk.sms_out[key];
+				}, timeout * 1000)
+			};
+		} else {
+			cb(err);
+		}
+	});
+};
+
 // debug: catch all AMI events
 ami.on('managerevent', function(evt) {
 	if (evt.event != "ConfbridgeTalking" && evt.event != 'Newexten' && evt.event != 'VarSet' && evt.event.indexOf("Dongle") !== 0 && evt.event.indexOf("RTCP") !== 0) {
@@ -1040,7 +1075,20 @@ ami.on('dongleportfail', function(evt) {
 });
 
 ami.on('donglesmsstatus', function(evt) {
+//	{"event":"DongleSMSStatus","privilege":"call,all","device":"airtel1","id":"0x73c4dcc8","status":"NotSent"}
 	console.error(JSON.stringify(evt));
+	if (s.asterisk.sms_out[evt.id]) {
+		clearTimeout(s.asterisk.sms_out[evt.id].timeout);
+		if (evt.status === "NotSent") {
+			s.asterisk.sms_out[evt.id].cb("Message not sent");
+		} else {
+			//todo: Use .endpoint instead of .contact_id and .source
+			s.asterisk.sms_out[evt.id].data.timestamp = Date.now();
+			s.asterisk.sms_out[evt.id].cb();
+			api.inboxUpdate(s.asterisk.sms_out[evt.id].data);
+		}
+		delete s.asterisk.sms_out[evt.id];
+	}
 });
 
 ami.on('dongleshowdevicescomplete', function(evt) {
