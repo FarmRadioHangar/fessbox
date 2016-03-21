@@ -36,6 +36,20 @@ class SendMessageDialog extends React.Component {
     const text = this.refs.autoComplete.state.searchText
     this.props.sendMessage('addrBookSuggestions', text)
   }
+  handleConfirm() {
+    const { sendMessage } = this.props
+    const key = Date.now()
+    const payload = {
+      [key]: {
+	type : 'sms_out',
+	endpoint   : '',
+	content    : '',
+	channel_id : '',
+      }
+    }
+    console.log(payload)
+    //sendMessage('messageSend', payload)
+  }
   renderFormFields() {
     const { dialog, message, channels } = this.props
     const simSelect = (
@@ -140,7 +154,7 @@ class SendMessageDialog extends React.Component {
         label           = 'Send'
         primary         = {true}
         keyboardFocused = {true}
-        onTouchTap      = {onClose}
+        onTouchTap      = {::this.handleConfirm}
       />,
     ]
     /*
