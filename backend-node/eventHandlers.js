@@ -3,6 +3,22 @@ var api = require("./api");
 exports.callNumber = function () {
 }
 
+exports.messageSend = function(user_id, data, cb) {
+	for (temp_id in data) {
+		api.messageSend(data[temp_id], function (err) {
+			if (err) {
+				cb("event_error", {
+					event: "messageSend",
+					key: temp_id,
+					msg: err
+				}, 'self');
+			} else {
+				cb("messageSent", temp_id, 'self');
+			}
+		});
+	}
+};
+
 exports.messageDelete = function(user_id, data, cb) {
 	cb("inboxUpdate", data, 'others');
 	api.messageDelete(data, function (err) {

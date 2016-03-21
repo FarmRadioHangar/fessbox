@@ -1,8 +1,12 @@
 var uuid = require("node-uuid");
 
 var appConfig = require("./config/app.json");
+//todo: rename to pbxProvider
 var provider = require("./" + appConfig.provider);
 var addressBook = require("./" + appConfig.addressBook);
+var contentProviders = {
+	'sms_out': provider
+}
 
 var myLib = require("./myLib");
 var s = require("./localStorage");
@@ -34,16 +38,13 @@ exports.getCurrentState = function (operator_id, cb) {
 
 // inbox
 
-exports.inboxUpdate = function (type, timestamp, source, content) {
-	var newMessage = {};
+exports.inboxUpdate = function (data) {
+	// required properties: type, timestamp, endpoint, content
 	var key = "inbox." + uuid.v1();
-	newMessage[key] = {
-		type: type,
-		timestamp: timestamp,
-		source: source,
-		content: content
-	};
-	s.messages.save(key, newMessage[key]);
+	data.source = data.endpoint; //temp
+	s.messages.save(key, data);
+	var newMessage = {};
+	newMessage[key] = data;
 	wss.broadcastEvent("inboxUpdate", newMessage);
 };
 
@@ -52,6 +53,10 @@ exports.inboxFetch = function(count, reference_id, cb) {
 		count = 50;
 	}
 	s.messages.fetch(count, reference_id, cb);
+};
+
+exports.messageSend = function (data, cb) {
+	contentProviders[data.type].sendContent(data, cb);
 };
 
 exports.messageDelete = function (data, cbErr) {

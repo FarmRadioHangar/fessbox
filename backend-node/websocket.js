@@ -17,9 +17,11 @@ var serializeEvent = function (event, data) {
 var broadcastEvent = function (event, data) {
 	var payload = serializeEvent(event, data);
 	myLib.consoleLog('debug', 'broadcastEvent', payload);
-	wss.clients.forEach(function each(client) {
-		client.send(payload);
-	});
+	if (wss) {
+		wss.clients.forEach(function each(client) {
+			client.send(payload);
+		});
+	}
 };
 
 exports.broadcastEvent = broadcastEvent;
