@@ -429,7 +429,9 @@ var initialState = {
 };
 
 function channelList(channels) {
-  return Object.entries(channels).map(function (_ref) {
+  return Object.entries(channels).filter(function (item) {
+    return 'operator' !== item[1].direction;
+  }).map(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2);
 
     var id = _ref2[0];
@@ -2468,6 +2470,8 @@ var _Subheader2 = _interopRequireDefault(_Subheader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -2519,6 +2523,21 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
     value: function handleUpdate() {
       var text = this.refs.autoComplete.state.searchText;
       this.props.sendMessage('addrBookSuggestions', text);
+    }
+  }, {
+    key: 'handleConfirm',
+    value: function handleConfirm() {
+      var sendMessage = this.props.sendMessage;
+
+      var key = Date.now();
+      var payload = _defineProperty({}, key, {
+        type: 'sms_out',
+        endpoint: '',
+        content: '',
+        channel_id: ''
+      });
+      console.log(payload);
+      //sendMessage('messageSend', payload)
     }
   }, {
     key: 'renderFormFields',
@@ -2646,7 +2665,7 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
         label: 'Send',
         primary: true,
         keyboardFocused: true,
-        onTouchTap: onClose
+        onTouchTap: this.handleConfirm.bind(this)
       })];
       /*
       const originalMessage = message ? (
