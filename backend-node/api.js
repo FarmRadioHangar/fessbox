@@ -43,7 +43,9 @@ exports.inboxUpdate = function (data) {
 	var key = "inbox." + uuid.v1();
 	data.source = data.endpoint; //temp
 	s.messages.save(key, data);
-	wss.broadcastEvent("inboxUpdate", { key: data });
+	var newMessage = {};
+	newMessage[key] = data;
+	wss.broadcastEvent("inboxUpdate", newMessage);
 };
 
 exports.inboxFetch = function(count, reference_id, cb) {

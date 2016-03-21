@@ -1076,10 +1076,11 @@ ami.on('dongleportfail', function(evt) {
 
 ami.on('donglesmsstatus', function(evt) {
 //	{"event":"DongleSMSStatus","privilege":"call,all","device":"airtel1","id":"0x73c4dcc8","status":"NotSent"}
+//	{"event":"DongleSMSStatus","privilege":"call,all","device":"airtel1","id":"0x7392f0e8","status":"Sent"}
 	console.error(JSON.stringify(evt));
 	if (s.asterisk.sms_out[evt.id]) {
 		clearTimeout(s.asterisk.sms_out[evt.id].timeout);
-		if (evt.status === "NotSent") {
+		if (evt.status !== "Sent") {
 			s.asterisk.sms_out[evt.id].cb("Message not sent");
 		} else {
 			//todo: Use .endpoint instead of .contact_id and .source
