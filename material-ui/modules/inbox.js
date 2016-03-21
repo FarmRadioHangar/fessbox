@@ -121,7 +121,7 @@ class Inbox extends React.Component {
             <ListItem
               onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
               leftAvatar         = {message.read ? readIcon : unreadIcon}
-              primaryText        = {message.source}
+              primaryText        = {message.endpoint}
               secondaryTextLines = {2}
               secondaryText      = {
                 <div style={styles.secondary}>

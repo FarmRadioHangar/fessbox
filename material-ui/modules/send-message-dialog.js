@@ -104,7 +104,7 @@ class SendMessageDialog extends React.Component {
             {simSelect}
             <TextField
               disabled          = {true}
-              value             = {message.source}
+              value             = {message.endpoint}
               floatingLabelText = 'Send to'
               fullWidth         = {true}
             />
