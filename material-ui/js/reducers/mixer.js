@@ -4,11 +4,13 @@ import {
 } from '../constants'
 
 const initialState = {
-  channelList  : [],
+  channelList : [],
 }
 
 function channelList(channels) {
-  return Object.entries(channels).map(([id, chan]) => {
+  return Object.entries(channels)
+      .filter(item => 'operator' !== item[1].direction)
+      .map(([id, chan]) => { 
     return {
       id,
       ...chan,
