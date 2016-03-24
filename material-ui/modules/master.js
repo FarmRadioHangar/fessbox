@@ -69,8 +69,7 @@ const styles = {
   },
 }
 
-const MasterComponent = connect(state => ({
+export default connect(state => ({
   mixer : state.mixer,
 }))(Master)
 
-export default MasterComponent
