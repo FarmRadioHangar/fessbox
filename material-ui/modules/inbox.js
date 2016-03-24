@@ -184,8 +184,7 @@ const styles = {
   },
 }
 
-const InboxComponent = connect(state => ({
+export default connect(state => ({
   inbox : state.inbox,
 }))(Inbox)
 
-export default InboxComponent
