@@ -6,6 +6,8 @@ import users  from './reducers/users'
 
 import { combineReducers } 
   from 'redux'
+import {reducer as formReducer} 
+  from 'redux-form'
 
 export default combineReducers({
   mixer,
@@ -13,4 +15,5 @@ export default combineReducers({
   app,
   users,
   toastr,
+  form: formReducer,    
 })
