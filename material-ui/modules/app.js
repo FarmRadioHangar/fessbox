@@ -8,6 +8,8 @@ import CallDialog        from './call-dialog'
 
 import { connect } 
   from 'react-redux'
+import { reset } 
+  from 'redux-form'
 
 import AppBar   
   from 'material-ui/lib/app-bar'
@@ -40,7 +42,7 @@ class App extends React.Component {
   }
   renderAppBar() {
     return (
-      <AppBar title='The Box' />
+      <AppBar title='VoxBox' />
     )
   }
   renderDialog() {
@@ -67,7 +69,7 @@ class App extends React.Component {
   }
   renderTabs() {
     const { tab } = this.state
-    const { sendMessage, inbox : { unreadCount } } = this.props
+    const { dispatch, sendMessage, inbox : { unreadCount } } = this.props
     return (
       <Tabs value={tab}>
         <Tab
@@ -122,8 +124,11 @@ class App extends React.Component {
       case 'inbox':
         return (
           <FloatingActionButton 
-            onClick = {() => this.setState({dialog: 'send-message', message: null})}
-            style   = {styles.fab}>
+            onClick = {() => {
+	      this.setState({dialog: 'send-message'});
+	      dispatch(reset('sendSMS'))
+	    }}
+            style = {styles.fab}>
             <IconCommunicationMessage />
           </FloatingActionButton>
         )
@@ -168,10 +173,9 @@ const styles = {
   },
 }
 
-const AppComponent = connect(state => ({
+export default connect(state => ({
   inbox : state.inbox,
   app   : state.app,
   mixer : state.mixer,
 }))(App)
 
-export default AppComponent
