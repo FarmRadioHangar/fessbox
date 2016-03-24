@@ -64,8 +64,7 @@ const styles = {
   }
 }
 
-const UiComponent = connect(state => ({
+export default connect(state => ({
   app : state.app,
 }))(Ui)
 
-export default UiComponent
