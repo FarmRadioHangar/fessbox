@@ -15,6 +15,8 @@ import MenuItem
   from 'material-ui/lib/menus/menu-item'
 import Subheader 
   from 'material-ui/lib/Subheader'
+import { reduxForm }
+  from 'redux-form'
 
 function getTitle(dialog) {
   switch (dialog) {
@@ -51,7 +53,7 @@ class SendMessageDialog extends React.Component {
     //sendMessage('messageSend', payload)
   }
   renderFormFields() {
-    const { dialog, message, channels } = this.props
+    const { dialog, message, channels, fields : { recipient, content } } = this.props
     const simSelect = (
       <SelectField 
         floatingLabelText = 'SIM card'
@@ -75,7 +77,7 @@ class SendMessageDialog extends React.Component {
               ref               = 'autoComplete'
               hintText          = {'Recipient\'s phone number'}
               dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
-              onUpdateInput     = {::this.handleUpdate)}
+              onUpdateInput     = {::this.handleUpdate}
               floatingLabelText = 'Send to'
               fullWidth         = {true}
             />
@@ -122,22 +124,27 @@ class SendMessageDialog extends React.Component {
         return (
           <div>
             {simSelect}
-            <AutoComplete
-              ref               = 'autoComplete'
-              hintText          = {'Recipient\'s phone number'}
-              dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
-              onUpdateInput     = {::this.handleUpdate}
+            <TextField
+	      {...recipient}
+	      errorText         = {recipient.touched && recipient.error && recipient.error}
               floatingLabelText = 'Send to'
+              hintText          = {'Recipient\'s phone number'}
               fullWidth         = {true}
             />
             <TextField
+	      {...content}
+	      errorText         = {content.touched && content.error && content.error}
               floatingLabelText = 'Message content'
               hintText          = 'Type your message here'
               fullWidth         = {true}
               multiLine         = {true}
               rows              = {3} 
             />
-            <div>Characters remaining: 240</div>
+	    <div>
+	      {content.value && content.value.length <= 160 && (
+                <div>Characters remaining: {160-content.value.length}</div>
+	      )}
+            </div>
           </div>
         )
     }
@@ -182,4 +189,30 @@ class SendMessageDialog extends React.Component {
   }
 }
 
-export default SendMessageDialog
+function validatePhoneNumber(number) {
+  var regex = /^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/
+  return regex.test(number)
+}
+
+const validate = values => {
+  let errors = {}
+  if (!values.content) {
+    errors.content = 'Required'
+  }
+  if (values.content && values.content.length > 160) {
+    errors.content = 'Message is too long'
+  }
+  if (!values.recipient) {
+    errors.recipient = 'Required'
+  }
+  if (!validatePhoneNumber(values.recipient)) {
+    errors.recipient = 'Not a valid phone number'
+  }
+  return errors
+}
+
+export default reduxForm({ 
+  form   : 'sendSMS',                           
+  fields : ['recipient', 'content'],
+  validate,
+})(SendMessageDialog)
