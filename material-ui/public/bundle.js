@@ -872,6 +872,8 @@ var App = _wrapComponent('App')(function (_React$Component) {
     value: function renderFAB() {
       var _this4 = this;
 
+      var dispatch = this.props.dispatch;
+
       switch (this.state.tab) {
         case 'mixer':
           return _react3.default.createElement(

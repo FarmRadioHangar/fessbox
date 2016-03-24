@@ -112,6 +112,7 @@ class App extends React.Component {
     )
   }
   renderFAB() {
+    const { dispatch } = this.props
     switch (this.state.tab) {
       case 'mixer':
         return (
