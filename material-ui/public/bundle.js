@@ -2053,7 +2053,7 @@ var Inbox = _wrapComponent('Inbox')(function (_React$Component) {
                 return dispatch(message.read ? (0, _actions.toggleMessageSelected)(message.id) : (0, _actions.toggleMessageRead)(message.id));
               },
               leftAvatar: message.read ? readIcon : unreadIcon,
-              primaryText: message.source,
+              primaryText: message.endpoint,
               secondaryTextLines: 2,
               secondaryText: _react3.default.createElement(
                 'div',
@@ -2604,7 +2604,7 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
             simSelect,
             _react3.default.createElement(_textField2.default, {
               disabled: true,
-              value: message.source,
+              value: message.endpoint,
               floatingLabelText: 'Send to',
               fullWidth: true
             }),

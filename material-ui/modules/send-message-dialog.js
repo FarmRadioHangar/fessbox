@@ -31,6 +31,9 @@ function getTitle(dialog) {
 class SendMessageDialog extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      messageContent: '',
+    }
   }
   handleUpdate() {
     const text = this.refs.autoComplete.state.searchText
@@ -49,6 +52,8 @@ class SendMessageDialog extends React.Component {
     }
     console.log(payload)
     //sendMessage('messageSend', payload)
+  }
+  handleChangeContent() {
   }
   renderFormFields() {
     const { dialog, message, channels } = this.props
@@ -75,7 +80,7 @@ class SendMessageDialog extends React.Component {
               ref               = 'autoComplete'
               hintText          = {'Recipient\'s phone number'}
               dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
-              onUpdateInput     = {this.handleUpdate.bind(this)}
+              onUpdateInput     = {::this.handleUpdate)}
               floatingLabelText = 'Send to'
               fullWidth         = {true}
             />
@@ -136,6 +141,8 @@ class SendMessageDialog extends React.Component {
               fullWidth         = {true}
               multiLine         = {true}
               rows              = {3} 
+	      value             = {this.state.messageContent}
+	      onBlur            = {::this.handleChangeContent}
             />
             <div>Characters remaining: 240</div>
           </div>
