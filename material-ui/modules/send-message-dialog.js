@@ -126,7 +126,7 @@ class SendMessageDialog extends React.Component {
               ref               = 'autoComplete'
               hintText          = {'Recipient\'s phone number'}
               dataSource        = {['Bob', 'Alice', 'Knuth', 'Greg', 'Alex', 'Adrian']}
-              onUpdateInput     = {this.handleUpdate.bind(this)}
+              onUpdateInput     = {::this.handleUpdate}
               floatingLabelText = 'Send to'
               fullWidth         = {true}
             />

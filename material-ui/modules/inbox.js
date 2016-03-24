@@ -44,7 +44,6 @@ class Inbox extends React.Component {
     this.state = {
       confirmDeleteMessage : null,
     }
-    this.handleCloseDialog = this.handleCloseDialog.bind(this)
   }
   handleCloseDialog() {
     this.setState({
@@ -65,12 +64,12 @@ class Inbox extends React.Component {
       <FlatButton
         label      = 'Cancel'
         secondary  = {true}
-        onTouchTap = {this.handleCloseDialog}
+        onTouchTap = {::this.handleCloseDialog}
       />,
       <FlatButton
         label      = 'Delete'
         primary    = {true}
-        onTouchTap = {this.handleConfirmDelete.bind(this)}
+        onTouchTap = {::this.handleConfirmDelete}
       />,
     ]
     return (
@@ -79,7 +78,7 @@ class Inbox extends React.Component {
         actions        = {actions}
         modal          = {true}
         open           = {!!this.state.confirmDeleteMessage}
-        onRequestClose = {this.handleCloseDialog}>
+        onRequestClose = {::this.handleCloseDialog}>
         Do you really want to delete this message?
       </Dialog>
     )
