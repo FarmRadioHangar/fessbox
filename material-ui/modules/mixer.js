@@ -25,8 +25,7 @@ class Mixer extends React.Component {
   }
 }
 
-const MixerComponent = connect(state => ({
+export default connect(state => ({
   mixer : state.mixer,
 }))(Mixer)
 
-export default MixerComponent
