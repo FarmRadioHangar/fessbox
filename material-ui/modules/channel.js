@@ -11,6 +11,10 @@ import FlatButton
   from 'material-ui/lib/flat-button'
 import Divider
   from 'material-ui/lib/divider'
+import IconVolumeUp
+  from 'material-ui/lib/svg-icons/av/volume-up'
+import IconButton
+  from 'material-ui/lib/icon-button'
 
 import { green400 } 
   from 'material-ui/lib/styles/colors'
@@ -18,6 +22,12 @@ import { green400 }
 class Channel extends React.Component {
   constructor(props) {
     super(props)
+  }
+  updateVolume(e, value) {
+    const { id, sendMessage } = this.props
+    sendMessage('channelVolume', { 
+      [id]: value
+    })
   }
   setMode(newMode) {
     const { id, mode, sendMessage } = this.props
@@ -28,7 +38,13 @@ class Channel extends React.Component {
     }
   }
   renderControls() {
-    const { id, level, mode, muted } = this.props
+    const { 
+      id, 
+      level, 
+      mode, 
+      muted,
+      sendMessage,
+    } = this.props
     switch (mode) {
       case 'defunct':
         return (
@@ -41,12 +57,16 @@ class Channel extends React.Component {
             <div style={styles.avatar}>
               <Avatar icon={<i className='material-icons'>remove</i>} />
             </div>
+            <IconButton>
+              <IconVolumeUp />
+            </IconButton>
             <div style={styles.slider}>
               <Slider 
-                onChange      = {() => {}}
+                onChange      = {::this.updateVolume}
                 disabled      = {muted}
                 min           = {1}
                 max           = {100}
+                value         = {level}
                 defaultValue  = {level} />
             </div>
           </div>
@@ -104,9 +124,8 @@ class Channel extends React.Component {
             borderLeft : `12px solid ${colors[mode] || green400}`,
           }}>
           <ChannelToolbar {...this.props} />
-          {::this.renderControls()}
-          {/* <div>{''+this.props.mode}</div> */}
-          {::this.renderActions()}
+          {this.renderControls()}
+          {this.renderActions()}
         </Paper>
       </div>
     )
