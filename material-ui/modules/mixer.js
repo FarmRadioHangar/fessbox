@@ -13,7 +13,7 @@ class Mixer extends React.Component {
     const { mixer : { channelList }, sendMessage } = this.props
     return (
       <div>
-        <Master />
+        <Master sendMessage={sendMessage} />
         <div style={{maxWidth: '900px', margin: '0 auto'}}>
           {channelList.map(channel => (
             <Channel {...channel} 
