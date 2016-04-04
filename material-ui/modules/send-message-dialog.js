@@ -18,22 +18,7 @@ import Subheader
 import { reduxForm }
   from 'redux-form'
 
-function getTitle(dialog) {
-  switch (dialog) {
-    case 'reply-to-message':
-      return 'Reply to message'
-    case 'forward-message':
-      return 'Forward message'
-    case 'send-message':
-    default:
-      return 'Send message'
-  }
-}
-
 class SendMessageDialog extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   handleUpdate() {
     const text = this.refs.autoComplete.state.searchText
     this.props.sendMessage('addrBookSuggestions', text)
@@ -90,7 +75,8 @@ class SendMessageDialog extends React.Component {
               floatingLabelText = 'Send to'
               fullWidth         = {true}
             />
-            <TextField
+            <TextField {...content}
+	      errorText         = {content.touched && content.error}
               defaultValue      = {message.content}
               floatingLabelText = 'Message content'
               hintText          = 'Forwarded message'
@@ -98,7 +84,11 @@ class SendMessageDialog extends React.Component {
               multiLine         = {true}
               rows              = {3} 
             />
-            <div>Characters remaining: 255</div>
+	    <div>
+	      {content.value && content.value.length <= 160 && (
+                <div>Characters remaining: {160-content.value.length}</div>
+	      )}
+            </div>
           </div>
         )
       case 'reply-to-message':
@@ -119,14 +109,19 @@ class SendMessageDialog extends React.Component {
               floatingLabelText = 'Send to'
               fullWidth         = {true}
             />
-            <TextField
+            <TextField {...content}
+	      errorText         = {content.touched && content.error}
               floatingLabelText = 'Your reply'
               hintText          = 'Type your message here'
               fullWidth         = {true}
               multiLine         = {true}
               rows              = {3} 
             />
-            <div>Characters remaining: 255</div>
+	    <div>
+	      {content.value && content.value.length <= 160 && (
+                <div>Characters remaining: {160-content.value.length}</div>
+	      )}
+            </div>
           </div>
         )
       case 'send-message':
@@ -180,6 +175,17 @@ class SendMessageDialog extends React.Component {
 	})}
       />,
     ]
+    const getTitle = dialog => {
+      switch (dialog) {
+        case 'reply-to-message':
+          return 'Reply to message'
+        case 'forward-message':
+          return 'Forward message'
+        case 'send-message':
+        default:
+          return 'Send message'
+      }
+    }
     return (
       <Dialog
         title          = {getTitle(dialog)}

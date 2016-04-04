@@ -2603,25 +2603,13 @@ function _wrapComponent(id) {
   };
 }
 
-function getTitle(dialog) {
-  switch (dialog) {
-    case 'reply-to-message':
-      return 'Reply to message';
-    case 'forward-message':
-      return 'Forward message';
-    case 'send-message':
-    default:
-      return 'Send message';
-  }
-}
-
 var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Component) {
   _inherits(SendMessageDialog, _React$Component);
 
-  function SendMessageDialog(props) {
+  function SendMessageDialog() {
     _classCallCheck(this, SendMessageDialog);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(SendMessageDialog).call(this, props));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SendMessageDialog).apply(this, arguments));
   }
 
   _createClass(SendMessageDialog, [{
@@ -2664,7 +2652,9 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
           style: { width: '100%' },
           value: 1,
           onChange: function onChange() {} },
-        channels.map(function (channel, i) {
+        channels.filter(function (chan) {
+          return 'free' == chan.mode;
+        }).map(function (channel, i) {
           return _react3.default.createElement(_menuItem2.default, {
             key: i,
             value: i,
@@ -2685,18 +2675,24 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
               floatingLabelText: 'Send to',
               fullWidth: true
             }),
-            _react3.default.createElement(_textField2.default, {
+            _react3.default.createElement(_textField2.default, _extends({}, content, {
+              errorText: content.touched && content.error,
               defaultValue: message.content,
               floatingLabelText: 'Message content',
               hintText: 'Forwarded message',
               fullWidth: true,
               multiLine: true,
               rows: 3
-            }),
+            })),
             _react3.default.createElement(
               'div',
               null,
-              'Characters remaining: 255'
+              content.value && content.value.length <= 160 && _react3.default.createElement(
+                'div',
+                null,
+                'Characters remaining: ',
+                160 - content.value.length
+              )
             )
           );
         case 'reply-to-message':
@@ -2718,17 +2714,23 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
               floatingLabelText: 'Send to',
               fullWidth: true
             }),
-            _react3.default.createElement(_textField2.default, {
+            _react3.default.createElement(_textField2.default, _extends({}, content, {
+              errorText: content.touched && content.error,
               floatingLabelText: 'Your reply',
               hintText: 'Type your message here',
               fullWidth: true,
               multiLine: true,
               rows: 3
-            }),
+            })),
             _react3.default.createElement(
               'div',
               null,
-              'Characters remaining: 255'
+              content.value && content.value.length <= 160 && _react3.default.createElement(
+                'div',
+                null,
+                'Characters remaining: ',
+                160 - content.value.length
+              )
             )
           );
         case 'send-message':
@@ -2786,6 +2788,17 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
           console.log(data);
         })
       })];
+      var getTitle = function getTitle(dialog) {
+        switch (dialog) {
+          case 'reply-to-message':
+            return 'Reply to message';
+          case 'forward-message':
+            return 'Forward message';
+          case 'send-message':
+          default:
+            return 'Send message';
+        }
+      };
       return _react3.default.createElement(
         _dialog2.default,
         {
