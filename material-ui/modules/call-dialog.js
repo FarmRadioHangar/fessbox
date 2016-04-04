@@ -11,13 +11,20 @@ import SelectField
   from 'material-ui/lib/select-field'
 import MenuItem 
   from 'material-ui/lib/menus/menu-item'
+import { reduxForm }
+  from 'redux-form'
 
 class CallDialog extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
-    const { open, onClose, channels } = this.props
+    const { 
+      open, 
+      onClose, 
+      channels, 
+      fields : {
+        number,
+      },
+      error,
+    } = this.props
     const actions = [
       <FlatButton
         label           = 'Cancel'
@@ -29,6 +36,7 @@ class CallDialog extends React.Component {
         primary         = {true}
         keyboardFocused = {true}
         onTouchTap      = {onClose}
+	disabled        = {!!(number.error)}
       />,
     ]
     return (
@@ -50,14 +58,31 @@ class CallDialog extends React.Component {
               primaryText   = {channel.id} />
           ))} 
         </SelectField>
-        <TextField
+        <TextField {...number}
           floatingLabelText = 'Number'
           hintText          = 'Number to call'
           fullWidth         = {true}
+          errorText         = {number.touched && number.error}
         />
       </Dialog>
     )
   }
 }
 
-export default CallDialog
+function validatePhoneNumber(number) {
+  return /^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/.test(number)
+}
+
+const validate = values => {
+  let errors = {}
+  if (!validatePhoneNumber(values.number)) {
+    errors.number = 'Not a valid phone number'
+  }
+  return errors
+}
+
+export default reduxForm({ 
+  form   : 'callOut',                           
+  fields : ['number'],
+  validate,
+})(CallDialog)

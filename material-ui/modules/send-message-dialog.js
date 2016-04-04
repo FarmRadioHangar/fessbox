@@ -157,7 +157,13 @@ class SendMessageDialog extends React.Component {
     }
   }
   render() {
-    const { open, onClose, dialog, handleSubmit, fields } = this.props
+    const { 
+      open, 
+      onClose, 
+      dialog, 
+      handleSubmit, 
+      fields, 
+    } = this.props
     const actions = [
       <FlatButton
         label           = 'Cancel'

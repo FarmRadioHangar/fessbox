@@ -989,6 +989,8 @@ var _babelTransform = require('livereactload/babel-transform');
 
 var _babelTransform2 = _interopRequireDefault(_babelTransform);
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _reactDom = require('react-dom');
@@ -1014,6 +1016,8 @@ var _selectField2 = _interopRequireDefault(_selectField);
 var _menuItem = require('material-ui/lib/menus/menu-item');
 
 var _menuItem2 = _interopRequireDefault(_menuItem);
+
+var _reduxForm = require('redux-form');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1058,6 +1062,8 @@ var CallDialog = _wrapComponent('CallDialog')(function (_React$Component) {
       var open = _props.open;
       var onClose = _props.onClose;
       var channels = _props.channels;
+      var number = _props.fields.number;
+      var error = _props.error;
 
       var actions = [_react3.default.createElement(_flatButton2.default, {
         label: 'Cancel',
@@ -1067,7 +1073,8 @@ var CallDialog = _wrapComponent('CallDialog')(function (_React$Component) {
         label: 'Call',
         primary: true,
         keyboardFocused: true,
-        onTouchTap: onClose
+        onTouchTap: onClose,
+        disabled: !!number.error
       })];
       return _react3.default.createElement(
         _dialog2.default,
@@ -1091,11 +1098,12 @@ var CallDialog = _wrapComponent('CallDialog')(function (_React$Component) {
               primaryText: channel.id });
           })
         ),
-        _react3.default.createElement(_textField2.default, {
+        _react3.default.createElement(_textField2.default, _extends({}, number, {
           floatingLabelText: 'Number',
           hintText: 'Number to call',
-          fullWidth: true
-        })
+          fullWidth: true,
+          errorText: number.touched && number.error
+        }))
       );
     }
   }]);
@@ -1103,9 +1111,26 @@ var CallDialog = _wrapComponent('CallDialog')(function (_React$Component) {
   return CallDialog;
 }(_react3.default.Component));
 
-exports.default = CallDialog;
+function validatePhoneNumber(number) {
+  return (/^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/.test(number)
+  );
+}
 
-},{"livereactload/babel-transform":313,"material-ui/lib/dialog":336,"material-ui/lib/flat-button":341,"material-ui/lib/menus/menu-item":349,"material-ui/lib/select-field":361,"material-ui/lib/text-field":395,"react":819,"react-dom":501}],15:[function(require,module,exports){
+var validate = function validate(values) {
+  var errors = {};
+  if (!validatePhoneNumber(values.number)) {
+    errors.number = 'Not a valid phone number';
+  }
+  return errors;
+};
+
+exports.default = (0, _reduxForm.reduxForm)({
+  form: 'callOut',
+  fields: ['number'],
+  validate: validate
+})(CallDialog);
+
+},{"livereactload/babel-transform":313,"material-ui/lib/dialog":336,"material-ui/lib/flat-button":341,"material-ui/lib/menus/menu-item":349,"material-ui/lib/select-field":361,"material-ui/lib/text-field":395,"react":819,"react-dom":501,"redux-form":843}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
