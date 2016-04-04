@@ -2252,7 +2252,9 @@ var Master = _wrapComponent('Master')(function (_React$Component) {
   _createClass(Master, [{
     key: 'render',
     value: function render() {
-      var master = this.props.mixer.master;
+      var _props = this.props;
+      var master = _props.mixer.master;
+      var sendMessage = _props.sendMessage;
 
       return _react3.default.createElement(
         _paper2.default,
@@ -2400,12 +2402,16 @@ var Mixer = _wrapComponent('Mixer')(function (_React$Component) {
         'div',
         null,
         _react3.default.createElement(_master2.default, null),
-        channelList.map(function (channel) {
-          return _react3.default.createElement(_channel2.default, _extends({}, channel, {
-            key: channel.id,
-            sendMessage: sendMessage
-          }));
-        })
+        _react3.default.createElement(
+          'div',
+          { style: { maxWidth: '900px', margin: '0 auto' } },
+          channelList.map(function (channel) {
+            return _react3.default.createElement(_channel2.default, _extends({}, channel, {
+              key: channel.id,
+              sendMessage: sendMessage
+            }));
+          })
+        )
       );
     }
   }]);
