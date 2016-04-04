@@ -69,12 +69,12 @@ class SendMessageDialog extends React.Component {
         style             = {{width: '100%'}}
         value             = {1} 
         onChange          = {() => {}}>
-        {channels.map((channel, i) => (
+        {channels.filter(chan => 'free' == chan.mode).map((channel, i) => 
           <MenuItem 
             key           = {i}
             value         = {i}
             primaryText   = {channel.id} />
-        ))} 
+        )} 
       </SelectField>
     )
     switch (dialog) {

@@ -899,7 +899,8 @@ var App = _wrapComponent('App')(function (_React$Component) {
             _floatingActionButton2.default,
             {
               onClick: function onClick() {
-                return _this4.setState({ dialog: 'call' });
+                _this4.setState({ dialog: 'call' });
+                dispatch((0, _reduxForm.reset)('callOut'));
               },
               style: styles.fab },
             _react3.default.createElement(_dialpad2.default, null)
@@ -1049,10 +1050,10 @@ function _wrapComponent(id) {
 var CallDialog = _wrapComponent('CallDialog')(function (_React$Component) {
   _inherits(CallDialog, _React$Component);
 
-  function CallDialog(props) {
+  function CallDialog() {
     _classCallCheck(this, CallDialog);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(CallDialog).call(this, props));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(CallDialog).apply(this, arguments));
   }
 
   _createClass(CallDialog, [{
@@ -1091,7 +1092,9 @@ var CallDialog = _wrapComponent('CallDialog')(function (_React$Component) {
             style: { width: '100%' },
             value: 1,
             onChange: function onChange() {} },
-          channels.map(function (channel, i) {
+          channels.filter(function (chan) {
+            return 'free' == chan.mode;
+          }).map(function (channel, i) {
             return _react3.default.createElement(_menuItem2.default, {
               key: i,
               value: i,
