@@ -2,10 +2,10 @@ import {
   APP_INITIALIZE, 
   APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
+  CHANNEL_VOLUME_UPDATE,
   MESSAGE_TOGGLE_PROPERTY,
   MESSAGE_REMOVE,
 } from './constants'
-
 export function updateAppStatus(status, error) {
   return { 
     type: APP_UPDATE_STATUS, 
@@ -58,5 +58,13 @@ export function updateChannel(id, data) {
     type : CHANNEL_UPDATE, 
     id,
     data,
+  }
+}
+
+export function updateChannelVolume(id, level) {
+  return {
+    type : CHANNEL_VOLUME_UPDATE, 
+    id,
+    level,
   }
 }
