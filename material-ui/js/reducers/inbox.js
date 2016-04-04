@@ -10,7 +10,7 @@ const initialState = {
   visibleMessages : [],
 }
 
-function reducer(state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
     case APP_INITIALIZE: {
       const { ids } = action.data.inbox
@@ -52,5 +52,3 @@ function reducer(state = initialState, action) {
       return state
   }
 }
-
-export default reducer
