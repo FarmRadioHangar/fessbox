@@ -11,6 +11,7 @@ exports.toggleMessageSelected = toggleMessageSelected;
 exports.toggleMessageFavorite = toggleMessageFavorite;
 exports.removeMessage = removeMessage;
 exports.updateChannel = updateChannel;
+exports.updateChannelVolume = updateChannelVolume;
 
 var _constants = require('./constants');
 
@@ -68,6 +69,14 @@ function updateChannel(id, data) {
   };
 }
 
+function updateChannelVolume(id, level) {
+  return {
+    type: _constants.CHANNEL_VOLUME_UPDATE,
+    id: id,
+    level: level
+  };
+}
+
 },{"./constants":2}],2:[function(require,module,exports){
 'use strict';
 
@@ -85,6 +94,7 @@ var MESSAGE_TOGGLE_PROPERTY = exports.MESSAGE_TOGGLE_PROPERTY = 'MESSAGE_TOGGLE_
 var MESSAGE_REMOVE = exports.MESSAGE_REMOVE = 'MESSAGE_REMOVE';
 
 var CHANNEL_UPDATE = exports.CHANNEL_UPDATE = 'CHANNEL_UPDATE';
+var CHANNEL_VOLUME_UPDATE = exports.CHANNEL_VOLUME_UPDATE = 'CHANNEL_VOLUME_UPDATE';
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -222,6 +232,11 @@ exports.default = function (eventType, data) {
         }
       });
       break;
+    case 'channelVolumeChange':
+      Object.keys(data).forEach(function (id) {
+        _store2.default.dispatch((0, _actions.updateChannelVolume)(id, data[id]));
+      });
+      break;
     case 'inboxUpdate':
       Object.keys(data).forEach(function (id) {
         var message = data[id];
@@ -307,14 +322,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _constants = require('../constants');
-
-var initialState = {
-  'status': _constants.APP_STATUS_CONNECTING,
-  'error': null
-};
-
-function reducer() {
+exports.default = function () {
   var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
   var action = arguments[1];
 
@@ -331,9 +339,14 @@ function reducer() {
     default:
       return state;
   }
-}
+};
 
-exports.default = reducer;
+var _constants = require('../constants');
+
+var initialState = {
+  'status': _constants.APP_STATUS_CONNECTING,
+  'error': null
+};
 
 },{"../constants":2}],7:[function(require,module,exports){
 'use strict';
@@ -344,17 +357,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _constants = require('../constants');
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var initialState = {
-  messageCount: 0,
-  unreadCount: 0,
-  visibleMessages: []
-};
-
-function reducer() {
+exports.default = function () {
   var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
   var action = arguments[1];
 
@@ -408,9 +411,17 @@ function reducer() {
     default:
       return state;
   }
-}
+};
 
-exports.default = reducer;
+var _constants = require('../constants');
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var initialState = {
+  messageCount: 0,
+  unreadCount: 0,
+  visibleMessages: []
+};
 
 },{"../constants":2}],8:[function(require,module,exports){
 'use strict';
@@ -422,6 +433,40 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+exports.default = function () {
+  var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _constants.APP_INITIALIZE:
+      {
+        return _extends({}, action.data.mixer, {
+          channelList: channelList(action.data.mixer.channels)
+        });
+      }
+    case _constants.CHANNEL_UPDATE:
+      {
+        var channels = _extends({}, state.channels, _defineProperty({}, action.id, action.data));
+        return _extends({}, state, {
+          channels: channels,
+          channelList: channelList(channels)
+        });
+      }
+    case _constants.CHANNEL_VOLUME_UPDATE:
+      {
+        var _channels = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
+          level: action.level
+        })));
+        return _extends({}, state, {
+          channels: _channels,
+          channelList: channelList(_channels)
+        });
+      }
+    default:
+      return state;
+  }
+};
 
 var _constants = require('../constants');
 
@@ -446,28 +491,6 @@ function channelList(channels) {
   });
 }
 
-function reducer() {
-  var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
-  var action = arguments[1];
-
-  switch (action.type) {
-    case _constants.APP_INITIALIZE:
-      return _extends({}, action.data.mixer, {
-        channelList: channelList(action.data.mixer.channels)
-      });
-    case _constants.CHANNEL_UPDATE:
-      var channels = _extends({}, state.channels, _defineProperty({}, action.id, action.data));
-      return _extends({}, state, {
-        channels: channels,
-        channelList: channelList(channels)
-      });
-    default:
-      return state;
-  }
-}
-
-exports.default = reducer;
-
 },{"../constants":2}],9:[function(require,module,exports){
 'use strict';
 
@@ -479,16 +502,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _constants = require('../constants');
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var initialState = {
-  nextKey: 1,
-  messages: []
-};
-
-function reducer() {
+exports.default = function () {
   var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
   var action = arguments[1];
 
@@ -539,9 +553,16 @@ function reducer() {
     default:
       return state;
   }
-}
+};
 
-exports.default = reducer;
+var _constants = require('../constants');
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var initialState = {
+  nextKey: 1,
+  messages: []
+};
 
 },{"../constants":2}],10:[function(require,module,exports){
 'use strict';
@@ -550,11 +571,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _constants = require('../constants');
-
-var initialState = {};
-
-function reducer() {
+exports.default = function () {
   var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
   var action = arguments[1];
 
@@ -564,9 +581,11 @@ function reducer() {
     default:
       return state;
   }
-}
+};
 
-exports.default = reducer;
+var _constants = require('../constants');
+
+var initialState = {};
 
 },{"../constants":2}],11:[function(require,module,exports){
 'use strict';
@@ -1623,6 +1642,14 @@ var _divider = require('material-ui/lib/divider');
 
 var _divider2 = _interopRequireDefault(_divider);
 
+var _volumeUp = require('material-ui/lib/svg-icons/av/volume-up');
+
+var _volumeUp2 = _interopRequireDefault(_volumeUp);
+
+var _iconButton = require('material-ui/lib/icon-button');
+
+var _iconButton2 = _interopRequireDefault(_iconButton);
+
 var _colors = require('material-ui/lib/styles/colors');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1664,12 +1691,21 @@ var Channel = _wrapComponent('Channel')(function (_React$Component) {
   }
 
   _createClass(Channel, [{
-    key: 'setMode',
-    value: function setMode(newMode) {
+    key: 'updateVolume',
+    value: function updateVolume(e, value) {
       var _props = this.props;
       var id = _props.id;
-      var mode = _props.mode;
       var sendMessage = _props.sendMessage;
+
+      sendMessage('channelVolume', _defineProperty({}, id, value));
+    }
+  }, {
+    key: 'setMode',
+    value: function setMode(newMode) {
+      var _props2 = this.props;
+      var id = _props2.id;
+      var mode = _props2.mode;
+      var sendMessage = _props2.sendMessage;
 
       if ('free' != mode) {
         sendMessage('channelMode', _defineProperty({}, id, newMode));
@@ -1678,11 +1714,12 @@ var Channel = _wrapComponent('Channel')(function (_React$Component) {
   }, {
     key: 'renderControls',
     value: function renderControls() {
-      var _props2 = this.props;
-      var id = _props2.id;
-      var level = _props2.level;
-      var mode = _props2.mode;
-      var muted = _props2.muted;
+      var _props3 = this.props;
+      var id = _props3.id;
+      var level = _props3.level;
+      var mode = _props3.mode;
+      var muted = _props3.muted;
+      var sendMessage = _props3.sendMessage;
 
       switch (mode) {
         case 'defunct':
@@ -1702,13 +1739,19 @@ var Channel = _wrapComponent('Channel')(function (_React$Component) {
                 ) })
             ),
             _react3.default.createElement(
+              _iconButton2.default,
+              null,
+              _react3.default.createElement(_volumeUp2.default, null)
+            ),
+            _react3.default.createElement(
               'div',
               { style: styles.slider },
               _react3.default.createElement(_slider2.default, {
-                onChange: function onChange() {},
+                onChange: this.updateVolume.bind(this),
                 disabled: muted,
                 min: 1,
                 max: 100,
+                value: level,
                 defaultValue: level })
             )
           );
@@ -1793,8 +1836,8 @@ var Channel = _wrapComponent('Channel')(function (_React$Component) {
               borderLeft: '12px solid ' + (colors[mode] || _colors.green400)
             }) },
           _react3.default.createElement(_channelToolbar2.default, this.props),
-          this.renderControls.call(this),
-          this.renderActions.call(this)
+          this.renderControls(),
+          this.renderActions()
         )
       );
     }
@@ -1829,7 +1872,7 @@ var styles = {
 
 exports.default = Channel;
 
-},{"./channel-toolbar":16,"livereactload/babel-transform":313,"material-ui/lib/avatar":329,"material-ui/lib/divider":337,"material-ui/lib/flat-button":341,"material-ui/lib/paper":353,"material-ui/lib/slider":362,"material-ui/lib/styles/colors":365,"react":818}],18:[function(require,module,exports){
+},{"./channel-toolbar":16,"livereactload/babel-transform":313,"material-ui/lib/avatar":329,"material-ui/lib/divider":337,"material-ui/lib/flat-button":341,"material-ui/lib/icon-button":344,"material-ui/lib/paper":353,"material-ui/lib/slider":362,"material-ui/lib/styles/colors":365,"material-ui/lib/svg-icons/av/volume-up":377,"react":818}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
