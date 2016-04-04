@@ -117,7 +117,10 @@ class App extends React.Component {
       case 'mixer':
         return (
           <FloatingActionButton 
-            onClick = {() => this.setState({dialog: 'call'})}
+            onClick = {() => {
+              this.setState({dialog: 'call'})
+	      dispatch(reset('callOut'))
+            }}
             style   = {styles.fab}>
             <IconCommunicationDialpad />
           </FloatingActionButton>
@@ -126,7 +129,7 @@ class App extends React.Component {
         return (
           <FloatingActionButton 
             onClick = {() => {
-	      this.setState({dialog: 'send-message'});
+	      this.setState({dialog: 'send-message'})
 	      dispatch(reset('sendSMS'))
 	    }}
             style = {styles.fab}>
