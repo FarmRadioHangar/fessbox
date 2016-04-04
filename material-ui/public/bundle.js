@@ -813,7 +813,7 @@ var App = _wrapComponent('App')(function (_React$Component) {
             ),
             label: 'Mixer',
             value: 'mixer' },
-          _react3.default.createElement(_mixer2.default, null)
+          _react3.default.createElement(_mixer2.default, { sendMessage: sendMessage })
         ),
         _react3.default.createElement(
           _tab2.default,
@@ -2213,6 +2213,10 @@ var _divider = require('material-ui/lib/divider');
 
 var _divider2 = _interopRequireDefault(_divider);
 
+var _iconButton = require('material-ui/lib/icon-button');
+
+var _iconButton2 = _interopRequireDefault(_iconButton);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2271,7 +2275,11 @@ var Master = _wrapComponent('Master')(function (_React$Component) {
           _react3.default.createElement(
             'div',
             null,
-            _react3.default.createElement(_volumeUp2.default, null)
+            _react3.default.createElement(
+              _iconButton2.default,
+              null,
+              _react3.default.createElement(_volumeUp2.default, null)
+            )
           ),
           _react3.default.createElement(
             'div',
@@ -2279,13 +2287,18 @@ var Master = _wrapComponent('Master')(function (_React$Component) {
             _react3.default.createElement(_slider2.default, {
               min: 1,
               max: 100,
-              defaultValue: master.out ? master.out.level : 1
+              defaultValue: master.out ? master.out.level : 1,
+              onChange: function onChange(e) {}
             })
           ),
           _react3.default.createElement(
             'div',
             null,
-            _react3.default.createElement(_mic2.default, null)
+            _react3.default.createElement(
+              _iconButton2.default,
+              null,
+              _react3.default.createElement(_mic2.default, null)
+            )
           ),
           _react3.default.createElement(
             'div',
@@ -2293,7 +2306,8 @@ var Master = _wrapComponent('Master')(function (_React$Component) {
             _react3.default.createElement(_slider2.default, {
               min: 1,
               max: 100,
-              defaultValue: master.in ? master.in.level : 1
+              defaultValue: master.in ? master.in.level : 1,
+              onChange: function onChange(e) {}
             })
           )
         )
@@ -2326,7 +2340,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   };
 })(Master);
 
-},{"livereactload/babel-transform":313,"material-ui/lib/Subheader":321,"material-ui/lib/divider":337,"material-ui/lib/paper":353,"material-ui/lib/slider":362,"material-ui/lib/svg-icons/av/mic":376,"material-ui/lib/svg-icons/av/volume-up":377,"react":818,"react-redux":642}],20:[function(require,module,exports){
+},{"livereactload/babel-transform":313,"material-ui/lib/Subheader":321,"material-ui/lib/divider":337,"material-ui/lib/icon-button":344,"material-ui/lib/paper":353,"material-ui/lib/slider":362,"material-ui/lib/svg-icons/av/mic":376,"material-ui/lib/svg-icons/av/volume-up":377,"react":818,"react-redux":642}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2401,7 +2415,7 @@ var Mixer = _wrapComponent('Mixer')(function (_React$Component) {
       return _react3.default.createElement(
         'div',
         null,
-        _react3.default.createElement(_master2.default, null),
+        _react3.default.createElement(_master2.default, { sendMessage: sendMessage }),
         _react3.default.createElement(
           'div',
           { style: { maxWidth: '900px', margin: '0 auto' } },
