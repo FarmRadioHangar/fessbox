@@ -20,9 +20,6 @@ import { green400 }
   from 'material-ui/lib/styles/colors'
 
 class Channel extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   updateVolume(e, value) {
     const { id, sendMessage } = this.props
     sendMessage('channelVolume', { 
