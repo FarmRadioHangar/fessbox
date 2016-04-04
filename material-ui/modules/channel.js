@@ -11,10 +11,8 @@ import FlatButton
   from 'material-ui/lib/flat-button'
 import Divider
   from 'material-ui/lib/divider'
-import IconVolumeUp
-  from 'material-ui/lib/svg-icons/av/volume-up'
-import IconButton
-  from 'material-ui/lib/icon-button'
+import Toggle
+  from 'material-ui/lib/toggle'
 
 import { green400 } 
   from 'material-ui/lib/styles/colors'
@@ -24,6 +22,12 @@ class Channel extends React.Component {
     const { id, sendMessage } = this.props
     sendMessage('channelVolume', { 
       [id]: value
+    })
+  }
+  toggleMuted(e) {
+    const { id, muted, sendMessage } = this.props
+    sendMessage('channelMuted', {
+      [id]: !muted
     })
   }
   setMode(newMode) {
@@ -54,17 +58,19 @@ class Channel extends React.Component {
             <div style={styles.avatar}>
               <Avatar icon={<i className='material-icons'>remove</i>} />
             </div>
-            <IconButton>
-              <IconVolumeUp />
-            </IconButton>
+            <div style={styles.toggle}>
+              <Toggle 
+                onToggle       = {::this.toggleMuted}
+                defaultToggled = {!muted} />
+            </div>
             <div style={styles.slider}>
               <Slider 
-                onChange      = {::this.updateVolume}
-                disabled      = {muted}
-                min           = {1}
-                max           = {100}
-                value         = {level}
-                defaultValue  = {level} />
+                onChange       = {::this.updateVolume}
+                disabled       = {muted}
+                min            = {1}
+                max            = {100}
+                value          = {level}
+                defaultValue   = {level} />
             </div>
           </div>
         )
@@ -147,8 +153,11 @@ const styles = {
   avatar: {
     padding         : '0 0 0 20px',
   },
+  toggle: {
+    padding         : '0 10px',
+  },
   slider: {
-    margin          : '22px 20px 0 20px',
+    margin          : '22px 20px 0 0',
     width           : '100%',
   },
 }
