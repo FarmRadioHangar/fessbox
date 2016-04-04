@@ -14,12 +14,14 @@ class Mixer extends React.Component {
     return (
       <div>
         <Master />
-        {channelList.map(channel => (
-          <Channel {...channel} 
-            key         = {channel.id}
-            sendMessage = {sendMessage}
-          />
-        ))}
+        <div style={{maxWidth: '900px', margin: '0 auto'}}>
+          {channelList.map(channel => (
+            <Channel {...channel} 
+              key         = {channel.id}
+              sendMessage = {sendMessage}
+            />
+          ))}
+        </div>
       </div>
     )
   }
