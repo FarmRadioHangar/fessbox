@@ -21,7 +21,12 @@ class Master extends React.Component {
     super(props)
   }
   render() {
-    const { mixer : { master } } = this.props
+    const { 
+      mixer : { 
+        master,
+      }, 
+      sendMessage,
+    } = this.props
     return (
       <Paper>
         <Subheader>Master</Subheader>
