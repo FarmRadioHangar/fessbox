@@ -77,7 +77,7 @@ class App extends React.Component {
           icon     = {<span><i className='material-icons'>volume_up</i></span>}
           label    = 'Mixer' 
           value    = 'mixer'>
-          <Mixer />
+          <Mixer sendMessage={sendMessage} />
         </Tab>
         <Tab
           onActive = {() => this.activateTab('inbox')}
