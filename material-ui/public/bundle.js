@@ -2553,6 +2553,7 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
       var _props$fields = _props.fields;
       var recipient = _props$fields.recipient;
       var content = _props$fields.content;
+      var error = _props.error;
 
       var simSelect = _react3.default.createElement(
         _selectField2.default,
@@ -2634,13 +2635,13 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
             null,
             simSelect,
             _react3.default.createElement(_textField2.default, _extends({}, recipient, {
-              errorText: recipient.touched && recipient.error && recipient.error,
+              errorText: recipient.touched && recipient.error,
               floatingLabelText: 'Send to',
               hintText: 'Recipient\'s phone number',
               fullWidth: true
             })),
             _react3.default.createElement(_textField2.default, _extends({}, content, {
-              errorText: content.touched && content.error && content.error,
+              errorText: content.touched && content.error,
               floatingLabelText: 'Message content',
               hintText: 'Type your message here',
               fullWidth: true,
@@ -2667,6 +2668,8 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
       var open = _props2.open;
       var onClose = _props2.onClose;
       var dialog = _props2.dialog;
+      var handleSubmit = _props2.handleSubmit;
+      var fields = _props2.fields;
 
       var actions = [_react3.default.createElement(_flatButton2.default, {
         label: 'Cancel',
@@ -2674,22 +2677,13 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
         onTouchTap: onClose
       }), _react3.default.createElement(_flatButton2.default, {
         label: 'Send',
+        disabled: !!(fields.recipient.error || fields.content.error),
         primary: true,
         keyboardFocused: true,
-        onTouchTap: this.handleConfirm.bind(this)
+        onTouchTap: handleSubmit(function (data) {
+          console.log(data);
+        })
       })];
-      /*
-      const originalMessage = message ? (
-        <TextField
-          floatingLabelText = 'Original message'
-          disabled          = {true}
-          fullWidth         = {true}
-          multiLine         = {true}
-          value             = {message.content}
-          rows              = {3} 
-        />
-      ) : <span />
-      */
       return _react3.default.createElement(
         _dialog2.default,
         {
@@ -2698,7 +2692,7 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
           modal: false,
           open: open,
           onRequestClose: onClose },
-        this.renderFormFields.call(this)
+        this.renderFormFields()
       );
     }
   }]);
@@ -2707,8 +2701,8 @@ var SendMessageDialog = _wrapComponent('SendMessageDialog')(function (_React$Com
 }(_react3.default.Component));
 
 function validatePhoneNumber(number) {
-  var regex = /^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/;
-  return regex.test(number);
+  return (/^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/.test(number)
+  );
 }
 
 var validate = function validate(values) {

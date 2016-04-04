@@ -43,7 +43,7 @@ class SendMessageDialog extends React.Component {
     const key = Date.now()
     const payload = {
       [key]: {
-	type : 'sms_out',
+	type       : 'sms_out',
 	endpoint   : '',
 	content    : '',
 	channel_id : '',
@@ -53,7 +53,16 @@ class SendMessageDialog extends React.Component {
     //sendMessage('messageSend', payload)
   }
   renderFormFields() {
-    const { dialog, message, channels, fields : { recipient, content } } = this.props
+    const { 
+      dialog, 
+      message, 
+      channels, 
+      fields : { 
+        recipient, 
+        content,
+      }, 
+      error,
+    } = this.props
     const simSelect = (
       <SelectField 
         floatingLabelText = 'SIM card'
@@ -124,16 +133,14 @@ class SendMessageDialog extends React.Component {
         return (
           <div>
             {simSelect}
-            <TextField
-	      {...recipient}
-	      errorText         = {recipient.touched && recipient.error && recipient.error}
+            <TextField {...recipient}
+	      errorText         = {recipient.touched && recipient.error}
               floatingLabelText = 'Send to'
               hintText          = {'Recipient\'s phone number'}
               fullWidth         = {true}
             />
-            <TextField
-	      {...content}
-	      errorText         = {content.touched && content.error && content.error}
+            <TextField {...content}
+	      errorText         = {content.touched && content.error}
               floatingLabelText = 'Message content'
               hintText          = 'Type your message here'
               fullWidth         = {true}
@@ -150,7 +157,7 @@ class SendMessageDialog extends React.Component {
     }
   }
   render() {
-    const { open, onClose, dialog } = this.props
+    const { open, onClose, dialog, handleSubmit, fields } = this.props
     const actions = [
       <FlatButton
         label           = 'Cancel'
@@ -159,23 +166,14 @@ class SendMessageDialog extends React.Component {
       />,
       <FlatButton
         label           = 'Send'
+	disabled        = {!!(fields.recipient.error || fields.content.error)}
         primary         = {true}
         keyboardFocused = {true}
-        onTouchTap      = {::this.handleConfirm}
+        onTouchTap      = {handleSubmit(data => {
+	  console.log(data)
+	})}
       />,
     ]
-    /*
-    const originalMessage = message ? (
-      <TextField
-        floatingLabelText = 'Original message'
-        disabled          = {true}
-        fullWidth         = {true}
-        multiLine         = {true}
-        value             = {message.content}
-        rows              = {3} 
-      />
-    ) : <span />
-    */
     return (
       <Dialog
         title          = {getTitle(dialog)}
@@ -183,15 +181,14 @@ class SendMessageDialog extends React.Component {
         modal          = {false}
         open           = {open}
         onRequestClose = {onClose}>
-        {::this.renderFormFields()}
+        {this.renderFormFields()}
       </Dialog>
     )
   }
 }
 
 function validatePhoneNumber(number) {
-  var regex = /^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/
-  return regex.test(number)
+  return /^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/.test(number)
 }
 
 const validate = values => {
