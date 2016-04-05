@@ -6,6 +6,7 @@ import {
   MESSAGE_TOGGLE_PROPERTY,
   MESSAGE_REMOVE,
 } from './constants'
+
 export function updateAppStatus(status, error) {
   return { 
     type: APP_UPDATE_STATUS, 
