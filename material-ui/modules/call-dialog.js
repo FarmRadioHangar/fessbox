@@ -1,5 +1,6 @@
-import React    from 'react'
-import ReactDOM from 'react-dom'
+import React         from 'react'
+import ReactDOM      from 'react-dom'
+import ChannelSelect from './channel-select'
 
 import Dialog 
   from 'material-ui/lib/dialog'
@@ -54,40 +55,27 @@ class CallDialog extends React.Component {
         primary         = {true}
         keyboardFocused = {true}
         onTouchTap      = {::this.makeCall}
-        disabled        = {!!(number.error || channel.error)}
+        disabled        = {!!number.error}
       />,
     ]
     const freeChannels = channels.filter(chan => 'free' == chan.mode)
     return (
-      <div>
       <Dialog
         title           = {'Make a call'}
         actions         = {actions}
         modal           = {false}
         open            = {open}
         onRequestClose  = {onClose}>
-        <SelectField {...channel}
-          floatingLabelText = 'Channel'
-          onFocus           = {channel.onFocus}        /* onFocus and onBlur events are not firing. */
-          onBlur            = {channel.onBlur}         /* See: https://github.com/callemall/material-ui/issues/3151 */
-          onChange          = {(e, i) => channel.onChange(freeChannels[i].id)}
-          errorText         = {channel.touched && channel.error}
-          style             = {{width: '100%'}}>
-          {freeChannels.map((chan, i) => 
-            <MenuItem 
-              key           = {i}
-              value         = {chan.id}
-              primaryText   = {chan.id} />
-          )} 
-        </SelectField>
+        <ChannelSelect {...channel}
+          channels      = {freeChannels}
+          onChange      = {channel.onChange} />
         <TextField {...number}
           floatingLabelText = 'Number'
-          hintText          = 'Number to call'
-          fullWidth         = {true}
-          errorText         = {number.touched && number.error}
+          hintText      = 'Number to call'
+          fullWidth     = {true}
+          errorText     = {number.touched && number.error}
         />
       </Dialog>
-      </div>
     )
   }
 }
