@@ -1,7 +1,7 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification, initializeApp, updateChannel, removeMessage }
+import { showNotification, initializeApp, updateChannel, updateChannelVolume, removeMessage }
   from './actions'
 
 export default function(eventType, data) {
@@ -30,6 +30,11 @@ export default function(eventType, data) {
         } else {
           //
         }
+      })
+      break
+    case 'channelVolumeChange':
+      Object.keys(data).forEach(id => {
+        store.dispatch(updateChannelVolume(id, data[id]))
       })
       break
     case 'inboxUpdate':

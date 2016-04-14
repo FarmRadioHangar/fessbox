@@ -102,8 +102,7 @@ const styles = {
   },
 }
 
-const ToastrComponent = connect(state => ({
+export default connect(state => ({
   toastr : state.toastr,
 }))(Toastr)
 
-export default ToastrComponent

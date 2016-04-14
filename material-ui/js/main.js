@@ -18,7 +18,7 @@ import { updateAppStatus }
   from './actions'
 
 const userId   = getUrlParam('user_id') 
-const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
+const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' 
 const language = getUrlParam('language') || 'en' 
 
 const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
@@ -47,10 +47,6 @@ function parseMessage(message) {
 ws.onmessage = (e => { 
   const message = parseMessage(e.data)
   if (message) {
-    console.log('>>> Message')
-    console.log(message)
-    console.log('<<<')
-  
     messageHandler(message.event, message.data)
   }
 })
@@ -60,18 +56,11 @@ ws.onerror = e => {
   store.dispatch(updateAppStatus(APP_STATUS_ERROR, 'Error establishing WebSocket connection.'))
 }
 
-function sendMessage(type, data) {
-  ws.send(JSON.stringify({
-    event : type, 
-    data
-  }))
-}
-
 injectTapEventPlugin()
 
 ReactDOM.render(
   <Provider store={store}>
-    <Ui sendMessage={sendMessage} />
+    <Ui sendMessage={(event, data) => ws.send(JSON.stringify({event, data}))} />
   </Provider>,
   document.getElementById('main')
 )

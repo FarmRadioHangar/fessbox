@@ -15,36 +15,49 @@ import Subheader
   from 'material-ui/lib/Subheader'
 import Divider 
   from 'material-ui/lib/divider'
+import IconButton
+  from 'material-ui/lib/icon-button'
 
 class Master extends React.Component {
   constructor(props) {
     super(props)
   }
   render() {
-    const { mixer : { master } } = this.props
+    const { 
+      mixer : { 
+        master,
+      }, 
+      sendMessage,
+    } = this.props
     return (
       <Paper>
         <Subheader>Master</Subheader>
         <Divider />
         <div style={styles.controls}>
           <div>
-            <IconVolumeUp />
+            <IconButton>
+              <IconVolumeUp />
+            </IconButton>
           </div>
           <div style={styles.slider}>
             <Slider 
               min           = {1}
               max           = {100}
               defaultValue  = {master.out ? master.out.level : 1}
+              onChange      = {e => {}}
             />
           </div>
           <div>
-            <IconMic />
+            <IconButton>
+              <IconMic />
+            </IconButton>
           </div>
           <div style={styles.slider}>
             <Slider 
               min           = {1}
               max           = {100}
               defaultValue  = {master.in ? master.in.level : 1}
+              onChange      = {e => {}}
             />
           </div>
         </div>
@@ -69,8 +82,6 @@ const styles = {
   },
 }
 
-const MasterComponent = connect(state => ({
+export default connect(state => ({
   mixer : state.mixer,
 }))(Master)
-
-export default MasterComponent

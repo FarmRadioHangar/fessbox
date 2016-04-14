@@ -6,6 +6,8 @@ import users  from './reducers/users'
 
 import { combineReducers } 
   from 'redux'
+import { modelReducer, formReducer } 
+  from 'react-redux-form';
 
 export default combineReducers({
   mixer,
@@ -13,4 +15,8 @@ export default combineReducers({
   app,
   users,
   toastr,
+  sms: modelReducer('sms', { channel: 'auto' }),
+  smsForm: formReducer('sms'),
+  call: modelReducer('call', { channel: 'auto' }),
+  callForm: formReducer('call'),
 })

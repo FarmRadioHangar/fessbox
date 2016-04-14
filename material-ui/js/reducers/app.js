@@ -1,5 +1,6 @@
 import { 
   APP_INITIALIZE, 
+  APP_SET_DIALOG,
   APP_STATUS_CONNECTED, 
   APP_STATUS_CONNECTING, 
   APP_STATUS_INITIALIZED, 
@@ -7,11 +8,13 @@ import {
 } from '../constants'
 
 const initialState = {
-  'status' : APP_STATUS_CONNECTING,
-  'error'  : null,
+  'status'      : APP_STATUS_CONNECTING,
+  'error'       : null,
+  'dialog'      : null,
+  'dialogState' : null,
 }
 
-function reducer(state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
     case APP_INITIALIZE:
       return {
@@ -24,9 +27,13 @@ function reducer(state = initialState, action) {
         'status' : action.status,
         'error'  : action.error,
       }
+    case APP_SET_DIALOG:
+      return {
+        ...state,
+        'dialog'      : action.dialog,
+        'dialogState' : action.state,
+      }
     default:
       return state
   }
 }
-
-export default reducer
