@@ -8,4 +8,9 @@ export default {
   maxLength(length) {
     return (value) => value.length <= length
   },
+  isPartial(number) {
+    if (!number)
+      return false
+    return (number.length < 10 && !isNaN(number.replace(/[\+\-\.\s]/g, '')))
+  },
 }

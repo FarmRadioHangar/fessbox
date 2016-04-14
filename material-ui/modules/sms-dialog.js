@@ -86,7 +86,7 @@ class SmsDialog extends React.Component {
               model      = 'sms.recipient'>
               <TextField 
                 errorText         = {errorText(getField(smsForm, 'recipient').errors)}
-                errorStyle        = {(sms.recipient && sms.recipient.length < 14) ? {color: 'orange'} : {}}
+                errorStyle        = {validators.isPartial(sms.recipient) ? {color: 'orange'} : {}}
                 floatingLabelText = 'Send to'
                 hintText          = {'Recipient\'s phone number'}
                 fullWidth         = {true} />

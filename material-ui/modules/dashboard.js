@@ -22,6 +22,8 @@ import Tab
   from 'material-ui/lib/tabs/tab'
 import FloatingActionButton 
   from 'material-ui/lib/floating-action-button'
+import Badge 
+  from 'material-ui/lib/badge'
 
 import IconCommunicationDialpad
   from 'material-ui/lib/svg-icons/communication/dialpad'
@@ -86,7 +88,12 @@ class Dashboard extends React.Component {
   }
   renderTabs() {
     const { tab } = this.state
-    const { sendMessage } = this.props
+    const { 
+      inbox : {
+        messageCount,
+      },
+      sendMessage,
+    } = this.props
     const mixerIcon = (
       <span>
         <i className='material-icons'>volume_up</i>
@@ -95,6 +102,13 @@ class Dashboard extends React.Component {
     const inboxIcon = (
       <span>
         <i className='material-icons'>message</i>
+        {!!messageCount && (
+          <Badge
+            style        = {styles.badge}
+            badgeContent = {messageCount}
+            primary      = {true}>
+          </Badge>
+        )}
       </span>
     )
     return (
