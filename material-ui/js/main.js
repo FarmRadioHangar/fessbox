@@ -47,10 +47,6 @@ function parseMessage(message) {
 ws.onmessage = (e => { 
   const message = parseMessage(e.data)
   if (message) {
-    console.log('>>> Message')
-    console.log(message)
-    console.log('<<<')
-  
     messageHandler(message.event, message.data)
   }
 })

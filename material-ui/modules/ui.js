@@ -1,5 +1,6 @@
-import React from 'react'
-import App   from './app'
+import React     from 'react'
+import _         from 'lodash'
+import Dashboard from './dashboard'
 
 import { 
   APP_STATUS_CONNECTED, 
@@ -16,9 +17,6 @@ import Dialog
   from 'material-ui/lib/dialog'
 
 class Ui extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
     const { 
       app : { status, error }, 
@@ -35,7 +33,7 @@ class Ui extends React.Component {
         )
       case APP_STATUS_INITIALIZED:
         return (
-          <App sendMessage={sendMessage} />
+          <Dashboard sendMessage={sendMessage} />
         )
       case APP_STATUS_ERROR:
       default:
@@ -64,7 +62,4 @@ const styles = {
   }
 }
 
-export default connect(state => ({
-  app : state.app,
-}))(Ui)
-
+export default connect(state => _.pick(state, ['app']))(Ui)

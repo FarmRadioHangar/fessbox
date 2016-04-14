@@ -3,167 +3,135 @@ import TimeAgo from 'react-timeago'
 
 import { connect } 
   from 'react-redux'
-import { toggleMessageRead, toggleMessageSelected, toggleMessageFavorite, removeMessage }
+import { actions } 
+  from 'react-redux-form'
+import { setDialog, toggleMessageFavorite }
   from '../js/actions'
-import { TransitionMotion, Motion, spring, presets } 
-  from 'react-motion'
 
-import IconButton 
-  from 'material-ui/lib/icon-button'
+import Avatar
+  from 'material-ui/lib/avatar'
+import Subheader
+  from 'material-ui/lib/Subheader/Subheader'
 import List 
   from 'material-ui/lib/lists/list'
 import ListItem 
   from 'material-ui/lib/lists/list-item'
 import Divider 
   from 'material-ui/lib/divider'
-import Subheader 
-  from 'material-ui/lib/Subheader'
-import Dialog 
-  from 'material-ui/lib/dialog'
-import FlatButton 
-  from 'material-ui/lib/flat-button'
-import Checkbox
-  from 'material-ui/lib/checkbox'
-import Paper
-  from 'material-ui/lib/paper'
+import IconButton 
+  from 'material-ui/lib/icon-button'
+import MoreVertIcon 
+  from 'material-ui/lib/svg-icons/navigation/more-vert'
+import IconMenu 
+  from 'material-ui/lib/menus/icon-menu'
+import MenuItem 
+  from 'material-ui/lib/menus/menu-item'
 
-import { grey400, darkBlack, lightBlack } 
+import { purple500, darkBlack, lightBlack, grey400 } 
   from 'material-ui/lib/styles/colors'
 
-function messageType(key, read) {
-  if ('sms_in' == key) {
-    return 'Incoming SMS from'
-  } else {
-    return 'Outgoing SMS to'
-  }
-}
-
 class Inbox extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      confirmDeleteMessage : null,
+  handleMenuAction(event, value, message) {
+    const { dispatch } = this.props
+    switch (value.key) {
+      case 'reply':
+        dispatch(actions.reset('sms'))
+        dispatch(actions.change('sms.recipient', message.endpoint))
+        dispatch(actions.change('sms.message', message))
+        dispatch(actions.setPristine('sms'))
+        dispatch(setDialog('sms'))
+        break
+      case 'call':
+        dispatch(actions.reset('call'))
+        dispatch(actions.change('call.number', message.endpoint))
+        dispatch(setDialog('call'))
+        break
+      case 'delete':
+        dispatch(setDialog('confirm', { messageId: message.id }))
+        break
+      default:
     }
   }
-  handleCloseDialog() {
-    this.setState({
-      confirmDeleteMessage : null,
-    })
+  handleToggleFavorite(e, message) {
+    const { dispatch } = this.props
+    dispatch(toggleMessageFavorite(message.id)) 
   }
-  handleConfirmDelete() {
-    const { dispatch, sendMessage } = this.props
-    const id = this.state.confirmDeleteMessage
-    this.handleCloseDialog()
-    sendMessage('messageDelete', { 
-      [id]: null
-    })
-    dispatch(removeMessage(id))
-  }
-  renderDialog() {
-    const actions = [
-      <FlatButton
-        label      = 'Cancel'
-        secondary  = {true}
-        onTouchTap = {::this.handleCloseDialog}
-      />,
-      <FlatButton
-        label      = 'Delete'
-        primary    = {true}
-        onTouchTap = {::this.handleConfirmDelete}
-      />,
-    ]
-    return (
-      <Dialog
-        title          = 'Confirm action'
-        actions        = {actions}
-        modal          = {true}
-        open           = {!!this.state.confirmDeleteMessage}
-        onRequestClose = {::this.handleCloseDialog}>
-        Do you really want to delete this message?
-      </Dialog>
+  itemProps(message) {
+    const iconButtonElement = (
+      <IconButton
+        touch           = {true}
+        tooltip         = 'more'
+        tooltipPosition = 'bottom-left'>
+        <MoreVertIcon color={grey400} />
+      </IconButton>
     )
+    return {
+      leftAvatar: (
+        <Avatar 
+          color           = 'white'
+          backgroundColor = {purple500}
+          icon            = {
+            <i className='material-icons'>textsms</i>
+        } />
+      ),
+      primaryText: (
+        <span>
+          {message.endpoint}&nbsp;&nbsp;<span style={{color: lightBlack}}>{message.channel_id}</span>
+        </span>
+      ),
+      secondaryText: (
+        <p style={{paddingRight: '80px'}}>
+          {!isNaN(message.timestamp) && (
+            <span style={{color: darkBlack}}>
+              <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
+            </span> 
+          )}
+          {message.content}
+        </p>
+      ),
+      rightIconButton: (
+        <span>
+          <IconButton 
+            onClick   = {e => this.handleToggleFavorite(e, message)} 
+            iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}>
+            <i className='material-icons'>{message.favorite ? 'star' : 'star_border'}</i>
+          </IconButton>
+          <IconMenu 
+            onItemTouchTap    = {(event, value) => this.handleMenuAction(event, value, message)}
+            iconButtonElement = {iconButtonElement}>
+            <MenuItem key='reply'>Reply</MenuItem>
+            <MenuItem key='call'>Call</MenuItem>
+            <MenuItem key='delete'>Delete</MenuItem>
+          </IconMenu>
+        </span>
+      ),
+    }
   }
   render() {
-    const { inbox : { visibleMessages, messageCount, unreadCount }, dispatch } = this.props
-    const readIcon = (
-      <span>
-        <Motion defaultStyle={{opacity: 0, zoom: 3}} style={{opacity: 1, zoom: spring(1, { stiffness: 200, damping: 10 })}}>
-          {i => (
-            <i className='material-icons' style={{
-              color     : '#aed581',
-              opacity   : i.opacity,
-              transform : `scale(${i.zoom})`,
-            }}>check</i>
-          )}
-        </Motion>
-      </span>
-    )
-    const unreadIcon = (
-      <i className='material-icons' style={{color: 'rgb(255, 64, 129)'}}>notifications</i>
-    )
+    const { 
+      inbox : { 
+        visibleMessages, 
+        messageCount, 
+        unreadCount, 
+      }, 
+      dispatch, 
+    } = this.props
     if (!messageCount) {
       return (
         <List>
-          <Subheader>SMS Messages</Subheader>
+          <Subheader>Inbox</Subheader>
           <Divider />
           <p style={{padding: '16px'}}>No messages.</p>
         </List>
       )
     }
     return (
-      <List>
-        {this.renderDialog()}
-        <Subheader>{`SMS Messages (${unreadCount}/${messageCount})`}</Subheader>
-        {visibleMessages.map(message => (
-          <div key={message.id}>
+      <List style={{background: '#ffffff'}}>
+        <Subheader>Inbox</Subheader>
+        {visibleMessages.map((message, i) => (
+          <div key={i}>
             <Divider />
-            <ListItem
-              onClick            = {() => dispatch(message.read ? toggleMessageSelected(message.id) : toggleMessageRead(message.id))}
-              leftAvatar         = {message.read ? readIcon : unreadIcon}
-              primaryText        = {message.endpoint}
-              secondaryTextLines = {2}
-              secondaryText      = {
-                <div style={styles.secondary}>
-                  {!isNaN(message.timestamp) && (
-                    <span style={{color: darkBlack}}>
-                      <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
-                    </span> 
-                  )}
-                  {message.content}
-                </div>
-              }
-              rightIconButton = {
-                <div style={{zIndex: 9999}}>
-                  {message.read && (
-                    <IconButton onClick={e => { dispatch(toggleMessageRead(message.id)) ; e.stopPropagation() }} style={styles.icon} tooltip='Mark as unread'>
-                      <i className='material-icons'>new_releasese</i>
-                    </IconButton>
-                  )}
-                  <IconButton onClick={ e => { this.props.onReply(message) ; e.stopPropagation() }} style={styles.icon} tooltip='Reply'>
-                    <i className='material-icons'>reply</i>
-                  </IconButton>
-                  <IconButton onClick={ e => { this.props.onForward(message) ; e.stopPropagation() } } style={styles.icon} tooltip='Forward'>
-                    <i className='material-icons'>forward</i>
-                  </IconButton>
-                  <IconButton 
-                    onClick   = {e => { dispatch(toggleMessageFavorite(message.id)) ; e.stopPropagation() }} 
-                    style     = {styles.icon}
-                    iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}
-                    tooltip   = 'Favorite'>
-                    <i className='material-icons'>{message.favorite ? 'favorite' : 'favorite_border'}</i>
-                  </IconButton>
-                  <IconButton 
-                    onClick   = {e => { this.setState({confirmDeleteMessage: message.id}) ; e.stopPropagation() }} 
-                    style     = {styles.icon} 
-                    tooltip   = 'Delete'>
-                    <i className='material-icons'>delete_forever</i>
-                  </IconButton>
-                </div>
-              }
-              style = {{
-                backgroundColor : message.read ? 'rgba(255, 255, 255, 0)' : 'rgba(255, 64, 129, 0.05)',
-                paddingLeft     : '0',
-              }} />
+            <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
           </div>
         ))}
       </List>
@@ -171,20 +139,4 @@ class Inbox extends React.Component {
   }
 }
 
-const styles = {
-  icon: {
-    color             : '#757575',
-  },
-  secondary: {
-    paddingRight      : '256px',
-  },
-  checkbox: {
-    position          : 'absolute', 
-    width             : '15px',
-  },
-}
-
-export default connect(state => ({
-  inbox : state.inbox,
-}))(Inbox)
-
+export default connect(state => _.pick(state, ['inbox']))(Inbox)

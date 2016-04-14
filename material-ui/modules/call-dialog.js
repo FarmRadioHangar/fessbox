@@ -1,6 +1,8 @@
 import React         from 'react'
-import ReactDOM      from 'react-dom'
 import ChannelSelect from './channel-select'
+import MaterialField from './material-field'
+import validators    from './validators'
+import _             from 'lodash'
 
 import Dialog 
   from 'material-ui/lib/dialog'
@@ -13,22 +15,21 @@ import SelectField
 import MenuItem 
   from 'material-ui/lib/menus/menu-item'
 
-import { reduxForm }
-  from 'redux-form'
+import { connect } 
+  from 'react-redux'
+import { getField } 
+  from 'react-redux-form'
 
 class CallDialog extends React.Component {
   makeCall() {
     const { 
       sendMessage, 
       onClose, 
-      fields : { 
-        number, 
-        channel,
-      },
+      call,
     } = this.props
     sendMessage('callNumber', {
-      number     : number.value,
-      channel_id : channel.value,
+      number     : call.number,
+      channel_id : call.channel,
       mode       : 'master',
     })
     onClose()
@@ -38,11 +39,8 @@ class CallDialog extends React.Component {
       open, 
       onClose, 
       channels, 
-      fields : {
-        number,
-        channel,
-      },
-      error,
+      call,
+      callForm,
     } = this.props
     const actions = [
       <FlatButton
@@ -52,13 +50,22 @@ class CallDialog extends React.Component {
       />,
       <FlatButton
         label           = 'Call'
+        disabled        = {callForm.pristine || !callForm.valid}
         primary         = {true}
         keyboardFocused = {true}
         onTouchTap      = {::this.makeCall}
-        disabled        = {!!number.error}
       />,
     ]
     const freeChannels = channels.filter(chan => 'free' == chan.mode)
+    const errorText = (errors) => {
+      if (errors.required) {
+        return 'This field is required.'
+      } else if (errors.phoneNumber) {
+        return 'Not a valid phone number.'
+      } else if (errors.messageLength) {
+        return 'Message is too long.'
+      }
+    }
     return (
       <Dialog
         title           = {'Make a call'}
@@ -66,37 +73,24 @@ class CallDialog extends React.Component {
         modal           = {false}
         open            = {open}
         onRequestClose  = {onClose}>
-        <ChannelSelect {...channel}
-          channels      = {freeChannels}
-          onChange      = {channel.onChange} />
-        <TextField {...number}
-          floatingLabelText = 'Number'
-          hintText      = 'Number to call'
-          fullWidth     = {true}
-          errorText     = {number.touched && number.error}
-        />
+        <MaterialField 
+          validators    = {_.pick(validators, ['required'])}
+          model         = 'call.channel'>
+          <ChannelSelect channels={freeChannels} />
+        </MaterialField>
+        <MaterialField 
+          validators    = {_.pick(validators, ['required', 'phoneNumber'])}
+          model         = 'call.number'>
+          <TextField 
+            errorText         = {errorText(getField(callForm, 'number').errors)}
+            errorStyle        = {(call.number && call.number.length < 14) ? {color: 'orange'} : {}}
+            floatingLabelText = 'Phone number'
+            hintText          = 'Number to call'
+            fullWidth         = {true} />
+        </MaterialField>
       </Dialog>
     )
   }
 }
 
-function validatePhoneNumber(number) {
-  return /^(\+?[0-9]{1,3}\-?|0)[0123456789]{9}$/.test(number)
-}
-
-const validate = values => {
-  let errors = {}
-  if (!values.channel) {
-    errors.channel = 'You must select a channel'
-  }
-  if (!validatePhoneNumber(values.number)) {
-    errors.number = 'Not a valid phone number'
-  }
-  return errors
-}
-
-export default reduxForm({ 
-  form   : 'callOut',                           
-  fields : ['number', 'channel'],
-  validate,
-})(CallDialog)
+export default connect(state => _.pick(state, ['call', 'callForm']))(CallDialog)

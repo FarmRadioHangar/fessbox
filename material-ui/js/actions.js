@@ -1,6 +1,7 @@
 import { 
   APP_INITIALIZE, 
   APP_UPDATE_STATUS, 
+  APP_SET_DIALOG, 
   CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
   MESSAGE_TOGGLE_PROPERTY,
@@ -67,5 +68,13 @@ export function updateChannelVolume(id, level) {
     type : CHANNEL_VOLUME_UPDATE, 
     id,
     level,
+  }
+}
+
+export function setDialog(dialog, state) {
+  return {
+    type : APP_SET_DIALOG,
+    dialog,
+    state,
   }
 }
