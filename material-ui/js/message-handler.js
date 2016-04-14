@@ -13,14 +13,9 @@ export default function(eventType, data) {
       break
     case 'initialize':
       store.dispatch(initializeApp(data))
-      if ('Notification' in window) {
-        new Notification('Successfully connected to Starship Enterprise.')
-        new Notification('New message from xxx-xxx')
-        new Notification('This is to test the message notifications.')
-      }
       break
     case 'channelUpdate':
-      Object.keys(data).forEach(key=> {
+      Object.keys(data).forEach(key => {
         const chan = data[key]
         if (chan) {
           store.dispatch(updateChannel(key, chan))

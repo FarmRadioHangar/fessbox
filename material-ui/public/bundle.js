@@ -214,11 +214,6 @@ exports.default = function (eventType, data) {
       break;
     case 'initialize':
       _store2.default.dispatch((0, _actions.initializeApp)(data));
-      if ('Notification' in window) {
-        new Notification('Successfully connected to Starship Enterprise.');
-        new Notification('New message from xxx-xxx');
-        new Notification('This is to test the message notifications.');
-      }
       break;
     case 'channelUpdate':
       Object.keys(data).forEach(function (key) {
