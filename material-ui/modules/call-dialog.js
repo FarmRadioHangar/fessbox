@@ -83,7 +83,7 @@ class CallDialog extends React.Component {
           model         = 'call.number'>
           <TextField 
             errorText         = {errorText(getField(callForm, 'number').errors)}
-            errorStyle        = {(call.number && call.number.length < 14) ? {color: 'orange'} : {}}
+            errorStyle        = {validators.isPartial(call.number) ? {color: 'orange'} : {}}
             floatingLabelText = 'Phone number'
             hintText          = 'Number to call'
             fullWidth         = {true} />
