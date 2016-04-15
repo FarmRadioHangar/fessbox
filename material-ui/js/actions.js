@@ -1,11 +1,12 @@
 import { 
   APP_INITIALIZE, 
-  APP_UPDATE_STATUS, 
   APP_SET_DIALOG, 
+  APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
-  MESSAGE_TOGGLE_PROPERTY,
+  MESSAGE_MARK_ALL_READ,
   MESSAGE_REMOVE,
+  MESSAGE_TOGGLE_PROPERTY,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -28,6 +29,12 @@ export function toggleMessageRead(id) {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'read',
     id,
+  }
+}
+
+export function markAllMessagesRead() {
+  return {
+    type     : MESSAGE_MARK_ALL_READ, 
   }
 }
 
