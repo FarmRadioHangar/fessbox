@@ -2,6 +2,7 @@ import {
   APP_INITIALIZE, 
   MESSAGE_TOGGLE_PROPERTY,
   MESSAGE_REMOVE,
+  MESSAGE_MARK_ALL_READ,
 } from '../constants'
 
 const initialState = {
@@ -27,11 +28,11 @@ export default function(state = initialState, action) {
     case MESSAGE_TOGGLE_PROPERTY: {
       const visibleMessages = state.visibleMessages.map(message => 
         message.id == action.id ? { ...message, [action.property]: !message[action.property] } : message)
-      const unreadCount = visibleMessages.filter(message => !message.read).length
+      //const unreadCount = visibleMessages.filter(message => !message.read).length
       return {
         ...state,
         visibleMessages,
-        unreadCount,
+        //unreadCount,
       }
     }
     case MESSAGE_REMOVE: {
@@ -45,7 +46,13 @@ export default function(state = initialState, action) {
         ids, 
         visibleMessages,
         messageCount : ids.length,
-        unreadCount  : visibleMessages.filter(message => !message.read).length,
+        //unreadCount  : visibleMessages.filter(message => !message.read).length,
+      }
+    }
+    case MESSAGE_MARK_ALL_READ: {
+      return {
+        ...state,
+        unreadCount: 0,
       }
     }
     default:
