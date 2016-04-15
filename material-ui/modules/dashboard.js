@@ -11,7 +11,7 @@ import { connect }
   from 'react-redux'
 import { actions } 
   from 'react-redux-form'
-import { setDialog, removeMessage }
+import { setDialog, removeMessage, markAllMessagesRead }
   from '../js/actions'
 
 import AppBar   
@@ -39,7 +39,11 @@ class Dashboard extends React.Component {
     }
   }
   activateTab(tab) {
+    const { dispatch } = this.props
     this.setState({tab})
+    if ('inbox' === tab) {
+      dispatch(markAllMessagesRead())
+    }
   }
   renderAppBar() {
     return (
@@ -91,6 +95,7 @@ class Dashboard extends React.Component {
     const { 
       inbox : {
         messageCount,
+        unreadCount,
       },
       sendMessage,
     } = this.props
@@ -102,10 +107,10 @@ class Dashboard extends React.Component {
     const inboxIcon = (
       <span>
         <i className='material-icons'>message</i>
-        {!!messageCount && (
+        {!!unreadCount && (
           <Badge
             style        = {styles.badge}
-            badgeContent = {messageCount}
+            badgeContent = {unreadCount}
             primary      = {true}>
           </Badge>
         )}
