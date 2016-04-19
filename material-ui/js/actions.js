@@ -4,6 +4,7 @@ import {
   APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
+  MESSAGE_FAVORITES_CLEAR,
   MESSAGE_MARK_ALL_READ,
   MESSAGE_REMOVE,
   MESSAGE_TOGGLE_PROPERTY,
@@ -52,6 +53,12 @@ export function toggleMessageFavorite(id) {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'favorite',
     id,
+  }
+}
+
+export function clearFavorites() {
+  return {
+    type     : MESSAGE_FAVORITES_CLEAR, 
   }
 }
 
