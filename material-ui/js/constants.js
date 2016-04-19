@@ -9,6 +9,7 @@ export const APP_SET_DIALOG              = 'APP_SET_DIALOG'
 export const MESSAGE_TOGGLE_PROPERTY     = 'MESSAGE_TOGGLE_PROPERTY'
 export const MESSAGE_REMOVE              = 'MESSAGE_REMOVE'
 export const MESSAGE_MARK_ALL_READ       = 'MESSAGE_MARK_ALL_READ'
+export const MESSAGE_FAVORITES_CLEAR     = 'MESSAGE_FAVORITES_CLEAR'
 
 export const CHANNEL_UPDATE              = 'CHANNEL_UPDATE'
 export const CHANNEL_VOLUME_UPDATE       = 'CHANNEL_VOLUME_UPDATE'
