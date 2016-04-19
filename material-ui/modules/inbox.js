@@ -5,7 +5,7 @@ import { connect }
   from 'react-redux'
 import { actions } 
   from 'react-redux-form'
-import { setDialog, toggleMessageFavorite }
+import { setDialog, toggleMessageFavorite, clearFavorites }
   from '../js/actions'
 
 import Avatar
@@ -26,6 +26,12 @@ import IconMenu
   from 'material-ui/lib/menus/icon-menu'
 import MenuItem 
   from 'material-ui/lib/menus/menu-item'
+import Toolbar
+  from 'material-ui/lib/toolbar/toolbar'
+import ToolbarTitle
+  from 'material-ui/lib/toolbar/toolbar-title'
+import ToolbarGroup
+  from 'material-ui/lib/toolbar/toolbar-group'
 
 import { purple500, darkBlack, lightBlack, grey400 } 
   from 'material-ui/lib/styles/colors'
@@ -113,6 +119,7 @@ class Inbox extends React.Component {
         visibleMessages, 
         messageCount, 
         unreadCount, 
+        favorites,
       }, 
       dispatch, 
     } = this.props
@@ -126,15 +133,41 @@ class Inbox extends React.Component {
       )
     }
     return (
-      <List style={{background: '#ffffff'}}>
-        <Subheader>Inbox</Subheader>
-        {visibleMessages.map((message, i) => (
-          <div key={i}>
-            <Divider />
-            <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+      <div style={{display: 'flex', flexDirection: 'row'}}>
+        <div style={{flex: 1}}>
+          <List style={{background: '#ffffff'}}>
+            <Toolbar>
+              <ToolbarTitle text='Inbox' />
+            </Toolbar>
+            {visibleMessages.filter(message => !message.favorite).map((message, i) => (
+              <div key={i}>
+                <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+                <Divider />
+              </div>
+            ))}
+          </List>
+        </div>
+        {!!favorites.length && (
+          <div style={{flex: 1}}>
+            <List style={{background: '#ffffff'}}>
+              <Toolbar>
+                <ToolbarTitle text='Favorites' />
+                <ToolbarGroup float='right'>
+                  <IconButton touch={true} onClick={() => dispatch(clearFavorites())}>
+                    <i className='material-icons'>clear_all</i>
+                  </IconButton>
+                </ToolbarGroup>
+              </Toolbar>
+                {favorites.map((message, i) => (
+                  <div key={i}>
+                    <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+                    <Divider />
+                  </div>
+                ))}
+            </List>
           </div>
-        ))}
-      </List>
+        )}
+      </div>
     )
   }
 }
