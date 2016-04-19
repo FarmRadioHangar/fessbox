@@ -8,9 +8,24 @@ const initialState = {
   channelList : [],
 }
 
+function modeWeight(mode) {
+  if ('master'  === mode) { return 1 } else 
+  if ('free'    === mode) { return 4 } else 
+  if ('on_hold' === mode) { return 3 } else 
+  if ('ivr'     === mode) { return 5 } else 
+  if ('defunct' === mode) { return 6 } else 
+  if ('ring'    === mode) { return 0 } 
+  return 2
+}
+
+function compareChannels(a, b) {
+  return modeWeight(a[1].mode) - modeWeight(b[1].mode)
+}
+
 function channelList(channels) {
   return Object.entries(channels)
       .filter(item => 'operator' !== item[1].direction)
+      .sort(compareChannels)
       .map(([id, chan]) => { 
     return {
       id,
