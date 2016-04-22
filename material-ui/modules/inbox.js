@@ -125,7 +125,7 @@ class Inbox extends React.Component {
     } = this.props
     if (!messageCount) {
       return (
-        <List>
+        <List style={{background: '#ffffff'}}>
           <Subheader>Inbox</Subheader>
           <Divider />
           <p style={{padding: '16px'}}>No messages.</p>
@@ -134,19 +134,6 @@ class Inbox extends React.Component {
     }
     return (
       <div style={{display: 'flex', flexDirection: 'row'}}>
-        <div style={{flex: 1}}>
-          <List style={{background: '#ffffff'}}>
-            <Toolbar>
-              <ToolbarTitle text='Inbox' />
-            </Toolbar>
-            {visibleMessages.filter(message => !message.favorite).map((message, i) => (
-              <div key={i}>
-                <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
-                <Divider />
-              </div>
-            ))}
-          </List>
-        </div>
         {!!favorites.length && (
           <div style={{flex: 1}}>
             <List style={{background: '#ffffff'}}>
@@ -167,6 +154,19 @@ class Inbox extends React.Component {
             </List>
           </div>
         )}
+        <div style={{flex: 1}}>
+          <List style={{background: '#ffffff'}}>
+            <Toolbar>
+              <ToolbarTitle text='Inbox' />
+            </Toolbar>
+            {visibleMessages.filter(message => !message.favorite).map((message, i) => (
+              <div key={i}>
+                <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+                <Divider />
+              </div>
+            ))}
+          </List>
+        </div>
       </div>
     )
   }
