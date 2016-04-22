@@ -4,8 +4,10 @@ import {
   APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
+  CHANNEL_CONTACT_UPDATE,
   MESSAGE_FAVORITES_CLEAR,
   MESSAGE_MARK_ALL_READ,
+  MESSAGE_ADD,
   MESSAGE_REMOVE,
   MESSAGE_TOGGLE_PROPERTY,
 } from './constants'
@@ -62,6 +64,14 @@ export function clearFavorites() {
   }
 }
 
+export function addMessage(id, message) {
+  return {
+    type : MESSAGE_ADD, 
+    id,
+    message,
+  }
+}
+
 export function removeMessage(id) {
   return {
     type : MESSAGE_REMOVE, 
@@ -92,3 +102,12 @@ export function setDialog(dialog, state) {
     state,
   }
 }
+
+export function updateChannelContact(id, info) {
+  return {
+    type : CHANNEL_CONTACT_UPDATE,
+    id,
+    info,
+  }
+}
+
