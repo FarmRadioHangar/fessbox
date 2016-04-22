@@ -10,27 +10,29 @@ import ToolbarSeparator
   from 'material-ui/lib/toolbar/toolbar-separator'
 
 class ChannelToolbar extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
-    const { id, label, mode } = this.props
-    const getIconName = mode => ('defunct' == mode) ? 'error' : 'sim_card'
+    const { id, label, mode, contact, timer } = this.props
     return (
-      <Toolbar style={{background: '#fff'}}>
+      <Toolbar style={{background: 'none'}}>
         <ToolbarGroup 
           firstChild = {true}
           float      = 'left'>
-          <ToolbarTitle 
-            text     = 'Obama'
-            style    = {styles.title}
-          />
+          {timer && (
+            <div style={styles.inner}>
+              {timer}
+            </div>
+          )}
+          {'defunct' == mode && (
+            <div style={{marginLeft: '20px', ...styles.inner}}>Defunct channel</div>
+          )}
+          {'on_hold' == mode && (
+            <div style={{marginLeft: '20px', ...styles.inner}}>On hold</div>
+          )}
         </ToolbarGroup>
         <ToolbarGroup float='right'>
           <div style={styles.label}>{label && (
             <div style={styles.inner}>
-              <i style={styles.icon} className='material-icons'>{getIconName(mode)}</i>
-              {id}&nbsp;&nbsp;{label}
+              {`${id}: ${label}`}
             </div>
           )}</div>
         </ToolbarGroup>
