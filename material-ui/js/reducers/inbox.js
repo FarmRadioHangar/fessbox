@@ -2,6 +2,7 @@ import {
   APP_INITIALIZE, 
   MESSAGE_FAVORITES_CLEAR,
   MESSAGE_MARK_ALL_READ,
+  MESSAGE_ADD,
   MESSAGE_REMOVE,
   MESSAGE_TOGGLE_PROPERTY,
 } from '../constants'
@@ -22,22 +23,29 @@ export default function(state = initialState, action) {
         id,
       }))
       const favorites = visibleMessages.filter(message => message.favorite)
-      return Object.assign({}, state, {
+      const obj = Object.assign({}, state, {
         ...action.data.inbox,
         messageCount    : ids.length,
         unreadCount     : ids.length,
         visibleMessages,
         favorites,
       })
+      return obj
     }
-    case MESSAGE_TOGGLE_PROPERTY: {
-      const visibleMessages = state.visibleMessages.map(message => 
-        message.id == action.id ? { ...message, [action.property]: !message[action.property] } : message)
+    case MESSAGE_ADD: {
+      const ids = [action.id, ...state.ids]
+      const messages = {
+        [action.id] : action.message,
+        ...state.messages,
+      }
+      const visibleMessages = ids.slice(0, 100).map(id => ({ ...messages[id], id }))
       const favorites = visibleMessages.filter(message => message.favorite)
       return {
         ...state,
+        messages, 
         visibleMessages,
         favorites,
+        messageCount : ids.length,
       }
     }
     case MESSAGE_REMOVE: {
@@ -53,6 +61,16 @@ export default function(state = initialState, action) {
         visibleMessages,
         favorites,
         messageCount : ids.length,
+      }
+    }
+    case MESSAGE_TOGGLE_PROPERTY: {
+      const visibleMessages = state.visibleMessages.map(message => 
+        message.id == action.id ? { ...message, [action.property]: !message[action.property] } : message)
+      const favorites = visibleMessages.filter(message => message.favorite)
+      return {
+        ...state,
+        visibleMessages,
+        favorites,
       }
     }
     case MESSAGE_MARK_ALL_READ: {
