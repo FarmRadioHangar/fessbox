@@ -5,6 +5,7 @@ import {
   APP_STATUS_CONNECTING, 
   APP_STATUS_INITIALIZED, 
   APP_UPDATE_STATUS, 
+  APP_SET_DIFF,
 } from '../constants'
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   'error'       : null,
   'dialog'      : null,
   'dialogState' : null,
+  'diff'        : 0,
 }
 
 export default function(state = initialState, action) {
@@ -19,19 +21,24 @@ export default function(state = initialState, action) {
     case APP_INITIALIZE:
       return {
         ...state,
-        'status' : APP_STATUS_INITIALIZED,
+        'status'      : APP_STATUS_INITIALIZED,
       }
     case APP_UPDATE_STATUS:
       return {
         ...state,
-        'status' : action.status,
-        'error'  : action.error,
+        'status'      : action.status,
+        'error'       : action.error,
       }
     case APP_SET_DIALOG:
       return {
         ...state,
         'dialog'      : action.dialog,
         'dialogState' : action.state,
+      }
+    case APP_SET_DIFF:
+      return {
+        ...state,
+        'diff'        : action.diff,
       }
     default:
       return state

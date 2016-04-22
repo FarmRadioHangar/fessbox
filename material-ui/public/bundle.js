@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateAppStatus = updateAppStatus;
 exports.initializeApp = initializeApp;
+exports.setDiff = setDiff;
 exports.toggleMessageRead = toggleMessageRead;
 exports.markAllMessagesRead = markAllMessagesRead;
 exports.toggleMessageSelected = toggleMessageSelected;
@@ -32,6 +33,13 @@ function initializeApp(data) {
   return {
     type: _constants.APP_INITIALIZE,
     data: data
+  };
+}
+
+function setDiff(diff) {
+  return {
+    type: _constants.APP_SET_DIFF,
+    diff: diff
   };
 }
 
@@ -131,6 +139,7 @@ var APP_STATUS_CONNECTING = exports.APP_STATUS_CONNECTING = 'APP_STATUS_CONNECTI
 var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
 var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
 var APP_SET_DIALOG = exports.APP_SET_DIALOG = 'APP_SET_DIALOG';
+var APP_SET_DIFF = exports.APP_SET_DIFF = 'APP_SET_DIFF';
 
 var MESSAGE_TOGGLE_PROPERTY = exports.MESSAGE_TOGGLE_PROPERTY = 'MESSAGE_TOGGLE_PROPERTY';
 var MESSAGE_ADD = exports.MESSAGE_ADD = 'MESSAGE_ADD';
@@ -377,6 +386,10 @@ exports.default = function () {
         'dialog': action.dialog,
         'dialogState': action.state
       });
+    case _constants.APP_SET_DIFF:
+      return _extends({}, state, {
+        'diff': action.diff
+      });
     default:
       return state;
   }
@@ -388,7 +401,8 @@ var initialState = {
   'status': _constants.APP_STATUS_CONNECTING,
   'error': null,
   'dialog': null,
-  'dialogState': null
+  'dialogState': null,
+  'diff': 0
 };
 
 },{"../constants":2}],7:[function(require,module,exports){

@@ -1,6 +1,7 @@
 import { 
   APP_INITIALIZE, 
   APP_SET_DIALOG, 
+  APP_SET_DIFF, 
   APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
@@ -24,6 +25,13 @@ export function initializeApp(data) {
   return {
     type : APP_INITIALIZE, 
     data,
+  }
+}
+
+export function setDiff(diff) {
+  return {
+    type : APP_SET_DIFF,
+    diff,
   }
 }
 
@@ -110,4 +118,3 @@ export function updateChannelContact(id, info) {
     info,
   }
 }
-
