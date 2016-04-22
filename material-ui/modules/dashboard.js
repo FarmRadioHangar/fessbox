@@ -48,7 +48,7 @@ class Dashboard extends React.Component {
   renderAppBar() {
     return (
       <div>
-        <AppBar title='VoxBox' />
+        <AppBar iconElementLeft={<span />} title='VoxBox' />
       </div>
     )
   }
