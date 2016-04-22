@@ -1,4 +1,6 @@
-import React from 'react'
+import React  from 'react'
+import styles from '../styles/master'
+import _      from 'lodash'
 
 import { connect } 
   from 'react-redux'
@@ -19,9 +21,6 @@ import IconButton
   from 'material-ui/lib/icon-button'
 
 class Master extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
     const { 
       mixer : { 
@@ -66,22 +65,4 @@ class Master extends React.Component {
   }
 }
 
-const styles = {
-  controls: {
-    display       : 'flex',
-    flexDirection : 'row', 
-    alignItems    : 'center',
-    height        : '30px',
-    padding       : '10px 0',
-    marginLeft    : '20px',
-  },
-  slider: {
-    width         : '100%',
-    marginTop     : '22px',
-    padding       : '0 20px 0 20px',
-  },
-}
-
-export default connect(state => ({
-  mixer : state.mixer,
-}))(Master)
+export default connect(state => _.pick(state, ['mixer']))(Master)
