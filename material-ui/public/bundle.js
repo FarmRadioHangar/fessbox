@@ -292,6 +292,7 @@ exports.default = function (eventType, data) {
     case 'event_error':
     case 'input_error':
       console.log('error: ' + eventType);
+      console.error(data.msg);
       break;
     default:
       console.error('Unknown event type: ' + eventType + '.');
@@ -3235,7 +3236,7 @@ var SmsDialog = _wrapComponent('SmsDialog')(function (_React$Component) {
         type: 'sms_out',
         endpoint: sms.recipient,
         content: sms.content,
-        channel_id: sms.channel
+        channel_id: 'auto' === sms.channel ? null : sms.channel
       };
       if (sms.message) {
         payload.reply_to = sms.message.id;
@@ -34631,7 +34632,7 @@ var DropDownMenu = _react2.default.createClass({
         fontFamily: this.state.muiTheme.rawTheme.fontFamily,
         outline: 'none',
         position: 'relative',
-        transition: _transitions2.default.easeOut()
+        transition: _transitions2.default.easeOut('4444ms', 'transform')
       },
       underline: {
         borderTop: 'solid 1px ' + accentColor,
@@ -34786,6 +34787,7 @@ var DropDownMenu = _react2.default.createClass({
 });
 
 exports.default = DropDownMenu;
+
 },{"../clearfix":561,"../menus/menu":577,"../popover/popover":583,"../popover/popover-animation-from-top":581,"../styles/getMuiTheme":596,"../styles/transitions":602,"../svg-icons/navigation/arrow-drop-down":613,"react":902,"simple-assign":698}],545:[function(require,module,exports){
 'use strict';
 
@@ -40770,7 +40772,7 @@ var ListItem = _react2.default.createClass({
         fontSize: 16,
         lineHeight: '16px',
         position: 'relative',
-        transition: _transitions2.default.easeOut()
+        transition: _transitions2.default.easeOut('4444ms', 'transform')
       },
 
       //This inner div is needed so that ripples will span the entire container
@@ -40968,6 +40970,7 @@ var ListItem = _react2.default.createClass({
 });
 
 exports.default = ListItem;
+
 },{"../enhanced-button":564,"../icon-button":570,"../styles/getMuiTheme":596,"../styles/transitions":602,"../svg-icons/navigation/arrow-drop-down":613,"../svg-icons/navigation/arrow-drop-up":614,"../utils/color-manipulator":634,"./nested-list":574,"react":902,"react-addons-pure-render-mixin":685,"react-dom":701,"simple-assign":698}],573:[function(require,module,exports){
 (function (process){
 'use strict';
@@ -42476,7 +42479,7 @@ var Menu = _react2.default.createClass({
       root: {
         //Nested div bacause the List scales x faster than
         //it scales y
-        transition: animated ? _transitions2.default.easeOut('250ms', 'transform') : null,
+        transition: animated ? _transitions2.default.easeOut('3250ms', 'transform') : null,
         zIndex: muiTheme.zIndex.menu,
         top: openDown ? 0 : null,
         bottom: !openDown ? 0 : null,
@@ -42503,7 +42506,7 @@ var Menu = _react2.default.createClass({
       },
 
       menuItemContainer: {
-        transition: animated ? _transitions2.default.easeOut(null, 'opacity') : null,
+        transition: animated ? _transitions2.default.easeOut('4444ms', 'opacity') : null,
         opacity: 0
       },
 
@@ -42573,6 +42576,7 @@ var Menu = _react2.default.createClass({
 });
 
 exports.default = Menu;
+
 }).call(this,require('_process'))
 },{"../ClickAwayListener":543,"../lists/list":573,"../styles/auto-prefix":593,"../styles/getMuiTheme":596,"../styles/transitions":602,"../utils/deprecatedPropType":635,"../utils/prop-types":638,"_process":320,"keycode":672,"react":902,"react-addons-update":687,"react-dom":701,"simple-assign":698,"warning":699}],578:[function(require,module,exports){
 'use strict';

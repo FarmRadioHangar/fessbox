@@ -46,6 +46,7 @@ export default function(eventType, data) {
     case 'event_error':
     case 'input_error':
       console.log(`error: ${eventType}`)
+      console.error(data.msg)
       break
     default:
       console.error(`Unknown event type: ${eventType}.`)

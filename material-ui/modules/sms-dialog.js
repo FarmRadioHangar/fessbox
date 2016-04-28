@@ -27,7 +27,7 @@ class SmsDialog extends React.Component {
       type       : 'sms_out',
 	    endpoint   : sms.recipient,
 	    content    : sms.content,
-	    channel_id : sms.channel,
+	    channel_id : 'auto' === sms.channel ? null : sms.channel,
     }
     if (sms.message) {
       payload.reply_to = sms.message.id
