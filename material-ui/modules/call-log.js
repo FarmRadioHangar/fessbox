@@ -1,19 +1,19 @@
 import React from 'react'
 
 import Paper 
-  from 'material-ui/lib/paper'
+  from 'material-ui/Paper'
 import Table 
-  from 'material-ui/lib/table/table'
+  from 'material-ui/Table/Table'
 import TableHeaderColumn 
-  from 'material-ui/lib/table/table-header-column'
+  from 'material-ui/Table/TableHeaderColumn'
 import TableRow 
-  from 'material-ui/lib/table/table-row'
+  from 'material-ui/Table/TableRow'
 import TableHeader 
-  from 'material-ui/lib/table/table-header'
+  from 'material-ui/Table/TableHeader'
 import TableRowColumn 
-  from 'material-ui/lib/table/table-row-column'
+  from 'material-ui/Table/TableRowColumn'
 import TableBody 
-  from 'material-ui/lib/table/table-body'
+  from 'material-ui/Table/TableBody'
 
 class CallLog extends React.Component {
   constructor(props) {

@@ -1,13 +1,13 @@
 import React from 'react'
 
 import Toolbar 
-  from 'material-ui/lib/toolbar/toolbar'
+  from 'material-ui/Toolbar/Toolbar'
 import ToolbarGroup 
-  from 'material-ui/lib/toolbar/toolbar-group'
+  from 'material-ui/Toolbar/ToolbarGroup'
 import ToolbarTitle 
-  from 'material-ui/lib/toolbar/toolbar-title'
+  from 'material-ui/Toolbar/ToolbarTitle'
 import ToolbarSeparator 
-  from 'material-ui/lib/toolbar/toolbar-separator'
+  from 'material-ui/Toolbar/ToolbarSeparator'
 
 class ChannelToolbar extends React.Component {
   render() {

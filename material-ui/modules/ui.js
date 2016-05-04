@@ -12,9 +12,9 @@ import {
 import { connect } 
   from 'react-redux'
 import CircularProgress 
-  from 'material-ui/lib/circular-progress'
+  from 'material-ui/CircularProgress'
 import Dialog 
-  from 'material-ui/lib/dialog'
+  from 'material-ui/Dialog'
 
 class Ui extends React.Component {
   render() {

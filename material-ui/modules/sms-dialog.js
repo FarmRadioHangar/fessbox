@@ -5,11 +5,11 @@ import validators    from './validators'
 import _             from 'lodash'
 
 import Dialog 
-  from 'material-ui/lib/dialog'
+  from 'material-ui/Dialog'
 import FlatButton 
-  from 'material-ui/lib/flat-button'
+  from 'material-ui/FlatButton'
 import TextField 
-  from 'material-ui/lib/text-field'
+  from 'material-ui/TextField'
 
 import { connect } 
   from 'react-redux'

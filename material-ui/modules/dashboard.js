@@ -14,21 +14,17 @@ import { actions }
 import { setDialog, removeMessage, markAllMessagesRead }
   from '../js/actions'
 
-import AppBar   
-  from 'material-ui/lib/app-bar'
-import Tabs 
-  from 'material-ui/lib/tabs/tabs'
-import Tab 
-  from 'material-ui/lib/tabs/tab'
+import AppBar from 'material-ui/AppBar'
+import Tabs   from 'material-ui/Tabs/Tabs'
+import Tab    from 'material-ui/Tabs/Tab'
 import FloatingActionButton 
-  from 'material-ui/lib/floating-action-button'
-import Badge 
-  from 'material-ui/lib/badge'
+              from 'material-ui/FloatingActionButton'
+import Badge  from 'material-ui/Badge'
 
 import IconCommunicationDialpad
-  from 'material-ui/lib/svg-icons/communication/dialpad'
+  from 'material-ui/svg-icons/communication/dialpad'
 import IconCommunicationMessage
-  from 'material-ui/lib/svg-icons/communication/message'
+  from 'material-ui/svg-icons/communication/message'
 
 class Dashboard extends React.Component {
   constructor(props) {

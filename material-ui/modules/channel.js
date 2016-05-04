@@ -7,31 +7,31 @@ import { updateChannelContact, updateChannelVolume }
   from '../js/actions'
 
 import Paper 
-  from 'material-ui/lib/paper'
+  from 'material-ui/Paper'
 import Divider
-  from 'material-ui/lib/divider'
+  from 'material-ui/Divider'
 import FlatButton 
-  from 'material-ui/lib/flat-button'
+  from 'material-ui/FlatButton'
 import RaisedButton 
-  from 'material-ui/lib/raised-button'
+  from 'material-ui/RaisedButton'
 import Slider 
-  from 'material-ui/lib/slider'
+  from 'material-ui/Slider'
 import Toggle
-  from 'material-ui/lib/toggle'
+  from 'material-ui/Toggle'
 import TextField 
-  from 'material-ui/lib/text-field'
+  from 'material-ui/TextField'
 
 import IconCommunicationCall
-  from 'material-ui/lib/svg-icons/communication/call'
+  from 'material-ui/svg-icons/communication/call'
 import IconAvPause
-  from 'material-ui/lib/svg-icons/av/pause'
+  from 'material-ui/svg-icons/av/pause'
 import IconAvStop
-  from 'material-ui/lib/svg-icons/av/stop'
+  from 'material-ui/svg-icons/av/stop'
 import IconSocialPerson
-  from 'material-ui/lib/svg-icons/social/person'
+  from 'material-ui/svg-icons/social/person'
 
 import { green400, green500, yellow500, red500, grey500, orange500 }
-  from 'material-ui/lib/styles/colors'
+  from 'material-ui/styles/colors'
 
 class Channel extends React.Component {
   constructor(props) {

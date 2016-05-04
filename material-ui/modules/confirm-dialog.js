@@ -5,9 +5,9 @@ import { connect }
   from 'react-redux'
 
 import Dialog 
-  from 'material-ui/lib/dialog'
+  from 'material-ui/Dialog'
 import FlatButton 
-  from 'material-ui/lib/flat-button'
+  from 'material-ui/FlatButton'
 
 class ConfirmDialog extends React.Component {
   render() {

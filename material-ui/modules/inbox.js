@@ -9,32 +9,32 @@ import { setDialog, toggleMessageFavorite, clearFavorites }
   from '../js/actions'
 
 import Avatar
-  from 'material-ui/lib/avatar'
+  from 'material-ui/Avatar'
 import Subheader
-  from 'material-ui/lib/Subheader/Subheader'
+  from 'material-ui/Subheader/Subheader'
 import List 
-  from 'material-ui/lib/lists/list'
+  from 'material-ui/List/List'
 import ListItem 
-  from 'material-ui/lib/lists/list-item'
+  from 'material-ui//List/ListItem'
 import Divider 
-  from 'material-ui/lib/divider'
+  from 'material-ui/Divider'
 import IconButton 
-  from 'material-ui/lib/icon-button'
+  from 'material-ui/IconButton'
 import MoreVertIcon 
-  from 'material-ui/lib/svg-icons/navigation/more-vert'
+  from 'material-ui/svg-icons/navigation/more-vert'
 import IconMenu 
-  from 'material-ui/lib/menus/icon-menu'
+  from 'material-ui/IconMenu'
 import MenuItem 
-  from 'material-ui/lib/menus/menu-item'
+  from 'material-ui/MenuItem'
 import Toolbar
-  from 'material-ui/lib/toolbar/toolbar'
+  from 'material-ui/Toolbar/Toolbar'
 import ToolbarTitle
-  from 'material-ui/lib/toolbar/toolbar-title'
+  from 'material-ui/Toolbar/ToolbarTitle'
 import ToolbarGroup
-  from 'material-ui/lib/toolbar/toolbar-group'
+  from 'material-ui/Toolbar/ToolbarGroup'
 
 import { purple500, darkBlack, lightBlack, grey400 } 
-  from 'material-ui/lib/styles/colors'
+  from 'material-ui/styles/colors'
 
 class Inbox extends React.Component {
   handleMenuAction(event, value, message) {

@@ -8,7 +8,7 @@ import { TransitionMotion, Motion, spring, presets }
   from 'react-motion'
 
 import EnhancedButton
-  from 'material-ui/lib/enhanced-button'
+  from 'material-ui/EnhancedButton'
 
 class Toastr extends React.Component {
   constructor(props) {
