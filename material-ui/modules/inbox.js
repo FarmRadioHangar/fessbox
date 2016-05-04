@@ -5,30 +5,36 @@ import { connect }
   from 'react-redux'
 import { actions } 
   from 'react-redux-form'
-import { setDialog, toggleMessageFavorite }
+import { setDialog, toggleMessageFavorite, clearFavorites }
   from '../js/actions'
 
 import Avatar
-  from 'material-ui/lib/avatar'
+  from 'material-ui/Avatar'
 import Subheader
-  from 'material-ui/lib/Subheader/Subheader'
+  from 'material-ui/Subheader/Subheader'
 import List 
-  from 'material-ui/lib/lists/list'
+  from 'material-ui/List/List'
 import ListItem 
-  from 'material-ui/lib/lists/list-item'
+  from 'material-ui//List/ListItem'
 import Divider 
-  from 'material-ui/lib/divider'
+  from 'material-ui/Divider'
 import IconButton 
-  from 'material-ui/lib/icon-button'
+  from 'material-ui/IconButton'
 import MoreVertIcon 
-  from 'material-ui/lib/svg-icons/navigation/more-vert'
+  from 'material-ui/svg-icons/navigation/more-vert'
 import IconMenu 
-  from 'material-ui/lib/menus/icon-menu'
+  from 'material-ui/IconMenu'
 import MenuItem 
-  from 'material-ui/lib/menus/menu-item'
+  from 'material-ui/MenuItem'
+import Toolbar
+  from 'material-ui/Toolbar/Toolbar'
+import ToolbarTitle
+  from 'material-ui/Toolbar/ToolbarTitle'
+import ToolbarGroup
+  from 'material-ui/Toolbar/ToolbarGroup'
 
 import { purple500, darkBlack, lightBlack, grey400 } 
-  from 'material-ui/lib/styles/colors'
+  from 'material-ui/styles/colors'
 
 class Inbox extends React.Component {
   handleMenuAction(event, value, message) {
@@ -113,12 +119,13 @@ class Inbox extends React.Component {
         visibleMessages, 
         messageCount, 
         unreadCount, 
+        favorites,
       }, 
       dispatch, 
     } = this.props
     if (!messageCount) {
       return (
-        <List>
+        <List style={{background: '#ffffff'}}>
           <Subheader>Inbox</Subheader>
           <Divider />
           <p style={{padding: '16px'}}>No messages.</p>
@@ -126,15 +133,41 @@ class Inbox extends React.Component {
       )
     }
     return (
-      <List style={{background: '#ffffff'}}>
-        <Subheader>Inbox</Subheader>
-        {visibleMessages.map((message, i) => (
-          <div key={i}>
-            <Divider />
-            <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+      <div style={{display: 'flex', flexDirection: 'row'}}>
+        {!!favorites.length && (
+          <div style={{flex: 1}}>
+            <List style={{background: '#ffffff'}}>
+              <Toolbar>
+                <ToolbarTitle text='Favorites' />
+                <ToolbarGroup float='right'>
+                  <IconButton touch={true} onClick={() => dispatch(clearFavorites())}>
+                    <i className='material-icons'>clear_all</i>
+                  </IconButton>
+                </ToolbarGroup>
+              </Toolbar>
+                {favorites.map((message, i) => (
+                  <div key={i}>
+                    <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+                    <Divider />
+                  </div>
+                ))}
+            </List>
           </div>
-        ))}
-      </List>
+        )}
+        <div style={{flex: 1}}>
+          <List style={{background: '#ffffff'}}>
+            <Toolbar>
+              <ToolbarTitle text='Inbox' />
+            </Toolbar>
+            {visibleMessages.filter(message => !message.favorite).map((message, i) => (
+              <div key={i}>
+                <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+                <Divider />
+              </div>
+            ))}
+          </List>
+        </div>
+      </div>
     )
   }
 }

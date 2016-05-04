@@ -5,11 +5,11 @@ import validators    from './validators'
 import _             from 'lodash'
 
 import Dialog 
-  from 'material-ui/lib/dialog'
+  from 'material-ui/Dialog'
 import FlatButton 
-  from 'material-ui/lib/flat-button'
+  from 'material-ui/FlatButton'
 import TextField 
-  from 'material-ui/lib/text-field'
+  from 'material-ui/TextField'
 
 import { connect } 
   from 'react-redux'
@@ -27,7 +27,7 @@ class SmsDialog extends React.Component {
       type       : 'sms_out',
 	    endpoint   : sms.recipient,
 	    content    : sms.content,
-	    channel_id : sms.channel,
+	    channel_id : 'auto' === sms.channel ? null : sms.channel,
     }
     if (sms.message) {
       payload.reply_to = sms.message.id

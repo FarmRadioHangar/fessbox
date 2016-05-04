@@ -5,15 +5,15 @@ import validators    from './validators'
 import _             from 'lodash'
 
 import Dialog 
-  from 'material-ui/lib/dialog'
+  from 'material-ui/Dialog'
 import TextField 
-  from 'material-ui/lib/text-field'
+  from 'material-ui/TextField'
 import FlatButton 
-  from 'material-ui/lib/flat-button'
+  from 'material-ui/FlatButton'
 import SelectField 
-  from 'material-ui/lib/select-field'
+  from 'material-ui/SelectField'
 import MenuItem 
-  from 'material-ui/lib/menus/menu-item'
+  from 'material-ui/MenuItem'
 
 import { connect } 
   from 'react-redux'

@@ -1,7 +1,7 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification, initializeApp, updateChannel, updateChannelVolume, removeMessage }
+import { showNotification, initializeApp, updateChannel, updateChannelVolume, updateAppStatus, addMessage, removeMessage }
   from './actions'
 
 export default function(eventType, data) {
@@ -13,6 +13,7 @@ export default function(eventType, data) {
       break
     case 'initialize':
       store.dispatch(initializeApp(data))
+//      store.dispatch(updateAppStatus('APP_STATUS_INITIALIZED')) // temp
       break
     case 'channelUpdate':
       Object.keys(data).forEach(key => {
@@ -36,7 +37,7 @@ export default function(eventType, data) {
       Object.keys(data).forEach(id => {
         const message = data[id]
         if (message) {
-          //
+          store.dispatch(addMessage(id, message))
         } else {
           store.dispatch(removeMessage(id))
         }
@@ -45,6 +46,7 @@ export default function(eventType, data) {
     case 'event_error':
     case 'input_error':
       console.log(`error: ${eventType}`)
+      console.error(data.msg)
       break
     default:
       console.error(`Unknown event type: ${eventType}.`)

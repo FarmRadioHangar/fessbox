@@ -1,11 +1,11 @@
 import React from 'react'
 
 import Subheader
-  from 'material-ui/lib/Subheader/Subheader'
+  from 'material-ui/Subheader/Subheader'
 import RadioButton
-  from 'material-ui/lib/radio-button'
+  from 'material-ui/RadioButton'
 import RadioButtonGroup
-  from 'material-ui/lib/radio-button-group'
+  from 'material-ui/RadioButton/RadioButtonGroup'
 
 export default class ChannelSelect extends React.Component {
   render() {

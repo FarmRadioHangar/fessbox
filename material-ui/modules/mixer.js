@@ -1,24 +1,21 @@
 import React    from 'react'
 import Channel  from './channel'
 import Master   from './master'
+import _        from 'lodash'
 
 import { connect } 
   from 'react-redux'
 
 class Mixer extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
-    const { mixer : { channelList }, sendMessage } = this.props
+    const { dispatch, mixer : { channelList }, sendMessage } = this.props
     return (
       <div>
-      {/*
-        <Master sendMessage={sendMessage} />
-        */}
         <div style={{maxWidth: '900px', margin: '0 auto'}}>
+          <Master sendMessage={sendMessage} />
           {channelList.map(channel => (
             <Channel {...channel} 
+              dispatch    = {dispatch}
               key         = {channel.id}
               sendMessage = {sendMessage}
             />
@@ -29,7 +26,4 @@ class Mixer extends React.Component {
   }
 }
 
-export default connect(state => ({
-  mixer : state.mixer,
-}))(Mixer)
-
+export default connect(state => _.pick(state, ['mixer']))(Mixer)

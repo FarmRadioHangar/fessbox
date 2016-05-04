@@ -1,11 +1,16 @@
 import { 
   APP_INITIALIZE, 
-  APP_UPDATE_STATUS, 
   APP_SET_DIALOG, 
+  APP_SET_DIFF, 
+  APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
-  MESSAGE_TOGGLE_PROPERTY,
+  CHANNEL_CONTACT_UPDATE,
+  MESSAGE_FAVORITES_CLEAR,
+  MESSAGE_MARK_ALL_READ,
+  MESSAGE_ADD,
   MESSAGE_REMOVE,
+  MESSAGE_TOGGLE_PROPERTY,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -23,11 +28,24 @@ export function initializeApp(data) {
   }
 }
 
+export function setDiff(diff) {
+  return {
+    type : APP_SET_DIFF,
+    diff,
+  }
+}
+
 export function toggleMessageRead(id) {
   return {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'read',
     id,
+  }
+}
+
+export function markAllMessagesRead() {
+  return {
+    type     : MESSAGE_MARK_ALL_READ, 
   }
 }
 
@@ -45,6 +63,20 @@ export function toggleMessageFavorite(id) {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'favorite',
     id,
+  }
+}
+
+export function clearFavorites() {
+  return {
+    type     : MESSAGE_FAVORITES_CLEAR, 
+  }
+}
+
+export function addMessage(id, message) {
+  return {
+    type : MESSAGE_ADD, 
+    id,
+    message,
   }
 }
 
@@ -76,5 +108,13 @@ export function setDialog(dialog, state) {
     type : APP_SET_DIALOG,
     dialog,
     state,
+  }
+}
+
+export function updateChannelContact(id, info) {
+  return {
+    type : CHANNEL_CONTACT_UPDATE,
+    id,
+    info,
   }
 }

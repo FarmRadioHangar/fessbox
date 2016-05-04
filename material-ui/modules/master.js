@@ -1,27 +1,26 @@
-import React from 'react'
+import React  from 'react'
+import styles from '../styles/master'
+import _      from 'lodash'
 
 import { connect } 
   from 'react-redux'
 
 import Paper 
-  from 'material-ui/lib/paper'
-import IconMic
-  from 'material-ui/lib/svg-icons/av/mic'
-import IconVolumeUp
-  from 'material-ui/lib/svg-icons/av/volume-up'
+  from 'material-ui/Paper'
+import IconMic 
+  from 'material-ui/svg-icons/av/mic'
+import IconVolumeUp 
+  from 'material-ui/svg-icons/av/volume-up'
 import Slider 
-  from 'material-ui/lib/slider'
+  from 'material-ui/Slider'
 import Subheader 
-  from 'material-ui/lib/Subheader'
+  from 'material-ui/Subheader'
 import Divider 
-  from 'material-ui/lib/divider'
-import IconButton
-  from 'material-ui/lib/icon-button'
+  from 'material-ui/Divider'
+import IconButton 
+  from 'material-ui/IconButton'
 
 class Master extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
     const { 
       mixer : { 
@@ -66,22 +65,4 @@ class Master extends React.Component {
   }
 }
 
-const styles = {
-  controls: {
-    display       : 'flex',
-    flexDirection : 'row', 
-    alignItems    : 'center',
-    height        : '30px',
-    padding       : '10px 0',
-    marginLeft    : '20px',
-  },
-  slider: {
-    width         : '100%',
-    marginTop     : '22px',
-    padding       : '0 20px 0 20px',
-  },
-}
-
-export default connect(state => ({
-  mixer : state.mixer,
-}))(Master)
+export default connect(state => _.pick(state, ['mixer']))(Master)
