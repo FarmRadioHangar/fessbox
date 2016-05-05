@@ -1,6 +1,8 @@
 import 'babel-polyfill' 
 import React            from 'react'
 import ReactDOM         from 'react-dom'
+import getMuiTheme      from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getUrlParam      from './url-params'
 import store            from './store'
 import messageHandler   from './message-handler'
@@ -60,7 +62,9 @@ injectTapEventPlugin()
 
 ReactDOM.render(
   <Provider store={store}>
-    <Ui sendMessage={(event, data) => ws.send(JSON.stringify({event, data}))} />
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <Ui sendMessage={(event, data) => ws.send(JSON.stringify({event, data}))} />
+    </MuiThemeProvider>
   </Provider>,
   document.getElementById('main')
 )
