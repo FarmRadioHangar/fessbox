@@ -13,7 +13,6 @@ export default function(eventType, data) {
       break
     case 'initialize':
       store.dispatch(initializeApp(data))
-//      store.dispatch(updateAppStatus('APP_STATUS_INITIALIZED')) // temp
       break
     case 'channelUpdate':
       Object.keys(data).forEach(key => {

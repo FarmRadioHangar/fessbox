@@ -1,6 +1,7 @@
 import React     from 'react'
 import _         from 'lodash'
 import Dashboard from './dashboard'
+import styles    from '../styles/ui'
 
 import { 
   APP_STATUS_CONNECTED, 
@@ -47,18 +48,6 @@ class Ui extends React.Component {
           </Dialog>
         )
     }
-  }
-}
-
-const styles = {
-  spinner: {
-    width            : '100%',
-    height           : '100%',
-    display          : 'flex',
-    justifyContent   : 'center',
-    alignItems       : 'center',
-    WebkitTransition : 'background-color 2s',
-    transition       : 'background-color 2s',
   }
 }
 
