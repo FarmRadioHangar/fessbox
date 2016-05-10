@@ -8,13 +8,14 @@ import { connect }
 
 class Mixer extends React.Component {
   render() {
-    const { dispatch, mixer : { channelList }, sendMessage } = this.props
+    const { app : { diff }, dispatch, mixer : { channelList }, sendMessage } = this.props
     return (
       <div>
         <div style={{maxWidth: '900px', margin: '0 auto'}}>
           <Master sendMessage={sendMessage} />
           {channelList.map(channel => (
             <Channel {...channel} 
+              diff        = {diff}
               dispatch    = {dispatch}
               key         = {channel.id}
               sendMessage = {sendMessage}
@@ -26,4 +27,4 @@ class Mixer extends React.Component {
   }
 }
 
-export default connect(state => _.pick(state, ['mixer']))(Mixer)
+export default connect(state => _.pick(state, ['mixer', 'app']))(Mixer)

@@ -1,4 +1,5 @@
 import React  from 'react'
+import _      from 'lodash'
 import styles from '../styles/toastr'
 
 import { hideNotification, toastrRemoveMessage, toastrRefresh }
@@ -73,6 +74,4 @@ class Toastr extends React.Component {
   }
 }
 
-export default connect(state => ({
-  toastr : state.toastr,
-}))(Toastr)
+export default connect(state => _.pick(state, ['toastr']))(Toastr)

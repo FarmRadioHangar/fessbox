@@ -52,7 +52,7 @@ export default class Channel extends React.Component {
     }
   }
   updateVolume(e, value) {
-    const { id, sendMessage } = this.props
+    const { id, sendMessage, dispatch } = this.props
     sendMessage('channelVolume', { 
       [id]: value
     })
@@ -74,9 +74,7 @@ export default class Channel extends React.Component {
     })
   }
   timer() {
-    //const { timestamp, client : { diff } } = this.props
-    const { timestamp } = this.props
-    const diff = 0 // temp
+    const { timestamp, diff } = this.props
     if (timestamp) {
       this.setState({
         now : Date.now() - diff
@@ -262,7 +260,7 @@ export default class Channel extends React.Component {
             timer = {(('master' === mode || 'on_hold' === mode) && timestamp) ? (
               <span style={{marginLeft: '20px'}}>
                 {hours > 0 && <span>{hours}:</span>}
-                {moment(moment(this.state.now).diff(timestamp)).format('mm:ss')}
+                {moment(Math.max(0, moment(this.state.now).diff(timestamp))).format('mm:ss')}
               </span>
             ) : null}
           />

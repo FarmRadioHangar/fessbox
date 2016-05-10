@@ -1,8 +1,17 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification, initializeApp, updateChannel, updateChannelVolume, updateAppStatus, addMessage, removeMessage, toastrAddMessage }
-  from './actions'
+import { 
+  addMessage, 
+  initializeApp, 
+  removeMessage, 
+  setDiff,
+  showNotification, 
+  toastrAddMessage, 
+  updateAppStatus, 
+  updateChannel, 
+  updateChannelVolume, 
+} from './actions'
 
 export default function(eventType, data) {
   switch (eventType) {
@@ -13,6 +22,7 @@ export default function(eventType, data) {
       break
     case 'initialize':
       store.dispatch(initializeApp(data))
+      store.dispatch(setDiff(Date.now() - data.server_time))
       break
     case 'channelUpdate':
       Object.keys(data).forEach(key => {

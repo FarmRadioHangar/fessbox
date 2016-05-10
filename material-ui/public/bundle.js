@@ -298,6 +298,7 @@ exports.default = function (eventType, data) {
       break;
     case 'initialize':
       _store2.default.dispatch((0, _actions.initializeApp)(data));
+      _store2.default.dispatch((0, _actions.setDiff)(Date.now() - data.server_time));
       break;
     case 'channelUpdate':
       Object.keys(data).forEach(function (key) {
@@ -1417,6 +1418,7 @@ var Channel = function (_React$Component) {
       var _props2 = this.props;
       var id = _props2.id;
       var sendMessage = _props2.sendMessage;
+      var dispatch = _props2.dispatch;
 
       sendMessage('channelVolume', _defineProperty({}, id, value));
       dispatch((0, _actions.updateChannelVolume)(id, value));
@@ -1446,10 +1448,10 @@ var Channel = function (_React$Component) {
   }, {
     key: 'timer',
     value: function timer() {
-      //const { timestamp, client : { diff } } = this.props
-      var timestamp = this.props.timestamp;
+      var _props4 = this.props;
+      var timestamp = _props4.timestamp;
+      var diff = _props4.diff;
 
-      var diff = 0; // temp
       if (timestamp) {
         this.setState({
           now: Date.now() - diff
@@ -1459,10 +1461,10 @@ var Channel = function (_React$Component) {
   }, {
     key: 'updateContact',
     value: function updateContact() {
-      var _props4 = this.props;
-      var id = _props4.id;
-      var dispatch = _props4.dispatch;
-      var sendMessage = _props4.sendMessage;
+      var _props5 = this.props;
+      var id = _props5.id;
+      var dispatch = _props5.dispatch;
+      var sendMessage = _props5.sendMessage;
 
       if (this.refs.contact) {
         var caller = {
@@ -1487,11 +1489,11 @@ var Channel = function (_React$Component) {
     value: function renderChannel() {
       var _this2 = this;
 
-      var _props5 = this.props;
-      var mode = _props5.mode;
-      var muted = _props5.muted;
-      var level = _props5.level;
-      var contact = _props5.contact;
+      var _props6 = this.props;
+      var mode = _props6.mode;
+      var muted = _props6.muted;
+      var level = _props6.level;
+      var contact = _props6.contact;
 
       switch (mode) {
         case 'free':
@@ -1683,9 +1685,9 @@ var Channel = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props6 = this.props;
-      var mode = _props6.mode;
-      var timestamp = _props6.timestamp;
+      var _props7 = this.props;
+      var mode = _props7.mode;
+      var timestamp = _props7.timestamp;
 
       var hours = (0, _moment2.default)(this.state.now).diff(timestamp, 'hours');
       var colors = {
@@ -1713,7 +1715,7 @@ var Channel = function (_React$Component) {
                 hours,
                 ':'
               ),
-              (0, _moment2.default)((0, _moment2.default)(this.state.now).diff(timestamp)).format('mm:ss')
+              (0, _moment2.default)(Math.max(0, (0, _moment2.default)(this.state.now).diff(timestamp))).format('mm:ss')
             ) : null
           })),
           this.renderChannel()
@@ -2657,6 +2659,7 @@ var Mixer = function (_React$Component) {
     key: 'render',
     value: function render() {
       var _props = this.props;
+      var diff = _props.app.diff;
       var dispatch = _props.dispatch;
       var channelList = _props.mixer.channelList;
       var sendMessage = _props.sendMessage;
@@ -2670,6 +2673,7 @@ var Mixer = function (_React$Component) {
           _react2.default.createElement(_master2.default, { sendMessage: sendMessage }),
           channelList.map(function (channel) {
             return _react2.default.createElement(_channel2.default, _extends({}, channel, {
+              diff: diff,
               dispatch: dispatch,
               key: channel.id,
               sendMessage: sendMessage
@@ -2684,7 +2688,7 @@ var Mixer = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
-  return _lodash2.default.pick(state, ['mixer']);
+  return _lodash2.default.pick(state, ['mixer', 'app']);
 })(Mixer);
 
 },{"./channel":16,"./master":20,"lodash":533,"react":948,"react-redux":766}],23:[function(require,module,exports){
@@ -2902,6 +2906,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _toastr = require('../styles/toastr');
 
 var _toastr2 = _interopRequireDefault(_toastr);
@@ -3038,12 +3046,10 @@ var Toastr = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
-  return {
-    toastr: state.toastr
-  };
+  return _lodash2.default.pick(state, ['toastr']);
 })(Toastr);
 
-},{"../js/actions":1,"../styles/toastr":962,"material-ui/internal/EnhancedButton":627,"react":948,"react-motion":735,"react-redux":766}],25:[function(require,module,exports){
+},{"../js/actions":1,"../styles/toastr":962,"lodash":533,"material-ui/internal/EnhancedButton":627,"react":948,"react-motion":735,"react-redux":766}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
