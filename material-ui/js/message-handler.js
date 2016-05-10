@@ -1,7 +1,7 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification, initializeApp, updateChannel, updateChannelVolume, updateAppStatus, addMessage, removeMessage }
+import { showNotification, initializeApp, updateChannel, updateChannelVolume, updateAppStatus, addMessage, removeMessage, toastrAddMessage }
   from './actions'
 
 export default function(eventType, data) {
@@ -37,6 +37,7 @@ export default function(eventType, data) {
         const message = data[id]
         if (message) {
           store.dispatch(addMessage(id, message))
+          store.dispatch(toastrAddMessage('New message from ' + message.endpoint))
         } else {
           store.dispatch(removeMessage(id))
         }

@@ -11,6 +11,9 @@ import {
   MESSAGE_ADD,
   MESSAGE_REMOVE,
   MESSAGE_TOGGLE_PROPERTY,
+  TOASTR_ADD_MESSAGE,
+  TOASTR_REMOVE_MESSAGE,
+  TOASTR_REFRESH,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -116,5 +119,25 @@ export function updateChannelContact(id, info) {
     type : CHANNEL_CONTACT_UPDATE,
     id,
     info,
+  }
+}
+
+export function toastrAddMessage(message) {
+  return {
+    type : TOASTR_ADD_MESSAGE,
+    message,
+  }
+}
+
+export function toastrRemoveMessage(key) {
+  return {
+    type : TOASTR_REMOVE_MESSAGE,
+    key,
+  }
+}
+
+export function toastrRefresh() {
+  return {
+    type : TOASTR_REFRESH,
   }
 }

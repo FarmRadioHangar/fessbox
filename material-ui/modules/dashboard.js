@@ -5,13 +5,14 @@ import CallDialog    from './call-dialog'
 import ConfirmDialog from './confirm-dialog'
 import Inbox         from './inbox'
 import Mixer         from './mixer'
+import Toastr        from './toastr'
 import styles        from '../styles/dashboard'
 
 import { connect } 
   from 'react-redux'
 import { actions } 
   from 'react-redux-form'
-import { setDialog, removeMessage, markAllMessagesRead }
+import { setDialog, removeMessage, markAllMessagesRead, toastrAddMessage }
   from '../js/actions'
 
 import AppBar from 'material-ui/AppBar'
@@ -55,6 +56,7 @@ class Dashboard extends React.Component {
       [id]: null
     })
     dispatch(removeMessage(id))
+    dispatch(toastrAddMessage('The message was deleted'))
   }
   renderDialog() {
     const { 
@@ -168,6 +170,7 @@ class Dashboard extends React.Component {
     const { opacity } = this.state
     return (
       <div style={{opacity, ...styles.component}}>
+        <Toastr />
         {this.renderDialog()}
         {this.renderAppBar()}
         {this.renderTabs()}
