@@ -322,8 +322,10 @@ exports.default = function (eventType, data) {
       Object.keys(data).forEach(function (id) {
         var message = data[id];
         if (message) {
-          _store2.default.dispatch((0, _actions.addMessage)(id, message));
-          _store2.default.dispatch((0, _actions.toastrAddMessage)('New message from ' + message.endpoint));
+          if ('sms_in' === message.type) {
+            _store2.default.dispatch((0, _actions.addMessage)(id, message));
+            _store2.default.dispatch((0, _actions.toastrAddMessage)('New message from ' + message.endpoint));
+          }
         } else {
           _store2.default.dispatch((0, _actions.removeMessage)(id));
         }
@@ -331,7 +333,7 @@ exports.default = function (eventType, data) {
       break;
     case 'event_error':
     case 'input_error':
-      console.log('error: ' + eventType);
+      console.log('Error: ' + eventType);
       console.error(data.msg);
       break;
     default:

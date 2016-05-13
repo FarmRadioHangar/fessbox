@@ -62,6 +62,7 @@ export default function(eventType, data) {
       break
     default:
       console.error(`Unknown event type: ${eventType}.`)
+      console.log(data)
       break
   }
 }
