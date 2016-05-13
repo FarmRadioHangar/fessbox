@@ -55,14 +55,17 @@ export default function(eventType, data) {
         }
       })
       break
+    case 'messageSent':
+      store.dispatch(toastrAddMessage('SMS message sent.'))
+      break
     case 'event_error':
     case 'input_error':
       console.log(`Error: ${eventType}`)
       console.error(data.msg)
       break
     default:
-      console.error(`Unknown event type: ${eventType}.`)
       console.log(data)
+      console.error(`Unknown event type: ${eventType}.`)
       break
   }
 }

@@ -331,12 +331,16 @@ exports.default = function (eventType, data) {
         }
       });
       break;
+    case 'messageSent':
+      _store2.default.dispatch((0, _actions.toastrAddMessage)('SMS message sent.'));
+      break;
     case 'event_error':
     case 'input_error':
       console.log('Error: ' + eventType);
       console.error(data.msg);
       break;
     default:
+      console.log(data);
       console.error('Unknown event type: ' + eventType + '.');
       break;
   }
