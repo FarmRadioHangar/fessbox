@@ -29,7 +29,7 @@ class CallDialog extends React.Component {
     } = this.props
     sendMessage('callNumber', {
       number     : call.number,
-      channel_id : call.channel,
+      channel_id : 'auto' === call.channel ? null : call.channel,
       mode       : 'master',
     })
     onClose()

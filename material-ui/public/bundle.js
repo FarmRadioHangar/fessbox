@@ -1030,7 +1030,7 @@ var CallDialog = function (_React$Component) {
 
       sendMessage('callNumber', {
         number: call.number,
-        channel_id: call.channel,
+        channel_id: 'auto' === call.channel ? null : call.channel,
         mode: 'master'
       });
       onClose();
