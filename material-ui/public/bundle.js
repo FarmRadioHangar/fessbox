@@ -1030,7 +1030,7 @@ var CallDialog = function (_React$Component) {
 
       sendMessage('callNumber', {
         number: call.number,
-        channel_id: 'auto' === call.channel ? null : call.channel,
+        channel_id: 'auto' === call.channel ? null : call.channel.id,
         mode: 'master'
       });
       onClose();
@@ -2777,7 +2777,7 @@ var SmsDialog = function (_React$Component) {
         type: 'sms_out',
         endpoint: sms.recipient,
         content: sms.content,
-        channel_id: 'auto' === sms.channel ? null : sms.channel
+        channel_id: 'auto' === sms.channel ? null : sms.channel.id
       };
       if (sms.message) {
         payload.reply_to = sms.message.id;
