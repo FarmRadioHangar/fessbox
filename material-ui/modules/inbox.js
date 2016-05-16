@@ -126,7 +126,7 @@ class Inbox extends React.Component {
     if (!messageCount) {
       return (
         <List style={{background: '#ffffff'}}>
-          <Subheader>Inbox</Subheader>
+          <Subheader>SMS</Subheader>
           <Divider />
           <p style={{padding: '16px'}}>No messages.</p>
         </List>

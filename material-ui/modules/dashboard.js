@@ -131,7 +131,7 @@ class Dashboard extends React.Component {
         <Tab
           onActive = {() => this.activateTab('inbox')}
           icon     = {inboxIcon}
-          label    = 'Inbox'
+          label    = 'Messages'
           value    = 'inbox'>
           <Inbox sendMessage={sendMessage} />
         </Tab>
@@ -173,6 +173,7 @@ class Dashboard extends React.Component {
 					</FloatingActionButton>
         )
       case 'call_log':
+      case 'config':
       default:
 				return <span />
 		}

@@ -46,8 +46,8 @@ export default function(eventType, data) {
       Object.keys(data).forEach(id => {
         const message = data[id]
         if (message) {
+          store.dispatch(addMessage(id, message))
           if ('sms_in' === message.type) {
-            store.dispatch(addMessage(id, message))
             store.dispatch(toastrAddMessage('New message from ' + message.endpoint))
           }
         } else {
