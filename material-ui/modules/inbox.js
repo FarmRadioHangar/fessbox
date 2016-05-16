@@ -73,16 +73,20 @@ class Inbox extends React.Component {
     )
     return {
       leftAvatar: (
-        <Avatar 
-          color           = 'white'
-          backgroundColor = {purple500}
-          icon            = {
-            <i className='material-icons'>textsms</i>
-        } />
+        <span>
+          {'sms_in' === message.type ? (
+            <i className='material-icons'>call_received</i>
+          ) : (
+            <i className='material-icons'>call_made</i>
+          )}
+        </span>
       ),
       primaryText: (
         <span>
-          {message.endpoint}&nbsp;&nbsp;<span style={{color: lightBlack}}>{message.channel_id}</span>
+          {message.endpoint}&nbsp;&nbsp;
+          {'null' !== message.channel_id && (
+            <span style={{color: lightBlack}}>{message.channel_id}</span>
+          )}
         </span>
       ),
       secondaryText: (
@@ -126,7 +130,7 @@ class Inbox extends React.Component {
     if (!messageCount) {
       return (
         <List style={{background: '#ffffff'}}>
-          <Subheader>SMS</Subheader>
+          <Subheader>Messages</Subheader>
           <Divider />
           <p style={{padding: '16px'}}>No messages.</p>
         </List>
@@ -157,7 +161,7 @@ class Inbox extends React.Component {
         <div style={{flex: 1}}>
           <List style={{background: '#ffffff'}}>
             <Toolbar>
-              <ToolbarTitle text='Inbox' />
+              <ToolbarTitle text='Messages' />
             </Toolbar>
             {visibleMessages.filter(message => !message.favorite).map((message, i) => (
               <div key={i}>

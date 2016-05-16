@@ -322,8 +322,8 @@ exports.default = function (eventType, data) {
       Object.keys(data).forEach(function (id) {
         var message = data[id];
         if (message) {
+          _store2.default.dispatch((0, _actions.addMessage)(id, message));
           if ('sms_in' === message.type) {
-            _store2.default.dispatch((0, _actions.addMessage)(id, message));
             _store2.default.dispatch((0, _actions.toastrAddMessage)('New message from ' + message.endpoint));
           }
         } else {
@@ -2054,7 +2054,7 @@ var Dashboard = function (_React$Component) {
               return _this2.activateTab('inbox');
             },
             icon: inboxIcon,
-            label: 'Inbox',
+            label: 'Messages',
             value: 'inbox' },
           _react2.default.createElement(_inbox2.default, { sendMessage: sendMessage })
         ),
@@ -2104,6 +2104,7 @@ var Dashboard = function (_React$Component) {
             _react2.default.createElement(_message2.default, null)
           );
         case 'call_log':
+        case 'config':
         default:
           return _react2.default.createElement('span', null);
       }
@@ -2278,20 +2279,25 @@ var Inbox = function (_React$Component) {
         _react2.default.createElement(_moreVert2.default, { color: _colors.grey400 })
       );
       return {
-        leftAvatar: _react2.default.createElement(_Avatar2.default, {
-          color: 'white',
-          backgroundColor: _colors.purple500,
-          icon: _react2.default.createElement(
+        leftAvatar: _react2.default.createElement(
+          'span',
+          null,
+          'sms_in' === message.type ? _react2.default.createElement(
             'i',
             { className: 'material-icons' },
-            'textsms'
-          ) }),
+            'call_received'
+          ) : _react2.default.createElement(
+            'i',
+            { className: 'material-icons' },
+            'call_made'
+          )
+        ),
         primaryText: _react2.default.createElement(
           'span',
           null,
           message.endpoint,
           '  ',
-          _react2.default.createElement(
+          'null' !== message.channel_id && _react2.default.createElement(
             'span',
             { style: { color: _colors.lightBlack } },
             message.channel_id
@@ -2370,7 +2376,7 @@ var Inbox = function (_React$Component) {
           _react2.default.createElement(
             _Subheader2.default,
             null,
-            'Inbox'
+            'SMS messages'
           ),
           _react2.default.createElement(_Divider2.default, null),
           _react2.default.createElement(
@@ -2428,7 +2434,7 @@ var Inbox = function (_React$Component) {
             _react2.default.createElement(
               _Toolbar2.default,
               null,
-              _react2.default.createElement(_ToolbarTitle2.default, { text: 'Inbox' })
+              _react2.default.createElement(_ToolbarTitle2.default, { text: 'SMS' })
             ),
             visibleMessages.filter(function (message) {
               return !message.favorite;
