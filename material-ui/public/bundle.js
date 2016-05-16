@@ -2024,6 +2024,15 @@ var Dashboard = function (_React$Component) {
           badgeContent: unreadCount,
           primary: true })
       );
+      var buildIcon = _react2.default.createElement(
+        'span',
+        null,
+        _react2.default.createElement(
+          'i',
+          { className: 'material-icons' },
+          'build'
+        )
+      );
       return _react2.default.createElement(
         _Tabs2.default,
         { value: tab },
@@ -2048,6 +2057,21 @@ var Dashboard = function (_React$Component) {
             label: 'Inbox',
             value: 'inbox' },
           _react2.default.createElement(_inbox2.default, { sendMessage: sendMessage })
+        ),
+        _react2.default.createElement(
+          _Tab2.default,
+          {
+            onActive: function onActive() {
+              return _this2.activateTab('config');
+            },
+            icon: buildIcon,
+            label: 'Configuration',
+            value: 'config' },
+          _react2.default.createElement(
+            'div',
+            null,
+            'Config'
+          )
         )
       );
     }
@@ -2676,7 +2700,6 @@ var Mixer = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { style: { maxWidth: '900px', margin: '0 auto' } },
-          _react2.default.createElement(_master2.default, { sendMessage: sendMessage }),
           channelList.map(function (channel) {
             return _react2.default.createElement(_channel2.default, _extends({}, channel, {
               diff: diff,

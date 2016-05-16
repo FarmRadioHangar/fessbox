@@ -12,7 +12,9 @@ class Mixer extends React.Component {
     return (
       <div>
         <div style={{maxWidth: '900px', margin: '0 auto'}}>
+          {/*
           <Master sendMessage={sendMessage} />
+          */}
           {channelList.map(channel => (
             <Channel {...channel} 
               diff        = {diff}

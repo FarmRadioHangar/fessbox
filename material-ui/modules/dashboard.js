@@ -114,6 +114,11 @@ class Dashboard extends React.Component {
         )}
       </span>
     )
+    const buildIcon = (
+      <span>
+        <i className='material-icons'>build</i>
+      </span>
+    )
     return (
       <Tabs value={tab}>
         <Tab 
@@ -129,6 +134,15 @@ class Dashboard extends React.Component {
           label    = 'Inbox'
           value    = 'inbox'>
           <Inbox sendMessage={sendMessage} />
+        </Tab>
+        <Tab
+          onActive = {() => this.activateTab('config')}
+          icon     = {buildIcon}
+          label    = 'Configuration'
+          value    = 'config'>
+          <div>
+            Config
+          </div>
         </Tab>
       </Tabs>
     )
