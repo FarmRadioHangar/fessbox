@@ -3,7 +3,7 @@ import _             from 'lodash'
 import SmsDialog     from './sms-dialog'
 import CallDialog    from './call-dialog'
 import ConfirmDialog from './confirm-dialog'
-import Inbox         from './inbox'
+import MessageBox    from './message-box'
 import Mixer         from './mixer'
 import Toastr        from './toastr'
 import styles        from '../styles/dashboard'
@@ -38,7 +38,7 @@ class Dashboard extends React.Component {
   activateTab(tab) {
     const { dispatch } = this.props
     this.setState({tab})
-    if ('inbox' === tab) {
+    if ('messages' === tab) {
       dispatch(markAllMessagesRead())
     }
   }
@@ -91,7 +91,7 @@ class Dashboard extends React.Component {
   renderTabs() {
     const { tab } = this.state
     const { 
-      inbox : {
+      messages : {
         messageCount,
         unreadCount,
       },
@@ -129,12 +129,13 @@ class Dashboard extends React.Component {
           <Mixer sendMessage={sendMessage} />
         </Tab>
         <Tab
-          onActive = {() => this.activateTab('inbox')}
+          onActive = {() => this.activateTab('messages')}
           icon     = {inboxIcon}
           label    = 'Messages'
-          value    = 'inbox'>
-          <Inbox sendMessage={sendMessage} />
+          value    = 'messages'>
+          <MessageBox sendMessage={sendMessage} />
         </Tab>
+        {/*
         <Tab
           onActive = {() => this.activateTab('config')}
           icon     = {buildIcon}
@@ -144,6 +145,7 @@ class Dashboard extends React.Component {
             Config
           </div>
         </Tab>
+        */}
       </Tabs>
     )
   }
@@ -161,7 +163,7 @@ class Dashboard extends React.Component {
             <IconCommunicationDialpad />
 					</FloatingActionButton>
         )
-      case 'inbox':
+      case 'messages':
 				return (
 					<FloatingActionButton
 						onClick = {() => { 
@@ -195,4 +197,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default connect(state => _.pick(state, ['inbox', 'app', 'mixer']))(Dashboard)
+export default connect(state => _.pick(state, ['messages', 'app', 'mixer']))(Dashboard)

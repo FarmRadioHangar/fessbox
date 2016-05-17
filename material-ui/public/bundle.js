@@ -297,6 +297,7 @@ exports.default = function (eventType, data) {
       console.log('<<<<<<<<<<<<');
       break;
     case 'initialize':
+      console.log(JSON.stringify(data));
       _store2.default.dispatch((0, _actions.initializeApp)(data));
       _store2.default.dispatch((0, _actions.setDiff)(Date.now() - data.server_time));
       break;
@@ -371,9 +372,9 @@ var _app = require('./reducers/app');
 
 var _app2 = _interopRequireDefault(_app);
 
-var _inbox = require('./reducers/inbox');
+var _messages = require('./reducers/messages');
 
-var _inbox2 = _interopRequireDefault(_inbox);
+var _messages2 = _interopRequireDefault(_messages);
 
 var _mixer = require('./reducers/mixer');
 
@@ -395,7 +396,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = (0, _redux.combineReducers)({
   mixer: _mixer2.default,
-  inbox: _inbox2.default,
+  messages: _messages2.default,
   app: _app2.default,
   users: _users2.default,
   toastr: _toastr2.default,
@@ -405,7 +406,7 @@ exports.default = (0, _redux.combineReducers)({
   callForm: (0, _reactReduxForm.formReducer)('call')
 });
 
-},{"./reducers/app":6,"./reducers/inbox":7,"./reducers/mixer":8,"./reducers/toastr":9,"./reducers/users":10,"react-redux-form":753,"redux":954}],6:[function(require,module,exports){
+},{"./reducers/app":6,"./reducers/messages":7,"./reducers/mixer":8,"./reducers/toastr":9,"./reducers/users":10,"react-redux-form":753,"redux":954}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1106,7 +1107,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['call', 'callForm']);
 })(CallDialog);
 
-},{"./channel-select":14,"./material-field":21,"./validators":26,"lodash":533,"material-ui/Dialog":566,"material-ui/FlatButton":573,"material-ui/MenuItem":587,"material-ui/SelectField":599,"material-ui/TextField":615,"react":948,"react-redux":766,"react-redux-form":753}],14:[function(require,module,exports){
+},{"./channel-select":14,"./material-field":20,"./validators":26,"lodash":533,"material-ui/Dialog":566,"material-ui/FlatButton":573,"material-ui/MenuItem":587,"material-ui/SelectField":599,"material-ui/TextField":615,"react":948,"react-redux":766,"react-redux-form":753}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1846,9 +1847,9 @@ var _confirmDialog = require('./confirm-dialog');
 
 var _confirmDialog2 = _interopRequireDefault(_confirmDialog);
 
-var _inbox = require('./inbox');
+var _messageBox = require('./message-box');
 
-var _inbox2 = _interopRequireDefault(_inbox);
+var _messageBox2 = _interopRequireDefault(_messageBox);
 
 var _mixer = require('./mixer');
 
@@ -1927,7 +1928,7 @@ var Dashboard = function (_React$Component) {
       var dispatch = this.props.dispatch;
 
       this.setState({ tab: tab });
-      if ('inbox' === tab) {
+      if ('messages' === tab) {
         dispatch((0, _actions.markAllMessagesRead)());
       }
     }
@@ -1997,9 +1998,9 @@ var Dashboard = function (_React$Component) {
 
       var tab = this.state.tab;
       var _props3 = this.props;
-      var _props3$inbox = _props3.inbox;
-      var messageCount = _props3$inbox.messageCount;
-      var unreadCount = _props3$inbox.unreadCount;
+      var _props3$messages = _props3.messages;
+      var messageCount = _props3$messages.messageCount;
+      var unreadCount = _props3$messages.unreadCount;
       var sendMessage = _props3.sendMessage;
 
       var mixerIcon = _react2.default.createElement(
@@ -2051,27 +2052,12 @@ var Dashboard = function (_React$Component) {
           _Tab2.default,
           {
             onActive: function onActive() {
-              return _this2.activateTab('inbox');
+              return _this2.activateTab('messages');
             },
             icon: inboxIcon,
             label: 'Messages',
-            value: 'inbox' },
-          _react2.default.createElement(_inbox2.default, { sendMessage: sendMessage })
-        ),
-        _react2.default.createElement(
-          _Tab2.default,
-          {
-            onActive: function onActive() {
-              return _this2.activateTab('config');
-            },
-            icon: buildIcon,
-            label: 'Configuration',
-            value: 'config' },
-          _react2.default.createElement(
-            'div',
-            null,
-            'Config'
-          )
+            value: 'messages' },
+          _react2.default.createElement(_messageBox2.default, { sendMessage: sendMessage })
         )
       );
     }
@@ -2092,7 +2078,7 @@ var Dashboard = function (_React$Component) {
               style: _dashboard2.default.fab },
             _react2.default.createElement(_dialpad2.default, null)
           );
-        case 'inbox':
+        case 'messages':
           return _react2.default.createElement(
             _FloatingActionButton2.default,
             {
@@ -2139,327 +2125,10 @@ var Dashboard = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
-  return _lodash2.default.pick(state, ['inbox', 'app', 'mixer']);
+  return _lodash2.default.pick(state, ['messages', 'app', 'mixer']);
 })(Dashboard);
 
-},{"../js/actions":1,"../styles/dashboard":960,"./call-dialog":13,"./confirm-dialog":17,"./inbox":19,"./mixer":22,"./sms-dialog":23,"./toastr":24,"lodash":533,"material-ui/AppBar":558,"material-ui/Badge":562,"material-ui/FloatingActionButton":575,"material-ui/Tabs/Tab":607,"material-ui/Tabs/Tabs":609,"material-ui/svg-icons/communication/dialpad":706,"material-ui/svg-icons/communication/message":707,"react":948,"react-redux":766,"react-redux-form":753}],19:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactTimeago = require('react-timeago');
-
-var _reactTimeago2 = _interopRequireDefault(_reactTimeago);
-
-var _reactRedux = require('react-redux');
-
-var _reactReduxForm = require('react-redux-form');
-
-var _actions = require('../js/actions');
-
-var _Avatar = require('material-ui/Avatar');
-
-var _Avatar2 = _interopRequireDefault(_Avatar);
-
-var _Subheader = require('material-ui/Subheader/Subheader');
-
-var _Subheader2 = _interopRequireDefault(_Subheader);
-
-var _List = require('material-ui/List/List');
-
-var _List2 = _interopRequireDefault(_List);
-
-var _ListItem = require('material-ui//List/ListItem');
-
-var _ListItem2 = _interopRequireDefault(_ListItem);
-
-var _Divider = require('material-ui/Divider');
-
-var _Divider2 = _interopRequireDefault(_Divider);
-
-var _IconButton = require('material-ui/IconButton');
-
-var _IconButton2 = _interopRequireDefault(_IconButton);
-
-var _moreVert = require('material-ui/svg-icons/navigation/more-vert');
-
-var _moreVert2 = _interopRequireDefault(_moreVert);
-
-var _IconMenu = require('material-ui/IconMenu');
-
-var _IconMenu2 = _interopRequireDefault(_IconMenu);
-
-var _MenuItem = require('material-ui/MenuItem');
-
-var _MenuItem2 = _interopRequireDefault(_MenuItem);
-
-var _Toolbar = require('material-ui/Toolbar/Toolbar');
-
-var _Toolbar2 = _interopRequireDefault(_Toolbar);
-
-var _ToolbarTitle = require('material-ui/Toolbar/ToolbarTitle');
-
-var _ToolbarTitle2 = _interopRequireDefault(_ToolbarTitle);
-
-var _ToolbarGroup = require('material-ui/Toolbar/ToolbarGroup');
-
-var _ToolbarGroup2 = _interopRequireDefault(_ToolbarGroup);
-
-var _colors = require('material-ui/styles/colors');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Inbox = function (_React$Component) {
-  _inherits(Inbox, _React$Component);
-
-  function Inbox() {
-    _classCallCheck(this, Inbox);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).apply(this, arguments));
-  }
-
-  _createClass(Inbox, [{
-    key: 'handleMenuAction',
-    value: function handleMenuAction(event, value, message) {
-      var dispatch = this.props.dispatch;
-
-      switch (value.key) {
-        case 'reply':
-          dispatch(_reactReduxForm.actions.reset('sms'));
-          dispatch(_reactReduxForm.actions.change('sms.recipient', message.endpoint));
-          dispatch(_reactReduxForm.actions.change('sms.message', message));
-          dispatch(_reactReduxForm.actions.setPristine('sms'));
-          dispatch((0, _actions.setDialog)('sms'));
-          break;
-        case 'call':
-          dispatch(_reactReduxForm.actions.reset('call'));
-          dispatch(_reactReduxForm.actions.change('call.number', message.endpoint));
-          dispatch((0, _actions.setDialog)('call'));
-          break;
-        case 'delete':
-          dispatch((0, _actions.setDialog)('confirm', { messageId: message.id }));
-          break;
-        default:
-      }
-    }
-  }, {
-    key: 'handleToggleFavorite',
-    value: function handleToggleFavorite(e, message) {
-      var dispatch = this.props.dispatch;
-
-      dispatch((0, _actions.toggleMessageFavorite)(message.id));
-    }
-  }, {
-    key: 'itemProps',
-    value: function itemProps(message) {
-      var _this2 = this;
-
-      var iconButtonElement = _react2.default.createElement(
-        _IconButton2.default,
-        {
-          touch: true,
-          tooltip: 'more',
-          tooltipPosition: 'bottom-left' },
-        _react2.default.createElement(_moreVert2.default, { color: _colors.grey400 })
-      );
-      return {
-        leftAvatar: _react2.default.createElement(
-          'span',
-          null,
-          'sms_in' === message.type ? _react2.default.createElement(
-            'i',
-            { className: 'material-icons' },
-            'call_received'
-          ) : _react2.default.createElement(
-            'i',
-            { className: 'material-icons' },
-            'call_made'
-          )
-        ),
-        primaryText: _react2.default.createElement(
-          'span',
-          null,
-          message.endpoint,
-          '  ',
-          'null' !== message.channel_id && _react2.default.createElement(
-            'span',
-            { style: { color: _colors.lightBlack } },
-            message.channel_id
-          )
-        ),
-        secondaryText: _react2.default.createElement(
-          'p',
-          { style: { paddingRight: '80px' } },
-          !isNaN(message.timestamp) && _react2.default.createElement(
-            'span',
-            { style: { color: _colors.darkBlack } },
-            _react2.default.createElement(_reactTimeago2.default, { date: Number(message.timestamp) }),
-            ' — '
-          ),
-          message.content
-        ),
-        rightIconButton: _react2.default.createElement(
-          'span',
-          null,
-          _react2.default.createElement(
-            _IconButton2.default,
-            {
-              onClick: function onClick(e) {
-                return _this2.handleToggleFavorite(e, message);
-              },
-              iconStyle: !!message.favorite ? { color: 'rgb(0, 188, 212)' } : {} },
-            _react2.default.createElement(
-              'i',
-              { className: 'material-icons' },
-              message.favorite ? 'star' : 'star_border'
-            )
-          ),
-          _react2.default.createElement(
-            _IconMenu2.default,
-            {
-              onItemTouchTap: function onItemTouchTap(event, value) {
-                return _this2.handleMenuAction(event, value, message);
-              },
-              iconButtonElement: iconButtonElement },
-            _react2.default.createElement(
-              _MenuItem2.default,
-              { key: 'reply' },
-              'Reply'
-            ),
-            _react2.default.createElement(
-              _MenuItem2.default,
-              { key: 'call' },
-              'Call'
-            ),
-            _react2.default.createElement(
-              _MenuItem2.default,
-              { key: 'delete' },
-              'Delete'
-            )
-          )
-        )
-      };
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this3 = this;
-
-      var _props = this.props;
-      var _props$inbox = _props.inbox;
-      var visibleMessages = _props$inbox.visibleMessages;
-      var messageCount = _props$inbox.messageCount;
-      var unreadCount = _props$inbox.unreadCount;
-      var favorites = _props$inbox.favorites;
-      var dispatch = _props.dispatch;
-
-      if (!messageCount) {
-        return _react2.default.createElement(
-          _List2.default,
-          { style: { background: '#ffffff' } },
-          _react2.default.createElement(
-            _Subheader2.default,
-            null,
-            'SMS messages'
-          ),
-          _react2.default.createElement(_Divider2.default, null),
-          _react2.default.createElement(
-            'p',
-            { style: { padding: '16px' } },
-            'No messages.'
-          )
-        );
-      }
-      return _react2.default.createElement(
-        'div',
-        { style: { display: 'flex', flexDirection: 'row' } },
-        !!favorites.length && _react2.default.createElement(
-          'div',
-          { style: { flex: 1 } },
-          _react2.default.createElement(
-            _List2.default,
-            { style: { background: '#ffffff' } },
-            _react2.default.createElement(
-              _Toolbar2.default,
-              null,
-              _react2.default.createElement(_ToolbarTitle2.default, { text: 'Favorites' }),
-              _react2.default.createElement(
-                _ToolbarGroup2.default,
-                { float: 'right' },
-                _react2.default.createElement(
-                  _IconButton2.default,
-                  { touch: true, onClick: function onClick() {
-                      return dispatch((0, _actions.clearFavorites)());
-                    } },
-                  _react2.default.createElement(
-                    'i',
-                    { className: 'material-icons' },
-                    'clear_all'
-                  )
-                )
-              )
-            ),
-            favorites.map(function (message, i) {
-              return _react2.default.createElement(
-                'div',
-                { key: i },
-                _react2.default.createElement(_ListItem2.default, _extends({}, _this3.itemProps(message), { secondaryTextLines: 2 })),
-                _react2.default.createElement(_Divider2.default, null)
-              );
-            })
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { style: { flex: 1 } },
-          _react2.default.createElement(
-            _List2.default,
-            { style: { background: '#ffffff' } },
-            _react2.default.createElement(
-              _Toolbar2.default,
-              null,
-              _react2.default.createElement(_ToolbarTitle2.default, { text: 'SMS' })
-            ),
-            visibleMessages.filter(function (message) {
-              return !message.favorite;
-            }).map(function (message, i) {
-              return _react2.default.createElement(
-                'div',
-                { key: i },
-                _react2.default.createElement(_ListItem2.default, _extends({}, _this3.itemProps(message), { secondaryTextLines: 2 })),
-                _react2.default.createElement(_Divider2.default, null)
-              );
-            })
-          )
-        )
-      );
-    }
-  }]);
-
-  return Inbox;
-}(_react2.default.Component);
-
-exports.default = (0, _reactRedux.connect)(function (state) {
-  return _.pick(state, ['inbox']);
-})(Inbox);
-
-},{"../js/actions":1,"material-ui//List/ListItem":583,"material-ui/Avatar":560,"material-ui/Divider":568,"material-ui/IconButton":579,"material-ui/IconMenu":581,"material-ui/List/List":582,"material-ui/MenuItem":587,"material-ui/Subheader/Subheader":602,"material-ui/Toolbar/Toolbar":618,"material-ui/Toolbar/ToolbarGroup":619,"material-ui/Toolbar/ToolbarTitle":621,"material-ui/styles/colors":695,"material-ui/svg-icons/navigation/more-vert":713,"react":948,"react-redux":766,"react-redux-form":753,"react-timeago":779}],20:[function(require,module,exports){
+},{"../js/actions":1,"../styles/dashboard":960,"./call-dialog":13,"./confirm-dialog":17,"./message-box":21,"./mixer":22,"./sms-dialog":23,"./toastr":24,"lodash":533,"material-ui/AppBar":558,"material-ui/Badge":562,"material-ui/FloatingActionButton":575,"material-ui/Tabs/Tab":607,"material-ui/Tabs/Tabs":609,"material-ui/svg-icons/communication/dialpad":706,"material-ui/svg-icons/communication/message":707,"react":948,"react-redux":766,"react-redux-form":753}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2596,7 +2265,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['mixer']);
 })(Master);
 
-},{"../styles/master":961,"lodash":533,"material-ui/Divider":568,"material-ui/IconButton":579,"material-ui/Paper":589,"material-ui/Slider":601,"material-ui/Subheader":603,"material-ui/svg-icons/av/mic":701,"material-ui/svg-icons/av/volume-up":704,"react":948,"react-redux":766}],21:[function(require,module,exports){
+},{"../styles/master":961,"lodash":533,"material-ui/Divider":568,"material-ui/IconButton":579,"material-ui/Paper":589,"material-ui/Slider":601,"material-ui/Subheader":603,"material-ui/svg-icons/av/mic":701,"material-ui/svg-icons/av/volume-up":704,"react":948,"react-redux":766}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2645,7 +2314,334 @@ var MaterialField = (0, _reactReduxForm.createFieldClass)({
 
 exports.default = MaterialField;
 
-},{"react-redux-form":753}],22:[function(require,module,exports){
+},{"react-redux-form":753}],21:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactTimeago = require('react-timeago');
+
+var _reactTimeago2 = _interopRequireDefault(_reactTimeago);
+
+var _reactRedux = require('react-redux');
+
+var _reactReduxForm = require('react-redux-form');
+
+var _actions = require('../js/actions');
+
+var _Avatar = require('material-ui/Avatar');
+
+var _Avatar2 = _interopRequireDefault(_Avatar);
+
+var _Subheader = require('material-ui/Subheader/Subheader');
+
+var _Subheader2 = _interopRequireDefault(_Subheader);
+
+var _List = require('material-ui/List/List');
+
+var _List2 = _interopRequireDefault(_List);
+
+var _ListItem = require('material-ui//List/ListItem');
+
+var _ListItem2 = _interopRequireDefault(_ListItem);
+
+var _Divider = require('material-ui/Divider');
+
+var _Divider2 = _interopRequireDefault(_Divider);
+
+var _IconButton = require('material-ui/IconButton');
+
+var _IconButton2 = _interopRequireDefault(_IconButton);
+
+var _moreVert = require('material-ui/svg-icons/navigation/more-vert');
+
+var _moreVert2 = _interopRequireDefault(_moreVert);
+
+var _IconMenu = require('material-ui/IconMenu');
+
+var _IconMenu2 = _interopRequireDefault(_IconMenu);
+
+var _MenuItem = require('material-ui/MenuItem');
+
+var _MenuItem2 = _interopRequireDefault(_MenuItem);
+
+var _Toolbar = require('material-ui/Toolbar/Toolbar');
+
+var _Toolbar2 = _interopRequireDefault(_Toolbar);
+
+var _ToolbarTitle = require('material-ui/Toolbar/ToolbarTitle');
+
+var _ToolbarTitle2 = _interopRequireDefault(_ToolbarTitle);
+
+var _ToolbarGroup = require('material-ui/Toolbar/ToolbarGroup');
+
+var _ToolbarGroup2 = _interopRequireDefault(_ToolbarGroup);
+
+var _colors = require('material-ui/styles/colors');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Inbox = function (_React$Component) {
+  _inherits(Inbox, _React$Component);
+
+  function Inbox() {
+    _classCallCheck(this, Inbox);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).apply(this, arguments));
+  }
+
+  _createClass(Inbox, [{
+    key: 'handleMenuAction',
+    value: function handleMenuAction(event, value, message) {
+      var dispatch = this.props.dispatch;
+
+      switch (value.key) {
+        case 'reply':
+          console.log('reply');
+          dispatch(_reactReduxForm.actions.reset('sms'));
+          dispatch(_reactReduxForm.actions.change('sms.recipient', message.endpoint));
+          dispatch(_reactReduxForm.actions.change('sms.message', message));
+          dispatch(_reactReduxForm.actions.setPristine('sms'));
+          dispatch((0, _actions.setDialog)('sms'));
+          break;
+        case 'call':
+          dispatch(_reactReduxForm.actions.reset('call'));
+          dispatch(_reactReduxForm.actions.change('call.number', message.endpoint));
+          dispatch((0, _actions.setDialog)('call'));
+          break;
+        case 'delete':
+          dispatch((0, _actions.setDialog)('confirm', { messageId: message.id }));
+          break;
+        default:
+      }
+    }
+  }, {
+    key: 'handleToggleFavorite',
+    value: function handleToggleFavorite(e, message) {
+      var dispatch = this.props.dispatch;
+
+      dispatch((0, _actions.toggleMessageFavorite)(message.id));
+    }
+  }, {
+    key: 'itemProps',
+    value: function itemProps(message) {
+      var _this2 = this;
+
+      var iconButtonElement = _react2.default.createElement(
+        _IconButton2.default,
+        {
+          touch: true,
+          tooltip: 'more',
+          tooltipPosition: 'bottom-left' },
+        _react2.default.createElement(_moreVert2.default, { color: _colors.grey400 })
+      );
+      var menuItems = 'sms_in' === message.type ? [{
+        'key': 'delete',
+        'name': 'Delete'
+      }] : [{
+        'key': 'reply',
+        'name': 'Reply'
+      }, {
+        'key': 'call',
+        'name': 'Call'
+      }, {
+        'key': 'delete',
+        'name': 'Delete'
+      }];
+      return {
+        leftAvatar: _react2.default.createElement(
+          'span',
+          null,
+          'sms_in' === message.type ? _react2.default.createElement(
+            'i',
+            { className: 'material-icons' },
+            'call_received'
+          ) : _react2.default.createElement(
+            'i',
+            { className: 'material-icons' },
+            'call_made'
+          )
+        ),
+        primaryText: _react2.default.createElement(
+          'span',
+          null,
+          message.endpoint,
+          '  ',
+          'null' !== message.channel_id && _react2.default.createElement(
+            'span',
+            { style: { color: _colors.lightBlack } },
+            message.channel_id
+          )
+        ),
+        secondaryText: _react2.default.createElement(
+          'p',
+          { style: { paddingRight: '80px' } },
+          !isNaN(message.timestamp) && _react2.default.createElement(
+            'span',
+            { style: { color: _colors.darkBlack } },
+            _react2.default.createElement(_reactTimeago2.default, { date: Number(message.timestamp) }),
+            ' — '
+          ),
+          message.content
+        ),
+        rightIconButton: _react2.default.createElement(
+          'span',
+          null,
+          _react2.default.createElement(
+            _IconButton2.default,
+            {
+              onClick: function onClick(e) {
+                return _this2.handleToggleFavorite(e, message);
+              },
+              iconStyle: !!message.favorite ? { color: 'rgb(0, 188, 212)' } : {} },
+            _react2.default.createElement(
+              'i',
+              { className: 'material-icons' },
+              message.favorite ? 'star' : 'star_border'
+            )
+          ),
+          _react2.default.createElement(
+            _IconMenu2.default,
+            {
+              onItemTouchTap: function onItemTouchTap(event, value) {
+                return _this2.handleMenuAction(event, value, message);
+              },
+              iconButtonElement: iconButtonElement },
+            menuItems.map(function (item) {
+              return _react2.default.createElement(
+                _MenuItem2.default,
+                { key: item.key },
+                item.name
+              );
+            })
+          )
+        )
+      };
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      var _props = this.props;
+      var _props$messages = _props.messages;
+      var visibleMessages = _props$messages.visibleMessages;
+      var messageCount = _props$messages.messageCount;
+      var unreadCount = _props$messages.unreadCount;
+      var favorites = _props$messages.favorites;
+      var dispatch = _props.dispatch;
+
+
+      console.log(visibleMessages);
+      console.log(favorites);
+
+      if (!messageCount) {
+        return _react2.default.createElement(
+          _List2.default,
+          { style: { background: '#ffffff' } },
+          _react2.default.createElement(
+            _Subheader2.default,
+            null,
+            'Messages'
+          ),
+          _react2.default.createElement(_Divider2.default, null),
+          _react2.default.createElement(
+            'p',
+            { style: { padding: '16px' } },
+            'No messages.'
+          )
+        );
+      }
+      return _react2.default.createElement(
+        'div',
+        { style: { display: 'flex', flexDirection: 'row' } },
+        !!favorites.length && _react2.default.createElement(
+          'div',
+          { style: { flex: 1 } },
+          _react2.default.createElement(
+            _List2.default,
+            { style: { background: '#ffffff' } },
+            _react2.default.createElement(
+              _Toolbar2.default,
+              null,
+              _react2.default.createElement(_ToolbarTitle2.default, { text: 'Favorites' }),
+              _react2.default.createElement(
+                _ToolbarGroup2.default,
+                { float: 'right' },
+                _react2.default.createElement(
+                  _IconButton2.default,
+                  { touch: true, onClick: function onClick() {
+                      return dispatch((0, _actions.clearFavorites)());
+                    } },
+                  _react2.default.createElement(
+                    'i',
+                    { className: 'material-icons' },
+                    'clear_all'
+                  )
+                )
+              )
+            ),
+            favorites.map(function (message, i) {
+              return _react2.default.createElement(
+                'div',
+                { key: i },
+                _react2.default.createElement(_ListItem2.default, _extends({}, _this3.itemProps(message), { secondaryTextLines: 2 })),
+                _react2.default.createElement(_Divider2.default, null)
+              );
+            })
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { style: { flex: 1 } },
+          _react2.default.createElement(
+            _List2.default,
+            { style: { background: '#ffffff' } },
+            _react2.default.createElement(
+              _Toolbar2.default,
+              null,
+              _react2.default.createElement(_ToolbarTitle2.default, { text: 'Messages' })
+            ),
+            visibleMessages.filter(function (message) {
+              return !message.favorite;
+            }).map(function (message, i) {
+              return _react2.default.createElement(
+                'div',
+                { key: i },
+                _react2.default.createElement(_ListItem2.default, _extends({}, _this3.itemProps(message), { secondaryTextLines: 2 })),
+                _react2.default.createElement(_Divider2.default, null)
+              );
+            })
+          )
+        )
+      );
+    }
+  }]);
+
+  return Inbox;
+}(_react2.default.Component);
+
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return _.pick(state, ['messages']);
+})(Inbox);
+
+},{"../js/actions":1,"material-ui//List/ListItem":583,"material-ui/Avatar":560,"material-ui/Divider":568,"material-ui/IconButton":579,"material-ui/IconMenu":581,"material-ui/List/List":582,"material-ui/MenuItem":587,"material-ui/Subheader/Subheader":602,"material-ui/Toolbar/Toolbar":618,"material-ui/Toolbar/ToolbarGroup":619,"material-ui/Toolbar/ToolbarTitle":621,"material-ui/styles/colors":695,"material-ui/svg-icons/navigation/more-vert":713,"react":948,"react-redux":766,"react-redux-form":753,"react-timeago":779}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2726,7 +2722,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['mixer', 'app']);
 })(Mixer);
 
-},{"./channel":16,"./master":20,"lodash":533,"react":948,"react-redux":766}],23:[function(require,module,exports){
+},{"./channel":16,"./master":19,"lodash":533,"react":948,"react-redux":766}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2926,7 +2922,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['sms', 'smsForm']);
 })(SmsDialog);
 
-},{"./channel-select":14,"./material-field":21,"./validators":26,"lodash":533,"material-ui/Dialog":566,"material-ui/FlatButton":573,"material-ui/TextField":615,"react":948,"react-redux":766,"react-redux-form":753}],24:[function(require,module,exports){
+},{"./channel-select":14,"./material-field":20,"./validators":26,"lodash":533,"material-ui/Dialog":566,"material-ui/FlatButton":573,"material-ui/TextField":615,"react":948,"react-redux":766,"react-redux-form":753}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

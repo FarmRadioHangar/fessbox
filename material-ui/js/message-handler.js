@@ -21,6 +21,7 @@ export default function(eventType, data) {
       console.log('<<<<<<<<<<<<')
       break
     case 'initialize':
+      console.log(JSON.stringify(data))
       store.dispatch(initializeApp(data))
       store.dispatch(setDiff(Date.now() - data.server_time))
       break

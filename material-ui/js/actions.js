@@ -60,7 +60,6 @@ export function toggleMessageSelected(id) {
   }
 }
 
-
 export function toggleMessageFavorite(id) {
   return {
     type     : MESSAGE_TOGGLE_PROPERTY, 

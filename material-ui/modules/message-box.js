@@ -41,6 +41,7 @@ class Inbox extends React.Component {
     const { dispatch } = this.props
     switch (value.key) {
       case 'reply':
+        console.log('reply')
         dispatch(actions.reset('sms'))
         dispatch(actions.change('sms.recipient', message.endpoint))
         dispatch(actions.change('sms.message', message))
@@ -71,6 +72,25 @@ class Inbox extends React.Component {
         <MoreVertIcon color={grey400} />
       </IconButton>
     )
+    const menuItems = 'sms_in' === message.type ? [
+      {
+        'key'  : 'delete',
+        'name' : 'Delete',
+      },
+    ] : [
+      {
+        'key'  : 'reply',
+        'name' : 'Reply',
+      },
+      {
+        'key'  : 'call',
+        'name' : 'Call',
+      },
+      {
+        'key'  : 'delete',
+        'name' : 'Delete',
+      },
+    ]
     return {
       leftAvatar: (
         <span>
@@ -109,9 +129,7 @@ class Inbox extends React.Component {
           <IconMenu 
             onItemTouchTap    = {(event, value) => this.handleMenuAction(event, value, message)}
             iconButtonElement = {iconButtonElement}>
-            <MenuItem key='reply'>Reply</MenuItem>
-            <MenuItem key='call'>Call</MenuItem>
-            <MenuItem key='delete'>Delete</MenuItem>
+            {menuItems.map(item => <MenuItem key={item.key}>{item.name}</MenuItem>)}
           </IconMenu>
         </span>
       ),
@@ -119,7 +137,7 @@ class Inbox extends React.Component {
   }
   render() {
     const { 
-      inbox : { 
+      messages : { 
         visibleMessages, 
         messageCount, 
         unreadCount, 
@@ -127,6 +145,10 @@ class Inbox extends React.Component {
       }, 
       dispatch, 
     } = this.props
+
+    console.log(visibleMessages)
+    console.log(favorites)
+
     if (!messageCount) {
       return (
         <List style={{background: '#ffffff'}}>
@@ -176,4 +198,4 @@ class Inbox extends React.Component {
   }
 }
 
-export default connect(state => _.pick(state, ['inbox']))(Inbox)
+export default connect(state => _.pick(state, ['messages']))(Inbox)
