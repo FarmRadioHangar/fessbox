@@ -1,4 +1,3 @@
-var api = require("./api");
 var eventHandlers = require("./eventHandlers");
 var myLib = require("./myLib");
 
@@ -49,7 +48,7 @@ exports.startListening = function(options) {
 					} else {
 						eventHandlers[message.event](location.query.user_id, message.data, function (event, data, target) {
 							data = serializeEvent(event, data);
-							myLib.consoleLog('debug', 'websocket::emitEvent', data, target);
+							myLib.consoleLog('debug', 'websocket::emitEvent', target, data);
 							switch (target) {
 								case 'self':
 									ws.send(data);
@@ -69,7 +68,7 @@ exports.startListening = function(options) {
 				}
 			});
 
-			api.getCurrentState(location.query.user_id, function (err, initState) {
+			eventHandlers.initialize(location.query.user_id, null, function (event, initState) {
 				ws.send(serializeEvent("initialize", initState));
 				myLib.consoleLog("debug", "websocket::on-connection", "initialize", location.query);
 			});

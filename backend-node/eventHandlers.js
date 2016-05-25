@@ -1,7 +1,13 @@
-var api = require("./api");
+var userApi = require("./userApi");
+
+exports.initialize = function (operator_id, data, cb) {
+		userApi.getCurrentState(operator_id, function (err, initState) {
+			cb("initialize", initState, 'self');
+		});
+};
 
 exports.callNumber = function (operator_id, data, cb) {
-	api.callNumber(data.number, data.mode, data.channel_id, function (err) {
+	userApi.callNumber(data.number, data.mode, data.channel_id, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "callNumber",
@@ -13,7 +19,7 @@ exports.callNumber = function (operator_id, data, cb) {
 
 exports.messageSend = function(operator_id, data, cb) {
 	for (var temp_id in data) {
-		api.messageSend(data[temp_id], function (err) {
+		userApi.messageSend(data[temp_id], function (err) {
 			if (err) {
 				cb("event_error", {
 					event: "messageSend",
@@ -28,10 +34,10 @@ exports.messageSend = function(operator_id, data, cb) {
 };
 
 exports.messageDelete = function(operator_id, data, cb) {
-	// todo: consider sending to all from api when really deleted, instead of updating only others right away
+	// todo: consider sending to all from userApi when really deleted, instead of updating only others right away
 	// current version is more responsive and less consistent
 	cb("inboxUpdate", data, 'others');
-	api.messageDelete(data, function (err) {
+	userApi.messageDelete(data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "messageDelete",
@@ -42,7 +48,7 @@ exports.messageDelete = function(operator_id, data, cb) {
 };
 
 exports.inboxFetch = function(operator_id, data, cb) {
-	api.inboxFetch(data.count, data.reference_id, function (err, messages) {
+	userApi.inboxFetch(data.count, data.reference_id, function (err, messages) {
 		if (err) {
 			cb("event_error", {
 				event: "inboxFetch",
@@ -57,7 +63,7 @@ exports.inboxFetch = function(operator_id, data, cb) {
 exports.channelContactInfo = function(operator_id, data, cb) {
 	cb("channelContactInfo", data, 'others');
 	for(var channel_id in data) {
-		api.setChannelContactInfo(channel_id, data[channel_id], function(err) {
+		userApi.setChannelContactInfo(channel_id, data[channel_id], function(err) {
 			if (err) {
 				cb("event_error", {
 					event: "channelContactInfo",
@@ -72,7 +78,7 @@ exports.channelContactInfo = function(operator_id, data, cb) {
 // stable 
 
 exports.masterProperty = function(operator_id, data, cb) {
-	api.setMasterProperty(data.name,  data.value, function (err) {
+	userApi.setMasterProperty(data.name,  data.value, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "master::" + name,
@@ -83,7 +89,7 @@ exports.masterProperty = function(operator_id, data, cb) {
 };
 
 exports.masterVolume = function(operator_id, data, cb) {
-	api.setMasterVolume(data, function (err) {
+	userApi.setMasterVolume(data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "masterVolume",
@@ -96,7 +102,7 @@ exports.masterVolume = function(operator_id, data, cb) {
 };
 
 var setChannelProperty = function(channel_id, name, value, cb) {
-	api.setChannelProperty(channel_id, name, value, function (err) {
+	userApi.setChannelProperty(channel_id, name, value, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "channel::" + name,
@@ -115,7 +121,7 @@ exports.channelProperty = function(operator_id, data, cb) {
 
 exports.channelVolume = function(operator_id, data, cb) {
 	for(var channel_id in data) {
-		api.setChannelVolume(channel_id, data[channel_id], function (err) {
+		userApi.setChannelVolume(channel_id, data[channel_id], function (err) {
 			if (err) {
 				cb("event_error", {
 					event: "channelVolume",
@@ -133,7 +139,7 @@ exports.channelVolume = function(operator_id, data, cb) {
 
 exports.userMuted = function(operator_id, data, cb) {
 	for(var channel_id in data) {
-		api.setUserMuted(channel_id, data[channel_id],  function (err, user) {
+		userApi.setUserMuted(channel_id, data[channel_id],  function (err, user) {
 			if (err) {
 				cb("event_error", {
 					event: "userMuted",
@@ -151,7 +157,7 @@ exports.userMuted = function(operator_id, data, cb) {
 
 exports.userVolume = function(operator_id, data, cb) {
 	for(var channel_id in data) {
-		api.setUserVolume(channel_id, data[channel_id],  function (err, user) {
+		userApi.setUserVolume(channel_id, data[channel_id],  function (err, user) {
 			if (err) {
 				cb("event_error", {
 					event: "userVolume",
@@ -164,7 +170,7 @@ exports.userVolume = function(operator_id, data, cb) {
 };
 
 exports.hostVolume = function(operator_id, data, cb) {
-	api.setHostVolume(data, function (err) {
+	userApi.setHostVolume(data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "hostVolume",
@@ -177,8 +183,8 @@ exports.hostVolume = function(operator_id, data, cb) {
 };
 
 exports.hostMuted = function(operator_id, data, cb) {
-	//api.setHostProperty('muted', data, function (err) {
-	api.setHostMuted(data, function (err) {
+	//userApi.setHostProperty('muted', data, function (err) {
+	userApi.setHostMuted(data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "hostMuted",
@@ -188,7 +194,6 @@ exports.hostMuted = function(operator_id, data, cb) {
 	});
 };
 
-// obsolete
 exports.channelRecording = function(operator_id, data, cb) {
 	for(var channel_id in data) {
 		setChannelProperty(channel_id, 'recording', data[channel_id], cb);
@@ -208,7 +213,7 @@ exports.channelMode = function(operator_id, data, cb) {
 };
 
 exports.masterMuted = function(operator_id, data, cb) {
-	api.setMasterProperty('muted', data, function (err) {
+	userApi.setMasterProperty('muted', data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "masterMuted",
@@ -219,7 +224,7 @@ exports.masterMuted = function(operator_id, data, cb) {
 };
 
 exports.masterOnAir = function(operator_id, data, cb) {
-	api.setMasterProperty('on_air', data, function (err) {
+	userApi.setMasterProperty('on_air', data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "masterOnAir",

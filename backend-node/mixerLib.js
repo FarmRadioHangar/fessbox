@@ -14,7 +14,7 @@ exports.channelUpdateEvent = function (channel_ids) {
 exports.channelMode = function (channel_id, channel) {
 	if (!s.ui.mixer.channels[channel_id]) {
 		throw Error ('unknown channel_id');
-	} else if (s.ui.mixer.channels[channel_id].mode === channel.mode) {
+	} else if (!channel.mode || s.ui.mixer.channels[channel_id].mode === channel.mode) {
 		return false;
 	} else {
 			if (!channel.timestamp && s.ui.mixer.channels[channel_id].mode !== channel.mode) {
@@ -31,7 +31,9 @@ exports.channelMode = function (channel_id, channel) {
 						//pbxProvider.setPhoneBookEntry(s.ui.mixer.channels[channel_id].contact.number, s.ui.mixer.channels[channel_id].contact.name);
 						//addressBook.setContactInfo(s.ui.mixer.channels[channel_id].contact);
 					}
+				case 'master':
 				case 'on_hold':
+				case 'ivr':
 				case 'dial':
 				case 'ring':
 					return exports.channelUpdateProperties(channel_id, channel);
@@ -72,14 +74,14 @@ exports.channelUpdateProperties = function (channel_id, data) {
 exports.channelCreate = function (channel_id, defaults) {
 	if (s.ui.mixer.channels[channel_id]) {
 		return false;
-	} else if (!myLib.checkObjectProperties(defaults, ["type", "label"])) {
+	} else if (!myLib.checkObjectProperties(defaults, ["type"])) {
 		throw Error('invalid input'); 
 	} else {
 		var channel = {
 			type       : null,
 			level      : 67,
 			direction  : null,
-			label      : null,
+			label      : channel_id,
 			mode       : 'defunct',
 			muted      : false,
 			timestamp  : Date.now(),
@@ -94,3 +96,44 @@ exports.channelCreate = function (channel_id, defaults) {
 		return true;
 	}
 };
+
+/*
+function masterUpdate(data) {
+	var changed = false;
+	for (key in data) {
+		if (s.ui.mixer.master[key] !== null) {
+			if (s.ui.mixer.master[key] !== data[key]) {
+				s.ui.mixer.master[key] = data[key];
+				changed = true;
+			} else {
+				myLib.consoleLog('warning', "masterUpdate:  value already set", [key,  data[key]]);
+			}
+		} else {
+			myLib.consoleLog('error', "masterUpdate: field not found", [key,  data[key]]);
+		}
+	}
+	if (changed) {
+		wss.broadcastEvent("masterUpdate", s.ui.mixer.master);
+	}
+}
+
+function hostUpdate(data) {
+	var changed = false;
+	for (key in data) {
+		if (s.ui.mixer.host[key] !== null) {
+			if (s.ui.mixer.host[key] !== data[key]) {
+				s.ui.mixer.host[key] = data[key];
+				changed = true;
+			} else {
+				myLib.consoleLog('warning', "hostUpdate:  value already set", [key,  data[key]]);
+			}
+		} else {
+			myLib.consoleLog('error', "hostUpdate: field not found", [key,  data[key]]);
+		}
+	}
+	if (changed) {
+		wss.broadcastEvent("hostUpdate", s.ui.mixer.host);
+	}
+}
+*/
+

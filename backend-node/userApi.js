@@ -57,37 +57,29 @@ exports.callNumber = function (number, mode, channel_id, cbErr) {
 	var errorMsg;
 	if (channel_id) {
 		if (!s.ui.mixer.channels[channel_id]) {
-			errorMsg = 'channel not found';
+			cbErr('channel not found');
 		} else if (s.ui.mixer.channels[channel_id].mode !== 'free') {
-			errorMsg = channel_id + ' is currently busy';
+			cbErr(channel_id + ' is currently busy');
 		}
-	} else {
-		//todo: find available channel for dial-out
-		channel_id = "airtel1"; //temp
-		//errorMsg = 'all lines are busy';
 	}
-	if (errorMsg) {
-		cbErr(errorMsg);
-	} else {
-		// check if destination mode is valid
-		switch (mode) {
-			case "ivr":
-			case "on_hold":
-				pbxProvider.originateRemote(number, mode, channel_id, cbErr);
-				break;
-			case "master":
+	// check if destination mode is valid
+	switch (mode) {
+		case "ivr":
+		case "on_hold":
+			pbxProvider.originateRemote(number, mode, channel_id, cbErr);
+			break;
+		case "master":
+			pbxProvider.originateLocal(number, mode, channel_id, cbErr);
+			break;
+		// operator_id (channel_id) of local endpoint
+		default:
+			if (!s.ui.operators[mode]) {
+				cbErr('invalid call-out mode');
+			} else if (s.ui.mixer[mode].mode !== 'free') {
+				cbErr(mode + " is currently busy");
+			} else {
 				pbxProvider.originateLocal(number, mode, channel_id, cbErr);
-				break;
-			// operator_id (channel_id) of local endpoint
-			default:
-				if (!s.ui.operators[mode]) {
-					cbErr('invalid call-out mode');
-				} else if (s.ui.mixer[mode].mode !== 'free') {
-					cbErr(mode + " is currently busy");
-				} else {
-					pbxProvider.originateLocal(number, mode, channel_id, cbErr);
-				}
-		}
+			}
 	}
 };
 
@@ -138,7 +130,7 @@ exports.setChannelProperty = function (channel_id, name, value, cbErr) {
 				if (err) {
 					cbErr(err);
 				} else {
-					channelEvent([channel_id]);
+					mixerLib.channelUpdateEvent([channel_id]);
 				}
 			});
 			break;
@@ -175,7 +167,7 @@ exports.setChannelMuted = function (channel_id, value, cbErr) {
 				case 'defunct':
 				case 'on_hold':
 					s.ui.mixer.channels[channel_id].muted = value;
-					channelEvent([channel_id]);
+					mixerLib.channelUpdateEvent([channel_id]);
 					break;
 				default:
 					pbxProvider.setChannelMuted(channel_id, value, function (err) {
@@ -183,7 +175,7 @@ exports.setChannelMuted = function (channel_id, value, cbErr) {
 							cbErr(err);
 						} else {
 							s.ui.mixer.channels[channel_id].muted = value;
-							channelEvent([channel_id]);
+							mixerLib.channelUpdateEvent([channel_id]);
 						}
 					});
 			}
@@ -207,7 +199,7 @@ exports.setChannelRecording = function (channel_id, value, cbErr) {
 				case 'defunct':
 				case 'on_hold':
 					s.ui.mixer.channels[channel_id].recording = value;
-					channelEvent([channel_id]);
+					mixerLib.channelUpdateEvent([channel_id]);
 					break;
 				default:
 					pbxProvider.setChannelRecording(channel_id, value, function (err) {
@@ -215,7 +207,7 @@ exports.setChannelRecording = function (channel_id, value, cbErr) {
 							cbErr(err);
 						} else {
 							s.ui.mixer.channels[channel_id].recording = value;
-							channelEvent([channel_id]);
+							mixerLib.channelUpdateEvent([channel_id]);
 						}
 					});
 			}
@@ -224,23 +216,11 @@ exports.setChannelRecording = function (channel_id, value, cbErr) {
 
 exports.setChannelMode = function (channel_id, value, cbErr) {
 	myLib.consoleLog('debug', "setChannelMode", "setting " + channel_id + " from " + s.ui.mixer.channels[channel_id].mode + " to " + value);
-//	 myLib.consoleLog('debug', "setChannelMode", s.ui.mixer.channels);
-//	 myLib.consoleLog('debug', "setChannelMode", s.asterisk.channels);
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id]) {
 		errorMsg = 'channel not found';
-//	} else if (s.ui.mixer.hosts.indexOf(channel_id) !== -1) {
-//		// if channel is host, mode can't be changed from client
-//		errorMsg = "host mode can't be changed from client";
 	} else {
 		var cb = function (err) {
-			if (err) {
-				cbErr(err);
-			} else {
-				changeMode(channel_id, value);
-			}
-		};
-		var cbHangup = function (err) {
 			if (err) {
 				cbErr(err);
 			} else if (mixerLib.channelMode(channel_id, { mode: value })) {
@@ -249,7 +229,7 @@ exports.setChannelMode = function (channel_id, value, cbErr) {
 		};
 		switch (s.ui.mixer.channels[channel_id].mode) {
 			case value:
-				errorMsg = "mode already set to " + value;
+				errorMsg = "channel mode already set to " + value;
 				break;
 			case 'defunct':
 				errorMsg = "can't change defunct channel";
@@ -264,7 +244,7 @@ exports.setChannelMode = function (channel_id, value, cbErr) {
 			case 'ivr':
 			case 'dial':
 				if (value === 'free') {
-					pbxProvider.setChanFree(channel_id, cbHangup);
+					pbxProvider.setChanFree(channel_id, cb);
 				} else {
 					errorMsg = "invalid mode, cannot change from " + s.ui.mixer.channels[channel_id].mode + " to " + value;
 				}
@@ -278,7 +258,7 @@ exports.setChannelMode = function (channel_id, value, cbErr) {
 			case 'master':
 				switch (value) {
 					case 'free':
-						pbxProvider.setChanFree(channel_id, cbHangup);
+						pbxProvider.setChanFree(channel_id, cb);
 						break;
 					case 'master':
 					case 'on_hold':
@@ -299,10 +279,9 @@ exports.setChannelMode = function (channel_id, value, cbErr) {
 										if (err) {
 											cbErr(err);
 										} else {
-											s.ui.mixer.channels[value].mode = channel_id;
+											mixerLib.channelMode(value, { mode: channel_id });
 											s.ui.mixer.channels[channel_id].mode = value;
-											s.ui.mixer.channels[channel_id].timestamp = Date.now();
-											channelEvent([channel_id, value]);
+											mixerLib.channelUpdateEvent([channel_id, value]);
 										}
 									});
 									break;
@@ -340,19 +319,18 @@ exports.setChannelMode = function (channel_id, value, cbErr) {
 				}
 				break;
 			default: // channel_id is currently connected to other channel.
-				console.log('channel_id is currently connected to other channel', s.ui.mixer.channels[channel_id].direction, value);
+				console.log(channel_id + ' is currently connected to other channel', s.ui.mixer.channels[channel_id].direction, value);
 
 				if (s.ui.mixer.channels[channel_id].direction === 'operator') {
 					if (value === 'master') {
-						//pbxProvider.setChanModes(channel_id, value, s.ui.mixer.channels[channel_id].mode, 'master', cb); // send both to master
 						var channel2_id = s.ui.mixer.channels[channel_id].mode;
 						pbxProvider.setChanModes(channel_id, value, channel2_id, 'master', function (err) {
 							if (err) {
 								cbErr(err);
 							} else {
-								s.ui.mixer.channels[channel_id].mode = 'master';
+								mixerLib.channelMode(channel_id, { mode: 'master' });
 								s.ui.mixer.channels[channel2_id].mode = 'master';
-								channelEvent([channel_id, channel2_id]);
+								mixerLib.channelUpdateEvent([channel_id, channel2_id]);
 							}
 						});
 					} else {
@@ -364,19 +342,12 @@ exports.setChannelMode = function (channel_id, value, cbErr) {
 						case 'free':
 						case 'on_hold':
 						case 'ivr':
-							var destination = value;
+							var valid = true;
 						default:
-							if (!destination) {
-								if (!s.ui.mixer.channels[value]) {
-									errorMsg = "invalid mode, cannot change from " + s.ui.mixer.channels[channel_id].mode + " to " + value;
-								} else {
-									destination = value;
-								}
-							}
-							if (destination) {
-								//if (s.ui.operators[s.ui.mixer.channels[channel_id].mode]) { // channel is currently connected to an operator
-									//pbxProvider.setChanModes(channel_id, value, s.ui.mixer.channels[channel_id].mode, 'master', cb); // send both to master
+							if (valid || s.ui.mixer.channels[value]) {
 								pbxProvider.setChanMode(channel_id, value, cb);
+							} else {
+								errorMsg = "invalid mode, cannot change from " + s.ui.mixer.channels[channel_id].mode + " to " + value;
 							}
 					}
 				}
@@ -597,104 +568,6 @@ exports.setHostMuted = function (value, cbErr) {
 }
 
 // output interface
-/*
-function masterUpdate(data) {
-	var changed = false;
-	for (key in data) {
-		if (s.ui.mixer.master[key] !== null) {
-			if (s.ui.mixer.master[key] !== data[key]) {
-				s.ui.mixer.master[key] = data[key];
-				changed = true;
-			} else {
-				myLib.consoleLog('warning', "masterUpdate:  value already set", [key,  data[key]]);
-			}
-		} else {
-			myLib.consoleLog('error', "masterUpdate: field not found", [key,  data[key]]);
-		}
-	}
-	if (changed) {
-		wss.broadcastEvent("masterUpdate", s.ui.mixer.master);
-	}
-}
-
-function hostUpdate(data) {
-	var changed = false;
-	for (key in data) {
-		if (s.ui.mixer.host[key] !== null) {
-			if (s.ui.mixer.host[key] !== data[key]) {
-				s.ui.mixer.host[key] = data[key];
-				changed = true;
-			} else {
-				myLib.consoleLog('warning', "hostUpdate:  value already set", [key,  data[key]]);
-			}
-		} else {
-			myLib.consoleLog('error', "hostUpdate: field not found", [key,  data[key]]);
-		}
-	}
-	if (changed) {
-		wss.broadcastEvent("hostUpdate", s.ui.mixer.host);
-	}
-}
-*/
-function channelEvent(channel_ids) {
-	var updatedChannels = {};
-	for(var i in channel_ids) {
-		updatedChannels[channel_ids[i]] = s.ui.mixer.channels[channel_ids[i]];
-	}
-	wss.broadcastEvent("channelUpdate", updatedChannels);
-}
-
-function channelUpdate(channel_id, data) {
-	var changed = false;
-	if (!s.ui.mixer.channels[channel_id]) {
-		if (data) {
-			s.ui.mixer.channels[channel_id] = data;
-			changed = true;
-		}
-	} else if (!data) {
-		s.ui.mixer.channels[channel_id] = null;
-		changed = true;
-	} else {
-		for (key in data) {
-			if (key == 'mode' || s.ui.mixer.channels[channel_id][key] !== data[key]) { // temp. solution to a bug
-			//if (s.ui.mixer.channels[channel_id][key] !== data[key]) {
-				s.ui.mixer.channels[channel_id][key] = data[key];
-				changed = true;
-			} else {
-				myLib.consoleLog('warning', "channelUpdate: value already set", [channel_id, key, data[key]]);
-			}
-		}
-	}
-	if (changed) {
-		channelEvent([channel_id]);
-	}
-}
-
-//todo: this should be part of channelUpdate, not a separate export.
-function changeMode(channel_id, value) {
-	var modify = {};
-	if (s.ui.mixer.channels[channel_id].mode === 'ring') {
-		modify.timestamp = Date.now();
-	}
-	if (value === 'free' || value === 'defunct') {
-		modify.timestamp = null;
-		if (s.ui.mixer.channels[channel_id].direction !== 'operator') {
-			modify.direction = null;
-		}
-		modify.contact = null;
-		if (s.ui.mixer.channels[channel_id].contact && s.ui.mixer.channels[channel_id].contact.modified) {
-			pbxProvider.setPhoneBookEntry(s.ui.mixer.channels[channel_id].contact.number, s.ui.mixer.channels[channel_id].contact.name);
-			//addressBook.setContactInfo(s.ui.mixer.channels[channel_id].contact);
-		}
-	}
-	modify.mode = value;
-	channelUpdate(channel_id, modify);
-}
-
-
-exports.channelUpdate = channelUpdate;
-//exports.masterUpdate = masterUpdate;
-exports.changeMode = changeMode;
 
 // stubs
 
@@ -702,17 +575,19 @@ exports.setChannelAutoanswer = function (channel_id, value, cbErr) {
 	var errorMsg;
 	if (!s.ui.mixer.channels[channel_id]) {
 		errorMsg = 'channel not found';
+	} else if (value === s.ui.mixer.channels[channel_id].autoanswer) {
+		errorMsg = 'value alredy set';
 	} else {
 		switch (value) {
 			case null:
 			case 'ivr':
 			case 'master':
 			case 'on_hold':
-				channelUpdate(channel_id, { autoanswer: value });
-				break;
+				var valid = true;
 			default:
-				if (s.ui.operators[value]) {
-					channelUpdate(channel_id, { autoanswer: value });
+				if (valid || s.ui.operators[value]) {
+					s.ui.mixer.channels[channel_id].autoanswer = value;
+					mixerLib.channelUpdateEvent([channel_id]);
 				} else {
 					errorMsg = "invalid autoanswer value: " + value;
 				}

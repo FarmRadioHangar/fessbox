@@ -1,6 +1,6 @@
 
 var myLib = require("./myLib");
-var api = require("./api");
+var userApi = require("./userApi");
 var ami = require("./ami");
 var s = require("./localStorage");
 
@@ -12,7 +12,7 @@ exports.connectNumbers = function (response, params) {
 */
 
 exports.channelProperty = function (response, params) {
-	api.setChannelProperty(params.channel_id, params.name, params.value, function (err) {
+	userApi.setChannelProperty(params.channel_id, params.name, params.value, function (err) {
 		if (err) {
 			myLib.consoleLog('debug', 'setChannelProperty', err);
 		}
@@ -21,7 +21,7 @@ exports.channelProperty = function (response, params) {
 };
 
 exports.getCurrentState = function (response, params) {
-	api.getCurrentState(params.user_id, function (err, currentState) {
+	userApi.getCurrentState(params.user_id, function (err, currentState) {
 		if (err) {
 			myLib.httpGeneric(513, err, response, "DEBUG::getCurrentState");
 		} else {
@@ -31,7 +31,7 @@ exports.getCurrentState = function (response, params) {
 };
 
 exports.messageSend = function (response, params) {
-	api.messageSend(params, function (err) {
+	userApi.messageSend(params, function (err) {
 		if (err) {
 			myLib.httpGeneric(513, err, response, "DEBUG::messageSend");
 		} else {
@@ -41,7 +41,7 @@ exports.messageSend = function (response, params) {
 };
 
 exports.callNumber = function (response, params) {
-	api.callNumber(params.number, params.mode, params.channel_id, function (err) {
+	userApi.callNumber(params.number, params.mode, params.channel_id, function (err) {
 		if (err) {
 			myLib.consoleLog('debug', 'callNumber', err);
 		}
