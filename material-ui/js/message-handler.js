@@ -1,8 +1,17 @@
 import store from './store'
 import * as types from './constants'
 
-import { showNotification, initializeApp, updateChannel, removeMessage }
-  from './actions'
+import { 
+  addMessage, 
+  initializeApp, 
+  removeMessage, 
+  setDiff,
+  showNotification, 
+  toastrAddMessage, 
+  updateAppStatus, 
+  updateChannel, 
+  updateChannelVolume, 
+} from './actions'
 
 export default function(eventType, data) {
   switch (eventType) {
@@ -12,15 +21,12 @@ export default function(eventType, data) {
       console.log('<<<<<<<<<<<<')
       break
     case 'initialize':
+      console.log(JSON.stringify(data))
       store.dispatch(initializeApp(data))
-      if ('Notification' in window) {
-        new Notification('Successfully connected to Starship Enterprise.')
-        new Notification('New message from xxx-xxx')
-        new Notification('This is to test the message notifications.')
-      }
+      store.dispatch(setDiff(Date.now() - data.server_time))
       break
     case 'channelUpdate':
-      Object.keys(data).forEach(key=> {
+      Object.keys(data).forEach(key => {
         const chan = data[key]
         if (chan) {
           store.dispatch(updateChannel(key, chan))
@@ -32,21 +38,34 @@ export default function(eventType, data) {
         }
       })
       break
+    case 'channelVolumeChange':
+      Object.keys(data).forEach(id => {
+        store.dispatch(updateChannelVolume(id, data[id]))
+      })
+      break
     case 'inboxUpdate':
       Object.keys(data).forEach(id => {
         const message = data[id]
         if (message) {
-          //
+          store.dispatch(addMessage(id, message))
+          if ('sms_in' === message.type) {
+            store.dispatch(toastrAddMessage('New message from ' + message.endpoint))
+          }
         } else {
           store.dispatch(removeMessage(id))
         }
       })
       break
+    case 'messageSent':
+      store.dispatch(toastrAddMessage('SMS message sent.'))
+      break
     case 'event_error':
     case 'input_error':
-      console.log(`error: ${eventType}`)
+      console.log(`Error: ${eventType}`)
+      console.error(data.msg)
       break
     default:
+      console.log(data)
       console.error(`Unknown event type: ${eventType}.`)
       break
   }

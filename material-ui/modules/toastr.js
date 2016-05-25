@@ -1,6 +1,8 @@
-import React from 'react'
+import React  from 'react'
+import _      from 'lodash'
+import styles from '../styles/toastr'
 
-import { refreshToastr, hideNotification }
+import { hideNotification, toastrRemoveMessage, toastrRefresh }
   from '../js/actions'
 import { connect } 
   from 'react-redux'
@@ -8,7 +10,7 @@ import { TransitionMotion, Motion, spring, presets }
   from 'react-motion'
 
 import EnhancedButton
-  from 'material-ui/lib/enhanced-button'
+  from 'material-ui/internal/EnhancedButton'
 
 class Toastr extends React.Component {
   constructor(props) {
@@ -18,12 +20,12 @@ class Toastr extends React.Component {
     }
   }
   hideMessage(key) {
-    window.setTimeout(() => this.props.dispatch(hideNotification(key)), 350)
+    window.setTimeout(() => this.props.dispatch(toastrRemoveMessage(key), 350))
   }
   componentDidMount() {
     const { dispatch } = this.props
     this.setState({
-      timer : window.setInterval(() => dispatch(refreshToastr()), 100)
+      timer : window.setInterval(() => dispatch(toastrRefresh()), 100)
     })
   }
   componentWillUnmount() {
@@ -57,7 +59,7 @@ class Toastr extends React.Component {
                     touchRippleOpacity = {1}
                     touchRippleColor   = 'rgba(255, 255, 255, 0.35)'
                     style              = {styles.toastr.ripple}>
-                    <i style={styles.toastr.icon} className='material-icons'>message</i>
+                    <i style={styles.toastr.icon} className='material-icons'>notifications</i>
                     <span style={styles.toastr.message}>
                       {config.data}
                     </span>
@@ -72,38 +74,4 @@ class Toastr extends React.Component {
   }
 }
 
-const styles = {
-  component: {
-    position          : 'absolute', 
-    right             : '30px', 
-    top               : '30px', 
-    zIndex            : 2000,
-  },
-  toastr: {
-    box: {
-      width           : '300px',
-      backgroundColor : 'rgba(27, 155, 92, 0.6)',
-      lineHeight      : '19px',
-      marginBottom    : '10px',
-    },
-    ripple: {
-      textAlign       : 'left',
-      padding         : '10px 10px 12px',
-      color           : 'white',
-    },
-    message: {
-      display         : 'block', 
-      float           : 'left', 
-      marginLeft      : '30px',
-    },
-    icon: {
-      position        : 'absolute',
-    },
-  },
-}
-
-const ToastrComponent = connect(state => ({
-  toastr : state.toastr,
-}))(Toastr)
-
-export default ToastrComponent
+export default connect(state => _.pick(state, ['toastr']))(Toastr)

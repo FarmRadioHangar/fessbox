@@ -10,13 +10,13 @@ const initialState = {
   messages : [],
 }
 
-function reducer(state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
     case TOASTR_REFRESH: {
       if (!state.messages.length) {
         return state
       }
-      const threshold = (Date.now() | 0) - 2000000
+      const threshold = (Date.now() | 0) - 5000
       const messages = state.messages.filter(message => message.added > threshold)
       return {
         ...state,
@@ -47,5 +47,3 @@ function reducer(state = initialState, action) {
       return state
   }
 }
-
-export default reducer

@@ -1,6 +1,9 @@
 import 'babel-polyfill' 
+
 import React            from 'react'
 import ReactDOM         from 'react-dom'
+import getMuiTheme      from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getUrlParam      from './url-params'
 import store            from './store'
 import messageHandler   from './message-handler'
@@ -18,7 +21,7 @@ import { updateAppStatus }
   from './actions'
 
 const userId   = getUrlParam('user_id') 
-const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
+const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' 
 const language = getUrlParam('language') || 'en' 
 
 const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
@@ -38,7 +41,7 @@ function parseMessage(message) {
     try {
       return JSON.parse(message)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
   return null
@@ -47,10 +50,6 @@ function parseMessage(message) {
 ws.onmessage = (e => { 
   const message = parseMessage(e.data)
   if (message) {
-    console.log('>>> Message')
-    console.log(message)
-    console.log('<<<')
-  
     messageHandler(message.event, message.data)
   }
 })
@@ -60,18 +59,13 @@ ws.onerror = e => {
   store.dispatch(updateAppStatus(APP_STATUS_ERROR, 'Error establishing WebSocket connection.'))
 }
 
-function sendMessage(type, data) {
-  ws.send(JSON.stringify({
-    event : type, 
-    data
-  }))
-}
-
 injectTapEventPlugin()
 
 ReactDOM.render(
   <Provider store={store}>
-    <Ui sendMessage={sendMessage} />
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <Ui sendMessage={(event, data) => ws.send(JSON.stringify({event, data}))} />
+    </MuiThemeProvider>
   </Provider>,
   document.getElementById('main')
 )

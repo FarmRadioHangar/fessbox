@@ -1,9 +1,19 @@
 import { 
   APP_INITIALIZE, 
+  APP_SET_DIALOG, 
+  APP_SET_DIFF, 
   APP_UPDATE_STATUS, 
   CHANNEL_UPDATE,
-  MESSAGE_TOGGLE_PROPERTY,
+  CHANNEL_VOLUME_UPDATE,
+  CHANNEL_CONTACT_UPDATE,
+  MESSAGE_FAVORITES_CLEAR,
+  MESSAGE_MARK_ALL_READ,
+  MESSAGE_ADD,
   MESSAGE_REMOVE,
+  MESSAGE_TOGGLE_PROPERTY,
+  TOASTR_ADD_MESSAGE,
+  TOASTR_REMOVE_MESSAGE,
+  TOASTR_REFRESH,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -21,11 +31,24 @@ export function initializeApp(data) {
   }
 }
 
+export function setDiff(diff) {
+  return {
+    type : APP_SET_DIFF,
+    diff,
+  }
+}
+
 export function toggleMessageRead(id) {
   return {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'read',
     id,
+  }
+}
+
+export function markAllMessagesRead() {
+  return {
+    type     : MESSAGE_MARK_ALL_READ, 
   }
 }
 
@@ -37,12 +60,25 @@ export function toggleMessageSelected(id) {
   }
 }
 
-
 export function toggleMessageFavorite(id) {
   return {
     type     : MESSAGE_TOGGLE_PROPERTY, 
     property : 'favorite',
     id,
+  }
+}
+
+export function clearFavorites() {
+  return {
+    type     : MESSAGE_FAVORITES_CLEAR, 
+  }
+}
+
+export function addMessage(id, message) {
+  return {
+    type : MESSAGE_ADD, 
+    id,
+    message,
   }
 }
 
@@ -58,5 +94,49 @@ export function updateChannel(id, data) {
     type : CHANNEL_UPDATE, 
     id,
     data,
+  }
+}
+
+export function updateChannelVolume(id, level) {
+  return {
+    type : CHANNEL_VOLUME_UPDATE, 
+    id,
+    level,
+  }
+}
+
+export function setDialog(dialog, state) {
+  return {
+    type : APP_SET_DIALOG,
+    dialog,
+    state,
+  }
+}
+
+export function updateChannelContact(id, info) {
+  return {
+    type : CHANNEL_CONTACT_UPDATE,
+    id,
+    info,
+  }
+}
+
+export function toastrAddMessage(message) {
+  return {
+    type : TOASTR_ADD_MESSAGE,
+    message,
+  }
+}
+
+export function toastrRemoveMessage(key) {
+  return {
+    type : TOASTR_REMOVE_MESSAGE,
+    key,
+  }
+}
+
+export function toastrRefresh() {
+  return {
+    type : TOASTR_REFRESH,
   }
 }

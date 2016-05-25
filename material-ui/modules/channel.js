@@ -1,25 +1,47 @@
 import React          from 'react'
+import ReactDOM       from 'react-dom'
+import moment         from 'moment'
 import ChannelToolbar from './channel-toolbar'
+import styles         from '../styles/channel'
+
+import { updateChannelContact, updateChannelVolume }
+  from '../js/actions'
 
 import Paper 
-  from 'material-ui/lib/paper'
-import Avatar 
-  from 'material-ui/lib/avatar'
-import Slider 
-  from 'material-ui/lib/slider'
-import FlatButton 
-  from 'material-ui/lib/flat-button'
+  from 'material-ui/Paper'
 import Divider
-  from 'material-ui/lib/divider'
+  from 'material-ui/Divider'
+import FlatButton 
+  from 'material-ui/FlatButton'
+import RaisedButton 
+  from 'material-ui/RaisedButton'
+import Slider 
+  from 'material-ui/Slider'
+import Toggle
+  from 'material-ui/Toggle'
+import TextField 
+  from 'material-ui/TextField'
 
-import { green400 } 
-  from 'material-ui/lib/styles/colors'
+import IconCommunicationCall
+  from 'material-ui/svg-icons/communication/call'
+import IconAvPause
+  from 'material-ui/svg-icons/av/pause'
+import IconAvStop
+  from 'material-ui/svg-icons/av/stop'
+import IconSocialPerson
+  from 'material-ui/svg-icons/social/person'
 
-class Channel extends React.Component {
+import { green400, green500, yellow500, red500, grey500, orange500 }
+  from 'material-ui/styles/colors'
+
+export default class Channel extends React.Component {
   constructor(props) {
     super(props)
-    this.renderControls = this.renderControls.bind(this)
-    this.renderActions = this.renderActions.bind(this)
+    this.state = {
+      timer : null,
+      now   : Date.now(),
+      edit  : false,
+    }
   }
   setMode(newMode) {
     const { id, mode, sendMessage } = this.props
@@ -29,114 +51,222 @@ class Channel extends React.Component {
       })
     }
   }
-  renderControls() {
-    const { id, level, mode, muted } = this.props
-    switch (mode) {
-      case 'defunct':
-        return (
-          <span />
-        ) 
-      case 'free':
-      default:
-        return (
-          <div style={styles.controls}>
-            <div style={styles.avatar}>
-              <Avatar icon={<i className='material-icons'>remove</i>} />
-            </div>
-            <div style={styles.slider}>
-              <Slider 
-                onChange      = {() => {}}
-                disabled      = {muted}
-                min           = {1}
-                max           = {100}
-                defaultValue  = {level} />
-            </div>
-          </div>
-        )
+  updateVolume(e, value) {
+    const { id, sendMessage, dispatch } = this.props
+    sendMessage('channelVolume', { 
+      [id]: value
+    })
+    dispatch(updateChannelVolume(id, value))
+  }
+  toggleMuted(e) {
+    const { id, muted, sendMessage } = this.props
+    sendMessage('channelMuted', {
+      [id]: !muted
+    })
+  }
+  toggleEdit(e) {
+    const { edit } = this.state
+    if (!edit && this.refs.contact) {
+      this.refs.contact.focus()
+    }
+    this.setState({
+      edit : !edit,
+    })
+  }
+  timer() {
+    const { timestamp, diff } = this.props
+    if (timestamp) {
+      this.setState({
+        now : Date.now() - diff
+      })
     }
   }
-  renderActions() {
-    const { mode } = this.props
+  updateContact() {
+    const { id, dispatch, sendMessage } = this.props
+    if (this.refs.contact) {
+      const caller = {
+        'name' : this.refs.contact.getValue(),
+      }
+      dispatch(updateChannelContact(id, caller))
+      sendMessage('channelContactInfo', { 
+        [id] : caller 
+      })
+    }
+    this.setState({
+      edit : false,
+    })
+  }
+  componentDidMount() {
+    this.setState({
+      timer : window.setInterval(::this.timer, 1000)
+    })
+  }
+  renderChannel() {
+    const { mode, muted, level, contact } = this.props
     switch (mode) {
       case 'free':
+        return (
+          <div style={{textAlign: 'center', padding: '0 0 20px 0'}}>
+            <p>
+              <i style={{marginTop: '-35px', padding: '14px', background: 'rgba(0, 188, 212, 0.3)', color: '#ffffff', borderRadius: '50%', fontSize: '300%'}} className='material-icons'>phone</i>
+            </p>
+          </div>
+        )
       case 'defunct':
         return (
           <span />
-        ) 
-      default:
+        )
+      case 'ring':
         return (
           <div>
+            <div style={{marginTop: '-35px', textAlign: 'center', padding: '0 0 20px 0'}}>
+              <p>
+                <i style={{fontSize: '400%', color: '#4caf50'}} className='material-icons faa-ring animated'>ring_volume</i>
+              </p>
+              {contact.name && (
+                <p style={{fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)'}}>
+                  Incoming call from {contact.name}
+                </p>
+              )}
+              <p style={{margin: '15px 0 0'}}>{contact.number}</p>
+            </div>
             <Divider />
             <div style={{padding: '10px'}}>
               <FlatButton
-                style      = {styles.button}
-                primary    = {true} 
-                label      = 'Master'
-                icon       = {<i className='material-icons'>speaker</i>}
+                style      = {{color: green500, ...styles.button}}
+                label      = 'Answer'
+                icon       = {<IconCommunicationCall />}
                 onClick    = {() => this.setMode('master')}
               />
               <FlatButton
-                style      = {styles.button}
-                primary    = {true} 
+                style      = {{color: grey500, ...styles.button}}
                 label      = 'On hold'
-                icon       = {<i className='material-icons'>pause</i>}
+                icon       = {<IconAvPause />}
                 onClick    = {() => this.setMode('on_hold')}
               />
               <FlatButton
-                style      = {styles.button}
-                secondary  = {true}
+                style      = {{color: red500, ...styles.button}}
                 label      = 'Reject'
-                icon       = {<i className='material-icons'>cancel</i>}
+                icon       = {<IconAvStop />}
                 onClick    = {() => this.setMode('free')}
               />
             </div>
           </div>
         )
+      case 'master':
+      case 'on_hold':
+        return (
+          <div>
+            <div style={{margin: '-20px 20px 0'}}>
+              <div style={{textAlign: 'center'}}>
+                {!!this.state.edit ? (
+                  <div>
+                    <TextField 
+                      ref               = 'contact'
+                      defaultValue      = {contact.name}
+                      floatingLabelText = 'Contact name' 
+                    />
+                    <FlatButton
+                      style             = {{marginLeft: '10px'}}
+                      label             = 'Save'
+                      onTouchTap        = {::this.updateContact}
+                    />
+                    <FlatButton
+                      style             = {{marginLeft: '10px'}}
+                      label             = 'Cancel'
+                      onTouchTap        = {::this.toggleEdit}
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    {contact.name && (
+                      <p style={{fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)'}}>
+                        {contact.name}
+                      </p>
+                    )}
+                    <RaisedButton
+                      style      = {{marginTop: '10px'}}
+                      primary    = {true}
+                      label      = 'Edit contact'
+                      icon       = {<IconSocialPerson />}
+                      onTouchTap = {::this.toggleEdit}
+                    />
+                  </div>
+                )}
+                <p style={{margin: '15px 0 0'}}>{contact.number}</p>
+              </div>
+              <div style={styles.controls}>
+                <div style={styles.toggle}>
+                  <Toggle 
+                    onToggle       = {::this.toggleMuted}
+                    defaultToggled = {!muted} />
+                </div>
+                <div style={styles.slider}>
+                  <Slider 
+                    onChange       = {::this.updateVolume}
+                    disabled       = {muted}
+                    min            = {1}
+                    max            = {100}
+                    value          = {level}
+                    defaultValue   = {level} />
+                </div>
+              </div>
+            </div>
+            <div>
+              <Divider />
+              <div style={{padding: '10px'}}>
+                <FlatButton
+                  style      = {{color: green500, ...styles.button}}
+                  label      = 'Master'
+                  icon       = {<IconCommunicationCall />}
+                  onClick    = {() => this.setMode('master')}
+                />
+                <FlatButton
+                  style      = {{color: grey500, ...styles.button}}
+                  label      = 'On hold'
+                  icon       = {<IconAvPause />}
+                  onClick    = {() => this.setMode('on_hold')}
+                />
+                <FlatButton
+                  style      = {{color: red500, ...styles.button}}
+                  label      = 'Hang up'
+                  icon       = {<IconAvStop />}
+                  onClick    = {() => this.setMode('free')}
+                />
+              </div>
+            </div>
+          </div>
+        ) 
+      default:
+        return <span />
     }
   }
   render() {
-    const { mode } = this.props
+    const { mode, timestamp } = this.props
+    const hours = moment(this.state.now).diff(timestamp, 'hours')
     const colors = {
-      defunct : '#dedede',
+      'defunct' : '#dedede',
+      'ring'    : red500,
+      'master'  : yellow500,
+      'on_hold' : orange500,
     }
     return (
       <div style={styles.component}>
-        <Paper style={{
-            ...styles.paper,
-            borderLeft : `12px solid ${colors[mode] || green400}`,
+        <Paper 
+          style={{
+            borderLeft : `12px solid ${colors[mode] || '#00bcd4'}`,
           }}>
-          <ChannelToolbar {...this.props} />
-          {this.renderControls()}
-          {/* <div>{''+this.props.mode}</div> */}
-          {this.renderActions()}
+          <ChannelToolbar {...this.props} 
+            timer = {(('master' === mode || 'on_hold' === mode) && timestamp) ? (
+              <span style={{marginLeft: '20px'}}>
+                {hours > 0 && <span>{hours}:</span>}
+                {moment(Math.max(0, moment(this.state.now).diff(timestamp))).format('mm:ss')}
+              </span>
+            ) : null}
+          />
+          {this.renderChannel()}
         </Paper>
       </div>
     )
   }
 }
-
-const styles = {
-  component: {
-    padding         : '1em 1em 0 1em',
-  },
-  paper: {
-    width           : '100%',
-  },
-  controls: {
-    display         : 'flex',
-    flexDirection   : 'row', 
-    alignItems      : 'center',
-    height          : '60px',
-    marginBottom    : '10px',
-    padding         : '10px 0',
-  },
-  avatar: {
-    padding         : '0 0 0 20px',
-  },
-  slider: {
-    margin          : '22px 20px 0 20px',
-    width           : '100%',
-  },
-}
-
-export default Channel

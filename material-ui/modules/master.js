@@ -1,50 +1,62 @@
-import React from 'react'
+import React  from 'react'
+import styles from '../styles/master'
+import _      from 'lodash'
 
 import { connect } 
   from 'react-redux'
 
 import Paper 
-  from 'material-ui/lib/paper'
-import IconMic
-  from 'material-ui/lib/svg-icons/av/mic'
-import IconVolumeUp
-  from 'material-ui/lib/svg-icons/av/volume-up'
+  from 'material-ui/Paper'
+import IconMic 
+  from 'material-ui/svg-icons/av/mic'
+import IconVolumeUp 
+  from 'material-ui/svg-icons/av/volume-up'
 import Slider 
-  from 'material-ui/lib/slider'
+  from 'material-ui/Slider'
 import Subheader 
-  from 'material-ui/lib/Subheader'
+  from 'material-ui/Subheader'
 import Divider 
-  from 'material-ui/lib/divider'
+  from 'material-ui/Divider'
+import IconButton 
+  from 'material-ui/IconButton'
 
 class Master extends React.Component {
-  constructor(props) {
-    super(props)
-  }
   render() {
-    const { mixer : { master } } = this.props
+    const { 
+      mixer : { 
+        master,
+      }, 
+      sendMessage,
+    } = this.props
     return (
       <Paper>
         <Subheader>Master</Subheader>
         <Divider />
         <div style={styles.controls}>
           <div>
-            <IconVolumeUp />
+            <IconButton>
+              <IconVolumeUp />
+            </IconButton>
           </div>
           <div style={styles.slider}>
             <Slider 
               min           = {1}
               max           = {100}
               defaultValue  = {master.out ? master.out.level : 1}
+              onChange      = {e => {}}
             />
           </div>
           <div>
-            <IconMic />
+            <IconButton>
+              <IconMic />
+            </IconButton>
           </div>
           <div style={styles.slider}>
             <Slider 
               min           = {1}
               max           = {100}
               defaultValue  = {master.in ? master.in.level : 1}
+              onChange      = {e => {}}
             />
           </div>
         </div>
@@ -53,24 +65,4 @@ class Master extends React.Component {
   }
 }
 
-const styles = {
-  controls: {
-    display       : 'flex',
-    flexDirection : 'row', 
-    alignItems    : 'center',
-    height        : '30px',
-    padding       : '10px 0',
-    marginLeft    : '20px',
-  },
-  slider: {
-    width         : '100%',
-    marginTop     : '22px',
-    padding       : '0 20px 0 20px',
-  },
-}
-
-const MasterComponent = connect(state => ({
-  mixer : state.mixer,
-}))(Master)
-
-export default MasterComponent
+export default connect(state => _.pick(state, ['mixer']))(Master)
