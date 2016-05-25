@@ -39,3 +39,12 @@ exports.messageSend = function (response, params) {
 		}
 	});
 };
+
+exports.callNumber = function (response, params) {
+	api.callNumber(params.number, params.mode, params.channel_id, function (err) {
+		if (err) {
+			myLib.consoleLog('debug', 'callNumber', err);
+		}
+	});
+	myLib.httpGeneric(200, "ok", response, "DEBUG::callNumber");
+};

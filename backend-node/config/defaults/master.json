@@ -1,0 +1,13 @@
+{
+	"on_air"    : true,
+	"recording" : false,
+	"delay"     : 0,
+	"in" : {
+		"level"     : 67,
+		"muted"     : false
+	},
+	"out" : {
+		"level"     : 67,
+		"muted"     : false
+	}
+}

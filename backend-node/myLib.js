@@ -43,7 +43,7 @@ function httpGeneric(statusCode, message, response, label) {
 	}
 }
 
-function consoleLog(output, label, message) {
+function consoleLog(level, label, message, values) {
 	var logStamp = '>>>> ' + new Date().toLocaleString() + " -";
 /*
 	if (!label) {
@@ -53,24 +53,39 @@ function consoleLog(output, label, message) {
 	}
 */
 	label += ":";
-	if (output === "error" || output === "log") {
-		console[output](logStamp, output, label, message);
-	} else if (output === 'warning') {
-		console.log(logStamp, output, label, message);
-	} else if (output === 'debug') {
-		console.error('||||', Date.now(), output, label, message);
+	if (values !== null && typeof (values) === 'object') {
+		values = JSON.stringify(values, null, 4);
+	}
+	if (level === "error" || level === "log") {
+		console[level](logStamp, level, label, message, values);
+	} else if (level === 'warning') {
+		console.log(logStamp, level, label, message, values);
+	} else if (level === 'debug') {
+		console.error('||||', Date.now(), level, label, message, values);
 	} else {
-		console.error(logStamp, "undefined log output", label, message);
+		console.error(logStamp, "undefined log level: " + level, label, message, values);
 	}
 }
 
-exports.checkRequiredParams = function (required, params) {
-	for (var i in required) {
-		if (!params[required[i]]) {
-			return false;
+exports.checkObjectProperties = function (params, required) {
+	if (typeof(params) !== 'object') {
+		throw Error('First param must be an object');
+	} else if (!params) {
+		return false;
+	} else {
+		if (!required) {
+			return true;
+		} else if (Array.isArray(required)) {
+			for (var i in required) {
+				if (!params[required[i]]) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			throw Error('Second param must be an array');
 		}
 	}
-	return true;
 };
 
 exports.httpGeneric = httpGeneric;

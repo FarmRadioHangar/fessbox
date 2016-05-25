@@ -2,7 +2,8 @@ var amiConf = require("./config/ami.json");
 var astConf = require("./config/asterisk.json");
 
 var myLib = require("./myLib");
-var mixerLib = require("./mixerLib");
+//var mixerLib = require("./mixerLib");
+var systemApi = require("./engineApi");
 var s = require("./localStorage");
 var api = require("./api");
 
@@ -48,7 +49,11 @@ ami.on('fullybooted', function(evt) {
 	if (astConf.dongles && Object.keys(astConf.dongles).length > 0) {
 		// we want all configured dongle channels to be present
 		for (var dongleName in astConf.dongles) {
-			s.ui.mixer.channels[dongleName] = mixerLib.createChannel('dongle', astConf.dongles[dongleName].number);
+			//s.ui.mixer.channels[dongleName] = mixerLib.createChannel('dongle', astConf.dongles[dongleName].number);
+			systemApi.channelUpdate(dongleName, {
+				type: 'dongle',
+				label: astConf.dongles[dongleName].number
+			});
 			s.asterisk.channels[dongleName] = {};
 		}
 
@@ -90,23 +95,39 @@ ami.on('devicestatelistcomplete', function(evt) {
 			myLib.consoleLog('error', "ConfbridgeList", JSON.stringify(res));
 			if (astConf.console && (astConf.console.in || astConf.console.out)) {
 				ami.action({
+//					action: "ModuleCheck",
+//					module: 'chan_alsa'
 					action: "Command",
-					command: "console dial " + astConf.virtual.master + "@from-internal" // todo: dial different context with appropriete confbridge properties
-				}, function(err, res) {
-					if (!err) {
-						myLib.consoleLog('log', 'init', "Console connected to master");
-						s.ui.mixer.master.on_air = true;
-						if (astConf.console.in) {
-							//s.ui.mixer.master.in = s.loadSettings("master.in");
-							//s.ui.mixer.host = s.loadSettings("master.in"); // obsolete
-						}
-						if (astConf.console.out) {
-							//s.ui.mixer.master.out = s.loadSettings("master.out");
-						}
-					} else {
+					command: 'core show channeltype console'
+				},  function(err, res) {
+						myLib.consoleLog('debug', "ModuleCheck", [err, res]);
+					if (err) {
+						myLib.consoleLog('error', "ModuleCheck", err);
 						s.ui.mixer.master.in = null;
 						s.ui.mixer.master.out = null;
-						eventCallbacks.initialize();
+						eventCallbacks.initialized();
+					} else {
+						ami.action({
+							action: "Command",
+							command: "console dial " + astConf.virtual.master + "@from-internal" // todo: dial different context with appropriete confbridge properties
+						}, function(err, res) {
+							myLib.consoleLog('debug',  "console dial", res);
+							if (!err) {
+								myLib.consoleLog('log', 'init', "Console connected to master");
+								s.ui.mixer.master.on_air = true;
+								if (astConf.console.in) {
+									//s.ui.mixer.master.in = s.loadSettings("master.in");
+									//s.ui.mixer.host = s.loadSettings("master.in"); // obsolete
+								}
+								if (astConf.console.out) {
+									//s.ui.mixer.master.out = s.loadSettings("master.out");
+								}
+							} else {
+								s.ui.mixer.master.in = null;
+								s.ui.mixer.master.out = null;
+								eventCallbacks.initialized();
+							}
+						});
 					}
 				});
 			}
@@ -120,7 +141,7 @@ ami.on('dongledeviceentry', function(evt) {
 //	{"event":"dongledeviceentry","actionid":"1448708202036","device":"airtel2","audiosetting":"","datasetting":"","imeisetting":"354369047217469","imsisetting":"","channellanguage":"mk","context":"from-trunk","exten":"+1234567890","group":"0","rxgain":"4","txgain":"1","u2diag":"0","usecallingpres":"yes","defaultcallingpres":"presentation allowed, passed screen","autodeletesms":"yes","disablesms":"no","resetdongle":"yes","smspdu":"yes","callwaitingsetting":"disabled","dtmf":"relax","minimaldtmfgap":"45","minimaldtmfduration":"80","minimaldtmfinterval":"200","state":"gsm not registered","audiostate":"/dev/ttyusb1","datastate":"/dev/ttyusb2","voice":"yes","sms":"yes","manufacturer":"huawei","model":"e1731","firmware":"11.126.16.04.284","imeistate":"354369047217469","imsistate":"640050938039425","gsmregistrationstatus":"registration denied","rssi":"15, -83 dbm","mode":"wcdma","submode":"wcdma","providername":"none","locationareacode":"50","cellid":"bbe8881","subscribernumber":"+255788333330","smsservicecenter":"+255780000004","useucs2encoding":"yes","ussduse7bitencoding":"no","ussduseucs2decoding":"yes","tasksinqueue":"0","commandsinqueue":"0","callwaitingstate":"disabled","currentdevicestate":"start","desireddevicestate":"start","callschannels":"0","active":"0","held":"0","dialing":"0","alerting":"0","incoming":"0","waiting":"0","releasing":"0","initializing":"0"}
 	if (astConf.dongles[evt.device] ) { // check if device is configured in fessbox
 		if (!s.ui.mixer.channels[evt.device]) { // sanity check
-			myLib.consoleLog('panic', 'configured dongle not present', evt.device);
+			myLib.consoleLog('panic', 'ami::on-dongledeviceentry', 'channel not found in mixer', evt.device);
 		} else {
 			//todo: is this the right place to to this?
 			s.ui.mixer.channels[evt.device].direction = astConf.operators.indexOf(evt.device) !== -1 ? 'operator' : null;
@@ -163,18 +184,18 @@ ami.on('dongledeviceentry', function(evt) {
 						// todo: hm...
 						break;
 					case 'gsm not registered':
-						myLib.consoleLog('log', 'dongle not registered, reseting', evt.device);
+						myLib.consoleLog('log', "ami::on-dongledeviceentry", 'dongle not registered, reseting', evt.device);
 						ami.action({
 							action: "DongleReset",
 							device: evt.device
 						}, function(err, res) {
 							if (err) {
-								myLib.consoleLog('error', "DongleReset", evt.device);
+								myLib.consoleLog('error', "ami::on-dongledeviceentry", "DongleReset", evt.device);
 							}
 						});
 					case 'not connected':
 					default:
-						myLib.consoleLog('error', 'dongleState', dongleState);
+						myLib.consoleLog('error', "ami::on-dongledeviceentry", 'dongleState', dongleState);
 						s.ui.mixer.channels[evt.device].error = dongleState;
 				}
 
@@ -230,7 +251,7 @@ ami.on('coreshowchannel', function (evt) {
 									}
 								});
 							}
-				i			*/
+							*/
 						}
 						break;
 				}
@@ -345,7 +366,7 @@ ami.on('donglecallstatechange', function(evt) {
 
 ami.on('donglenewsmsbase64', function(evt) {
 	var prefix = new RegExp('^\\' + amiConf.country_prefix);
-	api.inboxUpdate({
+	systemApi.inboxUpdate({
 		type: 'sms_in',
 		timestamp: Date.now(),
 		channel_id: evt.device,
@@ -376,17 +397,19 @@ ami.on('donglestatus', function(evt) {
 	if (s.asterisk.channels[evt.device] && s.ui.mixer.channels[evt.device]) {
 		switch (evt.status) {
 			case 'Free':
-			case 'Initialize':
-				if (s.ui.mixer.channels[evt.device].mode !== 'free') {
+			case 'Initialize': // meybe not needed
+				systemApi.channelUpdate(evt.device, { mode: 'free' });
+/*				if (s.ui.mixer.channels[evt.device].mode !== 'free') {
 					api.changeMode(evt.device, 'free');
 				}
-				break;
+*/				break;
 			case 'Disconnect':
-				if (s.ui.mixer.channels[evt.device].mode !== 'defunct') {
+				systemApi.channelUpdate(evt.device, { mode: 'defunct' });
+/*				if (s.ui.mixer.channels[evt.device].mode !== 'defunct') {
 					s.asterisk.channels[evt.device].internalName = null;
 					api.changeMode(evt.device, 'defunct');
 				}
-				break;
+*/				break;
 		}
 	}
 	// debug
@@ -395,16 +418,43 @@ ami.on('donglestatus', function(evt) {
 //	}
 });
 
+// asterisk 13 event
+ami.on('musiconholdstart', function(evt) {
+//	{"event":"MusicOnHoldStart","privilege":"call,all","channel":"Dongle/airtel1-0100000003","channelstate":"6","channelstatedesc":"Up","calleridnum":"<unknown>","calleridname":"airtel1","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-internal","exten":"196","priority":"2","uniqueid":"1458909247.56","linkedid":"1458909247.56","class":"default"}
+	var channelInfo = evt.channel.split(/[\/-]/, 3);
+	if (s.asterisk.channels[channelInfo[1]]) {
+		systemApi.channelUpdate(channelInfo[1], { mode: 'on_hold' });
+	}
+});
+
+// asterisk 11 event
 ami.on('musiconhold', function(evt) {
 //	{"event":"MusicOnHold","privilege":"call,all","state":"Stop","channel":"ALSA/hw:0,0","uniqueid":"1448348233.0"}
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	if (s.asterisk.channels[channelInfo[1]] && evt.state === "Start") {
-		api.channelUpdate(channelInfo[1], { mode: 'on_hold' });
+		systemApi.channelUpdate(channelInfo[1], { mode: 'on_hold' });
 	}
 });
 
+// when dialing out
+ami.on('dialbegin', function(evt) {
+//	{"event":"DialBegin","privilege":"call,all","channel":"Local/2663@ext-meetme-00000005;1","channelstate":"6","channelstatedesc":"Up","calleridnum":"+255689514544","calleridname":"<unknown>","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"macro-dialout-trunk","exten":"s","priority":"30","uniqueid":"1463896754.63","linkedid":"1463896754.63","destchannel":"Dongle/airtel1-0100000001","destchannelstate":"0","destchannelstatedesc":"Down","destcalleridnum":"0687754487","destcalleridname":"<unknown>","destconnectedlinenum":"+255689514544","destconnectedlinename":"<unknown>","destlanguage":"en","destaccountcode":"","destcontext":"from-trunk","destexten":"0687754487","destpriority":"1","destuniqueid":"1463896754.69","destlinkedid":"1463896754.63","dialstring":"airtel1/0687754487"}
+	var channelInfo = evt.destchannel.split(/[\/-]/, 3);
+	if (channelInfo[0] === 'Dongle' && s.asterisk.channels[channelInfo[1]]) {
+		s.asterisk.channels[channelInfo[1]].internalName = evt.destchannel;
+		systemApi.channelUpdate(channelInfo[1], {
+			mode: 'ring',
+			direction: 'outgoing',
+			contact: {
+				number: evt.destcalleridnum,
+				name: evt.destcalleridname !== "<unknown>" ? evt.destcalleridname : null
+			}
+		});
+	}
+});
 // todo: catch only remote party initiated hangup
-ami.on('hangup', function(evt) {
+//ami.on('hangup', function(evt) {
+ami.on('hanguprequest', function(evt) {
 //	{"event":"Hangup","privilege":"call,all","channel":"Dongle/airtel1-0100000006","uniqueid":"1448369795.17","calleridnum":"+255687754487","calleridname":"airtel1","connectedlinenum":"707","connectedlinename":"host galaxy tab","accountcode":"","cause":"17","cause-txt":"Operator busy"}
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	if (s.asterisk.channels[channelInfo[1]]) {
@@ -470,7 +520,7 @@ ami.on('newchannel', function(evt) {
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-input","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.1"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-output","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.2"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Dongle/airtel2-0100000000","channelstate":"4","channelstatedesc":"Ring","calleridnum":"+255682120818","calleridname":"airtel2","accountcode":"","exten":"+255788333330","context":"from-trunk","uniqueid":"1446819272.2"}
-	console.log(JSON.stringify(evt));
+	console.log(JSON.stringify(evt, null, 4));
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	var newChannel = {};
 	switch (channelInfo[0]) {
@@ -542,7 +592,7 @@ ami.on('newchannel', function(evt) {
 
 ami.on('confbridgestoprecord', function (evt) {
 	if (evt.conference === astConf.virtual.master) {
-		api.inboxUpdate({
+		systemApi.inboxUpdate({
 			type: 'recording',
 			timestamp: Date.now(),
 			endpoint: 'master',
@@ -736,7 +786,7 @@ function sendSMS(device, number, content, cb) {
 		action: 'DongleSendSMS',
 		Device: device,
 		"Number": number,
-		Message: content,
+		Message: content.replace('\n', '\\n'),
 		Report: 'yes'
 	}, function(err, res) {
 		if (!err) {
@@ -759,10 +809,10 @@ function amiHangup(channel, cb) {
 	}, function(err, res) {
 		if (!err) {
 			cb();
-			console.log('hangup ok', JSON.stringify(res));
+			myLib.consoleLog('debug', 'hangup ok', JSON.stringify(res));
 		} else {
 			cb(JSON.stringify(err));
-			console.error('hangup err', JSON.stringify(err));
+			myLib.consoleLog('error', 'hangup err', JSON.stringify(err));
 		}
 	});
 }
@@ -840,11 +890,34 @@ function amiRedirectBoth(channel, destination, channel2, destination2, cb) {
 
 // provider interface
 
+exports.originateLocal = function (number, destination, channel_id, cb) {
+	/*
+	if (s.asterisk.channels[channel_id] && s.asterisk.channels[channel_id].internalName) {
+		if (astConf.virtual[destination]) {
+			destination = astConf.virtual[destination];
+		}
+		amiRedirect(s.asterisk.channels[channel_id].internalName, destination, cb);
+	} else {
+		cb("PANIC - channel not found: " + channel_id);
+	}
+   */
+	if (destination === 'master') {
+		destination = "Local/" + astConf.virtual[destination] + "@ext-meetme";
+	} else {
+		destination = "SIP/" + destination;
+	}
+	amiOriginate(destination, number, cb);
+};
+
+exports.originateRemote = function (number, destination, channel_id, cb) {
+	amiOriginate(["Dongle", channel_id, number].join('/'), astConf.virtual[destination], cb);
+};
+
 exports.setChannelRecording = function (channel_id, value, cb) {
 	//setAmiChannelMuted(s.asterisk.channels[channel_id].internalName, value, direction, cb);
 };
 
-exports.sendSMS = sendSMS;
+//exports.sendSMS = sendSMS;
 exports.channelToMaster = function (channel_id, cb) {
 	amiRedirect(s.asterisk.channels[channel_id].internalName, astConf.virtual.master, cb);
 //	amiConnectToMaster(s.asterisk.channels[channel_id].internalName, cb);
@@ -1033,7 +1106,7 @@ exports.sendContent = function(data, cb) {
 // debug: catch all AMI events
 ami.on('managerevent', function(evt) {
 	if (evt.event != "ConfbridgeTalking" && evt.event != 'Newexten' && evt.event != 'VarSet' && evt.event.indexOf("Dongle") !== 0 && evt.event.indexOf("RTCP") !== 0) {
-		console.error(JSON.stringify(evt));
+		console.error('*  ' +JSON.stringify(evt));
 	}
 	// else console.error(JSON.stringify(evt));
 });
@@ -1086,7 +1159,7 @@ ami.on('donglesmsstatus', function(evt) {
 			//todo: Use .endpoint instead of .contact_id and .source
 			s.asterisk.sms_out[evt.id].data.timestamp = Date.now();
 			s.asterisk.sms_out[evt.id].cb();
-			api.inboxUpdate(s.asterisk.sms_out[evt.id].data);
+			systemApi.inboxUpdate(s.asterisk.sms_out[evt.id].data);
 		}
 		delete s.asterisk.sms_out[evt.id];
 	}
