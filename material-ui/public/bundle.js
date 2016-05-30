@@ -400,9 +400,14 @@ exports.default = (0, _redux.combineReducers)({
   app: _app2.default,
   users: _users2.default,
   toastr: _toastr2.default,
-  sms: (0, _reactReduxForm.modelReducer)('sms', { channel: 'auto' }),
+  sms: (0, _reactReduxForm.modelReducer)('sms', {
+    channel: 'auto'
+  }),
   smsForm: (0, _reactReduxForm.formReducer)('sms'),
-  call: (0, _reactReduxForm.modelReducer)('call', { channel: 'auto' }),
+  call: (0, _reactReduxForm.modelReducer)('call', {
+    channel: 'auto',
+    mode: 'master'
+  }),
   callForm: (0, _reactReduxForm.formReducer)('call')
 });
 
@@ -1083,6 +1088,21 @@ var CallDialog = function (_React$Component) {
             validators: _lodash2.default.pick(_validators2.default, ['required']),
             model: 'call.channel' },
           _react2.default.createElement(_channelSelect2.default, { channels: freeChannels })
+        ),
+        _react2.default.createElement(
+          _materialField2.default,
+          {
+            validators: _lodash2.default.pick(_validators2.default, ['required']),
+            model: 'call.mode' },
+          _react2.default.createElement(
+            _SelectField2.default,
+            {
+              fullWidth: true,
+              floatingLabelText: 'Call mode',
+              defaultValue: 'master' },
+            _react2.default.createElement(_MenuItem2.default, { value: 'master', primaryText: 'Master' }),
+            _react2.default.createElement(_MenuItem2.default, { value: 'private', primaryText: 'Private' })
+          )
         ),
         _react2.default.createElement(
           _materialField2.default,
@@ -2304,6 +2324,9 @@ var MaterialField = (0, _reactReduxForm.createFieldClass)({
       },
       value: props.modelValue
     };
+  },
+  'SelectField': function SelectField(props) {
+    return {};
   },
   'ChannelSelect': function ChannelSelect(props) {
     return {

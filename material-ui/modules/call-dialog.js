@@ -79,6 +79,20 @@ class CallDialog extends React.Component {
           <ChannelSelect channels={freeChannels} />
         </MaterialField>
         <MaterialField 
+          validators    = {_.pick(validators, ['required'])}
+          model         = 'call.mode'>
+          <SelectField 
+            fullWidth         = {true}
+            floatingLabelText = 'Call mode'
+            defaultValue      = 'master'>
+            <MenuItem value={'master'} primaryText='Master' />
+            <MenuItem value={'private'} primaryText='Private' />
+            {/*
+            <MenuItem value={'ivr'} primaryText='IVR' />
+            */}
+          </SelectField>
+        </MaterialField>
+        <MaterialField 
           validators    = {_.pick(validators, ['required', 'phoneNumber'])}
           model         = 'call.number'>
           <TextField 
