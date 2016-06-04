@@ -6,6 +6,12 @@ exports.initialize = function (operator_id, data, cb) {
 		});
 };
 
+exports.ping = function (operator_id, data, cb) {
+	cb("pong", null, 'self');
+};
+
+exports.noop = function () {};
+
 exports.callNumber = function (operator_id, data, cb) {
 	userApi.callNumber(data.number, data.mode, data.channel_id, function (err) {
 		if (err) {
