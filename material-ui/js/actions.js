@@ -3,17 +3,22 @@ import {
   APP_SET_DIALOG, 
   APP_SET_DIFF, 
   APP_UPDATE_STATUS, 
+  CHANNEL_CONTACT_UPDATE,
+  CHANNEL_SET_MUTED,
   CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
-  CHANNEL_CONTACT_UPDATE,
-  MESSAGE_FAVORITES_CLEAR,
-  MESSAGE_MARK_ALL_READ,
   MESSAGE_ADD,
+  MESSAGE_BULK_ADD,
+  MESSAGE_MARK_ALL_READ,
   MESSAGE_REMOVE,
+  MESSAGE_STAR,
   MESSAGE_TOGGLE_PROPERTY,
+  MESSAGE_UNSTAR,
+  MESSAGE_WINDOW_GROW,
+  MESSAGE_WINDOW_REQUEST_OLDER,
   TOASTR_ADD_MESSAGE,
-  TOASTR_REMOVE_MESSAGE,
   TOASTR_REFRESH,
+  TOASTR_REMOVE_MESSAGE,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -60,6 +65,7 @@ export function toggleMessageSelected(id) {
   }
 }
 
+/*
 export function toggleMessageFavorite(id) {
   return {
     type     : MESSAGE_TOGGLE_PROPERTY, 
@@ -73,6 +79,7 @@ export function clearFavorites() {
     type     : MESSAGE_FAVORITES_CLEAR, 
   }
 }
+*/
 
 export function addMessage(id, message) {
   return {
@@ -82,9 +89,42 @@ export function addMessage(id, message) {
   }
 }
 
+export function addBulkMessages(messages) {
+  return {
+    type : MESSAGE_BULK_ADD,
+    messages
+  }
+}
+
+export function messageWindowGrow() {
+  return {
+    type : MESSAGE_WINDOW_GROW
+  }
+}
+
+export function messageWindowRequestOlder() {
+  return {
+    type : MESSAGE_WINDOW_REQUEST_OLDER
+  }
+}
+
 export function removeMessage(id) {
   return {
     type : MESSAGE_REMOVE, 
+    id,
+  }
+}
+
+export function starMessage(id) {
+  return {
+    type : MESSAGE_STAR, 
+    id,
+  }
+}
+
+export function unstarMessage(id) {
+  return {
+    type : MESSAGE_UNSTAR, 
     id,
   }
 }
@@ -102,6 +142,14 @@ export function updateChannelVolume(id, level) {
     type : CHANNEL_VOLUME_UPDATE, 
     id,
     level,
+  }
+}
+
+export function setChannelMuted(id, muted) {
+  return {
+    type : CHANNEL_SET_MUTED, 
+    id,
+    muted,
   }
 }
 

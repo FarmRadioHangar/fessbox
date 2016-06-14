@@ -1,11 +1,10 @@
 import { 
   APP_INITIALIZE, 
   APP_SET_DIALOG,
-  APP_STATUS_CONNECTED, 
+  APP_SET_DIFF,
   APP_STATUS_CONNECTING, 
   APP_STATUS_INITIALIZED, 
   APP_UPDATE_STATUS, 
-  APP_SET_DIFF,
 } from '../constants'
 
 const initialState = {

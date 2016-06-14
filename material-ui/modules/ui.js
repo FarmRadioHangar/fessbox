@@ -17,7 +17,7 @@ import CircularProgress
 import Dialog 
   from 'material-ui/Dialog'
 
-class Ui extends React.Component {
+class Root extends React.Component {
   render() {
     const { 
       app : { status, error }, 
@@ -26,9 +26,9 @@ class Ui extends React.Component {
     switch (status) {
       case APP_STATUS_CONNECTING:
       case APP_STATUS_CONNECTED:
-        const backgroundColor = (APP_STATUS_CONNECTING == status) ? 'white' : 'transparent'
+        //const opacity = (APP_STATUS_CONNECTING == status) ? 1 : 0
         return (
-          <div style={{backgroundColor, ...styles.spinner}}>
+          <div style={{...styles.spinner}}>
             <CircularProgress size={1} />
           </div>
         )
@@ -51,4 +51,4 @@ class Ui extends React.Component {
   }
 }
 
-export default connect(state => _.pick(state, ['app']))(Ui)
+export default connect(state => _.pick(state, ['app']))(Root)

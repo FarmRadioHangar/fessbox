@@ -5,7 +5,7 @@ export default {
     display          : 'flex',
     justifyContent   : 'center',
     alignItems       : 'center',
-    WebkitTransition : 'background-color 2s',
-    transition       : 'background-color 2s',
+    WebkitTransition : 'opacity 2s',
+    transition       : 'opacity 2s',
   }
 }

@@ -10,12 +10,16 @@ exports.setDiff = setDiff;
 exports.toggleMessageRead = toggleMessageRead;
 exports.markAllMessagesRead = markAllMessagesRead;
 exports.toggleMessageSelected = toggleMessageSelected;
-exports.toggleMessageFavorite = toggleMessageFavorite;
-exports.clearFavorites = clearFavorites;
 exports.addMessage = addMessage;
+exports.addBulkMessages = addBulkMessages;
+exports.messageWindowGrow = messageWindowGrow;
+exports.messageWindowRequestOlder = messageWindowRequestOlder;
 exports.removeMessage = removeMessage;
+exports.starMessage = starMessage;
+exports.unstarMessage = unstarMessage;
 exports.updateChannel = updateChannel;
 exports.updateChannelVolume = updateChannelVolume;
+exports.setChannelMuted = setChannelMuted;
 exports.setDialog = setDialog;
 exports.updateChannelContact = updateChannelContact;
 exports.toastrAddMessage = toastrAddMessage;
@@ -68,19 +72,21 @@ function toggleMessageSelected(id) {
   };
 }
 
-function toggleMessageFavorite(id) {
+/*
+export function toggleMessageFavorite(id) {
   return {
-    type: _constants.MESSAGE_TOGGLE_PROPERTY,
-    property: 'favorite',
-    id: id
-  };
+    type     : MESSAGE_TOGGLE_PROPERTY, 
+    property : 'favorite',
+    id,
+  }
 }
 
-function clearFavorites() {
+export function clearFavorites() {
   return {
-    type: _constants.MESSAGE_FAVORITES_CLEAR
-  };
+    type     : MESSAGE_FAVORITES_CLEAR, 
+  }
 }
+*/
 
 function addMessage(id, message) {
   return {
@@ -90,9 +96,42 @@ function addMessage(id, message) {
   };
 }
 
+function addBulkMessages(messages) {
+  return {
+    type: _constants.MESSAGE_BULK_ADD,
+    messages: messages
+  };
+}
+
+function messageWindowGrow() {
+  return {
+    type: _constants.MESSAGE_WINDOW_GROW
+  };
+}
+
+function messageWindowRequestOlder() {
+  return {
+    type: _constants.MESSAGE_WINDOW_REQUEST_OLDER
+  };
+}
+
 function removeMessage(id) {
   return {
     type: _constants.MESSAGE_REMOVE,
+    id: id
+  };
+}
+
+function starMessage(id) {
+  return {
+    type: _constants.MESSAGE_STAR,
+    id: id
+  };
+}
+
+function unstarMessage(id) {
+  return {
+    type: _constants.MESSAGE_UNSTAR,
     id: id
   };
 }
@@ -110,6 +149,14 @@ function updateChannelVolume(id, level) {
     type: _constants.CHANNEL_VOLUME_UPDATE,
     id: id,
     level: level
+  };
+}
+
+function setChannelMuted(id, muted) {
+  return {
+    type: _constants.CHANNEL_SET_MUTED,
+    id: id,
+    muted: muted
   };
 }
 
@@ -156,29 +203,53 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var APP_INITIALIZE = exports.APP_INITIALIZE = 'APP_INITIALIZE';
-var APP_UPDATE_STATUS = exports.APP_UPDATE_STATUS = 'APP_UPDATE_STATUS';
+var APP_SET_DIALOG = exports.APP_SET_DIALOG = 'APP_SET_DIALOG';
+var APP_SET_DIFF = exports.APP_SET_DIFF = 'APP_SET_DIFF';
 var APP_STATUS_CONNECTED = exports.APP_STATUS_CONNECTED = 'APP_STATUS_CONNECTED';
 var APP_STATUS_CONNECTING = exports.APP_STATUS_CONNECTING = 'APP_STATUS_CONNECTING';
 var APP_STATUS_ERROR = exports.APP_STATUS_ERROR = 'APP_STATUS_ERROR';
 var APP_STATUS_INITIALIZED = exports.APP_STATUS_INITIALIZED = 'APP_STATUS_INITIALIZED';
-var APP_SET_DIALOG = exports.APP_SET_DIALOG = 'APP_SET_DIALOG';
-var APP_SET_DIFF = exports.APP_SET_DIFF = 'APP_SET_DIFF';
+var APP_UPDATE_STATUS = exports.APP_UPDATE_STATUS = 'APP_UPDATE_STATUS';
 
-var MESSAGE_TOGGLE_PROPERTY = exports.MESSAGE_TOGGLE_PROPERTY = 'MESSAGE_TOGGLE_PROPERTY';
 var MESSAGE_ADD = exports.MESSAGE_ADD = 'MESSAGE_ADD';
-var MESSAGE_REMOVE = exports.MESSAGE_REMOVE = 'MESSAGE_REMOVE';
+var MESSAGE_BULK_ADD = exports.MESSAGE_BULK_ADD = 'MESSAGE_BULK_ADD';
 var MESSAGE_MARK_ALL_READ = exports.MESSAGE_MARK_ALL_READ = 'MESSAGE_MARK_ALL_READ';
-var MESSAGE_FAVORITES_CLEAR = exports.MESSAGE_FAVORITES_CLEAR = 'MESSAGE_FAVORITES_CLEAR';
+var MESSAGE_REMOVE = exports.MESSAGE_REMOVE = 'MESSAGE_REMOVE';
+var MESSAGE_TOGGLE_PROPERTY = exports.MESSAGE_TOGGLE_PROPERTY = 'MESSAGE_TOGGLE_PROPERTY';
+var MESSAGE_STAR = exports.MESSAGE_STAR = 'MESSAGE_STAR';
+var MESSAGE_UNSTAR = exports.MESSAGE_UNSTAR = 'MESSAGE_UNSTAR';
+var MESSAGE_WINDOW_GROW = exports.MESSAGE_WINDOW_GROW = 'MESSAGE_WINDOW_GROW';
+var MESSAGE_WINDOW_REQUEST_OLDER = exports.MESSAGE_WINDOW_REQUEST_OLDER = 'MESSAGE_WINDOW_REQUEST_OLDER';
 
+var CHANNEL_CONTACT_UPDATE = exports.CHANNEL_CONTACT_UPDATE = 'CHANNEL_CONTACT_UPDATE';
+var CHANNEL_SET_MUTED = exports.CHANNEL_SET_MUTED = 'CHANNEL_SET_MUTED';
 var CHANNEL_UPDATE = exports.CHANNEL_UPDATE = 'CHANNEL_UPDATE';
 var CHANNEL_VOLUME_UPDATE = exports.CHANNEL_VOLUME_UPDATE = 'CHANNEL_VOLUME_UPDATE';
-var CHANNEL_CONTACT_UPDATE = exports.CHANNEL_CONTACT_UPDATE = 'CHANNEL_CONTACT_UPDATE';
 
 var TOASTR_ADD_MESSAGE = exports.TOASTR_ADD_MESSAGE = 'TOASTR_ADD_MESSAGE';
-var TOASTR_REMOVE_MESSAGE = exports.TOASTR_REMOVE_MESSAGE = 'TOASTR_REMOVE_MESSAGE';
 var TOASTR_REFRESH = exports.TOASTR_REFRESH = 'TOASTR_REFRESH';
+var TOASTR_REMOVE_MESSAGE = exports.TOASTR_REMOVE_MESSAGE = 'TOASTR_REMOVE_MESSAGE';
 
 },{}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.messages = undefined;
+
+var _lokijs = require('lokijs');
+
+var _lokijs2 = _interopRequireDefault(_lokijs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var db = new _lokijs2.default('loki.json');
+var messages = exports.messages = db.addCollection('messages', { indices: ['id'] });
+
+exports.default = db;
+
+},{"lokijs":638}],4:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -188,8 +259,6 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _getMuiTheme = require('material-ui/styles/getMuiTheme');
 
@@ -233,11 +302,12 @@ var userId = (0, _urlParams2.default)('user_id');
 var hostUrl = (0, _urlParams2.default)('host_url') || 'fessbox.local:19998';
 var language = (0, _urlParams2.default)('language') || 'en';
 
-var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://' + hostUrl + '/?user_id=' + userId);
+var ws = new _awesomeWebsocket.ReconnectingWebSocket('ws://' + hostUrl + '/' + (userId ? '?user_id=' + userId : ''));
 
 ws.onopen = function () {
   console.log('WebSocket connection established.');
   _store2.default.dispatch((0, _actions.updateAppStatus)(_constants.APP_STATUS_CONNECTED));
+  ws.keepAlive(2 * 1000, { event: 'noop' });
 };
 
 ws.onclose = function () {
@@ -270,19 +340,19 @@ ws.onerror = function (e) {
 
 (0, _reactTapEventPlugin2.default)();
 
-_reactDom2.default.render(_react2.default.createElement(
+(0, _reactDom.render)(_react2.default.createElement(
   _reactRedux.Provider,
   { store: _store2.default },
   _react2.default.createElement(
     _MuiThemeProvider2.default,
     { muiTheme: (0, _getMuiTheme2.default)() },
     _react2.default.createElement(_ui2.default, { sendMessage: function sendMessage(event, data) {
-        return ws.send(JSON.stringify({ event: event, data: data }));
+        return ws.send({ event: event, data: data });
       } })
   )
 ), document.getElementById('main'));
 
-},{"../modules/ui":25,"./actions":1,"./constants":2,"./message-handler":4,"./store":11,"./url-params":12,"awesome-websocket":27,"babel-polyfill":31,"material-ui/styles/MuiThemeProvider":716,"material-ui/styles/getMuiTheme":719,"react":945,"react-dom":758,"react-redux":792,"react-tap-event-plugin":802}],4:[function(require,module,exports){
+},{"../modules/ui":24,"./actions":1,"./constants":2,"./message-handler":5,"./store":12,"./url-params":13,"awesome-websocket":26,"babel-polyfill":30,"material-ui/styles/MuiThemeProvider":718,"material-ui/styles/getMuiTheme":721,"react":944,"react-dom":756,"react-redux":790,"react-tap-event-plugin":800}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -292,9 +362,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = function (eventType, data) {
   switch (eventType) {
     case 'echo':
-      console.log('>>> echo >>>');
-      console.log(data);
-      console.log('<<<<<<<<<<<<');
+      if ('noop' !== data.event) {
+        console.log('>>> echo >>>');
+        console.log(data);
+        console.log('<<<<<<<<<<<<');
+      }
       break;
     case 'initialize':
       console.log(JSON.stringify(data));
@@ -306,8 +378,8 @@ exports.default = function (eventType, data) {
         var chan = data[key];
         if (chan) {
           _store2.default.dispatch((0, _actions.updateChannel)(key, chan));
-          if ('ring' == chan.mode) {
-            new Notification('Incoming call from ' + chan.number + '.');
+          if ('ring' == chan.mode && 'incoming' == chan.direction && chan.contact) {
+            new Notification('Incoming call from ' + chan.contact.number + '.');
           }
         } else {
           //
@@ -324,9 +396,6 @@ exports.default = function (eventType, data) {
         var message = data[id];
         if (message) {
           _store2.default.dispatch((0, _actions.addMessage)(id, message));
-          if ('sms_in' === message.type) {
-            _store2.default.dispatch((0, _actions.toastrAddMessage)('New message from ' + message.endpoint));
-          }
         } else {
           _store2.default.dispatch((0, _actions.removeMessage)(id));
         }
@@ -361,7 +430,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./actions":1,"./constants":2,"./store":11}],5:[function(require,module,exports){
+},{"./actions":1,"./constants":2,"./store":12}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -400,13 +469,18 @@ exports.default = (0, _redux.combineReducers)({
   app: _app2.default,
   users: _users2.default,
   toastr: _toastr2.default,
-  sms: (0, _reactReduxForm.modelReducer)('sms', { channel: 'auto' }),
+  sms: (0, _reactReduxForm.modelReducer)('sms', {
+    channel: 'auto'
+  }),
   smsForm: (0, _reactReduxForm.formReducer)('sms'),
-  call: (0, _reactReduxForm.modelReducer)('call', { channel: 'auto' }),
+  call: (0, _reactReduxForm.modelReducer)('call', {
+    channel: 'auto',
+    mode: 0
+  }),
   callForm: (0, _reactReduxForm.formReducer)('call')
 });
 
-},{"./reducers/app":6,"./reducers/messages":7,"./reducers/mixer":8,"./reducers/toastr":9,"./reducers/users":10,"react-redux-form":782,"redux":961}],6:[function(require,module,exports){
+},{"./reducers/app":7,"./reducers/messages":8,"./reducers/mixer":9,"./reducers/toastr":10,"./reducers/users":11,"react-redux-form":780,"redux":960}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -453,7 +527,7 @@ var initialState = {
   'diff': 0
 };
 
-},{"../constants":2}],7:[function(require,module,exports){
+},{"../constants":2}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -471,117 +545,176 @@ exports.default = function () {
   switch (action.type) {
     case _constants.APP_INITIALIZE:
       {
-        var ids = action.data.inbox.ids;
-
-        var visibleMessages = ids.slice(0, 100).map(function (id) {
-          return _extends({}, action.data.inbox.messages[id], {
-            id: id
-          });
-        });
-        var favorites = visibleMessages.filter(function (message) {
-          return message.favorite;
-        });
-        var obj = Object.assign({}, state, _extends({}, action.data.inbox, {
-          messageCount: ids.length,
-          unreadCount: ids.length,
-          visibleMessages: visibleMessages,
-          favorites: favorites
-        }));
-        return obj;
-      }
-    case _constants.MESSAGE_ADD:
-      {
         var _ret = function () {
-          var ids = [action.id].concat(_toConsumableArray(state.ids));
-          var messages = _extends(_defineProperty({}, action.id, action.message), state.messages);
-          var visibleMessages = ids.slice(0, 100).map(function (id) {
-            return _extends({}, messages[id], { id: id });
-          });
-          var favorites = visibleMessages.filter(function (message) {
-            return message.favorite;
+          var inbox = action.data.inbox.messages;
+          var unread = 0;
+          Object.keys(inbox).reverse().forEach(function (id) {
+            if ('sms_in' === inbox[id].type) {
+              ++unread;
+            }
+            _db.messages.insert(_extends({}, inbox[id], {
+              id: id
+            }));
           });
           return {
-            v: _extends({}, state, {
-              messages: messages,
-              visibleMessages: visibleMessages,
-              favorites: favorites,
-              messageCount: ids.length
+            v: _extends({}, state, { unread: unread,
+              visible: [],
+              total: _db.messages.count()
             })
           };
         }();
 
         if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
       }
+    case _constants.MESSAGE_UNSTAR:
+      {
+        var _ret2 = function () {
+          var message = _extends({}, _db.messages.get(action.id), { favorite: false });
+          var updated = _db.messages.update(message);
+          return {
+            v: _extends({}, state, {
+              visible: state.visible.map(function (m) {
+                return m['$loki'] === action.id ? updated : m;
+              })
+            })
+          };
+        }();
+
+        if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+      }
+    case _constants.MESSAGE_STAR:
+      {
+        var _ret3 = function () {
+          var message = _extends({}, _db.messages.get(action.id), { favorite: true });
+          var updated = _db.messages.update(message);
+          return {
+            v: _extends({}, state, {
+              visible: state.visible.map(function (m) {
+                return m['$loki'] === action.id ? updated : m;
+              })
+            })
+          };
+        }();
+
+        if ((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object") return _ret3.v;
+      }
+    case _constants.MESSAGE_WINDOW_GROW:
+      {
+        var _ret4 = function () {
+          var limit = state.limit + BATCH_SIZE;
+          var offset = state.offset;
+          if (limit > MAX_WINDOW_SIZE) {
+            offset += limit - MAX_WINDOW_SIZE;
+            limit = MAX_WINDOW_SIZE;
+          }
+          if (offset + limit > state.total) {
+            offset = Math.max(0, state.total - limit);
+            limit = state.total - offset;
+          }
+          var old = offset > state.offset ? state.visible.slice(offset - state.offset) : state.visible;
+          var t = state.offset + state.limit;
+          var recent = fetchVisible(t, offset + limit - t);
+          var unread = state.unread;
+          recent.forEach(function (message) {
+            if ('sms_in' === message.type) {
+              --unread;
+            }
+          });
+          return {
+            v: _extends({}, state, { limit: limit, offset: offset, unread: unread,
+              visible: old.concat(recent)
+            })
+          };
+        }();
+
+        if ((typeof _ret4 === 'undefined' ? 'undefined' : _typeof(_ret4)) === "object") return _ret4.v;
+      }
+    case _constants.MESSAGE_WINDOW_REQUEST_OLDER:
+      {
+        var _ret5 = function () {
+          if (0 == state.offset) {
+            return {
+              v: state
+            };
+          }
+          var diff = Math.min(state.offset, BATCH_SIZE);
+          var offset = state.offset - diff;
+          var limit = Math.min(state.limit + diff, MAX_WINDOW_SIZE);
+          var s = offset + limit - state.offset;
+          var unread = state.unread;
+          state.visible.slice(s).forEach(function (message) {
+            if ('sms_in' === message.type) {
+              unread++;
+            }
+          });
+          return {
+            v: _extends({}, state, { limit: limit, offset: offset, unread: unread,
+              visible: fetchVisible(offset, state.offset - offset).concat(state.visible.slice(0, s))
+            })
+          };
+        }();
+
+        if ((typeof _ret5 === 'undefined' ? 'undefined' : _typeof(_ret5)) === "object") return _ret5.v;
+      }
     case _constants.MESSAGE_REMOVE:
       {
-        var _ids = state.ids.filter(function (id) {
-          return id != action.id;
-        });
-        var _visibleMessages = _ids.slice(0, 100).map(function (id) {
-          return _extends({}, state.messages[id], {
-            id: id
-          });
-        });
-        var _favorites = _visibleMessages.filter(function (message) {
-          return message.favorite;
-        });
-        return _extends({}, state, {
-          ids: _ids,
-          visibleMessages: _visibleMessages,
-          favorites: _favorites,
-          messageCount: _ids.length
-        });
+        var _ret6 = function () {
+          var messageId = _db.messages.get(action.id).id;
+          _db.messages.remove(action.id);
+          return {
+            v: _extends({}, state, {
+              total: state.total - 1,
+              limit: state.limit - 1,
+              visible: state.visible.filter(function (m) {
+                return m.id !== messageId;
+              })
+            })
+          };
+        }();
+
+        if ((typeof _ret6 === 'undefined' ? 'undefined' : _typeof(_ret6)) === "object") return _ret6.v;
       }
-    case _constants.MESSAGE_TOGGLE_PROPERTY:
+    case _constants.MESSAGE_ADD:
       {
-        var _visibleMessages2 = state.visibleMessages.map(function (message) {
-          return message.id == action.id ? _extends({}, message, _defineProperty({}, action.property, !message[action.property])) : message;
+        var _message = _extends({}, action.message, {
+          id: action.id
         });
-        var _favorites2 = _visibleMessages2.filter(function (message) {
-          return message.favorite;
-        });
-        return _extends({}, state, {
-          visibleMessages: _visibleMessages2,
-          favorites: _favorites2
-        });
-      }
-    case _constants.MESSAGE_MARK_ALL_READ:
-      {
-        return _extends({}, state, {
-          unreadCount: 0
-        });
-      }
-    case _constants.MESSAGE_FAVORITES_CLEAR:
-      {
-        var _visibleMessages3 = state.visibleMessages.map(function (message) {
-          return _extends({}, message, {
-            favorite: false
-          });
-        });
-        return _extends({}, state, {
-          visibleMessages: _visibleMessages3,
-          favorites: []
-        });
+        _db.messages.insert(_message);
+        var visible = state.visible;
+        var _unread = state.unread;
+        var total = state.total + 1;
+        if (state.offset + state.limit >= total) {
+          visible = visible.concat(_message);
+        } else {
+          _unread = 'sms_in' === action.message.type ? state.unread + 1 : state.unread;
+        }
+        return _extends({}, state, { unread: _unread, total: total, visible: visible });
       }
     default:
       return state;
   }
 };
 
+var _db = require('../db');
+
 var _constants = require('../constants');
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function fetchVisible(offset, limit) {
+  return _db.messages.chain().simplesort('$loki', false).offset(offset).limit(limit).data();
+}
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+var MAX_WINDOW_SIZE = 512;
+var BATCH_SIZE = 5;
 
 var initialState = {
-  messageCount: 0,
-  unreadCount: 0,
-  visibleMessages: [],
-  favorites: []
+  total: 0,
+  visible: [],
+  offset: 0,
+  limit: 0,
+  unread: 0
 };
 
-},{"../constants":2}],8:[function(require,module,exports){
+},{"../constants":2,"../db":3}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -603,32 +736,42 @@ exports.default = function () {
           channelList: channelList(action.data.mixer.channels)
         });
       }
-    case _constants.CHANNEL_UPDATE:
+    case _constants.CHANNEL_SET_MUTED:
       {
-        var channels = _extends({}, state.channels, _defineProperty({}, action.id, action.data));
+        var channels = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
+          muted: action.muted
+        })));
         return _extends({}, state, {
           channels: channels,
           channelList: channelList(channels)
         });
       }
-    case _constants.CHANNEL_VOLUME_UPDATE:
+    case _constants.CHANNEL_UPDATE:
       {
-        var _channels = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
-          level: action.level
-        })));
+        var _channels = _extends({}, state.channels, _defineProperty({}, action.id, action.data));
         return _extends({}, state, {
           channels: _channels,
           channelList: channelList(_channels)
         });
       }
-    case _constants.CHANNEL_CONTACT_UPDATE:
+    case _constants.CHANNEL_VOLUME_UPDATE:
       {
         var _channels2 = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
-          contact: Object.assign({}, state.channels[action.id].contact, action.info)
+          level: action.level
         })));
         return _extends({}, state, {
           channels: _channels2,
           channelList: channelList(_channels2)
+        });
+      }
+    case _constants.CHANNEL_CONTACT_UPDATE:
+      {
+        var _channels3 = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
+          contact: Object.assign({}, state.channels[action.id].contact, action.info)
+        })));
+        return _extends({}, state, {
+          channels: _channels3,
+          channelList: channelList(_channels3)
         });
       }
     default:
@@ -643,143 +786,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var initialState = {
   channelList: []
 };
-
-//const initialState = {
-//  "channels": {
-//    "airtel1": {
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "ring",
-//      "muted": false,
-//      "timestamp": 1461056646818,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "johannes",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-//    "tigo1": {
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "master",
-//      "muted": false,
-//      "timestamp": 1461066884306,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "johannes",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-////    "tigo1": {
-////      "type": "dongle",
-////      "level": 67,
-////      "direction": null,
-////      "label": "+255718885887",
-////      "mode": "defunct",
-////      "muted": false,
-////      "timestamp": null,
-////      "autoanswer": null,
-////      "contact": null,
-////      "recording": false
-////    },
-//    "vodacom1": {
-//      "type": "Dongle",
-//      "level": 67,
-//      "direction": null,
-//      "label": "+255754885885",
-//      "mode": "free",
-//      "muted": false,
-//      "timestamp": null,
-//      "autoanswer": null,
-//      "contact": null,
-//      "recording": false,
-//      "number": "+255754885885",
-//      "error": "not connected"
-//    }
-//  },
-//  "master": {
-//    "level": 79,
-//    "on_air": true,
-//    "muted": false,
-//    "recording": false,
-//    "delay": 0,
-//    "out": {
-//      "level": 66,
-//      "muted": false
-//    },
-//    "in": {
-//      "level": 75,
-//      "muted": false
-//    }
-//  },
-//  "host": {
-//    "level": 75,
-//    "muted": false
-//  },
-//  "channelList": [
-//    {
-//      "id": "airtel1",
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "ring",
-//      "muted": false,
-//      "timestamp": 1461056646818,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "johannes",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-//    {
-//      "id": "vodacom1",
-//      "type": "Dongle",
-//      "level": 67,
-//      "direction": null,
-//      "label": "+255754885885",
-//      "mode": "free",
-//      "muted": false,
-//      "timestamp": null,
-//      "autoanswer": null,
-//      "contact": null,
-//      "recording": false,
-//      "number": "+255754885885",
-//      "error": "not connected"
-//    },
-//    {
-//      "id": "tigo1",
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "master",
-//      "muted": false,
-//      "timestamp": 1461066884306,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "Uri Geller",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-//  ]
-//}
 
 function modeWeight(mode) {
   /**/if ('master' === mode) {
@@ -811,13 +817,11 @@ function channelList(channels) {
     var id = _ref2[0];
     var chan = _ref2[1];
 
-    return _extends({
-      id: id
-    }, chan);
+    return _extends({ id: id }, chan);
   });
 }
 
-},{"../constants":2}],9:[function(require,module,exports){
+},{"../constants":2}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -890,7 +894,7 @@ var initialState = {
   messages: []
 };
 
-},{"../constants":2}],10:[function(require,module,exports){
+},{"../constants":2}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -903,7 +907,7 @@ exports.default = function () {
 
   switch (action.type) {
     case _constants.APP_INITIALIZE:
-      return action.data.users;
+      return action.data.users ? action.data.users : state;
     default:
       return state;
   }
@@ -913,7 +917,7 @@ var _constants = require('../constants');
 
 var initialState = {};
 
-},{"../constants":2}],11:[function(require,module,exports){
+},{"../constants":2}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -928,11 +932,9 @@ var _redux = require('redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _redux.createStore)(_reducers2.default, {});
+exports.default = (0, _redux.createStore)(_reducers2.default, {});
 
-exports.default = store;
-
-},{"./reducers":5,"redux":961}],12:[function(require,module,exports){
+},{"./reducers":6,"redux":960}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -951,7 +953,7 @@ function getUrlParam(variable) {
   return null;
 }
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -980,6 +982,10 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _reactRedux = require('react-redux');
+
+var _reactReduxForm = require('react-redux-form');
+
 var _Dialog = require('material-ui/Dialog');
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
@@ -1000,10 +1006,6 @@ var _MenuItem = require('material-ui/MenuItem');
 
 var _MenuItem2 = _interopRequireDefault(_MenuItem);
 
-var _reactRedux = require('react-redux');
-
-var _reactReduxForm = require('react-redux-form');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1012,8 +1014,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CallDialog = function (_React$Component) {
-  _inherits(CallDialog, _React$Component);
+var CallDialog = function (_Component) {
+  _inherits(CallDialog, _Component);
 
   function CallDialog() {
     _classCallCheck(this, CallDialog);
@@ -1025,14 +1027,22 @@ var CallDialog = function (_React$Component) {
     key: 'makeCall',
     value: function makeCall() {
       var _props = this.props;
-      var sendMessage = _props.sendMessage;
-      var onClose = _props.onClose;
       var call = _props.call;
+      var onClose = _props.onClose;
+      var sendMessage = _props.sendMessage;
 
+      var mode;
+      switch (call.mode) {
+        case 1:
+          mode = 'private';
+          break;
+        default:
+          mode = 'master';
+      }
       sendMessage('callNumber', {
         number: call.number,
         channel_id: 'auto' === call.channel ? null : call.channel.id,
-        mode: 'master'
+        mode: mode
       });
       onClose();
     }
@@ -1040,11 +1050,11 @@ var CallDialog = function (_React$Component) {
     key: 'render',
     value: function render() {
       var _props2 = this.props;
-      var open = _props2.open;
-      var onClose = _props2.onClose;
-      var channels = _props2.channels;
       var call = _props2.call;
       var callForm = _props2.callForm;
+      var channels = _props2.channels;
+      var onClose = _props2.onClose;
+      var open = _props2.open;
 
       var actions = [_react2.default.createElement(_FlatButton2.default, {
         label: 'Cancel',
@@ -1087,6 +1097,20 @@ var CallDialog = function (_React$Component) {
         _react2.default.createElement(
           _materialField2.default,
           {
+            model: 'call.mode' },
+          _react2.default.createElement(
+            _SelectField2.default,
+            {
+              fullWidth: true,
+              floatingLabelText: 'Call mode',
+              defaultValue: 'master' },
+            _react2.default.createElement(_MenuItem2.default, { value: 0, primaryText: 'On Air (Master)' }),
+            _react2.default.createElement(_MenuItem2.default, { value: 1, primaryText: 'Private' })
+          )
+        ),
+        _react2.default.createElement(
+          _materialField2.default,
+          {
             validators: _lodash2.default.pick(_validators2.default, ['required', 'phoneNumber']),
             model: 'call.number' },
           _react2.default.createElement(_TextField2.default, {
@@ -1101,13 +1125,13 @@ var CallDialog = function (_React$Component) {
   }]);
 
   return CallDialog;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['call', 'callForm']);
 })(CallDialog);
 
-},{"./channel-select":14,"./material-field":20,"./validators":26,"lodash":611,"material-ui/Dialog":646,"material-ui/FlatButton":653,"material-ui/MenuItem":667,"material-ui/SelectField":679,"material-ui/TextField":695,"react":945,"react-redux":792,"react-redux-form":782}],14:[function(require,module,exports){
+},{"./channel-select":15,"./material-field":19,"./validators":25,"lodash":611,"material-ui/Dialog":646,"material-ui/FlatButton":653,"material-ui/MenuItem":669,"material-ui/SelectField":681,"material-ui/TextField":697,"react":944,"react-redux":790,"react-redux-form":780}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1194,7 +1218,7 @@ var ChannelSelect = function (_React$Component) {
 
 exports.default = ChannelSelect;
 
-},{"material-ui/RadioButton":675,"material-ui/RadioButton/RadioButtonGroup":674,"material-ui/Subheader/Subheader":682,"react":945}],15:[function(require,module,exports){
+},{"material-ui/RadioButton":677,"material-ui/RadioButton/RadioButtonGroup":676,"material-ui/Subheader/Subheader":684,"react":944}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1249,6 +1273,7 @@ var ChannelToolbar = function (_React$Component) {
   _createClass(ChannelToolbar, [{
     key: 'render',
     value: function render() {
+      //console.log('render channel toolbar')
       var _props = this.props;
       var id = _props.id;
       var label = _props.label;
@@ -1302,441 +1327,7 @@ var ChannelToolbar = function (_React$Component) {
 
 exports.default = ChannelToolbar;
 
-},{"../styles/channel-toolbar":968,"material-ui/Toolbar/Toolbar":698,"material-ui/Toolbar/ToolbarGroup":699,"material-ui/Toolbar/ToolbarSeparator":700,"material-ui/Toolbar/ToolbarTitle":701,"react":945}],16:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _channelToolbar = require('./channel-toolbar');
-
-var _channelToolbar2 = _interopRequireDefault(_channelToolbar);
-
-var _channel = require('../styles/channel');
-
-var _channel2 = _interopRequireDefault(_channel);
-
-var _actions = require('../js/actions');
-
-var _Paper = require('material-ui/Paper');
-
-var _Paper2 = _interopRequireDefault(_Paper);
-
-var _Divider = require('material-ui/Divider');
-
-var _Divider2 = _interopRequireDefault(_Divider);
-
-var _FlatButton = require('material-ui/FlatButton');
-
-var _FlatButton2 = _interopRequireDefault(_FlatButton);
-
-var _RaisedButton = require('material-ui/RaisedButton');
-
-var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-var _Slider = require('material-ui/Slider');
-
-var _Slider2 = _interopRequireDefault(_Slider);
-
-var _Toggle = require('material-ui/Toggle');
-
-var _Toggle2 = _interopRequireDefault(_Toggle);
-
-var _TextField = require('material-ui/TextField');
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-var _call = require('material-ui/svg-icons/communication/call');
-
-var _call2 = _interopRequireDefault(_call);
-
-var _pause = require('material-ui/svg-icons/av/pause');
-
-var _pause2 = _interopRequireDefault(_pause);
-
-var _stop = require('material-ui/svg-icons/av/stop');
-
-var _stop2 = _interopRequireDefault(_stop);
-
-var _person = require('material-ui/svg-icons/social/person');
-
-var _person2 = _interopRequireDefault(_person);
-
-var _colors = require('material-ui/styles/colors');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Channel = function (_React$Component) {
-  _inherits(Channel, _React$Component);
-
-  function Channel(props) {
-    _classCallCheck(this, Channel);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
-
-    _this.state = {
-      timer: null,
-      now: Date.now(),
-      edit: false
-    };
-    return _this;
-  }
-
-  _createClass(Channel, [{
-    key: 'setMode',
-    value: function setMode(newMode) {
-      var _props = this.props;
-      var id = _props.id;
-      var mode = _props.mode;
-      var sendMessage = _props.sendMessage;
-
-      if ('free' != mode) {
-        sendMessage('channelMode', _defineProperty({}, id, newMode));
-      }
-    }
-  }, {
-    key: 'updateVolume',
-    value: function updateVolume(e, value) {
-      var _props2 = this.props;
-      var id = _props2.id;
-      var sendMessage = _props2.sendMessage;
-      var dispatch = _props2.dispatch;
-
-      sendMessage('channelVolume', _defineProperty({}, id, value));
-      dispatch((0, _actions.updateChannelVolume)(id, value));
-    }
-  }, {
-    key: 'toggleMuted',
-    value: function toggleMuted(e) {
-      var _props3 = this.props;
-      var id = _props3.id;
-      var muted = _props3.muted;
-      var sendMessage = _props3.sendMessage;
-
-      sendMessage('channelMuted', _defineProperty({}, id, !muted));
-    }
-  }, {
-    key: 'toggleEdit',
-    value: function toggleEdit(e) {
-      var edit = this.state.edit;
-
-      if (!edit && this.refs.contact) {
-        this.refs.contact.focus();
-      }
-      this.setState({
-        edit: !edit
-      });
-    }
-  }, {
-    key: 'timer',
-    value: function timer() {
-      var _props4 = this.props;
-      var timestamp = _props4.timestamp;
-      var diff = _props4.diff;
-
-      if (timestamp) {
-        this.setState({
-          now: Date.now() - diff
-        });
-      }
-    }
-  }, {
-    key: 'updateContact',
-    value: function updateContact() {
-      var _props5 = this.props;
-      var id = _props5.id;
-      var dispatch = _props5.dispatch;
-      var sendMessage = _props5.sendMessage;
-
-      if (this.refs.contact) {
-        var caller = {
-          'name': this.refs.contact.getValue()
-        };
-        dispatch((0, _actions.updateChannelContact)(id, caller));
-        sendMessage('channelContactInfo', _defineProperty({}, id, caller));
-      }
-      this.setState({
-        edit: false
-      });
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      this.setState({
-        timer: window.setInterval(this.timer.bind(this), 1000)
-      });
-    }
-  }, {
-    key: 'renderChannel',
-    value: function renderChannel() {
-      var _this2 = this;
-
-      var _props6 = this.props;
-      var mode = _props6.mode;
-      var muted = _props6.muted;
-      var level = _props6.level;
-      var contact = _props6.contact;
-
-      switch (mode) {
-        case 'free':
-          return _react2.default.createElement(
-            'div',
-            { style: { textAlign: 'center', padding: '0 0 20px 0' } },
-            _react2.default.createElement(
-              'p',
-              null,
-              _react2.default.createElement(
-                'i',
-                { style: { marginTop: '-35px', padding: '14px', background: 'rgba(0, 188, 212, 0.3)', color: '#ffffff', borderRadius: '50%', fontSize: '300%' }, className: 'material-icons' },
-                'phone'
-              )
-            )
-          );
-        case 'defunct':
-          return _react2.default.createElement('span', null);
-        case 'ring':
-          return _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'div',
-              { style: { marginTop: '-35px', textAlign: 'center', padding: '0 0 20px 0' } },
-              _react2.default.createElement(
-                'p',
-                null,
-                _react2.default.createElement(
-                  'i',
-                  { style: { fontSize: '400%', color: '#4caf50' }, className: 'material-icons faa-ring animated' },
-                  'ring_volume'
-                )
-              ),
-              contact.name && _react2.default.createElement(
-                'p',
-                { style: { fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)' } },
-                'Incoming call from ',
-                contact.name
-              ),
-              _react2.default.createElement(
-                'p',
-                { style: { margin: '15px 0 0' } },
-                contact.number
-              )
-            ),
-            _react2.default.createElement(_Divider2.default, null),
-            _react2.default.createElement(
-              'div',
-              { style: { padding: '10px' } },
-              _react2.default.createElement(_FlatButton2.default, {
-                style: _extends({ color: _colors.green500 }, _channel2.default.button),
-                label: 'Answer',
-                icon: _react2.default.createElement(_call2.default, null),
-                onClick: function onClick() {
-                  return _this2.setMode('master');
-                }
-              }),
-              _react2.default.createElement(_FlatButton2.default, {
-                style: _extends({ color: _colors.grey500 }, _channel2.default.button),
-                label: 'On hold',
-                icon: _react2.default.createElement(_pause2.default, null),
-                onClick: function onClick() {
-                  return _this2.setMode('on_hold');
-                }
-              }),
-              _react2.default.createElement(_FlatButton2.default, {
-                style: _extends({ color: _colors.red500 }, _channel2.default.button),
-                label: 'Reject',
-                icon: _react2.default.createElement(_stop2.default, null),
-                onClick: function onClick() {
-                  return _this2.setMode('free');
-                }
-              })
-            )
-          );
-        case 'master':
-        case 'on_hold':
-          return _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'div',
-              { style: { margin: '-20px 20px 0' } },
-              _react2.default.createElement(
-                'div',
-                { style: { textAlign: 'center' } },
-                !!this.state.edit ? _react2.default.createElement(
-                  'div',
-                  null,
-                  _react2.default.createElement(_TextField2.default, {
-                    ref: 'contact',
-                    defaultValue: contact.name,
-                    floatingLabelText: 'Contact name'
-                  }),
-                  _react2.default.createElement(_FlatButton2.default, {
-                    style: { marginLeft: '10px' },
-                    label: 'Save',
-                    onTouchTap: this.updateContact.bind(this)
-                  }),
-                  _react2.default.createElement(_FlatButton2.default, {
-                    style: { marginLeft: '10px' },
-                    label: 'Cancel',
-                    onTouchTap: this.toggleEdit.bind(this)
-                  })
-                ) : _react2.default.createElement(
-                  'div',
-                  null,
-                  contact.name && _react2.default.createElement(
-                    'p',
-                    { style: { fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)' } },
-                    contact.name
-                  ),
-                  _react2.default.createElement(_RaisedButton2.default, {
-                    style: { marginTop: '10px' },
-                    primary: true,
-                    label: 'Edit contact',
-                    icon: _react2.default.createElement(_person2.default, null),
-                    onTouchTap: this.toggleEdit.bind(this)
-                  })
-                ),
-                _react2.default.createElement(
-                  'p',
-                  { style: { margin: '15px 0 0' } },
-                  contact.number
-                )
-              ),
-              _react2.default.createElement(
-                'div',
-                { style: _channel2.default.controls },
-                _react2.default.createElement(
-                  'div',
-                  { style: _channel2.default.toggle },
-                  _react2.default.createElement(_Toggle2.default, {
-                    onToggle: this.toggleMuted.bind(this),
-                    defaultToggled: !muted })
-                ),
-                _react2.default.createElement(
-                  'div',
-                  { style: _channel2.default.slider },
-                  _react2.default.createElement(_Slider2.default, {
-                    onChange: this.updateVolume.bind(this),
-                    disabled: muted,
-                    min: 1,
-                    max: 100,
-                    value: level,
-                    defaultValue: level })
-                )
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(_Divider2.default, null),
-              _react2.default.createElement(
-                'div',
-                { style: { padding: '10px' } },
-                _react2.default.createElement(_FlatButton2.default, {
-                  style: _extends({ color: _colors.green500 }, _channel2.default.button),
-                  label: 'Master',
-                  icon: _react2.default.createElement(_call2.default, null),
-                  onClick: function onClick() {
-                    return _this2.setMode('master');
-                  }
-                }),
-                _react2.default.createElement(_FlatButton2.default, {
-                  style: _extends({ color: _colors.grey500 }, _channel2.default.button),
-                  label: 'On hold',
-                  icon: _react2.default.createElement(_pause2.default, null),
-                  onClick: function onClick() {
-                    return _this2.setMode('on_hold');
-                  }
-                }),
-                _react2.default.createElement(_FlatButton2.default, {
-                  style: _extends({ color: _colors.red500 }, _channel2.default.button),
-                  label: 'Hang up',
-                  icon: _react2.default.createElement(_stop2.default, null),
-                  onClick: function onClick() {
-                    return _this2.setMode('free');
-                  }
-                })
-              )
-            )
-          );
-        default:
-          return _react2.default.createElement('span', null);
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _props7 = this.props;
-      var mode = _props7.mode;
-      var timestamp = _props7.timestamp;
-
-      var hours = (0, _moment2.default)(this.state.now).diff(timestamp, 'hours');
-      var colors = {
-        'defunct': '#dedede',
-        'ring': _colors.red500,
-        'master': _colors.yellow500,
-        'on_hold': _colors.orange500
-      };
-      return _react2.default.createElement(
-        'div',
-        { style: _channel2.default.component },
-        _react2.default.createElement(
-          _Paper2.default,
-          {
-            style: {
-              borderLeft: '12px solid ' + (colors[mode] || '#00bcd4')
-            } },
-          _react2.default.createElement(_channelToolbar2.default, _extends({}, this.props, {
-            timer: ('master' === mode || 'on_hold' === mode) && timestamp ? _react2.default.createElement(
-              'span',
-              { style: { marginLeft: '20px' } },
-              hours > 0 && _react2.default.createElement(
-                'span',
-                null,
-                hours,
-                ':'
-              ),
-              (0, _moment2.default)(Math.max(0, (0, _moment2.default)(this.state.now).diff(timestamp))).format('mm:ss')
-            ) : null
-          })),
-          this.renderChannel()
-        )
-      );
-    }
-  }]);
-
-  return Channel;
-}(_react2.default.Component);
-
-exports.default = Channel;
-
-},{"../js/actions":1,"../styles/channel":969,"./channel-toolbar":15,"material-ui/Divider":648,"material-ui/FlatButton":653,"material-ui/Paper":669,"material-ui/RaisedButton":677,"material-ui/Slider":681,"material-ui/TextField":695,"material-ui/Toggle":697,"material-ui/styles/colors":718,"material-ui/svg-icons/av/pause":725,"material-ui/svg-icons/av/stop":726,"material-ui/svg-icons/communication/call":728,"material-ui/svg-icons/social/person":737,"moment":750,"react":945,"react-dom":758}],17:[function(require,module,exports){
+},{"../styles/channel-toolbar":967,"material-ui/Toolbar/Toolbar":700,"material-ui/Toolbar/ToolbarGroup":701,"material-ui/Toolbar/ToolbarSeparator":702,"material-ui/Toolbar/ToolbarTitle":703,"react":944}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1789,6 +1380,13 @@ var ConfirmDialog = function (_React$Component) {
       var onConfirm = _props.onConfirm;
       var dialogState = _props.app.dialogState;
 
+      var _ref = dialogState ? dialogState : {};
+
+      var message = _ref.message;
+
+      //console.log('dialogState')
+      //console.log(dialogState)
+
       var actions = [_react2.default.createElement(_FlatButton2.default, {
         label: 'Cancel',
         secondary: true,
@@ -1797,7 +1395,7 @@ var ConfirmDialog = function (_React$Component) {
         label: 'Ok',
         primary: true,
         onTouchTap: function onTouchTap() {
-          return onConfirm(dialogState.messageId);
+          return onConfirm(message.id, message['$loki']);
         }
       })];
       return _react2.default.createElement(_Dialog2.default, {
@@ -1816,7 +1414,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['app']);
 })(ConfirmDialog);
 
-},{"lodash":611,"material-ui/Dialog":646,"material-ui/FlatButton":653,"react":945,"react-redux":792}],18:[function(require,module,exports){
+},{"lodash":611,"material-ui/Dialog":646,"material-ui/FlatButton":653,"react":944,"react-redux":790}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1831,9 +1429,17 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _lodash = require('lodash');
+var _reactDom = require('react-dom');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _mixer = require('./mixer');
+
+var _mixer2 = _interopRequireDefault(_mixer);
+
+var _messageBox = require('./message-box');
+
+var _messageBox2 = _interopRequireDefault(_messageBox);
 
 var _smsDialog = require('./sms-dialog');
 
@@ -1847,14 +1453,6 @@ var _confirmDialog = require('./confirm-dialog');
 
 var _confirmDialog2 = _interopRequireDefault(_confirmDialog);
 
-var _messageBox = require('./message-box');
-
-var _messageBox2 = _interopRequireDefault(_messageBox);
-
-var _mixer = require('./mixer');
-
-var _mixer2 = _interopRequireDefault(_mixer);
-
 var _toastr = require('./toastr');
 
 var _toastr2 = _interopRequireDefault(_toastr);
@@ -1865,13 +1463,9 @@ var _dashboard2 = _interopRequireDefault(_dashboard);
 
 var _reactRedux = require('react-redux');
 
-var _reactReduxForm = require('react-redux-form');
-
 var _actions = require('../js/actions');
 
-var _AppBar = require('material-ui/AppBar');
-
-var _AppBar2 = _interopRequireDefault(_AppBar);
+var _reactReduxForm = require('react-redux-form');
 
 var _Tabs = require('material-ui/Tabs/Tabs');
 
@@ -1881,13 +1475,13 @@ var _Tab = require('material-ui/Tabs/Tab');
 
 var _Tab2 = _interopRequireDefault(_Tab);
 
-var _FloatingActionButton = require('material-ui/FloatingActionButton');
-
-var _FloatingActionButton2 = _interopRequireDefault(_FloatingActionButton);
-
 var _Badge = require('material-ui/Badge');
 
 var _Badge2 = _interopRequireDefault(_Badge);
+
+var _FloatingActionButton = require('material-ui/FloatingActionButton');
+
+var _FloatingActionButton2 = _interopRequireDefault(_FloatingActionButton);
 
 var _dialpad = require('material-ui/svg-icons/communication/dialpad');
 
@@ -1907,8 +1501,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Dashboard = function (_React$Component) {
-  _inherits(Dashboard, _React$Component);
+var msgListScrollPos = 0;
+
+var Dashboard = function (_Component) {
+  _inherits(Dashboard, _Component);
 
   function Dashboard(props) {
     _classCallCheck(this, Dashboard);
@@ -1917,48 +1513,67 @@ var Dashboard = function (_React$Component) {
 
     _this.state = {
       tab: 'mixer',
-      opacity: 0
+      opacity: 0,
+      scrollPos: 0
     };
     return _this;
   }
 
   _createClass(Dashboard, [{
-    key: 'activateTab',
-    value: function activateTab(tab) {
-      var dispatch = this.props.dispatch;
-
-      this.setState({ tab: tab });
-      if ('messages' === tab) {
-        dispatch((0, _actions.markAllMessagesRead)());
-      }
-    }
-  }, {
-    key: 'renderAppBar',
-    value: function renderAppBar() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(_AppBar2.default, { iconElementLeft: _react2.default.createElement('span', null), title: 'VoxBox' })
-      );
-    }
-  }, {
     key: 'handleDeleteMessage',
-    value: function handleDeleteMessage(id) {
+    value: function handleDeleteMessage(id, lokiId) {
       var _props = this.props;
       var dispatch = _props.dispatch;
       var sendMessage = _props.sendMessage;
 
       dispatch((0, _actions.setDialog)(null));
       sendMessage('messageDelete', _defineProperty({}, id, null));
-      dispatch((0, _actions.removeMessage)(id));
-      dispatch((0, _actions.toastrAddMessage)('The message was deleted'));
+      dispatch((0, _actions.removeMessage)(lokiId));
+      dispatch((0, _actions.toastrAddMessage)('The message was deleted.'));
+    }
+  }, {
+    key: 'scrollNode',
+    value: function scrollNode() {
+      return _reactDom2.default.findDOMNode(this.refs.messageList).parentNode.parentNode;
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.scrollNode().addEventListener('scroll', this.handleScrollEvent.bind(this));
+      window.setTimeout(function () {
+        return _this2.setState({ opacity: 1 });
+      }, 130);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.scrollNode().removeEventListener('scroll', this.handleScrollEvent.bind(this));
+    }
+  }, {
+    key: 'handleScrollEvent',
+    value: function handleScrollEvent(e) {
+      var tab = this.state.tab;
+
+      if ('messages' === tab) {
+        msgListScrollPos = e.target.scrollTop;
+      }
+    }
+  }, {
+    key: 'activateTab',
+    value: function activateTab(tab) {
+      var dispatch = this.props.dispatch;
+
+      var scrollPos = 'messages' === tab ? msgListScrollPos : 0;
+      this.setState({ tab: tab, scrollPos: scrollPos });
     }
   }, {
     key: 'renderDialog',
     value: function renderDialog() {
       var _props2 = this.props;
-      var channelList = _props2.mixer.channelList;
       var dialog = _props2.app.dialog;
+      var channelList = _props2.mixer.channelList;
       var sendMessage = _props2.sendMessage;
       var dispatch = _props2.dispatch;
 
@@ -1992,16 +1607,48 @@ var Dashboard = function (_React$Component) {
       );
     }
   }, {
+    key: 'renderFAB',
+    value: function renderFAB() {
+      var dispatch = this.props.dispatch;
+
+      switch (this.state.tab) {
+        case 'mixer':
+          return _react2.default.createElement(
+            _FloatingActionButton2.default,
+            {
+              style: _dashboard2.default.fab,
+              onClick: function onClick() {
+                dispatch(_reactReduxForm.actions.reset('call'));
+                dispatch((0, _actions.setDialog)('call'));
+              } },
+            _react2.default.createElement(_dialpad2.default, null)
+          );
+        case 'messages':
+          return _react2.default.createElement(
+            _FloatingActionButton2.default,
+            {
+              style: _dashboard2.default.fab,
+              onClick: function onClick() {
+                dispatch(_reactReduxForm.actions.reset('sms'));
+                dispatch((0, _actions.setDialog)('sms'));
+              } },
+            _react2.default.createElement(_message2.default, null)
+          );
+        case 'call_log':
+        case 'config':
+        default:
+          return _react2.default.createElement('span', null);
+      }
+    }
+  }, {
     key: 'renderTabs',
     value: function renderTabs() {
-      var _this2 = this;
+      var _this3 = this;
 
       var tab = this.state.tab;
       var _props3 = this.props;
-      var _props3$messages = _props3.messages;
-      var messageCount = _props3$messages.messageCount;
-      var unreadCount = _props3$messages.unreadCount;
       var sendMessage = _props3.sendMessage;
+      var unread = _props3.messages.unread;
 
       var mixerIcon = _react2.default.createElement(
         'span',
@@ -2020,93 +1667,60 @@ var Dashboard = function (_React$Component) {
           { className: 'material-icons' },
           'message'
         ),
-        !!unreadCount && _react2.default.createElement(_Badge2.default, {
+        !!unread && _react2.default.createElement(_Badge2.default, {
           style: _dashboard2.default.badge,
-          badgeContent: unreadCount,
+          badgeContent: unread,
           primary: true })
       );
-      var buildIcon = _react2.default.createElement(
-        'span',
-        null,
-        _react2.default.createElement(
-          'i',
-          { className: 'material-icons' },
-          'build'
-        )
-      );
       return _react2.default.createElement(
-        _Tabs2.default,
-        { value: tab },
+        'div',
+        { style: { height: '100%' } },
         _react2.default.createElement(
-          _Tab2.default,
+          _Tabs2.default,
           {
-            onActive: function onActive() {
-              return _this2.activateTab('mixer');
+            contentContainerStyle: {
+              position: 'fixed',
+              top: '72px',
+              width: '100%',
+              height: 'calc(100% - 72px)',
+              overflowX: 'hidden',
+              overflowY: 'scroll'
             },
-            icon: mixerIcon,
-            label: 'Mixer',
-            value: 'mixer' },
-          _react2.default.createElement(_mixer2.default, { sendMessage: sendMessage })
-        ),
-        _react2.default.createElement(
-          _Tab2.default,
-          {
-            onActive: function onActive() {
-              return _this2.activateTab('messages');
-            },
-            icon: inboxIcon,
-            label: 'Messages',
-            value: 'messages' },
-          _react2.default.createElement(_messageBox2.default, { sendMessage: sendMessage })
+            value: tab },
+          _react2.default.createElement(
+            _Tab2.default,
+            {
+              onActive: function onActive() {
+                return _this3.activateTab('mixer');
+              },
+              icon: mixerIcon,
+              label: 'Mixer',
+              value: 'mixer' },
+            _react2.default.createElement(_mixer2.default, { style: { height: '100%' }, sendMessage: sendMessage })
+          ),
+          _react2.default.createElement(
+            _Tab2.default,
+            {
+              onActive: function onActive() {
+                return _this3.activateTab('messages');
+              },
+              icon: inboxIcon,
+              label: 'Messages',
+              value: 'messages' },
+            _react2.default.createElement(_messageBox2.default, {
+              scrollPos: this.state.scrollPos,
+              active: 'messages' === this.state.tab,
+              ref: 'messageList',
+              style: { height: '100%' },
+              sendMessage: sendMessage })
+          )
         )
       );
-    }
-  }, {
-    key: 'renderFAB',
-    value: function renderFAB() {
-      var dispatch = this.props.dispatch;
-
-      switch (this.state.tab) {
-        case 'mixer':
-          return _react2.default.createElement(
-            _FloatingActionButton2.default,
-            {
-              onClick: function onClick() {
-                dispatch(_reactReduxForm.actions.reset('call'));
-                dispatch((0, _actions.setDialog)('call'));
-              },
-              style: _dashboard2.default.fab },
-            _react2.default.createElement(_dialpad2.default, null)
-          );
-        case 'messages':
-          return _react2.default.createElement(
-            _FloatingActionButton2.default,
-            {
-              onClick: function onClick() {
-                dispatch(_reactReduxForm.actions.reset('sms'));
-                dispatch((0, _actions.setDialog)('sms'));
-              },
-              style: _dashboard2.default.fab },
-            _react2.default.createElement(_message2.default, null)
-          );
-        case 'call_log':
-        case 'config':
-        default:
-          return _react2.default.createElement('span', null);
-      }
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this3 = this;
-
-      window.setTimeout(function () {
-        return _this3.setState({ opacity: 1 });
-      }, 100);
     }
   }, {
     key: 'render',
     value: function render() {
+      var sendMessage = this.props.sendMessage;
       var opacity = this.state.opacity;
 
       return _react2.default.createElement(
@@ -2114,7 +1728,6 @@ var Dashboard = function (_React$Component) {
         { style: _extends({ opacity: opacity }, _dashboard2.default.component) },
         _react2.default.createElement(_toastr2.default, null),
         this.renderDialog(),
-        this.renderAppBar(),
         this.renderTabs(),
         this.renderFAB()
       );
@@ -2122,150 +1735,13 @@ var Dashboard = function (_React$Component) {
   }]);
 
   return Dashboard;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
-  return _lodash2.default.pick(state, ['messages', 'app', 'mixer']);
+  return _.pick(state, ['messages', 'app', 'mixer']);
 })(Dashboard);
 
-},{"../js/actions":1,"../styles/dashboard":970,"./call-dialog":13,"./confirm-dialog":17,"./message-box":21,"./mixer":22,"./sms-dialog":23,"./toastr":24,"lodash":611,"material-ui/AppBar":638,"material-ui/Badge":642,"material-ui/FloatingActionButton":655,"material-ui/Tabs/Tab":687,"material-ui/Tabs/Tabs":689,"material-ui/svg-icons/communication/dialpad":729,"material-ui/svg-icons/communication/message":730,"react":945,"react-redux":792,"react-redux-form":782}],19:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _master = require('../styles/master');
-
-var _master2 = _interopRequireDefault(_master);
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _reactRedux = require('react-redux');
-
-var _Paper = require('material-ui/Paper');
-
-var _Paper2 = _interopRequireDefault(_Paper);
-
-var _mic = require('material-ui/svg-icons/av/mic');
-
-var _mic2 = _interopRequireDefault(_mic);
-
-var _volumeUp = require('material-ui/svg-icons/av/volume-up');
-
-var _volumeUp2 = _interopRequireDefault(_volumeUp);
-
-var _Slider = require('material-ui/Slider');
-
-var _Slider2 = _interopRequireDefault(_Slider);
-
-var _Subheader = require('material-ui/Subheader');
-
-var _Subheader2 = _interopRequireDefault(_Subheader);
-
-var _Divider = require('material-ui/Divider');
-
-var _Divider2 = _interopRequireDefault(_Divider);
-
-var _IconButton = require('material-ui/IconButton');
-
-var _IconButton2 = _interopRequireDefault(_IconButton);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Master = function (_React$Component) {
-  _inherits(Master, _React$Component);
-
-  function Master() {
-    _classCallCheck(this, Master);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Master).apply(this, arguments));
-  }
-
-  _createClass(Master, [{
-    key: 'render',
-    value: function render() {
-      var _props = this.props;
-      var master = _props.mixer.master;
-      var sendMessage = _props.sendMessage;
-
-      return _react2.default.createElement(
-        _Paper2.default,
-        null,
-        _react2.default.createElement(
-          _Subheader2.default,
-          null,
-          'Master'
-        ),
-        _react2.default.createElement(_Divider2.default, null),
-        _react2.default.createElement(
-          'div',
-          { style: _master2.default.controls },
-          _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              _IconButton2.default,
-              null,
-              _react2.default.createElement(_volumeUp2.default, null)
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { style: _master2.default.slider },
-            _react2.default.createElement(_Slider2.default, {
-              min: 1,
-              max: 100,
-              defaultValue: master.out ? master.out.level : 1,
-              onChange: function onChange(e) {}
-            })
-          ),
-          _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              _IconButton2.default,
-              null,
-              _react2.default.createElement(_mic2.default, null)
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { style: _master2.default.slider },
-            _react2.default.createElement(_Slider2.default, {
-              min: 1,
-              max: 100,
-              defaultValue: master.in ? master.in.level : 1,
-              onChange: function onChange(e) {}
-            })
-          )
-        )
-      );
-    }
-  }]);
-
-  return Master;
-}(_react2.default.Component);
-
-exports.default = (0, _reactRedux.connect)(function (state) {
-  return _lodash2.default.pick(state, ['mixer']);
-})(Master);
-
-},{"../styles/master":971,"lodash":611,"material-ui/Divider":648,"material-ui/IconButton":659,"material-ui/Paper":669,"material-ui/Slider":681,"material-ui/Subheader":683,"material-ui/svg-icons/av/mic":724,"material-ui/svg-icons/av/volume-up":727,"react":945,"react-redux":792}],20:[function(require,module,exports){
+},{"../js/actions":1,"../styles/dashboard":969,"./call-dialog":14,"./confirm-dialog":17,"./message-box":20,"./mixer":21,"./sms-dialog":22,"./toastr":23,"material-ui/Badge":642,"material-ui/FloatingActionButton":655,"material-ui/Tabs/Tab":689,"material-ui/Tabs/Tabs":691,"material-ui/svg-icons/communication/dialpad":729,"material-ui/svg-icons/communication/message":730,"react":944,"react-dom":756,"react-redux":790,"react-redux-form":780}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2302,6 +1778,14 @@ var MaterialField = (0, _reactReduxForm.createFieldClass)({
       onBlur: function onBlur() {
         return props.onBlur(props.modelValue);
       },
+      defaultValue: props.modelValue
+    };
+  },
+  'SelectField': function SelectField(props) {
+    return {
+      onChange: function onChange(e, val) {
+        return props.onChange(val);
+      },
       value: props.modelValue
     };
   },
@@ -2314,14 +1798,12 @@ var MaterialField = (0, _reactReduxForm.createFieldClass)({
 
 exports.default = MaterialField;
 
-},{"react-redux-form":782}],21:[function(require,module,exports){
+},{"react-redux-form":780}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -2329,43 +1811,51 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactWaypoint = require('react-waypoint');
+
+var _reactWaypoint2 = _interopRequireDefault(_reactWaypoint);
+
 var _reactTimeago = require('react-timeago');
 
 var _reactTimeago2 = _interopRequireDefault(_reactTimeago);
 
-var _reactRedux = require('react-redux');
+var _lokijs = require('lokijs');
+
+var _lokijs2 = _interopRequireDefault(_lokijs);
 
 var _reactReduxForm = require('react-redux-form');
 
 var _actions = require('../js/actions');
 
-var _Avatar = require('material-ui/Avatar');
-
-var _Avatar2 = _interopRequireDefault(_Avatar);
-
-var _Subheader = require('material-ui/Subheader/Subheader');
-
-var _Subheader2 = _interopRequireDefault(_Subheader);
-
-var _List = require('material-ui/List/List');
-
-var _List2 = _interopRequireDefault(_List);
-
-var _ListItem = require('material-ui//List/ListItem');
-
-var _ListItem2 = _interopRequireDefault(_ListItem);
+var _reactRedux = require('react-redux');
 
 var _Divider = require('material-ui/Divider');
 
 var _Divider2 = _interopRequireDefault(_Divider);
 
+var _List = require('material-ui/List/List');
+
+var _List2 = _interopRequireDefault(_List);
+
+var _ListItem = require('material-ui/List/ListItem');
+
+var _ListItem2 = _interopRequireDefault(_ListItem);
+
+var _FlatButton = require('material-ui/FlatButton');
+
+var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _Paper = require('material-ui/Paper/Paper');
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
 var _IconButton = require('material-ui/IconButton');
 
 var _IconButton2 = _interopRequireDefault(_IconButton);
-
-var _moreVert = require('material-ui/svg-icons/navigation/more-vert');
-
-var _moreVert2 = _interopRequireDefault(_moreVert);
 
 var _IconMenu = require('material-ui/IconMenu');
 
@@ -2374,18 +1864,6 @@ var _IconMenu2 = _interopRequireDefault(_IconMenu);
 var _MenuItem = require('material-ui/MenuItem');
 
 var _MenuItem2 = _interopRequireDefault(_MenuItem);
-
-var _Toolbar = require('material-ui/Toolbar/Toolbar');
-
-var _Toolbar2 = _interopRequireDefault(_Toolbar);
-
-var _ToolbarTitle = require('material-ui/Toolbar/ToolbarTitle');
-
-var _ToolbarTitle2 = _interopRequireDefault(_ToolbarTitle);
-
-var _ToolbarGroup = require('material-ui/Toolbar/ToolbarGroup');
-
-var _ToolbarGroup2 = _interopRequireDefault(_ToolbarGroup);
 
 var _colors = require('material-ui/styles/colors');
 
@@ -2397,251 +1875,446 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Inbox = function (_React$Component) {
-  _inherits(Inbox, _React$Component);
+var MessageBox = function (_Component) {
+  _inherits(MessageBox, _Component);
 
-  function Inbox() {
-    _classCallCheck(this, Inbox);
+  function MessageBox() {
+    _classCallCheck(this, MessageBox);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Inbox).apply(this, arguments));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(MessageBox).apply(this, arguments));
   }
 
-  _createClass(Inbox, [{
-    key: 'handleMenuAction',
-    value: function handleMenuAction(event, value, message) {
+  _createClass(MessageBox, [{
+    key: 'requestOlder',
+    value: function requestOlder(e) {
       var dispatch = this.props.dispatch;
 
-      switch (value.key) {
-        case 'reply':
-          console.log('reply');
-          dispatch(_reactReduxForm.actions.reset('sms'));
-          dispatch(_reactReduxForm.actions.change('sms.recipient', message.endpoint));
-          dispatch(_reactReduxForm.actions.change('sms.message', message));
-          dispatch(_reactReduxForm.actions.setPristine('sms'));
-          dispatch((0, _actions.setDialog)('sms'));
-          break;
-        case 'call':
-          dispatch(_reactReduxForm.actions.reset('call'));
-          dispatch(_reactReduxForm.actions.change('call.number', message.endpoint));
-          dispatch((0, _actions.setDialog)('call'));
-          break;
-        case 'delete':
-          dispatch((0, _actions.setDialog)('confirm', { messageId: message.id }));
-          break;
-        default:
+      dispatch((0, _actions.messageWindowRequestOlder)());
+    }
+  }, {
+    key: 'fetchMoreMessages',
+    value: function fetchMoreMessages(e) {
+      var dispatch = this.props.dispatch;
+
+      dispatch((0, _actions.messageWindowGrow)());
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(oldProps, oldState) {
+      var scrollPos = this.props.scrollPos;
+
+      if (oldProps.scrollPos !== scrollPos) {
+        var root = this.refs.root;
+
+        _reactDom2.default.findDOMNode(root).parentNode.parentNode.scrollTop = scrollPos;
       }
-    }
-  }, {
-    key: 'handleToggleFavorite',
-    value: function handleToggleFavorite(e, message) {
-      var dispatch = this.props.dispatch;
-
-      dispatch((0, _actions.toggleMessageFavorite)(message.id));
-    }
-  }, {
-    key: 'itemProps',
-    value: function itemProps(message) {
-      var _this2 = this;
-
-      var iconButtonElement = _react2.default.createElement(
-        _IconButton2.default,
-        {
-          touch: true,
-          tooltip: 'more',
-          tooltipPosition: 'bottom-left' },
-        _react2.default.createElement(_moreVert2.default, { color: _colors.grey400 })
-      );
-      var menuItems = 'sms_in' === message.type ? [{
-        'key': 'delete',
-        'name': 'Delete'
-      }] : [{
-        'key': 'reply',
-        'name': 'Reply'
-      }, {
-        'key': 'call',
-        'name': 'Call'
-      }, {
-        'key': 'delete',
-        'name': 'Delete'
-      }];
-      return {
-        leftAvatar: _react2.default.createElement(
-          'span',
-          null,
-          'sms_in' === message.type ? _react2.default.createElement(
-            'i',
-            { className: 'material-icons' },
-            'call_received'
-          ) : _react2.default.createElement(
-            'i',
-            { className: 'material-icons' },
-            'call_made'
-          )
-        ),
-        primaryText: _react2.default.createElement(
-          'span',
-          null,
-          message.endpoint,
-          '  ',
-          'null' !== message.channel_id && _react2.default.createElement(
-            'span',
-            { style: { color: _colors.lightBlack } },
-            message.channel_id
-          )
-        ),
-        secondaryText: _react2.default.createElement(
-          'p',
-          { style: { paddingRight: '80px' } },
-          !isNaN(message.timestamp) && _react2.default.createElement(
-            'span',
-            { style: { color: _colors.darkBlack } },
-            _react2.default.createElement(_reactTimeago2.default, { date: Number(message.timestamp) }),
-            ' — '
-          ),
-          message.content
-        ),
-        rightIconButton: _react2.default.createElement(
-          'span',
-          null,
-          _react2.default.createElement(
-            _IconButton2.default,
-            {
-              onClick: function onClick(e) {
-                return _this2.handleToggleFavorite(e, message);
-              },
-              iconStyle: !!message.favorite ? { color: 'rgb(0, 188, 212)' } : {} },
-            _react2.default.createElement(
-              'i',
-              { className: 'material-icons' },
-              message.favorite ? 'star' : 'star_border'
-            )
-          ),
-          _react2.default.createElement(
-            _IconMenu2.default,
-            {
-              onItemTouchTap: function onItemTouchTap(event, value) {
-                return _this2.handleMenuAction(event, value, message);
-              },
-              iconButtonElement: iconButtonElement },
-            menuItems.map(function (item) {
-              return _react2.default.createElement(
-                _MenuItem2.default,
-                { key: item.key },
-                item.name
-              );
-            })
-          )
-        )
-      };
+      /* Upgrade mdl-lite components */
+      if (componentHandler) {
+        componentHandler.upgradeAllRegistered();
+        componentHandler.upgradeDom();
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
-
       var _props = this.props;
-      var _props$messages = _props.messages;
-      var visibleMessages = _props$messages.visibleMessages;
-      var messageCount = _props$messages.messageCount;
-      var unreadCount = _props$messages.unreadCount;
-      var favorites = _props$messages.favorites;
+      var messages = _props.messages;
       var dispatch = _props.dispatch;
+      var active = _props.active;
 
-
-      console.log(visibleMessages);
-      console.log(favorites);
-
-      if (!messageCount) {
-        return _react2.default.createElement(
-          _List2.default,
-          { style: { background: '#ffffff' } },
-          _react2.default.createElement(
-            _Subheader2.default,
-            null,
-            'Messages'
-          ),
-          _react2.default.createElement(_Divider2.default, null),
-          _react2.default.createElement(
-            'p',
-            { style: { padding: '16px' } },
-            'No messages.'
-          )
-        );
-      }
+      var wpKey = messages.offset + '.' + messages.visible.length + '.' + messages.total;
+      var more = messages.total - (messages.visible.length + messages.offset);
       return _react2.default.createElement(
         'div',
-        { style: { display: 'flex', flexDirection: 'row' } },
-        !!favorites.length && _react2.default.createElement(
+        { ref: 'root', style: { height: '100%' } },
+        _react2.default.createElement(
           'div',
-          { style: { flex: 1 } },
+          { style: { height: '100%', background: 'rgb(222, 246, 249)', margin: '0 120px' } },
+          _react2.default.createElement('div', { style: { height: 48 * messages.offset } }),
+          _react2.default.createElement(_reactWaypoint2.default, {
+            key: 'up-' + wpKey,
+            onEnter: this.requestOlder.bind(this)
+          }),
           _react2.default.createElement(
-            _List2.default,
-            { style: { background: '#ffffff' } },
-            _react2.default.createElement(
-              _Toolbar2.default,
-              null,
-              _react2.default.createElement(_ToolbarTitle2.default, { text: 'Favorites' }),
+            'div',
+            null,
+            messages.visible.length ? _react2.default.createElement(
+              'ul',
+              { style: active ? { background: '#ffffff' } : { minHeight: '7000px' }, className: 'mdl-list' },
+              messages.visible.map(function (message, i) {
+                return _react2.default.createElement(
+                  'li',
+                  { key: i, className: 'mdl-list__item mdl-list__item--three-line', style: { borderTop: '1px solid #eee' } },
+                  _react2.default.createElement(
+                    'span',
+                    { className: 'mdl-list__item-primary-content' },
+                    _react2.default.createElement(
+                      'span',
+                      { style: { float: 'left', width: '40px', height: '40px' } },
+                      'sms_in' === message.type ? _react2.default.createElement(
+                        'i',
+                        { className: 'material-icons' },
+                        'call_made'
+                      ) : _react2.default.createElement(
+                        'i',
+                        { className: 'material-icons' },
+                        'call_received'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'span',
+                      null,
+                      message.endpoint,
+                      '  ',
+                      'null' !== message.channel_id && message.channel_id
+                    ),
+                    _react2.default.createElement(
+                      'span',
+                      { className: 'mdl-list__item-text-body' },
+                      !isNaN(message.timestamp) && _react2.default.createElement(
+                        'span',
+                        { style: { color: _colors.darkBlack } },
+                        _react2.default.createElement(_reactTimeago2.default, { date: Number(message.timestamp) }),
+                        ' — '
+                      ),
+                      message.content
+                    )
+                  ),
+                  'sms_in' === message.type && _react2.default.createElement(
+                    'span',
+                    { className: 'mdl-list__item-secondary-content' },
+                    true === message.favorite ? _react2.default.createElement(
+                      'a',
+                      { style: { marginTop: '3px' }, className: 'mdl-list__item-secondary-action', href: '#', onClick: function onClick(e) {
+                          e.preventDefault();
+                          dispatch((0, _actions.unstarMessage)(message['$loki']));
+                        } },
+                      _react2.default.createElement(
+                        'i',
+                        { className: 'material-icons' },
+                        'star'
+                      )
+                    ) : _react2.default.createElement(
+                      'a',
+                      { style: { marginTop: '3px' }, className: 'mdl-list__item-secondary-action', href: '#', onClick: function onClick(e) {
+                          e.preventDefault();
+                          dispatch((0, _actions.starMessage)(message['$loki']));
+                        } },
+                      _react2.default.createElement(
+                        'i',
+                        { className: 'material-icons' },
+                        'star_border'
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'span',
+                    { className: 'mdl-list__item-secondary-content' },
+                    _react2.default.createElement(
+                      'button',
+                      { id: 'message-menu-' + i, className: 'mdl-button mdl-js-button mdl-button--icon' },
+                      _react2.default.createElement(
+                        'i',
+                        { className: 'material-icons' },
+                        'more_vert'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'ul',
+                      { className: 'mdl-menu mdl-js-menu mdl-js-ripple-effect', htmlFor: 'message-menu-' + i },
+                      _react2.default.createElement(
+                        'li',
+                        { onClick: function onClick() {
+                            dispatch((0, _actions.setDialog)('confirm', { message: message }));
+                          }, className: 'mdl-menu__item' },
+                        'Delete'
+                      ),
+                      _react2.default.createElement(
+                        'li',
+                        { onClick: function onClick() {
+                            dispatch(_reactReduxForm.actions.reset('sms'));
+                            dispatch(_reactReduxForm.actions.change('sms.recipient', message.endpoint));
+                            dispatch(_reactReduxForm.actions.change('sms.message', message));
+                            dispatch(_reactReduxForm.actions.setPristine('sms'));
+                            dispatch((0, _actions.setDialog)('sms'));
+                          }, disabled: 'sms_out' === message.type, className: 'mdl-menu__item' },
+                        'Reply'
+                      ),
+                      _react2.default.createElement(
+                        'li',
+                        { onClick: function onClick() {
+                            dispatch(_reactReduxForm.actions.reset('call'));
+                            dispatch(_reactReduxForm.actions.change('call.number', message.endpoint));
+                            dispatch((0, _actions.setDialog)('call'));
+                          }, disabled: 'sms_out' === message.type, className: 'mdl-menu__item' },
+                        'Call number'
+                      )
+                    )
+                  )
+                );
+              })
+            ) : _react2.default.createElement(
+              'div',
+              { style: active ? { padding: '20px', background: '#ffffff' } : { minHeight: '7000px' } },
+              'No messages'
+            ),
+            more > 0 && _react2.default.createElement(
+              'div',
+              { style: { borderTop: '3px solid rgb(0, 188, 212)' } },
               _react2.default.createElement(
-                _ToolbarGroup2.default,
-                { float: 'right' },
+                'div',
+                { style: { fontSize: '13pt', marginTop: '12px', marginBottom: '100px', textAlign: 'center' } },
                 _react2.default.createElement(
-                  _IconButton2.default,
-                  { touch: true, onClick: function onClick() {
-                      return dispatch((0, _actions.clearFavorites)());
-                    } },
+                  'p',
+                  { style: { marginBottom: 0 } },
                   _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
-                    'clear_all'
+                    'expand_more'
                   )
+                ),
+                more === messages.unread ? _react2.default.createElement(
+                  'span',
+                  { style: { color: 'rgb(0, 188, 212)' } },
+                  more,
+                  ' new incoming message',
+                  1 == more ? '' : 's'
+                ) : _react2.default.createElement(
+                  'span',
+                  { style: { color: 'rgb(0, 188, 212)' } },
+                  more,
+                  ' more message',
+                  1 == more ? '' : 's',
+                  ' (',
+                  messages.unread,
+                  ' new incoming)'
                 )
-              )
-            ),
-            favorites.map(function (message, i) {
-              return _react2.default.createElement(
-                'div',
-                { key: i },
-                _react2.default.createElement(_ListItem2.default, _extends({}, _this3.itemProps(message), { secondaryTextLines: 2 })),
-                _react2.default.createElement(_Divider2.default, null)
-              );
-            })
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { style: { flex: 1 } },
-          _react2.default.createElement(
-            _List2.default,
-            { style: { background: '#ffffff' } },
-            _react2.default.createElement(
-              _Toolbar2.default,
-              null,
-              _react2.default.createElement(_ToolbarTitle2.default, { text: 'Messages' })
-            ),
-            visibleMessages.filter(function (message) {
-              return !message.favorite;
-            }).map(function (message, i) {
-              return _react2.default.createElement(
-                'div',
-                { key: i },
-                _react2.default.createElement(_ListItem2.default, _extends({}, _this3.itemProps(message), { secondaryTextLines: 2 })),
-                _react2.default.createElement(_Divider2.default, null)
-              );
-            })
+              ),
+              _react2.default.createElement(_reactWaypoint2.default, {
+                key: 'down-' + wpKey,
+                onEnter: this.fetchMoreMessages.bind(this)
+              })
+            )
           )
         )
       );
     }
   }]);
 
-  return Inbox;
-}(_react2.default.Component);
+  return MessageBox;
+}(_react.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
   return _.pick(state, ['messages']);
-})(Inbox);
+})(MessageBox);
 
-},{"../js/actions":1,"material-ui//List/ListItem":663,"material-ui/Avatar":640,"material-ui/Divider":648,"material-ui/IconButton":659,"material-ui/IconMenu":661,"material-ui/List/List":662,"material-ui/MenuItem":667,"material-ui/Subheader/Subheader":682,"material-ui/Toolbar/Toolbar":698,"material-ui/Toolbar/ToolbarGroup":699,"material-ui/Toolbar/ToolbarTitle":701,"material-ui/styles/colors":718,"material-ui/svg-icons/navigation/more-vert":736,"react":945,"react-redux":792,"react-redux-form":782,"react-timeago":803}],22:[function(require,module,exports){
+//        <div>
+//          {JSON.stringify(messages, null, 2)}
+//        </div>
+
+//import React   from 'react'
+//import TimeAgo from 'react-timeago'
+//
+//import { connect }
+//  from 'react-redux'
+//import { actions }
+//  from 'react-redux-form'
+//import { setDialog, toggleMessageFavorite, clearFavorites }
+//  from '../js/actions'
+//
+//import Avatar
+//  from 'material-ui/Avatar'
+//import Subheader
+//  from 'material-ui/Subheader/Subheader'
+//import List
+//  from 'material-ui/List/List'
+//import ListItem
+//  from 'material-ui//List/ListItem'
+//import Divider
+//  from 'material-ui/Divider'
+//import IconButton
+//  from 'material-ui/IconButton'
+//import MoreVertIcon
+//  from 'material-ui/svg-icons/navigation/more-vert'
+//import IconMenu
+//  from 'material-ui/IconMenu'
+//import MenuItem
+//  from 'material-ui/MenuItem'
+//import Toolbar
+//  from 'material-ui/Toolbar/Toolbar'
+//import ToolbarTitle
+//  from 'material-ui/Toolbar/ToolbarTitle'
+//import ToolbarGroup
+//  from 'material-ui/Toolbar/ToolbarGroup'
+//
+//import { purple500, darkBlack, lightBlack, grey400 }
+//  from 'material-ui/styles/colors'
+//
+//class Inbox extends React.Component {
+//  handleMenuAction(event, value, message) {
+//    const { dispatch } = this.props
+//    switch (value.key) {
+//      case 'reply':
+//        console.log('reply')
+//        dispatch(actions.reset('sms'))
+//        dispatch(actions.change('sms.recipient', message.endpoint))
+//        dispatch(actions.change('sms.message', message))
+//        dispatch(actions.setPristine('sms'))
+//        dispatch(setDialog('sms'))
+//        break
+//      case 'call':
+//        dispatch(actions.reset('call'))
+//        dispatch(actions.change('call.number', message.endpoint))
+//        dispatch(setDialog('call'))
+//        break
+//      case 'delete':
+//        dispatch(setDialog('confirm', { messageId: message.id }))
+//        break
+//      default:
+//    }
+//  }
+//  handleToggleFavorite(e, message) {
+//    const { dispatch } = this.props
+//    dispatch(toggleMessageFavorite(message.id))
+//  }
+//  itemProps(message) {
+//    const iconButtonElement = (
+//      <IconButton
+//        touch           = {true}
+//        tooltip         = 'more'
+//        tooltipPosition = 'bottom-left'>
+//        <MoreVertIcon color={grey400} />
+//      </IconButton>
+//    )
+//    const menuItems = 'sms_in' === message.type ? [
+//      {
+//        'key'  : 'delete',
+//        'name' : 'Delete',
+//      },
+//    ] : [
+//      {
+//        'key'  : 'reply',
+//        'name' : 'Reply',
+//      },
+//      {
+//        'key'  : 'call',
+//        'name' : 'Call',
+//      },
+//      {
+//        'key'  : 'delete',
+//        'name' : 'Delete',
+//      },
+//    ]
+//    return {
+//      leftAvatar: (
+//        <span>
+//          {'sms_in' === message.type ? (
+//            <i className='material-icons'>call_received</i>
+//          ) : (
+//            <i className='material-icons'>call_made</i>
+//          )}
+//        </span>
+//      ),
+//      primaryText: (
+//        <span>
+//          {message.endpoint}&nbsp;&nbsp;
+//          {'null' !== message.channel_id && (
+//            <span style={{color: lightBlack}}>{message.channel_id}</span>
+//          )}
+//        </span>
+//      ),
+//      secondaryText: (
+//        <p style={{paddingRight: '80px'}}>
+//          {!isNaN(message.timestamp) && (
+//            <span style={{color: darkBlack}}>
+//              <TimeAgo date={Number(message.timestamp)} /> &mdash;&nbsp;
+//            </span>
+//          )}
+//          {message.content}
+//        </p>
+//      ),
+//      rightIconButton: (
+//        <span>
+//          <IconButton
+//            onClick   = {e => this.handleToggleFavorite(e, message)}
+//            iconStyle = {!!message.favorite ? {color: 'rgb(0, 188, 212)'} : {}}>
+//            <i className='material-icons'>{message.favorite ? 'star' : 'star_border'}</i>
+//          </IconButton>
+//          <IconMenu
+//            onItemTouchTap    = {(event, value) => this.handleMenuAction(event, value, message)}
+//            iconButtonElement = {iconButtonElement}>
+//            {menuItems.map(item => <MenuItem key={item.key}>{item.name}</MenuItem>)}
+//          </IconMenu>
+//        </span>
+//      ),
+//    }
+//  }
+//  render() {
+//    const {
+//      messages : {
+//        visibleMessages,
+//        total,
+//        unreadCount,
+//        favorites,
+//      },
+//      dispatch,
+//    } = this.props
+//
+//    console.log(visibleMessages)
+//    console.log(favorites)
+//
+//    if (!total) {
+//      return (
+//        <List style={{background: '#ffffff'}}>
+//          <Subheader>Messages</Subheader>
+//          <Divider />
+//          <p style={{padding: '16px'}}>No messages.</p>
+//        </List>
+//      )
+//    }
+//    return (
+//      <div style={{display: 'flex', flexDirection: 'row'}}>
+//        {!!favorites.length && (
+//          <div style={{flex: 1}}>
+//            <List style={{background: '#ffffff'}}>
+//              <Toolbar>
+//                <ToolbarTitle text='Favorites' />
+//                <ToolbarGroup float='right'>
+//                  <IconButton touch={true} onClick={() => dispatch(clearFavorites())}>
+//                    <i className='material-icons'>clear_all</i>
+//                  </IconButton>
+//                </ToolbarGroup>
+//              </Toolbar>
+//                {favorites.map((message, i) => (
+//                  <div key={i}>
+//                    <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+//                    <Divider />
+//                  </div>
+//                ))}
+//            </List>
+//          </div>
+//        )}
+//        <div style={{flex: 1}}>
+//          <List style={{background: '#ffffff'}}>
+//            <Toolbar>
+//              <ToolbarTitle text='Messages' />
+//            </Toolbar>
+//            {visibleMessages.filter(message => !message.favorite).map((message, i) => (
+//              <div key={i}>
+//                <ListItem {...this.itemProps(message)} secondaryTextLines={2} />
+//                <Divider />
+//              </div>
+//            ))}
+//          </List>
+//        </div>
+//      </div>
+//    )
+//  }
+//}
+//
+//export default connect(state => _.pick(state, ['messages']))(Inbox)
+
+},{"../js/actions":1,"lokijs":638,"material-ui/Divider":648,"material-ui/FlatButton":653,"material-ui/IconButton":659,"material-ui/IconMenu":661,"material-ui/List/List":664,"material-ui/List/ListItem":665,"material-ui/MenuItem":669,"material-ui/Paper/Paper":670,"material-ui/styles/colors":720,"react":944,"react-dom":756,"react-redux":790,"react-redux-form":780,"react-timeago":801,"react-waypoint":802}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2656,21 +2329,99 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _channel = require('./channel');
+var _moment = require('moment');
 
-var _channel2 = _interopRequireDefault(_channel);
-
-var _master = require('./master');
-
-var _master2 = _interopRequireDefault(_master);
+var _moment2 = _interopRequireDefault(_moment);
 
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _channelToolbar = require('./channel-toolbar');
+
+var _channelToolbar2 = _interopRequireDefault(_channelToolbar);
+
+var _channel = require('../styles/channel');
+
+var _channel2 = _interopRequireDefault(_channel);
+
 var _reactRedux = require('react-redux');
 
+var _actions = require('../js/actions');
+
+var _Avatar = require('material-ui/Avatar');
+
+var _Avatar2 = _interopRequireDefault(_Avatar);
+
+var _FontIcon = require('material-ui/FontIcon');
+
+var _FontIcon2 = _interopRequireDefault(_FontIcon);
+
+var _Paper = require('material-ui/Paper');
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _IconButton = require('material-ui/IconButton');
+
+var _IconButton2 = _interopRequireDefault(_IconButton);
+
+var _call = require('material-ui/svg-icons/communication/call');
+
+var _call2 = _interopRequireDefault(_call);
+
+var _pause = require('material-ui/svg-icons/av/pause');
+
+var _pause2 = _interopRequireDefault(_pause);
+
+var _stop = require('material-ui/svg-icons/av/stop');
+
+var _stop2 = _interopRequireDefault(_stop);
+
+var _person = require('material-ui/svg-icons/social/person');
+
+var _person2 = _interopRequireDefault(_person);
+
+var _FlatButton = require('material-ui/FlatButton');
+
+var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+var _RaisedButton = require('material-ui/RaisedButton');
+
+var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+var _Divider = require('material-ui/Divider');
+
+var _Divider2 = _interopRequireDefault(_Divider);
+
+var _TextField = require('material-ui/TextField');
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+var _Toggle = require('material-ui/Toggle');
+
+var _Toggle2 = _interopRequireDefault(_Toggle);
+
+var _Slider = require('material-ui/Slider');
+
+var _Slider2 = _interopRequireDefault(_Slider);
+
+var _LinearProgress = require('material-ui/LinearProgress');
+
+var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
+
+var _Dialog = require('material-ui/Dialog');
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _Subheader = require('material-ui/Subheader/Subheader');
+
+var _Subheader2 = _interopRequireDefault(_Subheader);
+
+var _colors = require('material-ui/styles/colors');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2678,8 +2429,630 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Mixer = function (_React$Component) {
-  _inherits(Mixer, _React$Component);
+var Channel = function (_Component) {
+  _inherits(Channel, _Component);
+
+  function Channel(props) {
+    _classCallCheck(this, Channel);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Channel).call(this, props));
+
+    _this.state = {
+      timer: null,
+      now: Date.now(),
+      edit: false
+    };
+    return _this;
+  }
+
+  _createClass(Channel, [{
+    key: 'setMode',
+    value: function setMode(newMode) {
+      var _props = this.props;
+      var id = _props.id;
+      var mode = _props.mode;
+      var sendMessage = _props.sendMessage;
+
+      if ('free' != mode) {
+        sendMessage('channelMode', _defineProperty({}, id, newMode));
+      }
+    }
+  }, {
+    key: 'toggleMuted',
+    value: function toggleMuted(e) {
+      var _props2 = this.props;
+      var id = _props2.id;
+      var muted = _props2.muted;
+      var sendMessage = _props2.sendMessage;
+      var dispatch = _props2.dispatch;
+
+      sendMessage('channelMuted', _defineProperty({}, id, !muted));
+      dispatch((0, _actions.setChannelMuted)(id, !muted));
+    }
+  }, {
+    key: 'updateLevel',
+    value: function updateLevel(e, value) {
+      var _props3 = this.props;
+      var id = _props3.id;
+      var sendMessage = _props3.sendMessage;
+      var dispatch = _props3.dispatch;
+
+      sendMessage('channelVolume', _defineProperty({}, id, value));
+    }
+  }, {
+    key: 'updateContact',
+    value: function updateContact() {
+      var _props4 = this.props;
+      var id = _props4.id;
+      var dispatch = _props4.dispatch;
+      var sendMessage = _props4.sendMessage;
+
+      if (this.refs.contact) {
+        var caller = {
+          'name': this.refs.contact.getValue()
+        };
+        dispatch((0, _actions.updateChannelContact)(id, caller));
+        sendMessage('channelContactInfo', _defineProperty({}, id, caller));
+      }
+      this.setState({
+        edit: false
+      });
+    }
+  }, {
+    key: 'toggleEdit',
+    value: function toggleEdit(e) {
+      var edit = this.state.edit;
+
+      if (!edit && this.refs.contact) {
+        this.refs.contact.focus();
+      }
+      this.setState({
+        edit: !edit
+      });
+    }
+  }, {
+    key: 'timer',
+    value: function timer() {
+      var _props5 = this.props;
+      var timestamp = _props5.timestamp;
+      var diff = _props5.diff;
+
+      if (timestamp) {
+        this.setState({
+          now: Date.now() - diff
+        });
+      }
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.state = {
+        timer: window.setInterval(this.timer.bind(this), 1000)
+      };
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      var timer = this.state.timer;
+
+      if (timer) {
+        window.clearInterval(timer);
+      }
+    }
+    /*
+    renderControls() {
+      const { id, label, muted, level, contact } = this.props
+      return (
+        <div>
+        {/*
+          <div style={{margin: '-20px 20px 0'}}>
+            <div style={{textAlign: 'center'}}>
+              {!!this.state.edit ? (
+                <div>
+                  <TextField 
+                    ref               = 'contact'
+                    defaultValue      = {contact.name}
+                    floatingLabelText = 'Contact name' 
+                  />
+                  <FlatButton
+                    style             = {{marginLeft: '10px'}}
+                    label             = 'Save'
+                    onTouchTap        = {::this.updateContact}
+                  />
+                  <FlatButton
+                    style             = {{marginLeft: '10px'}}
+                    label             = 'Cancel'
+                    onTouchTap        = {::this.toggleEdit}
+                  />
+                </div>
+              ) : (
+                <div>
+                  {contact && contact.name && (
+                    <p style={{fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)'}}>
+                      {contact.name}
+                    </p>
+                  )}
+                  <RaisedButton
+                    style      = {{marginTop: '10px'}}
+                    primary    = {true}
+                    label      = 'Edit contact'
+                    icon       = {<IconSocialPerson />}
+                    onTouchTap = {::this.toggleEdit}
+                  />
+                </div>
+              )}
+              {contact && (
+                <p style={{margin: '15px 0 0'}}>{contact.number}</p>
+              )}
+            </div>
+            <div style={styles.controls}>
+              <div style={styles.toggle}>
+                <Toggle 
+                  onToggle       = {::this.toggleMuted}
+                  defaultToggled = {!muted} />
+              </div>
+              <div style={styles.slider}>
+                <Slider 
+                  onChange       = {::this.updateLevel}
+                  onDragStop     = {() => {}}
+                  disabled       = {muted}
+                  min            = {1}
+                  max            = {100}
+                  defaultValue   = {level} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+        */
+
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var _props6 = this.props;
+      var contact = _props6.contact;
+      var direction = _props6.direction;
+      var id = _props6.id;
+      var label = _props6.label;
+      var level = _props6.level;
+      var mode = _props6.mode;
+      var muted = _props6.muted;
+      var timestamp = _props6.timestamp;
+      var edit = this.state.edit;
+
+      switch (mode) {
+        case 'free':
+          return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'div',
+              { style: { display: 'flex', flexDirection: 'row' } },
+              _react2.default.createElement(_Avatar2.default, { backgroundColor: '#ffffff', color: 'rgb(0, 188, 212)', style: { marginTop: '13px' }, icon: _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons' },
+                  'phone'
+                ) }),
+              _react2.default.createElement(
+                _Subheader2.default,
+                { style: { flex: 2, paddingTop: '8px' } },
+                id
+              ),
+              _react2.default.createElement(
+                _Subheader2.default,
+                { style: { flex: 2, paddingTop: '8px', textAlign: 'right' } },
+                label
+              )
+            )
+          );
+        case 'ring':
+          if ('incoming' === direction) {
+            return _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'div',
+                { style: { display: 'flex', flexDirection: 'row' } },
+                _react2.default.createElement(_Avatar2.default, { style: { marginTop: '12px' }, backgroundColor: '#ffffff', color: _colors.red500, icon: _react2.default.createElement(
+                    'i',
+                    { className: 'material-icons faa-ring' },
+                    'call_made'
+                  ) }),
+                _react2.default.createElement(
+                  _Subheader2.default,
+                  { style: { flex: 2, paddingTop: '8px' } },
+                  id
+                ),
+                _react2.default.createElement(
+                  _Subheader2.default,
+                  { style: { flex: 2, paddingTop: '8px', textAlign: 'right' } },
+                  label
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { style: { margin: '0 160px 48px', borderRadius: '3px', border: '1px solid rgb(224, 224, 224)', padding: '32px' } },
+                _react2.default.createElement(
+                  'div',
+                  { style: { textAlign: 'center' } },
+                  _react2.default.createElement(_Avatar2.default, { size: 50, style: { margin: '12px 0 12px' }, backgroundColor: _colors.red500, icon: _react2.default.createElement(
+                      'i',
+                      { className: 'material-icons faa-ring animated' },
+                      'notifications_active'
+                    ) }),
+                  contact && _react2.default.createElement(
+                    'div',
+                    null,
+                    contact.name ? _react2.default.createElement(
+                      'div',
+                      null,
+                      _react2.default.createElement(
+                        'h5',
+                        { style: { marginTop: 0 } },
+                        'Incoming call from ',
+                        contact.name
+                      ),
+                      _react2.default.createElement(
+                        _Subheader2.default,
+                        { style: { flex: 2, padding: 0 } },
+                        contact.number
+                      )
+                    ) : _react2.default.createElement(
+                      'div',
+                      null,
+                      _react2.default.createElement(
+                        'h5',
+                        { style: { marginTop: 0 } },
+                        'Incoming call from ',
+                        contact.number
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { style: { marginTop: '16px', textAlign: 'center' } },
+                    _react2.default.createElement(_FlatButton2.default, {
+                      primary: true,
+                      label: 'Answer',
+                      onClick: function onClick() {
+                        return _this2.setMode('master');
+                      }
+                    }),
+                    _react2.default.createElement(_FlatButton2.default, {
+                      primary: true,
+                      label: 'On hold',
+                      onClick: function onClick() {
+                        return _this2.setMode('on_hold');
+                      }
+                    }),
+                    _react2.default.createElement(_FlatButton2.default, {
+                      primary: true,
+                      label: 'Reject',
+                      onClick: function onClick() {
+                        return _this2.setMode('free');
+                      }
+                    })
+                  )
+                )
+              )
+            );
+          } else {
+            return _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'div',
+                { style: { display: 'flex', flexDirection: 'row' } },
+                _react2.default.createElement(_Avatar2.default, { style: { marginTop: '13px' }, backgroundColor: '#ffffff', color: _colors.amber500, icon: _react2.default.createElement(
+                    'i',
+                    { className: 'material-icons' },
+                    'call_received'
+                  ) }),
+                _react2.default.createElement(
+                  _Subheader2.default,
+                  { style: { flex: 2, paddingTop: '8px' } },
+                  id
+                ),
+                _react2.default.createElement(
+                  _Subheader2.default,
+                  { style: { flex: 2, paddingTop: '8px', textAlign: 'right' } },
+                  label
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { style: { margin: '0 160px 48px', borderRadius: '3px', border: '1px solid rgb(224, 224, 224)', padding: '32px' } },
+                contact && _react2.default.createElement(
+                  'div',
+                  null,
+                  contact.name ? _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                      'h5',
+                      { style: { marginTop: 0 } },
+                      'Calling ',
+                      contact.name
+                    ),
+                    _react2.default.createElement(
+                      _Subheader2.default,
+                      { style: { flex: 2, padding: 0 } },
+                      contact.number
+                    )
+                  ) : _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                      'h5',
+                      { style: { marginTop: 0 } },
+                      'Calling ',
+                      contact.number
+                    )
+                  )
+                ),
+                _react2.default.createElement(_LinearProgress2.default, { style: { height: '6px' } }),
+                _react2.default.createElement(
+                  'div',
+                  { style: { marginTop: '16px' } },
+                  _react2.default.createElement(_FlatButton2.default, {
+                    label: 'Hold call',
+                    primary: true,
+                    onClick: function onClick() {
+                      return _this2.setMode('on_hold');
+                    }
+                  }),
+                  _react2.default.createElement(_FlatButton2.default, {
+                    label: 'Cancel',
+                    primary: true,
+                    onClick: function onClick() {
+                      return _this2.setMode('free');
+                    }
+                  })
+                )
+              )
+            );
+          }
+        case 'master':
+        case 'on_hold':
+          var hours = (0, _moment2.default)(this.state.now).diff(timestamp, 'hours');
+          var timer = ('master' === mode || 'on_hold' === mode) && timestamp ? _react2.default.createElement(
+            'span',
+            { style: { marginLeft: '20px' } },
+            hours > 0 && _react2.default.createElement(
+              'span',
+              null,
+              hours,
+              ':'
+            ),
+            (0, _moment2.default)(Math.max(0, (0, _moment2.default)(this.state.now).diff(timestamp))).format('mm:ss')
+          ) : null;
+          var actions = [_react2.default.createElement(_FlatButton2.default, {
+            style: { marginLeft: '10px' },
+            label: 'Cancel',
+            secondary: true,
+            onTouchTap: this.toggleEdit.bind(this)
+          }), _react2.default.createElement(_FlatButton2.default, {
+            style: { marginLeft: '10px' },
+            label: 'Save',
+            primary: true,
+            onTouchTap: this.updateContact.bind(this)
+          })];
+          return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'div',
+              { style: { display: 'flex', flexDirection: 'row' } },
+              _react2.default.createElement(_Avatar2.default, { backgroundColor: '#ffffff', color: 'rgb(255, 64, 129)', style: { marginTop: '13px' }, icon: _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons' },
+                  'master' === mode ? 'phone_in_talk' : 'pause'
+                ) }),
+              _react2.default.createElement(
+                _Subheader2.default,
+                { style: { flex: 2, paddingTop: '8px' } },
+                id
+              ),
+              _react2.default.createElement(
+                'div',
+                { style: { flex: 4 } },
+                _react2.default.createElement(
+                  'h6',
+                  { style: { marginTop: '20px' } },
+                  contact && _react2.default.createElement(
+                    'span',
+                    null,
+                    contact.number
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _Subheader2.default,
+                { style: { flex: 3, paddingTop: '8px', textAlign: 'right' } },
+                contact && contact.name && _react2.default.createElement(
+                  'span',
+                  null,
+                  contact.name
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { style: { paddingTop: '13px', marginLeft: '24px' } },
+                _react2.default.createElement(_FlatButton2.default, {
+                  primary: true,
+                  label: 'Edit contact',
+                  onClick: this.toggleEdit.bind(this)
+                }),
+                'master' === mode ? _react2.default.createElement(_FlatButton2.default, {
+                  primary: true,
+                  label: 'On hold',
+                  onClick: function onClick() {
+                    return _this2.setMode('on_hold');
+                  }
+                }) : _react2.default.createElement(_FlatButton2.default, {
+                  primary: true,
+                  label: 'Master',
+                  onClick: function onClick() {
+                    return _this2.setMode('master');
+                  }
+                }),
+                _react2.default.createElement(_FlatButton2.default, {
+                  secondary: true,
+                  label: 'Hang up',
+                  onClick: function onClick() {
+                    return _this2.setMode('free');
+                  }
+                })
+              ),
+              _react2.default.createElement(
+                _Subheader2.default,
+                { style: { color: '#000', flex: 2, paddingTop: '8px', textAlign: 'right' } },
+                'on_hold' === mode ? _react2.default.createElement(
+                  'span',
+                  { style: { color: _colors.red500 } },
+                  'On hold'
+                ) : _react2.default.createElement(
+                  'span',
+                  null,
+                  timer
+                )
+              )
+            ),
+            edit && _react2.default.createElement(
+              _Dialog2.default,
+              {
+                title: 'Edit contact name',
+                actions: actions,
+                onRequestClose: this.toggleEdit,
+                open: edit },
+              _react2.default.createElement(_TextField2.default, {
+                fullWidth: true,
+                ref: 'contact',
+                defaultValue: contact.name,
+                floatingLabelText: 'Contact name'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { style: { padding: '16px', margin: '0 120px 24px 120px', height: '24px', borderRadius: '3px', border: '1px solid rgb(224, 224, 224)' } },
+              _react2.default.createElement(
+                'div',
+                { style: { display: 'flex', flexDirection: 'row', marginTop: '-20px', marginRight: '12px' } },
+                _react2.default.createElement(
+                  'div',
+                  { style: { paddingTop: '8px', marginRight: '12px' } },
+                  _react2.default.createElement(
+                    _IconButton2.default,
+                    {
+                      onClick: this.toggleMuted.bind(this),
+                      iconClassName: 'material-icons' },
+                    muted ? 'volume_off' : 'volume_up'
+                  )
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { style: { flex: 4 } },
+                  _react2.default.createElement(_Slider2.default, {
+                    onChange: this.updateLevel.bind(this),
+                    onDragStop: function onDragStop() {},
+                    disabled: muted,
+                    min: 1,
+                    max: 100,
+                    defaultValue: level })
+                )
+              )
+            )
+          );
+        /*
+        return (
+          <div>
+            hold
+          {/*
+            {this.renderControls()}
+            <div style={{padding: '10px'}}>
+              <FlatButton
+                style      = {{color: green500, ...styles.button}}
+                label      = 'Master'
+                icon       = {<IconCommunicationCall />}
+                onClick    = {() => this.setMode('master')}
+              />
+              <FlatButton
+                style      = {{color: red500, ...styles.button}}
+                label      = 'Hang up'
+                icon       = {<IconAvStop />}
+                onClick    = {() => this.setMode('free')}
+              />
+            </div>
+          /}
+          </div>
+        )
+        */
+        case 'defunct':
+        default:
+          return _react2.default.createElement(
+            'div',
+            { style: { display: 'flex', flexDirection: 'row' } },
+            _react2.default.createElement(_Avatar2.default, { backgroundColor: '#ffffff', color: _colors.grey500, style: { marginTop: '13px' }, icon: _react2.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'not_interested'
+              ) }),
+            _react2.default.createElement(
+              _Subheader2.default,
+              { style: { flex: 2, paddingTop: '8px', color: '#cecece' } },
+              id
+            ),
+            _react2.default.createElement(
+              _Subheader2.default,
+              { style: { flex: 8, paddingTop: '8px', color: '#cecece', textTransform: 'uppercase' } },
+              'Defunct channel'
+            ),
+            _react2.default.createElement(
+              _Subheader2.default,
+              { style: { flex: 2, paddingTop: '8px', color: '#cecece', textAlign: 'right' } },
+              label
+            )
+          );
+      }
+    }
+    /*
+      render() {
+        //console.log('chan')
+    
+        return (
+          <div>
+            {::this.renderChannel()}
+          <div style={styles.component}>
+            <Paper
+              style={{
+                borderLeft : `12px solid ${colors[mode] || '#00bcd4'}`,
+              }}>
+              <ChannelToolbar {...this.props} 
+                timer = {(('master' === mode || 'on_hold' === mode) && timestamp) ? (
+                  <span style={{marginLeft: '20px'}}>
+                    {hours > 0 && <span>{hours}:</span>}
+                    {moment(Math.max(0, moment(this.state.now).diff(timestamp))).format('mm:ss')}
+                  </span>
+                ) : null}
+              />
+              {::this.renderChannel()}
+            </Paper>
+          </div>
+          </div>
+        )
+      }
+      */
+
+  }]);
+
+  return Channel;
+}(_react.Component);
+
+var Mixer = function (_Component2) {
+  _inherits(Mixer, _Component2);
 
   function Mixer() {
     _classCallCheck(this, Mixer);
@@ -2690,25 +3063,37 @@ var Mixer = function (_React$Component) {
   _createClass(Mixer, [{
     key: 'render',
     value: function render() {
-      var _props = this.props;
-      var diff = _props.app.diff;
-      var dispatch = _props.dispatch;
-      var channelList = _props.mixer.channelList;
-      var sendMessage = _props.sendMessage;
+
+      //console.log('mixer')
+      //console.log(this.props)
+
+      var _props7 = this.props;
+      var diff = _props7.app.diff;
+      var dispatch = _props7.dispatch;
+      var channelList = _props7.mixer.channelList;
+      var sendMessage = _props7.sendMessage;
 
       return _react2.default.createElement(
         'div',
-        null,
+        { style: { maxWidth: '900px', margin: '0 auto' } },
         _react2.default.createElement(
-          'div',
-          { style: { maxWidth: '900px', margin: '0 auto' } },
+          _Paper2.default,
+          { style: { padding: '24px 48px 24px 24px', marginTop: '32px' } },
           channelList.map(function (channel) {
-            return _react2.default.createElement(_channel2.default, _extends({}, channel, {
-              diff: diff,
-              dispatch: dispatch,
-              key: channel.id,
-              sendMessage: sendMessage
-            }));
+            return _react2.default.createElement(
+              'div',
+              { key: channel.id },
+              _react2.default.createElement(
+                'div',
+                { style: { minHeight: '96px' } },
+                _react2.default.createElement(Channel, _extends({}, channel, {
+                  diff: diff,
+                  dispatch: dispatch,
+                  sendMessage: sendMessage
+                }))
+              ),
+              _react2.default.createElement(_Divider2.default, null)
+            );
           })
         )
       );
@@ -2716,13 +3101,13 @@ var Mixer = function (_React$Component) {
   }]);
 
   return Mixer;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['mixer', 'app']);
 })(Mixer);
 
-},{"./channel":16,"./master":19,"lodash":611,"react":945,"react-redux":792}],23:[function(require,module,exports){
+},{"../js/actions":1,"../styles/channel":968,"./channel-toolbar":16,"lodash":611,"material-ui/Avatar":640,"material-ui/Dialog":646,"material-ui/Divider":648,"material-ui/FlatButton":653,"material-ui/FontIcon":657,"material-ui/IconButton":659,"material-ui/LinearProgress":663,"material-ui/Paper":671,"material-ui/RaisedButton":679,"material-ui/Slider":683,"material-ui/Subheader/Subheader":684,"material-ui/TextField":697,"material-ui/Toggle":699,"material-ui/styles/colors":720,"material-ui/svg-icons/av/pause":726,"material-ui/svg-icons/av/stop":727,"material-ui/svg-icons/communication/call":728,"material-ui/svg-icons/social/person":735,"moment":748,"react":944,"react-redux":790}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2779,8 +3164,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var count = 1;
 
-var SmsDialog = function (_React$Component) {
-  _inherits(SmsDialog, _React$Component);
+var SmsDialog = function (_Component) {
+  _inherits(SmsDialog, _Component);
 
   function SmsDialog() {
     _classCallCheck(this, SmsDialog);
@@ -2814,9 +3199,9 @@ var SmsDialog = function (_React$Component) {
     key: 'render',
     value: function render() {
       var _props2 = this.props;
-      var open = _props2.open;
-      var onClose = _props2.onClose;
       var channels = _props2.channels;
+      var onClose = _props2.onClose;
+      var open = _props2.open;
       var sms = _props2.sms;
       var smsForm = _props2.smsForm;
 
@@ -2852,63 +3237,55 @@ var SmsDialog = function (_React$Component) {
           open: open,
           onRequestClose: onClose },
         _react2.default.createElement(
+          _materialField2.default,
+          {
+            validators: _lodash2.default.pick(_validators2.default, ['required']),
+            model: 'sms.channel' },
+          _react2.default.createElement(_channelSelect2.default, { channels: freeChannels })
+        ),
+        _react2.default.createElement(
+          _materialField2.default,
+          {
+            validators: _lodash2.default.pick(_validators2.default, ['required', 'phoneNumber']),
+            model: 'sms.recipient' },
+          _react2.default.createElement(_TextField2.default, {
+            errorText: errorText((0, _reactReduxForm.getField)(smsForm, 'recipient').errors),
+            errorStyle: _validators2.default.isPartial(sms.recipient) ? { color: 'orange' } : {},
+            floatingLabelText: 'Send to',
+            hintText: 'Recipient\'s phone number',
+            fullWidth: true })
+        ),
+        sms.message && _react2.default.createElement(_TextField2.default, {
+          floatingLabelText: 'Original message',
+          fullWidth: true,
+          multiLine: true,
+          disabled: true,
+          value: sms.message.content,
+          rows: 3 }),
+        _react2.default.createElement(
+          _materialField2.default,
+          {
+            validators: {
+              required: _validators2.default.required,
+              messageLength: _validators2.default.maxLength(160)
+            },
+            model: 'sms.content' },
+          _react2.default.createElement(_TextField2.default, {
+            errorText: errorText((0, _reactReduxForm.getField)(smsForm, 'content').errors),
+            floatingLabelText: 'Message content',
+            hintText: 'Type your message here',
+            fullWidth: true,
+            multiLine: true,
+            rows: 3 })
+        ),
+        _react2.default.createElement(
           'div',
           null,
-          _react2.default.createElement(
-            'form',
-            { onSubmit: this.handleSubmit.bind(this) },
-            _react2.default.createElement(
-              _materialField2.default,
-              {
-                validators: _lodash2.default.pick(_validators2.default, ['required']),
-                model: 'sms.channel' },
-              _react2.default.createElement(_channelSelect2.default, { channels: freeChannels })
-            ),
-            _react2.default.createElement(
-              _materialField2.default,
-              {
-                validators: _lodash2.default.pick(_validators2.default, ['required', 'phoneNumber']),
-                model: 'sms.recipient' },
-              _react2.default.createElement(_TextField2.default, {
-                errorText: errorText((0, _reactReduxForm.getField)(smsForm, 'recipient').errors),
-                errorStyle: _validators2.default.isPartial(sms.recipient) ? { color: 'orange' } : {},
-                floatingLabelText: 'Send to',
-                hintText: 'Recipient\'s phone number',
-                fullWidth: true })
-            ),
-            sms.message && _react2.default.createElement(_TextField2.default, {
-              floatingLabelText: 'Original message',
-              fullWidth: true,
-              multiLine: true,
-              disabled: true,
-              value: sms.message.content,
-              rows: 3 }),
-            _react2.default.createElement(
-              _materialField2.default,
-              {
-                validators: {
-                  required: _validators2.default.required,
-                  messageLength: _validators2.default.maxLength(160)
-                },
-                model: 'sms.content' },
-              _react2.default.createElement(_TextField2.default, {
-                errorText: errorText((0, _reactReduxForm.getField)(smsForm, 'content').errors),
-                floatingLabelText: 'Message content',
-                hintText: 'Type your message here',
-                fullWidth: true,
-                multiLine: true,
-                rows: 3 })
-            ),
-            _react2.default.createElement(
-              'div',
-              null,
-              sms.content && sms.content.length <= 160 && _react2.default.createElement(
-                'div',
-                null,
-                'Characters remaining: ',
-                160 - sms.content.length
-              )
-            )
+          sms.content && sms.content.length <= 160 && _react2.default.createElement(
+            'div',
+            null,
+            'Characters remaining: ',
+            160 - sms.content.length
           )
         )
       );
@@ -2916,13 +3293,13 @@ var SmsDialog = function (_React$Component) {
   }]);
 
   return SmsDialog;
-}(_react2.default.Component);
+}(_react.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['sms', 'smsForm']);
 })(SmsDialog);
 
-},{"./channel-select":14,"./material-field":20,"./validators":26,"lodash":611,"material-ui/Dialog":646,"material-ui/FlatButton":653,"material-ui/TextField":695,"react":945,"react-redux":792,"react-redux-form":782}],24:[function(require,module,exports){
+},{"./channel-select":15,"./material-field":19,"./validators":25,"lodash":611,"material-ui/Dialog":646,"material-ui/FlatButton":653,"material-ui/TextField":697,"react":944,"react-redux":790,"react-redux-form":780}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3080,7 +3457,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['toastr']);
 })(Toastr);
 
-},{"../js/actions":1,"../styles/toastr":972,"lodash":611,"material-ui/internal/EnhancedButton":707,"react":945,"react-motion":766,"react-redux":792}],25:[function(require,module,exports){
+},{"../js/actions":1,"../styles/toastr":970,"lodash":611,"material-ui/internal/EnhancedButton":709,"react":944,"react-motion":764,"react-redux":790}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3127,16 +3504,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Ui = function (_React$Component) {
-  _inherits(Ui, _React$Component);
+var Root = function (_React$Component) {
+  _inherits(Root, _React$Component);
 
-  function Ui() {
-    _classCallCheck(this, Ui);
+  function Root() {
+    _classCallCheck(this, Root);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Ui).apply(this, arguments));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Root).apply(this, arguments));
   }
 
-  _createClass(Ui, [{
+  _createClass(Root, [{
     key: 'render',
     value: function render() {
       var _props = this.props;
@@ -3148,10 +3525,10 @@ var Ui = function (_React$Component) {
       switch (status) {
         case _constants.APP_STATUS_CONNECTING:
         case _constants.APP_STATUS_CONNECTED:
-          var backgroundColor = _constants.APP_STATUS_CONNECTING == status ? 'white' : 'transparent';
+          //const opacity = (APP_STATUS_CONNECTING == status) ? 1 : 0
           return _react2.default.createElement(
             'div',
-            { style: _extends({ backgroundColor: backgroundColor }, _ui2.default.spinner) },
+            { style: _extends({}, _ui2.default.spinner) },
             _react2.default.createElement(_CircularProgress2.default, { size: 1 })
           );
         case _constants.APP_STATUS_INITIALIZED:
@@ -3171,14 +3548,14 @@ var Ui = function (_React$Component) {
     }
   }]);
 
-  return Ui;
+  return Root;
 }(_react2.default.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
   return _lodash2.default.pick(state, ['app']);
-})(Ui);
+})(Root);
 
-},{"../js/constants":2,"../styles/ui":973,"./dashboard":18,"lodash":611,"material-ui/CircularProgress":644,"material-ui/Dialog":646,"react":945,"react-redux":792}],26:[function(require,module,exports){
+},{"../js/constants":2,"../styles/ui":971,"./dashboard":18,"lodash":611,"material-ui/CircularProgress":644,"material-ui/Dialog":646,"react":944,"react-redux":790}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3203,7 +3580,7 @@ exports.default = {
   }
 };
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var clients = {
   AwesomeWebSocket: require("./src/awesome-websocket.litcoffee")
   ,ReconnectingWebSocket: require("./src/reconnecting-websocket.litcoffee")
@@ -3216,7 +3593,7 @@ window.AwesomeWebSocket = window.AwesomeWebSocket || clients.AwesomeWebSocket;
 module.exports.AwesomeWebSocket = clients.AwesomeWebSocket
 module.exports.ReconnectingWebSocket = clients.ReconnectingWebSocket
 
-},{"./src/awesome-websocket.litcoffee":28,"./src/reconnecting-websocket.litcoffee":30}],28:[function(require,module,exports){
+},{"./src/awesome-websocket.litcoffee":27,"./src/reconnecting-websocket.litcoffee":29}],27:[function(require,module,exports){
 var AwesomeWebSocket, ReconnectingWebSocket, background;
 
 ReconnectingWebSocket = require('./reconnecting-websocket.litcoffee');
@@ -3323,7 +3700,7 @@ AwesomeWebSocket = (function() {
 module.exports = AwesomeWebSocket;
 
 
-},{"./background-process.litcoffee":29,"./reconnecting-websocket.litcoffee":30}],29:[function(require,module,exports){
+},{"./background-process.litcoffee":28,"./reconnecting-websocket.litcoffee":29}],28:[function(require,module,exports){
 var background;
 
 background = typeof window !== "undefined" && window !== null ? window.requestAnimationFrame : void 0;
@@ -3335,7 +3712,7 @@ if ((typeof chrome !== "undefined" && chrome !== null ? chrome.extension : void 
 module.exports = background;
 
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 var ReconnectingWebSocket, background;
 
 background = require('./background-process.litcoffee');
@@ -3446,7 +3823,7 @@ ReconnectingWebSocket = (function() {
 module.exports = ReconnectingWebSocket;
 
 
-},{"./background-process.litcoffee":29}],31:[function(require,module,exports){
+},{"./background-process.litcoffee":28}],30:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3481,7 +3858,7 @@ define(String.prototype, "padRight", "".padEnd);
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"core-js/fn/regexp/escape":33,"core-js/shim":327,"regenerator-runtime/runtime":963}],32:[function(require,module,exports){
+},{"core-js/fn/regexp/escape":33,"core-js/shim":327,"regenerator-runtime/runtime":962}],31:[function(require,module,exports){
 /*!
  * Bowser - a browser detector
  * https://github.com/ded/bowser
@@ -3900,6 +4277,8 @@ define(String.prototype, "padRight", "".padEnd);
 
   return bowser
 });
+
+},{}],32:[function(require,module,exports){
 
 },{}],33:[function(require,module,exports){
 require('../../modules/core.regexp.escape');
@@ -10046,7 +10425,7 @@ var EventListener = {
 
 module.exports = EventListener;
 }).call(this,require('_process'))
-},{"./emptyFunction":335,"_process":753}],329:[function(require,module,exports){
+},{"./emptyFunction":335,"_process":751}],329:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -10323,7 +10702,7 @@ function createArrayFromMixed(obj) {
 
 module.exports = createArrayFromMixed;
 }).call(this,require('_process'))
-},{"./invariant":343,"_process":753}],334:[function(require,module,exports){
+},{"./invariant":343,"_process":751}],334:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -10409,7 +10788,7 @@ function createNodesFromMarkup(markup, handleScript) {
 
 module.exports = createNodesFromMarkup;
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":329,"./createArrayFromMixed":333,"./getMarkupWrap":339,"./invariant":343,"_process":753}],335:[function(require,module,exports){
+},{"./ExecutionEnvironment":329,"./createArrayFromMixed":333,"./getMarkupWrap":339,"./invariant":343,"_process":751}],335:[function(require,module,exports){
 "use strict";
 
 /**
@@ -10470,7 +10849,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = emptyObject;
 }).call(this,require('_process'))
-},{"_process":753}],337:[function(require,module,exports){
+},{"_process":751}],337:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -10629,7 +11008,7 @@ function getMarkupWrap(nodeName) {
 
 module.exports = getMarkupWrap;
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":329,"./invariant":343,"_process":753}],340:[function(require,module,exports){
+},{"./ExecutionEnvironment":329,"./invariant":343,"_process":751}],340:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -10792,7 +11171,7 @@ function invariant(condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 }).call(this,require('_process'))
-},{"_process":753}],344:[function(require,module,exports){
+},{"_process":751}],344:[function(require,module,exports){
 'use strict';
 
 /**
@@ -10890,7 +11269,7 @@ var keyMirror = function keyMirror(obj) {
 
 module.exports = keyMirror;
 }).call(this,require('_process'))
-},{"./invariant":343,"_process":753}],347:[function(require,module,exports){
+},{"./invariant":343,"_process":751}],347:[function(require,module,exports){
 "use strict";
 
 /**
@@ -11189,7 +11568,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = warning;
 }).call(this,require('_process'))
-},{"./emptyFunction":335,"_process":753}],354:[function(require,module,exports){
+},{"./emptyFunction":335,"_process":751}],354:[function(require,module,exports){
 var isBuffer = require('is-buffer')
 
 var flat = module.exports = flatten
@@ -11705,7 +12084,7 @@ exports._weCareAbout = weCareAbout;
 exports._slice = _slice;
 
 }).call(this,require('_process'))
-},{"_process":753}],357:[function(require,module,exports){
+},{"_process":751}],357:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -12912,7 +13291,7 @@ exports['default'] = function (userAgent) {
 };
 
 module.exports = exports['default'];
-},{"bowser":32}],386:[function(require,module,exports){
+},{"bowser":31}],386:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -13001,7 +13380,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require('_process'))
-},{"_process":753}],389:[function(require,module,exports){
+},{"_process":751}],389:[function(require,module,exports){
 /**
  * Determine if an object is Buffer
  *
@@ -42540,368 +42919,5527 @@ lodash.prototype.constructor = lodash;
 module.exports = lodash;
 
 },{"./_LazyWrapper":401,"./_LodashWrapper":403,"./_baseLodash":453,"./_wrapperClone":572,"./isArray":594,"./isObjectLike":603}],637:[function(require,module,exports){
-(function (process){
-'use strict';
+/*
+  Loki IndexedDb Adapter (need to include this script to use it)
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+  Console Usage can be used for management/diagnostic, here are a few examples :
+  adapter.getDatabaseList(); // with no callback passed, this method will log results to console
+  adapter.saveDatabase('UserDatabase', JSON.stringify(myDb));
+  adapter.loadDatabase('UserDatabase'); // will log the serialized db to console
+  adapter.deleteDatabase('UserDatabase');
+*/
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _simpleAssign = require('simple-assign');
-
-var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _IconButton = require('../IconButton');
-
-var _IconButton2 = _interopRequireDefault(_IconButton);
-
-var _menu = require('../svg-icons/navigation/menu');
-
-var _menu2 = _interopRequireDefault(_menu);
-
-var _Paper = require('../Paper');
-
-var _Paper2 = _interopRequireDefault(_Paper);
-
-var _propTypes = require('../utils/propTypes');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function getStyles(props, context) {
-  var _context$muiTheme = context.muiTheme;
-  var appBar = _context$muiTheme.appBar;
-  var iconButtonSize = _context$muiTheme.button.iconButtonSize;
-  var zIndex = _context$muiTheme.zIndex;
-
-
-  var flatButtonSize = 36;
-
-  var styles = {
-    root: {
-      position: 'relative',
-      zIndex: zIndex.appBar,
-      width: '100%',
-      display: 'flex',
-      backgroundColor: appBar.color,
-      paddingLeft: appBar.padding,
-      paddingRight: appBar.padding
-    },
-    title: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      margin: 0,
-      paddingTop: 0,
-      letterSpacing: 0,
-      fontSize: 24,
-      fontWeight: appBar.titleFontWeight,
-      color: appBar.textColor,
-      height: appBar.height,
-      lineHeight: appBar.height + 'px'
-    },
-    mainElement: {
-      boxFlex: 1,
-      flex: '1'
-    },
-    iconButtonStyle: {
-      marginTop: (appBar.height - iconButtonSize) / 2,
-      marginRight: 8,
-      marginLeft: -16
-    },
-    iconButtonIconStyle: {
-      fill: appBar.textColor,
-      color: appBar.textColor
-    },
-    flatButton: {
-      color: appBar.textColor,
-      marginTop: (iconButtonSize - flatButtonSize) / 2 + 1
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node, CommonJS-like
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.LokiIndexedAdapter = factory();
     }
-  };
+}(this, function () {
+  return (function() {
 
-  return styles;
-}
+    /**
+     * Loki persistence adapter class for indexedDb.
+     *     This class fulfills abstract adapter interface which can be applied to other storage methods. 
+     *     Utilizes the included LokiCatalog app/key/value database for actual database persistence.
+     *     Indexeddb is highly async, but this adapter has been made 'console-friendly' as well.
+     *     Anywhere a callback is omitted, it should return results (if applicable) to console.
+     *     IndexedDb storage is provided per-domain, so we implement app/key/value database to 
+     *     allow separate contexts for separate apps within a domain.
+     *
+     * @example
+     * var idbAdapter = new LokiIndexedAdapter('finance');
+     *
+     * @constructor LokiIndexedAdapter
+     *
+     * @param {string} appname - (Optional) Application name context can be used to distinguish subdomains, 'loki' by default
+     */
+    function LokiIndexedAdapter(appname)
+    {
+      this.app = 'loki';
 
-var AppBar = function (_Component) {
-  _inherits(AppBar, _Component);
+      if (typeof (appname) !== 'undefined')
+      {
+        this.app = appname;
+      }
 
-  function AppBar() {
-    var _Object$getPrototypeO;
+      // keep reference to catalog class for base AKV operations
+      this.catalog = null;
 
-    var _temp, _this, _ret;
-
-    _classCallCheck(this, AppBar);
-
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+      if (!this.checkAvailability()) {
+        throw new Error('indexedDB does not seem to be supported for your environment');
+      }
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(AppBar)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.handleTouchTapLeftIconButton = function (event) {
-      if (_this.props.onLeftIconButtonTouchTap) {
-        _this.props.onLeftIconButtonTouchTap(event);
-      }
-    }, _this.handleTouchTapRightIconButton = function (event) {
-      if (_this.props.onRightIconButtonTouchTap) {
-        _this.props.onRightIconButtonTouchTap(event);
-      }
-    }, _this.handleTitleTouchTap = function (event) {
-      if (_this.props.onTitleTouchTap) {
-        _this.props.onTitleTouchTap(event);
-      }
-    }, _temp), _possibleConstructorReturn(_this, _ret);
-  }
+    /**
+     * Used to check if adapter is available
+     *
+     * @returns {boolean} true if indexeddb is available, false if not.
+     * @memberof LokiIndexedAdapter
+     */
+    LokiIndexedAdapter.prototype.checkAvailability = function()
+    {
+      if (typeof indexedDB !== 'undefined' && indexedDB) return true;
 
-  _createClass(AppBar, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      process.env.NODE_ENV !== "production" ? (0, _warning2.default)(!this.props.iconElementLeft || !this.props.iconClassNameLeft, 'Properties iconElementLeft\n      and iconClassNameLeft cannot be simultaneously defined. Please use one or the other.') : void 0;
+      return false;
+    };
 
-      process.env.NODE_ENV !== "production" ? (0, _warning2.default)(!this.props.iconElementRight || !this.props.iconClassNameRight, 'Properties iconElementRight\n      and iconClassNameRight cannot be simultaneously defined. Please use one or the other.') : void 0;
+    /**
+     * Retrieves a serialized db string from the catalog.
+     *
+     * @example
+     * // LOAD
+     * var idbAdapter = new LokiIndexedAdapter('finance');
+     * var db = new loki('test', { adapter: idbAdapter });
+     *   db.loadDatabase(function(result) {
+     *   console.log('done');
+     * });
+     *
+     * @param {string} dbname - the name of the database to retrieve.
+     * @param {function} callback - callback should accept string param containing serialized db string.
+     * @memberof LokiIndexedAdapter
+     */
+    LokiIndexedAdapter.prototype.loadDatabase = function(dbname, callback)
+    {
+      var appName = this.app;
+      var adapter = this;
+
+      // lazy open/create db reference so dont -need- callback in constructor
+      if (this.catalog === null || this.catalog.db === null) {
+        this.catalog = new LokiCatalog(function(cat) {
+          adapter.catalog = cat;
+
+          adapter.loadDatabase(dbname, callback);
+        });
+
+        return;
+      }
+
+      // lookup up db string in AKV db
+      this.catalog.getAppKey(appName, dbname, function(result) {
+        if (typeof (callback) === 'function') {
+          if (result.id === 0) {
+            callback(null);
+            return;
+          }
+          callback(result.val);
+        }
+        else {
+          // support console use of api
+          console.log(result.val);
+        }
+      });
+    };
+
+    // alias
+    LokiIndexedAdapter.prototype.loadKey = LokiIndexedAdapter.prototype.loadDatabase;
+
+    /**
+     * Saves a serialized db to the catalog.
+     *
+     * @example
+     * // SAVE : will save App/Key/Val as 'finance'/'test'/{serializedDb}
+     * var idbAdapter = new LokiIndexedAdapter('finance');
+     * var db = new loki('test', { adapter: idbAdapter });
+     * var coll = db.addCollection('testColl');
+     * coll.insert({test: 'val'});
+     * db.saveDatabase();  // could pass callback if needed for async complete
+     *
+     * @param {string} dbname - the name to give the serialized database within the catalog.
+     * @param {string} dbstring - the serialized db string to save.
+     * @param {function} callback - (Optional) callback passed obj.success with true or false
+     * @memberof LokiIndexedAdapter
+     */
+    LokiIndexedAdapter.prototype.saveDatabase = function(dbname, dbstring, callback)
+    {
+      var appName = this.app;
+      var adapter = this;
+
+      function saveCallback(result) {
+        if (result && result.success === true) {
+          callback(null);
+        }
+        else {
+          callback(new Error("Error saving database"));
+        }
+      }
+
+      // lazy open/create db reference so dont -need- callback in constructor
+      if (this.catalog === null || this.catalog.db === null) {
+        this.catalog = new LokiCatalog(function(cat) {
+          adapter.catalog = cat;
+
+          // now that catalog has been initialized, set (add/update) the AKV entry
+          cat.setAppKey(appName, dbname, dbstring, saveCallback);
+        });
+
+        return;
+      }
+
+      // set (add/update) entry to AKV database
+      this.catalog.setAppKey(appName, dbname, dbstring, saveCallback);
+    };
+
+    // alias
+    LokiIndexedAdapter.prototype.saveKey = LokiIndexedAdapter.prototype.saveDatabase;
+
+    /**
+     * Deletes a serialized db from the catalog.
+     *
+     * @example
+     * // DELETE DATABASE
+     * idbAdapter.deleteDatabase('test'); // delete 'finance'/'test' value from catalog
+     *
+     * @param {string} dbname - the name of the database to delete from the catalog.
+     * @memberof LokiIndexedAdapter
+     */
+    LokiIndexedAdapter.prototype.deleteDatabase = function(dbname)
+    {
+      var appName = this.app;
+      var adapter = this;
+
+      // lazy open/create db reference so dont -need- callback in constructor
+      if (this.catalog === null || this.catalog.db === null) {
+        this.catalog = new LokiCatalog(function(cat) {
+          adapter.catalog = cat;
+
+          adapter.deleteDatabase(dbname);
+        });
+
+        return;
+      }
+
+      // catalog was already initialized, so just lookup object and delete by id
+      this.catalog.getAppKey(appName, dbname, function(result) {
+        var id = result.id;
+
+        if (id !== 0) {
+          adapter.catalog.deleteAppKey(id);
+        }
+      });
+    };
+
+    // alias
+    LokiIndexedAdapter.prototype.deleteKey = LokiIndexedAdapter.prototype.deleteDatabase;
+
+    /**
+     * Retrieves object array of catalog entries for current app.
+     *
+     * @example
+     * idbAdapter.getDatabaseList(function(result) {
+     *   // result is array of string names for that appcontext ('finance')
+     *   result.forEach(function(str) {
+     *     console.log(str);
+     *   });
+     * });
+     *
+     * @param {function} callback - should accept array of database names in the catalog for current app.
+     * @memberof LokiIndexedAdapter
+     */
+    LokiIndexedAdapter.prototype.getDatabaseList = function(callback)
+    {
+      var appName = this.app;
+      var adapter = this;
+
+      // lazy open/create db reference so dont -need- callback in constructor
+      if (this.catalog === null || this.catalog.db === null) {
+        this.catalog = new LokiCatalog(function(cat) {
+          adapter.catalog = cat;
+
+          adapter.getDatabaseList(callback);
+        });
+
+        return;
+      }
+
+      // catalog already initialized
+      // get all keys for current appName, and transpose results so just string array
+      this.catalog.getAppKeys(appName, function(results) {
+        var names = [];
+
+        for(var idx = 0; idx < results.length; idx++) {
+          names.push(results[idx].key);
+        }
+
+        if (typeof (callback) === 'function') {
+          callback(names);
+        }
+        else {
+          names.forEach(function(obj) {
+            console.log(obj);
+          });
+        }
+      });
+    };
+
+    // alias
+    LokiIndexedAdapter.prototype.getKeyList = LokiIndexedAdapter.prototype.getDatabaseList;
+
+    /**
+     * Allows retrieval of list of all keys in catalog along with size
+     *
+     * @param {function} callback - (Optional) callback to accept result array.
+     * @memberof LokiIndexedAdapter
+     */
+    LokiIndexedAdapter.prototype.getCatalogSummary = function(callback)
+    {
+      var appName = this.app;
+      var adapter = this;
+
+      // lazy open/create db reference
+      if (this.catalog === null || this.catalog.db === null) {
+        this.catalog = new LokiCatalog(function(cat) {
+          adapter.catalog = cat;
+
+          adapter.getCatalogSummary(callback);
+        });
+
+        return;
+      }
+
+      // catalog already initialized
+      // get all keys for current appName, and transpose results so just string array
+      this.catalog.getAllKeys(function(results) {
+        var entries = [];
+        var obj,
+          size,
+          oapp,
+          okey,
+          oval;
+
+        for(var idx = 0; idx < results.length; idx++) {
+          obj = results[idx];
+          oapp = obj.app || '';
+          okey = obj.key || '';
+          oval = obj.val || '';
+
+          // app and key are composited into an appkey column so we will mult by 2
+          size = oapp.length * 2 + okey.length * 2 + oval.length + 1;
+
+          entries.push({ "app": obj.app, "key": obj.key, "size": size });
+        }
+
+        if (typeof (callback) === 'function') {
+          callback(entries);
+        }
+        else {
+          entries.forEach(function(obj) {
+            console.log(obj);
+          });
+        }
+      });
+    };
+
+    /**
+     * LokiCatalog - underlying App/Key/Value catalog persistence
+     *    This non-interface class implements the actual persistence.
+     *    Used by the IndexedAdapter class.
+     */
+    function LokiCatalog(callback)
+    {
+      this.db = null;
+      this.initializeLokiCatalog(callback);
     }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _props = this.props;
-      var title = _props.title;
-      var titleStyle = _props.titleStyle;
-      var iconStyleRight = _props.iconStyleRight;
-      var showMenuIconButton = _props.showMenuIconButton;
-      var iconElementLeft = _props.iconElementLeft;
-      var iconElementRight = _props.iconElementRight;
-      var iconClassNameLeft = _props.iconClassNameLeft;
-      var iconClassNameRight = _props.iconClassNameRight;
-      var className = _props.className;
-      var style = _props.style;
-      var zDepth = _props.zDepth;
-      var children = _props.children;
 
-      var other = _objectWithoutProperties(_props, ['title', 'titleStyle', 'iconStyleRight', 'showMenuIconButton', 'iconElementLeft', 'iconElementRight', 'iconClassNameLeft', 'iconClassNameRight', 'className', 'style', 'zDepth', 'children']);
+    LokiCatalog.prototype.initializeLokiCatalog = function(callback) {
+      var openRequest = indexedDB.open('LokiCatalog', 1);
+      var cat = this;
 
-      var prepareStyles = this.context.muiTheme.prepareStyles;
+      // If database doesn't exist yet or its version is lower than our version specified above (2nd param in line above)
+      openRequest.onupgradeneeded = function(e) {
+        var thisDB = e.target.result;
+        if (thisDB.objectStoreNames.contains('LokiAKV')) {
+          thisDB.deleteObjectStore('LokiAKV');
+        }
 
-      var styles = getStyles(this.props, this.context);
+        if(!thisDB.objectStoreNames.contains('LokiAKV')) {
+          var objectStore = thisDB.createObjectStore('LokiAKV', { keyPath: 'id', autoIncrement:true });
+          objectStore.createIndex('app', 'app', {unique:false});
+          objectStore.createIndex('key', 'key', {unique:false});
+          // hack to simulate composite key since overhead is low (main size should be in val field)
+          // user (me) required to duplicate the app and key into comma delimited appkey field off object
+          // This will allow retrieving single record with that composite key as well as
+          // still supporting opening cursors on app or key alone
+          objectStore.createIndex('appkey', 'appkey', {unique:true});
+        }
+      };
 
-      var menuElementLeft = void 0;
-      var menuElementRight = void 0;
+      openRequest.onsuccess = function(e) {
+        cat.db = e.target.result;
 
-      // If the title is a string, wrap in an h1 tag.
-      // If not, wrap in a div tag.
-      var titleComponent = typeof title === 'string' || title instanceof String ? 'h1' : 'div';
+        if (typeof (callback) === 'function') callback(cat);
+      };
 
-      var titleElement = _react2.default.createElement(titleComponent, {
-        onTouchTap: this.handleTitleTouchTap,
-        style: prepareStyles((0, _simpleAssign2.default)(styles.title, styles.mainElement, titleStyle))
-      }, title);
+      openRequest.onerror = function(e) {
+        throw e;
+      };
+    };
 
-      if (showMenuIconButton) {
-        var iconElementLeftNode = iconElementLeft;
+    LokiCatalog.prototype.getAppKey = function(app, key, callback) {
+      var transaction = this.db.transaction(['LokiAKV'], 'readonly');
+      var store = transaction.objectStore('LokiAKV');
+      var index = store.index('appkey');
+      var appkey = app + "," + key;
+      var request = index.get(appkey);
 
-        if (iconElementLeft) {
-          if (iconElementLeft.type.muiName === 'IconButton') {
-            iconElementLeftNode = _react2.default.cloneElement(iconElementLeft, {
-              iconStyle: (0, _simpleAssign2.default)({}, styles.iconButtonIconStyle, iconElementLeft.props.iconStyle)
-            });
+      request.onsuccess = (function(usercallback) {
+        return function(e) {
+          var lres = e.target.result;
+
+          if (lres === null || typeof(lres) === 'undefined') {
+            lres = {
+              id: 0,
+              success: false
+            };
           }
 
-          menuElementLeft = _react2.default.createElement(
-            'div',
-            { style: prepareStyles((0, _simpleAssign2.default)({}, styles.iconButtonStyle)) },
-            iconElementLeftNode
-          );
-        } else {
-          var child = iconClassNameLeft ? '' : _react2.default.createElement(_menu2.default, { style: (0, _simpleAssign2.default)({}, styles.iconButtonIconStyle) });
-          menuElementLeft = _react2.default.createElement(
-            _IconButton2.default,
-            {
-              style: styles.iconButtonStyle,
-              iconStyle: styles.iconButtonIconStyle,
-              iconClassName: iconClassNameLeft,
-              onTouchTap: this.handleTouchTapLeftIconButton
-            },
-            child
-          );
+          if (typeof(usercallback) === 'function') {
+            usercallback(lres);
+          }
+          else {
+            console.log(lres);
+          }
+        };
+      })(callback);
+
+      request.onerror = (function(usercallback) {
+        return function(e) {
+          if (typeof(usercallback) === 'function') {
+            usercallback({ id: 0, success: false });
+          }
+          else {
+            throw e;
+          }
+        };
+      })(callback);
+    };
+
+    LokiCatalog.prototype.getAppKeyById = function (id, callback, data) {
+      var transaction = this.db.transaction(['LokiAKV'], 'readonly');
+      var store = transaction.objectStore('LokiAKV');
+      var request = store.get(id);
+
+      request.onsuccess = (function(data, usercallback){
+        return function(e) {
+          if (typeof(usercallback) === 'function') {
+            usercallback(e.target.result, data);
+          }
+          else {
+            console.log(e.target.result);
+          }
+        };
+      })(data, callback);
+    };
+
+    LokiCatalog.prototype.setAppKey = function (app, key, val, callback) {
+      var transaction = this.db.transaction(['LokiAKV'], 'readwrite');
+      var store = transaction.objectStore('LokiAKV');
+      var index = store.index('appkey');
+      var appkey = app + "," + key;
+      var request = index.get(appkey);
+
+      // first try to retrieve an existing object by that key
+      // need to do this because to update an object you need to have id in object, otherwise it will append id with new autocounter and clash the unique index appkey
+      request.onsuccess = function(e) {
+        var res = e.target.result;
+
+        if (res === null || res === undefined) {
+          res = {
+            app:app,
+            key:key,
+            appkey: app + ',' + key,
+            val:val
+          };
+        }
+        else {
+          res.val = val;
+        }
+
+        var requestPut = store.put(res);
+
+        requestPut.onerror = (function(usercallback) {
+          return function(e) {
+            if (typeof(usercallback) === 'function') {
+              usercallback({ success: false });
+            }
+            else {
+              console.error('LokiCatalog.setAppKey (set) onerror');
+              console.error(request.error);
+            }
+          };
+
+        })(callback);
+
+        requestPut.onsuccess = (function(usercallback) {
+          return function(e) {
+            if (typeof(usercallback) === 'function') {
+              usercallback({ success: true });
+            }
+          };
+        })(callback);
+      };
+
+      request.onerror = (function(usercallback) {
+        return function(e) {
+          if (typeof(usercallback) === 'function') {
+            usercallback({ success: false });
+          }
+          else {
+            console.error('LokiCatalog.setAppKey (get) onerror');
+            console.error(request.error);
+          }
+        };
+      })(callback);
+    };
+
+    LokiCatalog.prototype.deleteAppKey = function (id, callback) {
+      var transaction = this.db.transaction(['LokiAKV'], 'readwrite');
+      var store = transaction.objectStore('LokiAKV');
+      var request = store.delete(id);
+
+      request.onsuccess = (function(usercallback) {
+        return function(evt) {
+          if (typeof(usercallback) === 'function') usercallback({ success: true });
+        };
+      })(callback);
+
+      request.onerror = (function(usercallback) {
+        return function(evt) {
+          if (typeof(usercallback) === 'function') {
+            usercallback(false);
+          }
+          else {
+            console.error('LokiCatalog.deleteAppKey raised onerror');
+            console.error(request.error);
+          }
+        };
+      })(callback);
+    };
+
+    LokiCatalog.prototype.getAppKeys = function(app, callback) {
+      var transaction = this.db.transaction(['LokiAKV'], 'readonly');
+      var store = transaction.objectStore('LokiAKV');
+      var index = store.index('app');
+
+      // We want cursor to all values matching our (single) app param
+      var singleKeyRange = IDBKeyRange.only(app);
+
+      // To use one of the key ranges, pass it in as the first argument of openCursor()/openKeyCursor()
+      var cursor = index.openCursor(singleKeyRange);
+
+      // cursor internally, pushing results into this.data[] and return
+      // this.data[] when done (similar to service)
+      var localdata = [];
+
+      cursor.onsuccess = (function(data, callback) {
+        return function(e) {
+          var cursor = e.target.result;
+          if (cursor) {
+            var currObject = cursor.value;
+
+            data.push(currObject);
+
+            cursor.continue();
+          }
+          else {
+            if (typeof(callback) === 'function') {
+              callback(data);
+            }
+            else {
+              console.log(data);
+            }
+          }
+        };
+      })(localdata, callback);
+
+      cursor.onerror = (function(usercallback) {
+        return function(e) {
+          if (typeof(usercallback) === 'function') {
+            usercallback(null);
+          }
+          else {
+            console.error('LokiCatalog.getAppKeys raised onerror');
+            console.error(e);
+          }
+        };
+      })(callback);
+
+    };
+
+    // Hide 'cursoring' and return array of { id: id, key: key }
+    LokiCatalog.prototype.getAllKeys = function (callback) {
+      var transaction = this.db.transaction(['LokiAKV'], 'readonly');
+      var store = transaction.objectStore('LokiAKV');
+      var cursor = store.openCursor();
+
+      var localdata = [];
+
+      cursor.onsuccess = (function(data, callback) {
+        return function(e) {
+          var cursor = e.target.result;
+          if (cursor) {
+            var currObject = cursor.value;
+
+            data.push(currObject);
+
+            cursor.continue();
+          }
+          else {
+            if (typeof(callback) === 'function') {
+              callback(data);
+            }
+            else {
+              console.log(data);
+            }
+          }
+        };
+      })(localdata, callback);
+
+      cursor.onerror = (function(usercallback) {
+        return function(e) {
+          if (typeof(usercallback) === 'function') usercallback(null);
+        };
+      })(callback);
+
+    };
+
+    return LokiIndexedAdapter;
+
+  }());
+}));
+
+},{}],638:[function(require,module,exports){
+(function (global){
+/**
+ * LokiJS
+ * @author Joe Minichino <joe.minichino@gmail.com>
+ *
+ * A lightweight document oriented javascript database
+ */
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    // CommonJS
+    module.exports = factory();
+  } else {
+    // Browser globals
+    root.loki = factory();
+  }
+}(this, function () {
+
+  return (function () {
+    'use strict';
+
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+    var Utils = {
+      copyProperties: function (src, dest) {
+        var prop;
+        for (prop in src) {
+          dest[prop] = src[prop];
+        }
+      },
+      // used to recursively scan hierarchical transform step object for param substitution
+      resolveTransformObject: function (subObj, params, depth) {
+        var prop,
+          pname;
+
+        if (typeof depth !== 'number') {
+          depth = 0;
+        }
+
+        if (++depth >= 10) return subObj;
+
+        for (prop in subObj) {
+          if (typeof subObj[prop] === 'string' && subObj[prop].indexOf("[%lktxp]") === 0) {
+            pname = subObj[prop].substring(8);
+            if (params.hasOwnProperty(pname)) {
+              subObj[prop] = params[pname];
+            }
+          } else if (typeof subObj[prop] === "object") {
+            subObj[prop] = Utils.resolveTransformObject(subObj[prop], params, depth);
+          }
+        }
+
+        return subObj;
+      },
+      // top level utility to resolve an entire (single) transform (array of steps) for parameter substitution
+      resolveTransformParams: function (transform, params) {
+        var idx,
+          clonedStep,
+          resolvedTransform = [];
+
+        if (typeof params === 'undefined') return transform;
+
+        // iterate all steps in the transform array
+        for (idx = 0; idx < transform.length; idx++) {
+          // clone transform so our scan and replace can operate directly on cloned transform
+          clonedStep = JSON.parse(JSON.stringify(transform[idx]));
+          resolvedTransform.push(Utils.resolveTransformObject(clonedStep, params));
+        }
+
+        return resolvedTransform;
+      }
+    };
+
+    /** Helper function for determining 'less-than' conditions for ops, sorting, and binary indices.
+     *     In the future we might want $lt and $gt ops to use their own functionality/helper.
+     *     Since binary indices on a property might need to index [12, NaN, new Date(), Infinity], we
+     *     need this function (as well as gtHelper) to always ensure one value is LT, GT, or EQ to another.
+     */
+    function ltHelper(prop1, prop2, equal) {
+      var cv1, cv2;
+
+      // 'falsy' and Boolean handling
+      if (!prop1 || !prop2 || prop1 === true || prop2 === true) {
+        if ((prop1 === true || prop1 === false) && (prop2 === true || prop2 === false)) {
+          if (equal) {
+            return prop1 === prop2;
+          } else {
+            if (prop1) {
+              return false;
+            } else {
+              return prop2;
+            }
+          }
+        }
+
+        if (prop2 === undefined || prop2 === null || prop1 === true || prop2 === false) {
+            return equal;
+        }
+        if (prop1 === undefined || prop1 === null || prop1 === false || prop2 === true) {
+          return true;
         }
       }
 
-      var iconRightStyle = (0, _simpleAssign2.default)({}, styles.iconButtonStyle, {
-        marginRight: -16,
-        marginLeft: 'auto'
-      }, iconStyleRight);
+      if (prop1 === prop2) {
+        return equal;
+      }
 
-      if (iconElementRight) {
-        var iconElementRightNode = iconElementRight;
+      if (prop1 < prop2) {
+        return true;
+      }
 
-        switch (iconElementRight.type.muiName) {
-          case 'IconMenu':
-          case 'IconButton':
-            iconElementRightNode = _react2.default.cloneElement(iconElementRight, {
-              iconStyle: (0, _simpleAssign2.default)({}, styles.iconButtonIconStyle, iconElementRight.props.iconStyle)
-            });
-            break;
+      if (prop1 > prop2) {
+        return false;
+      }
 
-          case 'FlatButton':
-            iconElementRightNode = _react2.default.cloneElement(iconElementRight, {
-              style: (0, _simpleAssign2.default)({}, styles.flatButton, iconElementRight.props.style)
-            });
-            break;
+      // not strict equal nor less than nor gt so must be mixed types, convert to string and use that to compare
+      cv1 = prop1.toString();
+      cv2 = prop2.toString();
 
-          default:
+      if (cv1 == cv2) {
+        return equal;
+      }
+
+      if (cv1 < cv2) {
+        return true;
+      }
+
+      return false;
+    }
+
+    function gtHelper(prop1, prop2, equal) {
+      var cv1, cv2;
+
+      // 'falsy' and Boolean handling
+      if (!prop1 || !prop2 || prop1 === true || prop2 === true) {
+        if ((prop1 === true || prop1 === false) && (prop2 === true || prop2 === false)) {
+          if (equal) {
+            return prop1 === prop2;
+          } else {
+            if (prop1) {
+              return !prop2;
+            } else {
+              return false;
+            }
+          }
         }
 
-        menuElementRight = _react2.default.createElement(
-          'div',
-          { style: prepareStyles(iconRightStyle) },
-          iconElementRightNode
-        );
-      } else if (iconClassNameRight) {
-        menuElementRight = _react2.default.createElement(_IconButton2.default, {
-          style: iconRightStyle,
-          iconStyle: styles.iconButtonIconStyle,
-          iconClassName: iconClassNameRight,
-          onTouchTap: this.handleTouchTapRightIconButton
+        if (prop1 === undefined || prop1 === null || prop1 === false || prop2 === true) {
+          return equal;
+        }
+        if (prop2 === undefined || prop2 === null || prop1 === true || prop2 === false) {
+          return true;
+        }
+      }
+
+      if (prop1 === prop2) {
+        return equal;
+      }
+
+      if (prop1 > prop2) {
+        return true;
+      }
+
+      if (prop1 < prop2) {
+        return false;
+      }
+
+      // not strict equal nor less than nor gt so must be mixed types, convert to string and use that to compare
+      cv1 = prop1.toString();
+      cv2 = prop2.toString();
+
+      if (cv1 == cv2) {
+        return equal;
+      }
+
+      if (cv1 > cv2) {
+        return true;
+      }
+
+      return false;
+    }
+
+    function sortHelper(prop1, prop2, desc) {
+      if (prop1 === prop2) {
+        return 0;
+      }
+
+      if (ltHelper(prop1, prop2, false)) {
+        return (desc) ? (1) : (-1);
+      }
+
+      if (gtHelper(prop1, prop2, false)) {
+        return (desc) ? (-1) : (1);
+      }
+
+      // not lt, not gt so implied equality-- date compatible
+      return 0;
+    }
+
+    /**
+     * compoundeval() - helper function for compoundsort(), performing individual object comparisons
+     *
+     * @param {array} properties - array of property names, in order, by which to evaluate sort order
+     * @param {object} obj1 - first object to compare
+     * @param {object} obj2 - second object to compare
+     * @returns {integer} 0, -1, or 1 to designate if identical (sortwise) or which should be first
+     */
+    function compoundeval(properties, obj1, obj2) {
+      var res = 0;
+      var prop, field;
+      for (var i = 0, len = properties.length; i < len; i++) {
+        prop = properties[i];
+        field = prop[0];
+        res = sortHelper(obj1[field], obj2[field], prop[1]);
+        if (res !== 0) {
+          return res;
+        }
+      }
+      return 0;
+    }
+
+    /**
+     * dotSubScan - helper function used for dot notation queries.
+     *
+     * @param {object} root - object to traverse
+     * @param {array} paths - array of properties to drill into
+     * @param {function} fun - evaluation function to test with
+     * @param {any} value - comparative value to also pass to (compare) fun
+     */
+    function dotSubScan(root, paths, fun, value) {
+      var arrayRef = null;
+      var pathIndex, subIndex;
+      var path;
+
+      for (pathIndex = 0; pathIndex < paths.length; pathIndex++) {
+        path = paths[pathIndex];
+
+        // foreach already detected parent was array so this must be where we iterate
+        if (arrayRef) {
+          // iterate all sub-array items to see if any yield hits
+          for (subIndex = 0; subIndex < arrayRef.length; subIndex++) {
+            if (fun(arrayRef[subIndex][path], value)) {
+              return true;
+            }
+          }
+        }
+        // else not yet determined if subarray scan is involved
+        else {
+          // if the dot notation is invalid for the current document, then ignore this document
+          if (typeof root === 'undefined' || root === null || !root.hasOwnProperty(path)) {
+            return false;
+          }
+          root = root[path];
+
+          if (root === undefined || root === null) {
+            return false;
+          }
+
+          if (Array.isArray(root)) {
+            arrayRef = root;
+          }
+        }
+      }
+
+      // made it this far so must be dot notation on non-array property
+      return fun(root, value);
+    }
+
+    function containsCheckFn(a) {
+      if (typeof a === 'string' || Array.isArray(a)) {
+        return function (b) {
+          return a.indexOf(b) !== -1;
+        };
+      } else if (typeof a === 'object') {
+        return function (b) {
+          return hasOwnProperty.call(a, b);
+        };
+      }
+      return null;
+    }
+
+    function doQueryOp(val, op) {
+      for (var p in op) {
+        if (hasOwnProperty.call(op, p)) {
+          return LokiOps[p](val, op[p]);
+        }
+      }
+      return false;
+    }
+
+    var LokiOps = {
+      // comparison operators
+      // a is the value in the collection
+      // b is the query value
+      $eq: function (a, b) {
+        return a === b;
+      },
+
+      // abstract/loose equality
+      $aeq: function (a, b) {
+        return a == b;
+      },
+
+      $ne: function (a, b) {
+        if (isNaN(b)) {
+          return !isNaN(a);
+        }
+
+        return a !== b;
+      },
+
+      $dteq: function(a, b) {
+        if (ltHelper(a, b, false)) {
+          return false;
+        }
+        return !gtHelper(a, b, false);
+      },
+
+      $gt: function (a, b) {
+        return gtHelper(a, b, false);
+      },
+
+      $gte: function (a, b) {
+        return gtHelper(a, b, true);
+      },
+
+      $lt: function (a, b) {
+        return ltHelper(a, b, false);
+      },
+
+      $lte: function (a, b) {
+        return ltHelper(a, b, true);
+      },
+
+      $in: function (a, b) {
+        return b.indexOf(a) !== -1;
+      },
+
+      $nin: function (a, b) {
+        return b.indexOf(a) === -1;
+      },
+
+      $keyin: function (a, b) {
+        return a in b;
+      },
+
+      $nkeyin: function (a, b) {
+        return !(a in b);
+      },
+
+      $definedin: function (a, b) {
+        return b[a] !== undefined;
+      },
+
+      $undefinedin: function (a, b) {
+        return b[a] === undefined;
+      },
+
+      $regex: function (a, b) {
+        return b.test(a);
+      },
+
+      $containsString: function (a, b) {
+        return (typeof a === 'string') && (a.indexOf(b) !== -1);
+      },
+
+      $containsNone: function (a, b) {
+        return !LokiOps.$containsAny(a, b);
+      },
+
+      $containsAny: function (a, b) {
+        var checkFn = containsCheckFn(a);
+        if (checkFn !== null) {
+          return (Array.isArray(b)) ? (b.some(checkFn)) : (checkFn(b));
+        }
+        return false;
+      },
+
+      $contains: function (a, b) {
+        var checkFn = containsCheckFn(a);
+        if (checkFn !== null) {
+          return (Array.isArray(b)) ? (b.every(checkFn)) : (checkFn(b));
+        }
+        return false;
+      },
+
+      $type: function (a, b) {
+        var type = typeof a;
+        if (type === 'object') {
+          if (Array.isArray(a)) {
+            type = 'array';
+          } else if (a instanceof Date) {
+            type = 'date';
+          }
+        }
+        return (typeof b !== 'object') ? (type === b) : doQueryOp(type, b);
+      },
+
+      $size: function (a, b) {
+        if (Array.isArray(a)) {
+          return (typeof b !== 'object') ? (a.length === b) : doQueryOp(a.length, b);
+        }
+        return false;
+      },
+
+      $len: function (a, b) {
+        if (typeof a === 'string') {
+          return (typeof b !== 'object') ? (a.length === b) : doQueryOp(a.length, b);
+        }
+        return false;
+      },
+
+      $where: function (a, b) {
+        return b(a) === true;
+      },
+
+      // field-level logical operators
+      // a is the value in the collection
+      // b is the nested query operation (for '$not')
+      //   or an array of nested query operations (for '$and' and '$or')
+      $not: function (a, b) {
+        return !doQueryOp(a, b);
+      },
+
+      $and: function (a, b) {
+        for (var idx = 0, len = b.length; idx < len; idx += 1) {
+          if (!doQueryOp(a, b[idx])) {
+            return false;
+          }
+        }
+        return true;
+      },
+
+      $or: function (a, b) {
+        for (var idx = 0, len = b.length; idx < len; idx += 1) {
+          if (doQueryOp(a, b[idx])) {
+            return true;
+          }
+        }
+        return false;
+      }
+    };
+
+    // making indexing opt-in... our range function knows how to deal with these ops :
+    var indexedOpsList = ['$eq', '$aeq', '$dteq', '$gt', '$gte', '$lt', '$lte'];
+
+    function clone(data, method) {
+      var cloneMethod = method || 'parse-stringify',
+        cloned;
+
+      switch (cloneMethod) {
+        case "parse-stringify":
+          cloned = JSON.parse(JSON.stringify(data));
+          break;
+        case "jquery-extend-deep":
+          cloned = jQuery.extend(true, {}, data);
+          break;
+        case "shallow":
+          cloned = Object.create(data.prototype || null);
+          Object.keys(data).map(function (i) {
+            cloned[i] = data[i];
+          });
+          break;
+        default:
+          break;
+      }
+
+      //if (cloneMethod === 'parse-stringify') {
+      //  cloned = JSON.parse(JSON.stringify(data));
+      //}
+      return cloned;
+    }
+
+    function cloneObjectArray(objarray, method) {
+      var i,
+        result = [];
+
+      if (method == "parse-stringify") {
+        return clone(objarray, method);
+      }
+
+      i = objarray.length-1;
+
+      for(;i<=0;i--) {
+        result.push(clone(objarray[i], method));
+      }
+
+      return result;
+    }
+
+    function localStorageAvailable() {
+      try {
+        return (window && window.localStorage !== undefined && window.localStorage !== null);
+      } catch (e) {
+        return false;
+      }
+    }
+
+
+    /**
+     * LokiEventEmitter is a minimalist version of EventEmitter. It enables any
+     * constructor that inherits EventEmitter to emit events and trigger
+     * listeners that have been added to the event through the on(event, callback) method
+     *
+     * @constructor LokiEventEmitter
+     */
+    function LokiEventEmitter() {}
+
+    /**
+     * @prop {hashmap} events - a hashmap, with each property being an array of callbacks
+     * @memberof LokiEventEmitter
+     */
+    LokiEventEmitter.prototype.events = {};
+
+    /**
+     * @prop {boolean} asyncListeners - boolean determines whether or not the callbacks associated with each event
+     * should happen in an async fashion or not
+     * Default is false, which means events are synchronous
+     * @memberof LokiEventEmitter
+     */
+    LokiEventEmitter.prototype.asyncListeners = false;
+
+    /**
+     * on(eventName, listener) - adds a listener to the queue of callbacks associated to an event
+     * @param {string} eventName - the name of the event to listen to
+     * @param {function} listener - callback function of listener to attach
+     * @returns {int} the index of the callback in the array of listeners for a particular event
+     * @memberof LokiEventEmitter
+     */
+    LokiEventEmitter.prototype.on = function (eventName, listener) {
+      var event = this.events[eventName];
+      if (!event) {
+        event = this.events[eventName] = [];
+      }
+      event.push(listener);
+      return listener;
+    };
+
+    /**
+     * emit(eventName, data) - emits a particular event
+     * with the option of passing optional parameters which are going to be processed by the callback
+     * provided signatures match (i.e. if passing emit(event, arg0, arg1) the listener should take two parameters)
+     * @param {string} eventName - the name of the event
+     * @param {object} data - optional object passed with the event
+     * @memberof LokiEventEmitter
+     */
+    LokiEventEmitter.prototype.emit = function (eventName, data) {
+      var self = this;
+      if (eventName && this.events[eventName]) {
+        this.events[eventName].forEach(function (listener) {
+          if (self.asyncListeners) {
+            setTimeout(function () {
+              listener(data);
+            }, 1);
+          } else {
+            listener(data);
+          }
+
+        });
+      } else {
+        throw new Error('No event ' + eventName + ' defined');
+      }
+    };
+
+    /**
+     * removeListener() - removes the listener at position 'index' from the event 'eventName'
+     * @param {string} eventName - the name of the event which the listener is attached to
+     * @param {function} listener - the listener callback function to remove from emitter
+     * @memberof LokiEventEmitter
+     */
+    LokiEventEmitter.prototype.removeListener = function (eventName, listener) {
+      if (this.events[eventName]) {
+        var listeners = this.events[eventName];
+        listeners.splice(listeners.indexOf(listener), 1);
+      }
+    };
+
+    /**
+     * Loki: The main database class
+     * @constructor Loki
+     * @implements LokiEventEmitter
+     * @param {string} filename - name of the file to be saved to
+     * @param {object} options - (Optional) config options object
+     * @param {string} options.env - override environment detection as 'NODEJS', 'BROWSER', 'CORDOVA'
+     * @param {boolean} options.verbose - enable console output (default is 'false')
+     * @param {boolean} options.autosave - enables autosave
+     * @param {int} options.autosaveInterval - time interval (in milliseconds) between saves (if dirty)
+     * @param {boolean} options.autoload - enables autoload on loki instantiation
+     * @param {function} options.autoloadCallback - user callback called after database load
+     * @param {adapter} options.adapter - an instance of a loki persistence adapter
+     */
+    function Loki(filename, options) {
+      this.filename = filename || 'loki.db';
+      this.collections = [];
+
+      // persist version of code which created the database to the database.
+      // could use for upgrade scenarios
+      this.databaseVersion = 1.1;
+      this.engineVersion = 1.1;
+
+      // autosave support (disabled by default)
+      // pass autosave: true, autosaveInterval: 6000 in options to set 6 second autosave
+      this.autosave = false;
+      this.autosaveInterval = 5000;
+      this.autosaveHandle = null;
+
+      this.options = {};
+
+      // currently keeping persistenceMethod and persistenceAdapter as loki level properties that
+      // will not or cannot be deserialized.  You are required to configure persistence every time
+      // you instantiate a loki object (or use default environment detection) in order to load the database anyways.
+
+      // persistenceMethod could be 'fs', 'localStorage', or 'adapter'
+      // this is optional option param, otherwise environment detection will be used
+      // if user passes their own adapter we will force this method to 'adapter' later, so no need to pass method option.
+      this.persistenceMethod = null;
+
+      // retain reference to optional (non-serializable) persistenceAdapter 'instance'
+      this.persistenceAdapter = null;
+
+      // enable console output if verbose flag is set (disabled by default)
+      this.verbose = options && options.hasOwnProperty('verbose') ? options.verbose : false;
+
+      this.events = {
+        'init': [],
+        'loaded': [],
+        'flushChanges': [],
+        'close': [],
+        'changes': [],
+        'warning': []
+      };
+
+      var getENV = function () {
+        // if (typeof global !== 'undefined' && (global.android || global.NSObject)) {
+        //   //If no adapter is set use the default nativescript adapter
+        //   if (!options.adapter) {
+        //     var LokiNativescriptAdapter = require('./loki-nativescript-adapter');
+        //     options.adapter=new LokiNativescriptAdapter();
+        //   }
+        //   return 'NATIVESCRIPT'; //nativescript
+        // }
+
+        if (typeof window === 'undefined') {
+          return 'NODEJS';
+        }
+
+        if (typeof global !== 'undefined' && global.window) {
+          return 'NODEJS'; //node-webkit
+        }
+
+        if (typeof document !== 'undefined') {
+          if (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1) {
+            return 'CORDOVA';
+          }
+          return 'BROWSER';
+        }
+        return 'CORDOVA';
+      };
+
+      // refactored environment detection due to invalid detection for browser environments.
+      // if they do not specify an options.env we want to detect env rather than default to nodejs.
+      // currently keeping two properties for similar thing (options.env and options.persistenceMethod)
+      //   might want to review whether we can consolidate.
+      if (options && options.hasOwnProperty('env')) {
+        this.ENV = options.env;
+      } else {
+        this.ENV = getENV();
+      }
+
+      // not sure if this is necessary now that i have refactored the line above
+      if (this.ENV === 'undefined') {
+        this.ENV = 'NODEJS';
+      }
+
+      //if (typeof (options) !== 'undefined') {
+      this.configureOptions(options, true);
+      //}
+
+      this.on('init', this.clearChanges);
+
+    }
+
+    // db class is an EventEmitter
+    Loki.prototype = new LokiEventEmitter();
+
+    // experimental support for browserify's abstract syntax scan to pick up dependency of indexed adapter.
+    // Hopefully, once this hits npm a browserify require of lokijs should scan the main file and detect this indexed adapter reference.
+    Loki.prototype.getIndexedAdapter = function () {
+      var adapter;
+
+      if (typeof require === 'function') {
+        adapter = require("./loki-indexed-adapter.js");
+      }
+
+      return adapter;
+    };
+
+
+    /**
+     * Allows reconfiguring database options
+     *
+     * @param {object} options - configuration options to apply to loki db object
+     * @param {string} options.env - override environment detection as 'NODEJS', 'BROWSER', 'CORDOVA'
+     * @param {boolean} options.verbose - enable console output (default is 'false')
+     * @param {boolean} options.autosave - enables autosave
+     * @param {int} options.autosaveInterval - time interval (in milliseconds) between saves (if dirty)
+     * @param {boolean} options.autoload - enables autoload on loki instantiation
+     * @param {function} options.autoloadCallback - user callback called after database load
+     * @param {adapter} options.adapter - an instance of a loki persistence adapter
+     * @param {boolean} initialConfig - (internal) true is passed when loki ctor is invoking
+     * @memberof Loki
+     */
+    Loki.prototype.configureOptions = function (options, initialConfig) {
+      var defaultPersistence = {
+          'NODEJS': 'fs',
+          'BROWSER': 'localStorage',
+          'CORDOVA': 'localStorage'
+        },
+        persistenceMethods = {
+          'fs': LokiFsAdapter,
+          'localStorage': LokiLocalStorageAdapter
+        };
+
+      this.options = {};
+
+      this.persistenceMethod = null;
+      // retain reference to optional persistence adapter 'instance'
+      // currently keeping outside options because it can't be serialized
+      this.persistenceAdapter = null;
+
+      // process the options
+      if (typeof (options) !== 'undefined') {
+        this.options = options;
+
+
+        if (this.options.hasOwnProperty('persistenceMethod')) {
+          // check if the specified persistence method is known
+          if (typeof (persistenceMethods[options.persistenceMethod]) == 'function') {
+            this.persistenceMethod = options.persistenceMethod;
+            this.persistenceAdapter = new persistenceMethods[options.persistenceMethod]();
+          }
+          // should be throw an error here, or just fall back to defaults ??
+        }
+
+        // if user passes adapter, set persistence mode to adapter and retain persistence adapter instance
+        if (this.options.hasOwnProperty('adapter')) {
+          this.persistenceMethod = 'adapter';
+          this.persistenceAdapter = options.adapter;
+          this.options.adapter = null;
+        }
+
+
+        // if they want to load database on loki instantiation, now is a good time to load... after adapter set and before possible autosave initiation
+        if (options.autoload && initialConfig) {
+          // for autoload, let the constructor complete before firing callback
+          var self = this;
+          setTimeout(function () {
+            self.loadDatabase(options, options.autoloadCallback);
+          }, 1);
+        }
+
+        if (this.options.hasOwnProperty('autosaveInterval')) {
+          this.autosaveDisable();
+          this.autosaveInterval = parseInt(this.options.autosaveInterval, 10);
+        }
+
+        if (this.options.hasOwnProperty('autosave') && this.options.autosave) {
+          this.autosaveDisable();
+          this.autosave = true;
+
+          if (this.options.hasOwnProperty('autosaveCallback')) {
+            this.autosaveEnable(options, options.autosaveCallback);
+          } else {
+            this.autosaveEnable();
+          }
+        }
+      } // end of options processing
+
+      // if by now there is no adapter specified by user nor derived from persistenceMethod: use sensible defaults
+      if (this.persistenceAdapter === null) {
+        this.persistenceMethod = defaultPersistence[this.ENV];
+        if (this.persistenceMethod) {
+          this.persistenceAdapter = new persistenceMethods[this.persistenceMethod]();
+        }
+      }
+
+    };
+
+    /**
+     * Shorthand method for quickly creating and populating an anonymous collection.
+     *    This collection is not referenced internally so upon losing scope it will be garbage collected.
+     *
+     * @example
+     * var results = new loki().anonym(myDocArray).find({'age': {'$gt': 30} });
+     *
+     * @param {Array} docs - document array to initialize the anonymous collection with
+     * @param {object} options - configuration object, see {@link Loki#addCollection} options
+     * @returns {Collection} New collection which you can query or chain
+     * @memberof Loki
+     */
+    Loki.prototype.anonym = function (docs, options) {
+      var collection = new Collection('anonym', options);
+      collection.insert(docs);
+
+      if(this.verbose)
+        collection.console = console;
+
+      return collection;
+    };
+
+    /**
+     * Adds a collection to the database.
+     * @param {string} name - name of collection to add
+     * @param {object} options - (optional) options to configure collection with.
+     * @param {array} options.unique - array of property names to define unique constraints for
+     * @param {array} options.exact - array of property names to define exact constraints for
+     * @param {array} options.indices - array property names to define binary indexes for
+     * @param {boolean} options.asyncListeners - default is false
+     * @param {boolean} options.disableChangesApi - default is true
+     * @param {boolean} options.autoupdate - use Object.observe to update objects automatically (default: false)
+     * @param {boolean} options.clone - specify whether inserts and queries clone to/from user
+     * @param {string} options.cloneMethod - 'parse-stringify' (default), 'jquery-extend-deep', 'shallow'
+     * @param {int} options.ttlInterval - time interval for clearing out 'aged' documents; not set by default.
+     * @returns {Collection} a reference to the collection which was just added
+     * @memberof Loki
+     */
+    Loki.prototype.addCollection = function (name, options) {
+      var collection = new Collection(name, options);
+      this.collections.push(collection);
+
+      if(this.verbose)
+        collection.console = console;
+
+      return collection;
+    };
+
+    Loki.prototype.loadCollection = function (collection) {
+      if (!collection.name) {
+        throw new Error('Collection must have a name property to be loaded');
+      }
+      this.collections.push(collection);
+    };
+
+    /**
+     * Retrieves reference to a collection by name.
+     * @param {string} collectionName - name of collection to look up
+     * @returns {Collection} Reference to collection in database by that name, or null if not found
+     * @memberof Loki
+     */
+    Loki.prototype.getCollection = function (collectionName) {
+      var i,
+        len = this.collections.length;
+
+      for (i = 0; i < len; i += 1) {
+        if (this.collections[i].name === collectionName) {
+          return this.collections[i];
+        }
+      }
+
+      // no such collection
+      this.emit('warning', 'collection ' + collectionName + ' not found');
+      return null;
+    };
+
+    Loki.prototype.listCollections = function () {
+
+      var i = this.collections.length,
+        colls = [];
+
+      while (i--) {
+        colls.push({
+          name: this.collections[i].name,
+          type: this.collections[i].objType,
+          count: this.collections[i].data.length
+        });
+      }
+      return colls;
+    };
+
+    /**
+     * Removes a collection from the database.
+     * @param {string} collectionName - name of collection to remove
+     * @memberof Loki
+     */
+    Loki.prototype.removeCollection = function (collectionName) {
+      var i,
+        len = this.collections.length;
+
+      for (i = 0; i < len; i += 1) {
+        if (this.collections[i].name === collectionName) {
+          var tmpcol = new Collection(collectionName, {});
+          var curcol = this.collections[i];
+          for (var prop in curcol) {
+            if (curcol.hasOwnProperty(prop) && tmpcol.hasOwnProperty(prop)) {
+                curcol[prop] = tmpcol[prop];
+            }
+          }
+          this.collections.splice(i, 1);
+          return;
+        }
+      }
+    };
+
+    Loki.prototype.getName = function () {
+      return this.name;
+    };
+
+    /**
+     * serializeReplacer - used to prevent certain properties from being serialized
+     *
+     */
+    Loki.prototype.serializeReplacer = function (key, value) {
+      switch (key) {
+      case 'autosaveHandle':
+      case 'persistenceAdapter':
+      case 'constraints':
+        return null;
+      default:
+        return value;
+      }
+    };
+
+    /**
+     * Serialize database to a string which can be loaded via {@link Loki#loadJSON}
+     *
+     * @returns {string} Stringified representation of the loki database.
+     * @memberof Loki
+     */
+    Loki.prototype.serialize = function () {
+      return JSON.stringify(this, this.serializeReplacer);
+    };
+    // alias of serialize
+    Loki.prototype.toJson = Loki.prototype.serialize;
+
+    /**
+     * Inflates a loki database from a serialized JSON string
+     *
+     * @param {string} serializedDb - a serialized loki database string
+     * @param {object} options - apply or override collection level settings
+     * @memberof Loki
+     */
+    Loki.prototype.loadJSON = function (serializedDb, options) {
+      var dbObject;
+      if (serializedDb.length === 0) {
+        dbObject = {};
+      } else {
+        dbObject = JSON.parse(serializedDb);
+      }
+
+      this.loadJSONObject(dbObject, options);
+    };
+
+    /**
+     * Inflates a loki database from a JS object
+     *
+     * @param {object} dbObject - a serialized loki database string
+     * @param {object} options - apply or override collection level settings
+     * @memberof Loki
+     */
+    Loki.prototype.loadJSONObject = function (dbObject, options) {
+      var i = 0,
+        len = dbObject.collections ? dbObject.collections.length : 0,
+        coll,
+        copyColl,
+        clen,
+        j;
+
+      this.name = dbObject.name;
+
+      // restore database version
+      this.databaseVersion = 1.0;
+      if (dbObject.hasOwnProperty('databaseVersion')) {
+        this.databaseVersion = dbObject.databaseVersion;
+      }
+
+      this.collections = [];
+
+      for (i; i < len; i += 1) {
+        coll = dbObject.collections[i];
+        copyColl = this.addCollection(coll.name);
+
+        copyColl.transactional = coll.transactional;
+        copyColl.asyncListeners = coll.asyncListeners;
+        copyColl.disableChangesApi = coll.disableChangesApi;
+        copyColl.cloneObjects = coll.cloneObjects;
+        copyColl.cloneMethod = coll.cloneMethod || "parse-stringify";
+        copyColl.autoupdate = coll.autoupdate;
+
+        // load each element individually
+        clen = coll.data.length;
+        j = 0;
+        if (options && options.hasOwnProperty(coll.name)) {
+
+          var loader = options[coll.name].inflate ? options[coll.name].inflate : Utils.copyProperties;
+
+          for (j; j < clen; j++) {
+            var collObj = new(options[coll.name].proto)();
+            loader(coll.data[j], collObj);
+            copyColl.data[j] = collObj;
+            copyColl.addAutoUpdateObserver(collObj);
+          }
+        } else {
+
+          for (j; j < clen; j++) {
+            copyColl.data[j] = coll.data[j];
+            copyColl.addAutoUpdateObserver(copyColl.data[j]);
+          }
+        }
+
+        copyColl.maxId = (coll.data.length === 0) ? 0 : coll.maxId;
+        copyColl.idIndex = coll.idIndex;
+        if (typeof (coll.binaryIndices) !== 'undefined') {
+          copyColl.binaryIndices = coll.binaryIndices;
+        }
+        if (typeof coll.transforms !== 'undefined') {
+          copyColl.transforms = coll.transforms;
+        }
+
+        copyColl.ensureId();
+
+        // regenerate unique indexes
+        copyColl.uniqueNames = [];
+        if (coll.hasOwnProperty("uniqueNames")) {
+          copyColl.uniqueNames = coll.uniqueNames;
+          for (j = 0; j < copyColl.uniqueNames.length; j++) {
+            copyColl.ensureUniqueIndex(copyColl.uniqueNames[j]);
+          }
+        }
+
+        // in case they are loading a database created before we added dynamic views, handle undefined
+        if (typeof (coll.DynamicViews) === 'undefined') continue;
+
+        // reinflate DynamicViews and attached Resultsets
+        for (var idx = 0; idx < coll.DynamicViews.length; idx++) {
+          var colldv = coll.DynamicViews[idx];
+
+          var dv = copyColl.addDynamicView(colldv.name, colldv.options);
+          dv.resultdata = colldv.resultdata;
+          dv.resultsdirty = colldv.resultsdirty;
+          dv.filterPipeline = colldv.filterPipeline;
+
+          dv.sortCriteria = colldv.sortCriteria;
+          dv.sortFunction = null;
+
+          dv.sortDirty = colldv.sortDirty;
+          dv.resultset.filteredrows = colldv.resultset.filteredrows;
+          dv.resultset.searchIsChained = colldv.resultset.searchIsChained;
+          dv.resultset.filterInitialized = colldv.resultset.filterInitialized;
+
+          dv.rematerialize({
+            removeWhereFilters: true
+          });
+        }
+      }
+    };
+
+    /**
+     * Emits the close event. In autosave scenarios, if the database is dirty, this will save and disable timer.
+     * Does not actually destroy the db.
+     *
+     * @param {function} callback - (Optional) if supplied will be registered with close event before emitting.
+     * @memberof Loki
+     */
+    Loki.prototype.close = function (callback) {
+      // for autosave scenarios, we will let close perform final save (if dirty)
+      // For web use, you might call from window.onbeforeunload to shutdown database, saving pending changes
+      if (this.autosave) {
+        this.autosaveDisable();
+        if (this.autosaveDirty()) {
+          this.saveDatabase(callback);
+          callback = undefined;
+        }
+      }
+
+      if (callback) {
+        this.on('close', callback);
+      }
+      this.emit('close');
+    };
+
+    /**-------------------------+
+    | Changes API               |
+    +--------------------------*/
+
+    /**
+     * The Changes API enables the tracking the changes occurred in the collections since the beginning of the session,
+     * so it's possible to create a differential dataset for synchronization purposes (possibly to a remote db)
+     */
+
+    /**
+     * (Changes API) : takes all the changes stored in each
+     * collection and creates a single array for the entire database. If an array of names
+     * of collections is passed then only the included collections will be tracked.
+     *
+     * @param {array} optional array of collection names. No arg means all collections are processed.
+     * @returns {array} array of changes
+     * @see private method createChange() in Collection
+     * @memberof Loki
+     */
+    Loki.prototype.generateChangesNotification = function (arrayOfCollectionNames) {
+      function getCollName(coll) {
+        return coll.name;
+      }
+      var changes = [],
+        selectedCollections = arrayOfCollectionNames || this.collections.map(getCollName);
+
+      this.collections.forEach(function (coll) {
+        if (selectedCollections.indexOf(getCollName(coll)) !== -1) {
+          changes = changes.concat(coll.getChanges());
+        }
+      });
+      return changes;
+    };
+
+    /**
+     * (Changes API) - stringify changes for network transmission
+     * @returns {string} string representation of the changes
+     * @memberof Loki
+     */
+    Loki.prototype.serializeChanges = function (collectionNamesArray) {
+      return JSON.stringify(this.generateChangesNotification(collectionNamesArray));
+    };
+
+    /**
+     * (Changes API) : clears all the changes in all collections.
+     * @memberof Loki
+     */
+    Loki.prototype.clearChanges = function () {
+      this.collections.forEach(function (coll) {
+        if (coll.flushChanges) {
+          coll.flushChanges();
+        }
+      });
+    };
+
+    /*------------------+
+    | PERSISTENCE       |
+    -------------------*/
+
+
+    /** there are two build in persistence adapters for internal use
+     * fs             for use in Nodejs type environments
+     * localStorage   for use in browser environment
+     * defined as helper classes here so its easy and clean to use
+     */
+
+    /**
+     * A loki persistence adapter which persists using node fs module
+     * @constructor LokiFsAdapter
+     */
+    function LokiFsAdapter() {
+      this.fs = require('fs');
+    }
+
+    /**
+     * loadDatabase() - Load data from file, will throw an error if the file does not exist
+     * @param {string} dbname - the filename of the database to load
+     * @param {function} callback - the callback to handle the result
+     * @memberof LokiFsAdapter
+     */
+    LokiFsAdapter.prototype.loadDatabase = function loadDatabase(dbname, callback) {
+      this.fs.readFile(dbname, {
+        encoding: 'utf8'
+      }, function readFileCallback(err, data) {
+        if (err) {
+          callback(new Error(err));
+        } else {
+          callback(data);
+        }
+      });
+    };
+
+    /**
+     * saveDatabase() - save data to file, will throw an error if the file can't be saved
+     * might want to expand this to avoid dataloss on partial save
+     * @param {string} dbname - the filename of the database to load
+     * @param {function} callback - the callback to handle the result
+     * @memberof LokiFsAdapter
+     */
+    LokiFsAdapter.prototype.saveDatabase = function saveDatabase(dbname, dbstring, callback) {
+      this.fs.writeFile(dbname, dbstring, callback);
+    };
+
+    /**
+     * deleteDatabase() - delete the database file, will throw an error if the
+     * file can't be deleted
+     * @param {string} dbname - the filename of the database to delete
+     * @param {function} callback - the callback to handle the result
+     * @memberof LokiFsAdapter
+     */
+    LokiFsAdapter.prototype.deleteDatabase = function deleteDatabase(dbname, callback) {
+      this.fs.unlink(dbname, function deleteDatabaseCallback(err) {
+        if (err) {
+          callback(new Error(err));
+        } else {
+          callback();
+        }
+      });
+    };
+
+
+    /**
+     * A loki persistence adapter which persists to web browser's local storage object
+     * @constructor LokiLocalStorageAdapter
+     */
+    function LokiLocalStorageAdapter() {}
+
+    /**
+     * loadDatabase() - Load data from localstorage
+     * @param {string} dbname - the name of the database to load
+     * @param {function} callback - the callback to handle the result
+     * @memberof LokiLocalStorageAdapter
+     */
+    LokiLocalStorageAdapter.prototype.loadDatabase = function loadDatabase(dbname, callback) {
+      if (localStorageAvailable()) {
+        callback(localStorage.getItem(dbname));
+      } else {
+        callback(new Error('localStorage is not available'));
+      }
+    };
+
+    /**
+     * saveDatabase() - save data to localstorage, will throw an error if the file can't be saved
+     * might want to expand this to avoid dataloss on partial save
+     * @param {string} dbname - the filename of the database to load
+     * @param {function} callback - the callback to handle the result
+     * @memberof LokiLocalStorageAdapter
+     */
+    LokiLocalStorageAdapter.prototype.saveDatabase = function saveDatabase(dbname, dbstring, callback) {
+      if (localStorageAvailable()) {
+        localStorage.setItem(dbname, dbstring);
+        callback(null);
+      } else {
+        callback(new Error('localStorage is not available'));
+      }
+    };
+
+    /**
+     * deleteDatabase() - delete the database from localstorage, will throw an error if it
+     * can't be deleted
+     * @param {string} dbname - the filename of the database to delete
+     * @param {function} callback - the callback to handle the result
+     * @memberof LokiLocalStorageAdapter
+     */
+    LokiLocalStorageAdapter.prototype.deleteDatabase = function deleteDatabase(dbname, callback) {
+      if (localStorageAvailable()) {
+        localStorage.removeItem(dbname);
+        callback(null);
+      } else {
+        callback(new Error('localStorage is not available'));
+      }
+    };
+
+    /**
+     * Handles loading from file system, local storage, or adapter (indexeddb)
+     *    This method utilizes loki configuration options (if provided) to determine which
+     *    persistence method to use, or environment detection (if configuration was not provided).
+     *
+     * @param {object} options - not currently used (remove or allow overrides?)
+     * @param {function} callback - (Optional) user supplied async callback / error handler
+     * @memberof Loki
+     */
+    Loki.prototype.loadDatabase = function (options, callback) {
+      var cFun = callback || function (err, data) {
+          if (err) {
+            throw err;
+          }
+        },
+        self = this;
+
+      // the persistenceAdapter should be present if all is ok, but check to be sure.
+      if (this.persistenceAdapter !== null) {
+
+        this.persistenceAdapter.loadDatabase(this.filename, function loadDatabaseCallback(dbString) {
+          if (typeof (dbString) === 'string') {
+            var parseSuccess = false;
+            try {
+              self.loadJSON(dbString, options || {});
+              parseSuccess = true;
+            } catch (err) {
+              cFun(err);
+            }
+            if (parseSuccess) {
+              cFun(null);
+              self.emit('loaded', 'database ' + self.filename + ' loaded');
+            }
+          } else {
+            // if adapter has returned an js object (other than null or error) attempt to load from JSON object
+            if (typeof (dbString) === "object" && dbString !== null && !(dbString instanceof Error)) {
+              self.loadJSONObject(dbString, options || {});
+              cFun(null); // return null on success
+              self.emit('loaded', 'database ' + self.filename + ' loaded');
+            } else {
+              // error from adapter (either null or instance of error), pass on to 'user' callback
+              cFun(dbString);
+            }
+          }
+        });
+
+      } else {
+        cFun(new Error('persistenceAdapter not configured'));
+      }
+    };
+
+    /**
+     * Handles saving to file system, local storage, or adapter (indexeddb)
+     *    This method utilizes loki configuration options (if provided) to determine which
+     *    persistence method to use, or environment detection (if configuration was not provided).
+     *
+     * @param {function} callback - (Optional) user supplied async callback / error handler
+     * @memberof Loki
+     */
+    Loki.prototype.saveDatabase = function (callback) {
+      var cFun = callback || function (err) {
+          if (err) {
+            throw err;
+          }
+          return;
+        },
+        self = this;
+
+      // the persistenceAdapter should be present if all is ok, but check to be sure.
+      if (this.persistenceAdapter !== null) {
+        // check if the adapter is requesting (and supports) a 'reference' mode export
+        if (this.persistenceAdapter.mode === "reference" && typeof this.persistenceAdapter.exportDatabase === "function") {
+          // filename may seem redundant but loadDatabase will need to expect this same filename
+          this.persistenceAdapter.exportDatabase(this.filename, this, function exportDatabaseCallback(err) {
+            self.autosaveClearFlags();
+            cFun(err);
+          });
+        }
+        // otherwise just pass the serialized database to adapter
+        else {
+          this.persistenceAdapter.saveDatabase(this.filename, self.serialize(), function saveDatabasecallback(err) {
+            self.autosaveClearFlags();
+            cFun(err);
+          });
+        }
+      } else {
+        cFun(new Error('persistenceAdapter not configured'));
+      }
+    };
+
+    // alias
+    Loki.prototype.save = Loki.prototype.saveDatabase;
+
+    /**
+     * Handles deleting a database from file system, local
+     *    storage, or adapter (indexeddb)
+     *    This method utilizes loki configuration options (if provided) to determine which
+     *    persistence method to use, or environment detection (if configuration was not provided).
+     *
+     * @param {object} options - not currently used (remove or allow overrides?)
+     * @param {function} callback - (Optional) user supplied async callback / error handler
+     * @memberof Loki
+     */
+    Loki.prototype.deleteDatabase = function (options, callback) {
+      var cFun = callback || function (err, data) {
+          if (err) {
+            throw err;
+          }
+        };
+
+      // the persistenceAdapter should be present if all is ok, but check to be sure.
+      if (this.persistenceAdapter !== null) {
+        this.persistenceAdapter.deleteDatabase(this.filename, function deleteDatabaseCallback(err) {
+          cFun(err);
+        });
+      } else {
+        cFun(new Error('persistenceAdapter not configured'));
+      }
+    };
+
+    /**
+     * autosaveDirty - check whether any collections are 'dirty' meaning we need to save (entire) database
+     *
+     * @returns {boolean} - true if database has changed since last autosave, false if not.
+     */
+    Loki.prototype.autosaveDirty = function () {
+      for (var idx = 0; idx < this.collections.length; idx++) {
+        if (this.collections[idx].dirty) {
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    /**
+     * autosaveClearFlags - resets dirty flags on all collections.
+     *    Called from saveDatabase() after db is saved.
+     *
+     */
+    Loki.prototype.autosaveClearFlags = function () {
+      for (var idx = 0; idx < this.collections.length; idx++) {
+        this.collections[idx].dirty = false;
+      }
+    };
+
+    /**
+     * autosaveEnable - begin a javascript interval to periodically save the database.
+     *
+     * @param {object} options - not currently used (remove or allow overrides?)
+     * @param {function} callback - (Optional) user supplied async callback
+     */
+    Loki.prototype.autosaveEnable = function (options, callback) {
+      this.autosave = true;
+
+      var delay = 5000,
+        self = this;
+
+      if (typeof (this.autosaveInterval) !== 'undefined' && this.autosaveInterval !== null) {
+        delay = this.autosaveInterval;
+      }
+
+      this.autosaveHandle = setInterval(function autosaveHandleInterval() {
+        // use of dirty flag will need to be hierarchical since mods are done at collection level with no visibility of 'db'
+        // so next step will be to implement collection level dirty flags set on insert/update/remove
+        // along with loki level isdirty() function which iterates all collections to see if any are dirty
+
+        if (self.autosaveDirty()) {
+          self.saveDatabase(callback);
+        }
+      }, delay);
+    };
+
+    /**
+     * autosaveDisable - stop the autosave interval timer.
+     *
+     */
+    Loki.prototype.autosaveDisable = function () {
+      if (typeof (this.autosaveHandle) !== 'undefined' && this.autosaveHandle !== null) {
+        clearInterval(this.autosaveHandle);
+        this.autosaveHandle = null;
+      }
+    };
+
+
+    /**
+     * Resultset class allowing chainable queries.  Intended to be instanced internally.
+     *    Collection.find(), Collection.where(), and Collection.chain() instantiate this.
+     *
+     * @example
+     *    mycollection.chain()
+     *      .find({ 'doors' : 4 })
+     *      .where(function(obj) { return obj.name === 'Toyota' })
+     *      .data();
+     *
+     * @constructor Resultset
+     * @param {Collection} collection - The collection which this Resultset will query against.
+     * @param {Object} options - Object containing one or more options.
+     * @param {string} options.queryObj - Optional mongo-style query object to initialize resultset with.
+     * @param {function} options.queryFunc - Optional javascript filter function to initialize resultset with.
+     * @param {bool} options.firstOnly - Optional boolean used by collection.findOne().
+     */
+    function Resultset(collection, options) {
+      options = options || {};
+
+      options.queryObj = options.queryObj || null;
+      options.queryFunc = options.queryFunc || null;
+      options.firstOnly = options.firstOnly || false;
+
+      // retain reference to collection we are querying against
+      this.collection = collection;
+
+      // if chain() instantiates with null queryObj and queryFunc, so we will keep flag for later
+      this.searchIsChained = (!options.queryObj && !options.queryFunc);
+      this.filteredrows = [];
+      this.filterInitialized = false;
+
+      // if user supplied initial queryObj or queryFunc, apply it
+      if (typeof (options.queryObj) !== "undefined" && options.queryObj !== null) {
+        return this.find(options.queryObj, options.firstOnly);
+      }
+      if (typeof (options.queryFunc) !== "undefined" && options.queryFunc !== null) {
+        return this.where(options.queryFunc);
+      }
+
+      // otherwise return unfiltered Resultset for future filtering
+      return this;
+    }
+
+    /**
+     * reset() - Reset the resultset to its initial state.
+     *
+     * @returns {Resultset} Reference to this resultset, for future chain operations.
+     */
+    Resultset.prototype.reset = function () {
+      if (this.filteredrows.length > 0) {
+        this.filteredrows = [];
+      }
+      this.filterInitialized = false;
+      return this;
+    };
+
+    /**
+     * toJSON() - Override of toJSON to avoid circular references
+     *
+     */
+    Resultset.prototype.toJSON = function () {
+      var copy = this.copy();
+      copy.collection = null;
+      return copy;
+    };
+
+    /**
+     * Allows you to limit the number of documents passed to next chain operation.
+     *    A resultset copy() is made to avoid altering original resultset.
+     *
+     * @param {int} qty - The number of documents to return.
+     * @returns {Resultset} Returns a copy of the resultset, limited by qty, for subsequent chain ops.
+     * @memberof Resultset
+     */
+    Resultset.prototype.limit = function (qty) {
+      // if this is chained resultset with no filters applied, we need to populate filteredrows first
+      if (this.searchIsChained && !this.filterInitialized && this.filteredrows.length === 0) {
+        this.filteredrows = this.collection.prepareFullDocIndex();
+      }
+
+      var rscopy = new Resultset(this.collection);
+      rscopy.filteredrows = this.filteredrows.slice(0, qty);
+      rscopy.filterInitialized = true;
+      return rscopy;
+    };
+
+    /**
+     * Used for skipping 'pos' number of documents in the resultset.
+     *
+     * @param {int} pos - Number of documents to skip; all preceding documents are filtered out.
+     * @returns {Resultset} Returns a copy of the resultset, containing docs starting at 'pos' for subsequent chain ops.
+     * @memberof Resultset
+     */
+    Resultset.prototype.offset = function (pos) {
+      // if this is chained resultset with no filters applied, we need to populate filteredrows first
+      if (this.searchIsChained && !this.filterInitialized && this.filteredrows.length === 0) {
+        this.filteredrows = this.collection.prepareFullDocIndex();
+      }
+
+      var rscopy = new Resultset(this.collection);
+      rscopy.filteredrows = this.filteredrows.slice(pos);
+      rscopy.filterInitialized = true;
+      return rscopy;
+    };
+
+    /**
+     * copy() - To support reuse of resultset in branched query situations.
+     *
+     * @returns {Resultset} Returns a copy of the resultset (set) but the underlying document references will be the same.
+     * @memberof Resultset
+     */
+    Resultset.prototype.copy = function () {
+      var result = new Resultset(this.collection);
+
+      if (this.filteredrows.length > 0) {
+        result.filteredrows = this.filteredrows.slice();
+      }
+      result.filterInitialized = this.filterInitialized;
+
+      return result;
+    };
+
+    /**
+     * Alias of copy()
+     * @memberof Resultset
+     */
+    Resultset.prototype.branch = Resultset.prototype.copy;
+
+    /**
+     * transform() - executes a named collection transform or raw array of transform steps against the resultset.
+     *
+     * @param transform {string|array} - name of collection transform or raw transform array
+     * @param parameters {object} - (Optional) object property hash of parameters, if the transform requires them.
+     * @returns {Resultset} either (this) resultset or a clone of of this resultset (depending on steps)
+     * @memberof Resultset
+     */
+    Resultset.prototype.transform = function (transform, parameters) {
+      var idx,
+        step,
+        rs = this;
+
+      // if transform is name, then do lookup first
+      if (typeof transform === 'string') {
+        if (this.collection.transforms.hasOwnProperty(transform)) {
+          transform = this.collection.transforms[transform];
+        }
+      }
+
+      // either they passed in raw transform array or we looked it up, so process
+      if (typeof transform !== 'object' || !Array.isArray(transform)) {
+          throw new Error("Invalid transform");
+      }
+
+      if (typeof parameters !== 'undefined') {
+        transform = Utils.resolveTransformParams(transform, parameters);
+      }
+
+      for (idx = 0; idx < transform.length; idx++) {
+        step = transform[idx];
+
+        switch (step.type) {
+        case "find":
+          rs.find(step.value);
+          break;
+        case "where":
+          rs.where(step.value);
+          break;
+        case "simplesort":
+          rs.simplesort(step.property, step.desc);
+          break;
+        case "compoundsort":
+          rs.compoundsort(step.value);
+          break;
+        case "sort":
+          rs.sort(step.value);
+          break;
+        case "limit":
+          rs = rs.limit(step.value);
+          break; // limit makes copy so update reference
+        case "offset":
+          rs = rs.offset(step.value);
+          break; // offset makes copy so update reference
+        case "map":
+          rs = rs.map(step.value);
+          break;
+        case "eqJoin":
+          rs = rs.eqJoin(step.joinData, step.leftJoinKey, step.rightJoinKey, step.mapFun);
+          break;
+          // following cases break chain by returning array data so make any of these last in transform steps
+        case "mapReduce":
+          rs = rs.mapReduce(step.mapFunction, step.reduceFunction);
+          break;
+          // following cases update documents in current filtered resultset (use carefully)
+        case "update":
+          rs.update(step.value);
+          break;
+        case "remove":
+          rs.remove();
+          break;
+        default:
+          break;
+        }
+      }
+
+      return rs;
+    };
+
+    /**
+     * User supplied compare function is provided two documents to compare. (chainable)
+     * @example
+     *    rslt.sort(function(obj1, obj2) {
+     *      if (obj1.name === obj2.name) return 0;
+     *      if (obj1.name > obj2.name) return 1;
+     *      if (obj1.name < obj2.name) return -1;
+     *    });
+     *
+     * @param {function} comparefun - A javascript compare function used for sorting.
+     * @returns {Resultset} Reference to this resultset, sorted, for future chain operations.
+     * @memberof Resultset
+     */
+    Resultset.prototype.sort = function (comparefun) {
+      // if this is chained resultset with no filters applied, just we need to populate filteredrows first
+      if (this.searchIsChained && !this.filterInitialized && this.filteredrows.length === 0) {
+        this.filteredrows = this.collection.prepareFullDocIndex();
+      }
+
+      var wrappedComparer =
+        (function (userComparer, data) {
+          return function (a, b) {
+            return userComparer(data[a], data[b]);
+          };
+        })(comparefun, this.collection.data);
+
+      this.filteredrows.sort(wrappedComparer);
+
+      return this;
+    };
+
+    /**
+     * Simpler, loose evaluation for user to sort based on a property name. (chainable).
+     *    Sorting based on the same lt/gt helper functions used for binary indices.
+     *
+     * @param {string} propname - name of property to sort by.
+     * @param {bool} isdesc - (Optional) If true, the property will be sorted in descending order
+     * @returns {Resultset} Reference to this resultset, sorted, for future chain operations.
+     * @memberof Resultset
+     */
+    Resultset.prototype.simplesort = function (propname, isdesc) {
+      // if this is chained resultset with no filters applied, just we need to populate filteredrows first
+      if (this.searchIsChained && !this.filterInitialized && this.filteredrows.length === 0) {
+        this.filteredrows = this.collection.prepareFullDocIndex();
+      }
+
+      if (typeof (isdesc) === 'undefined') {
+        isdesc = false;
+      }
+
+      var wrappedComparer =
+        (function (prop, desc, data) {
+          return function (a, b) {
+            return sortHelper(data[a][prop], data[b][prop], desc);
+          };
+        })(propname, isdesc, this.collection.data);
+
+      this.filteredrows.sort(wrappedComparer);
+
+      return this;
+    };
+
+    /**
+     * Allows sorting a resultset based on multiple columns.
+     * @example
+     * // to sort by age and then name (both ascending)
+     * rs.compoundsort(['age', 'name']);
+     * // to sort by age (ascending) and then by name (descending)
+     * rs.compoundsort(['age', ['name', true]);
+     *
+     * @param {array} properties - array of property names or subarray of [propertyname, isdesc] used evaluate sort order
+     * @returns {Resultset} Reference to this resultset, sorted, for future chain operations.
+     * @memberof Resultset
+     */
+    Resultset.prototype.compoundsort = function (properties) {
+      if (properties.length === 0) {
+        throw new Error("Invalid call to compoundsort, need at least one property");
+      }
+
+      var prop;
+      if (properties.length === 1) {
+        prop = properties[0];
+        if (Array.isArray(prop)) {
+          return this.simplesort(prop[0], prop[1]);
+        }
+        return this.simplesort(prop, false);
+      }
+
+      // unify the structure of 'properties' to avoid checking it repeatedly while sorting
+      for (var i = 0, len = properties.length; i < len; i += 1) {
+        prop = properties[i];
+        if (!Array.isArray(prop)) {
+          properties[i] = [prop, false];
+        }
+      }
+
+      // if this is chained resultset with no filters applied, just we need to populate filteredrows first
+      if (this.searchIsChained && !this.filterInitialized && this.filteredrows.length === 0) {
+        this.filteredrows = this.collection.prepareFullDocIndex();
+      }
+
+      var wrappedComparer =
+        (function (props, data) {
+          return function (a, b) {
+            return compoundeval(props, data[a], data[b]);
+          };
+        })(properties, this.collection.data);
+
+      this.filteredrows.sort(wrappedComparer);
+
+      return this;
+    };
+
+    /**
+     * calculateRange() - Binary Search utility method to find range/segment of values matching criteria.
+     *    this is used for collection.find() and first find filter of resultset/dynview
+     *    slightly different than get() binary search in that get() hones in on 1 value,
+     *    but we have to hone in on many (range)
+     * @param {string} op - operation, such as $eq
+     * @param {string} prop - name of property to calculate range for
+     * @param {object} val - value to use for range calculation.
+     * @returns {array} [start, end] index array positions
+     */
+    Resultset.prototype.calculateRange = function (op, prop, val) {
+      var rcd = this.collection.data;
+      var index = this.collection.binaryIndices[prop].values;
+      var min = 0;
+      var max = index.length - 1;
+      var mid = 0;
+
+      // when no documents are in collection, return empty range condition
+      if (rcd.length === 0) {
+        return [0, -1];
+      }
+
+      var minVal = rcd[index[min]][prop];
+      var maxVal = rcd[index[max]][prop];
+
+      // if value falls outside of our range return [0, -1] to designate no results
+      switch (op) {
+      case '$eq':
+      case '$aeq':
+        if (ltHelper(val, minVal, false) || gtHelper(val, maxVal, false)) {
+          return [0, -1];
+        }
+        break;
+      case '$dteq':
+        if (ltHelper(val, minVal, false) || gtHelper(val, maxVal, false)) {
+          return [0, -1];
+        }
+        break;
+      case '$gt':
+        if (gtHelper(val, maxVal, true)) {
+          return [0, -1];
+        }
+        break;
+      case '$gte':
+        if (gtHelper(val, maxVal, false)) {
+          return [0, -1];
+        }
+        break;
+      case '$lt':
+        if (ltHelper(val, minVal, true)) {
+          return [0, -1];
+        }
+        if (ltHelper(maxVal, val, false)) {
+          return [0, rcd.length - 1];
+        }
+        break;
+      case '$lte':
+        if (ltHelper(val, minVal, false)) {
+          return [0, -1];
+        }
+        if (ltHelper(maxVal, val, true)) {
+          return [0, rcd.length - 1];
+        }
+        break;
+      }
+
+      // hone in on start position of value
+      while (min < max) {
+        mid = (min + max) >> 1;
+
+        if (ltHelper(rcd[index[mid]][prop], val, false)) {
+          min = mid + 1;
+        } else {
+          max = mid;
+        }
+      }
+
+      var lbound = min;
+
+      // do not reset min, as the upper bound cannot be prior to the found low bound
+      max = index.length - 1;
+
+      // hone in on end position of value
+      while (min < max) {
+        mid = (min + max) >> 1;
+
+        if (ltHelper(val, rcd[index[mid]][prop], false)) {
+          max = mid;
+        } else {
+          min = mid + 1;
+        }
+      }
+
+      var ubound = max;
+
+      var lval = rcd[index[lbound]][prop];
+      var uval = rcd[index[ubound]][prop];
+
+      switch (op) {
+      case '$eq':
+        if (lval !== val) {
+          return [0, -1];
+        }
+        if (uval !== val) {
+          ubound--;
+        }
+
+        return [lbound, ubound];
+      case '$dteq':
+        if (lval > val || lval < val) {
+          return [0, -1];
+        }
+        if (uval > val || uval < val) {
+          ubound--;
+        }
+
+        return [lbound, ubound];
+
+
+      case '$gt':
+        if (ltHelper(uval, val, true)) {
+          return [0, -1];
+        }
+
+        return [ubound, rcd.length - 1];
+
+      case '$gte':
+        if (ltHelper(lval, val, false)) {
+          return [0, -1];
+        }
+
+        return [lbound, rcd.length - 1];
+
+      case '$lt':
+        if (lbound === 0 && ltHelper(lval, val, false)) {
+          return [0, 0];
+        }
+        return [0, lbound - 1];
+
+      case '$lte':
+        if (uval !== val) {
+          ubound--;
+        }
+
+        if (ubound === 0 && ltHelper(uval, val, false)) {
+          return [0, 0];
+        }
+        return [0, ubound];
+
+      default:
+        return [0, rcd.length - 1];
+      }
+    };
+
+    /**
+     * findOr() - oversee the operation of OR'ed query expressions.
+     *    OR'ed expression evaluation runs each expression individually against the full collection,
+     *    and finally does a set OR on each expression's results.
+     *    Each evaluation can utilize a binary index to prevent multiple linear array scans.
+     *
+     * @param {array} expressionArray - array of expressions
+     * @returns {Resultset} this resultset for further chain ops.
+     */
+    Resultset.prototype.findOr = function (expressionArray) {
+      var fr = null,
+          fri = 0, frlen = 0,
+          docset = [], idxset = [], idx = 0,
+          origCount = this.count();
+
+      // If filter is already initialized, then we query against only those items already in filter.
+      // This means no index utilization for fields, so hopefully its filtered to a smallish filteredrows.
+      for (var ei = 0, elen = expressionArray.length; ei < elen; ei++) {
+        // we need to branch existing query to run each filter separately and combine results
+        fr = this.branch().find(expressionArray[ei]).filteredrows;
+        frlen = fr.length;
+        // if the find operation did not reduce the initial set, then the initial set is the actual result
+        if (frlen === origCount) {
+          return this;
+        }
+
+        // add any document 'hits'
+        for (fri = 0; fri < frlen; fri++) {
+          idx = fr[fri];
+          if (idxset[idx] === undefined) {
+            idxset[idx] = true;
+            docset.push(idx);
+          }
+        }
+      }
+
+      this.filteredrows = docset;
+      this.filterInitialized = true;
+
+      return this;
+    };
+    Resultset.prototype.$or = Resultset.prototype.findOr;
+
+    /**
+     * findAnd() - oversee the operation of AND'ed query expressions.
+     *    AND'ed expression evaluation runs each expression progressively against the full collection,
+     *    internally utilizing existing chained resultset functionality.
+     *    Only the first filter can utilize a binary index.
+     *
+     * @param {array} expressionArray - array of expressions
+     * @returns {Resultset} this resultset for further chain ops.
+     */
+    Resultset.prototype.findAnd = function (expressionArray) {
+      // we have already implementing method chaining in this (our Resultset class)
+      // so lets just progressively apply user supplied and filters
+      for (var i = 0, len = expressionArray.length; i < len; i++) {
+        if (this.count() === 0) {
+          return this;
+        }
+        this.find(expressionArray[i]);
+      }
+      return this;
+    };
+    Resultset.prototype.$and = Resultset.prototype.findAnd;
+
+    /**
+     * Used for querying via a mongo-style query object.
+     *
+     * @param {object} query - A mongo-style query object used for filtering current results.
+     * @param {boolean} firstOnly - (Optional) Used by collection.findOne()
+     * @returns {Resultset} this resultset for further chain ops.
+     * @memberof Resultset
+     */
+    Resultset.prototype.find = function (query, firstOnly) {
+      if (this.collection.data.length === 0) {
+        if (this.searchIsChained) {
+          this.filteredrows = [];
+          this.filterInitialized = true;
+          return this;
+        }
+        return [];
+      }
+
+      var queryObject = query || 'getAll',
+          p,
+          property,
+          queryObjectOp,
+          operator,
+          value,
+          key,
+          searchByIndex = false,
+          result = [],
+          index = null;
+
+      // if this was note invoked via findOne()
+      firstOnly = firstOnly || false;
+
+      if (typeof queryObject === 'object') {
+        for (p in queryObject) {
+          if (hasOwnProperty.call(queryObject, p)) {
+            property = p;
+            queryObjectOp = queryObject[p];
+            break;
+          }
+        }
+      }
+
+      // apply no filters if they want all
+      if (!property || queryObject === 'getAll') {
+        // Chained queries can just do coll.chain().data() but let's
+        // be versatile and allow this also coll.chain().find().data()
+
+        // If a chained search, simply leave everything as-is.
+        // Note: If no filter at this point, it will be properly
+        // created by the follow-up queries or sorts that need it.
+        // If not chained, then return the collection data array copy.
+        return (this.searchIsChained) ? (this) : (this.collection.data.slice());
+      }
+
+      // injecting $and and $or expression tree evaluation here.
+      if (property === '$and' || property === '$or') {
+        if (this.searchIsChained) {
+          this[property](queryObjectOp);
+
+          // for chained find with firstonly,
+          if (firstOnly && this.filteredrows.length > 1) {
+            this.filteredrows = this.filteredrows.slice(0, 1);
+          }
+
+          return this;
+        } else {
+          // our $and operation internally chains filters
+          result = this.collection.chain()[property](queryObjectOp).data();
+
+          // if this was coll.findOne() return first object or empty array if null
+          // since this is invoked from a constructor we can't return null, so we will
+          // make null in coll.findOne();
+          if (firstOnly) {
+            return (result.length === 0) ? ([]) : (result[0]);
+          }
+
+          // not first only return all results
+          return result;
+        }
+      }
+
+      // see if query object is in shorthand mode (assuming eq operator)
+      if (queryObjectOp === null || (typeof queryObjectOp !== 'object' || queryObjectOp instanceof Date)) {
+        operator = '$eq';
+        value = queryObjectOp;
+      } else if (typeof queryObjectOp === 'object') {
+        for (key in queryObjectOp) {
+          if (hasOwnProperty.call(queryObjectOp, key)) {
+            operator = key;
+            value = queryObjectOp[key];
+            break;
+          }
+        }
+      } else {
+        throw new Error('Do not know what you want to do.');
+      }
+
+      // for regex ops, precompile
+      if (operator === '$regex') {
+        if (Array.isArray(value)) {
+          value = new RegExp(value[0], value[1]);
+        }
+        else if (!(value instanceof RegExp)) {
+          value = new RegExp(value);
+        }
+      }
+
+      // if user is deep querying the object such as find('name.first': 'odin')
+      var usingDotNotation = (property.indexOf('.') !== -1);
+
+      // if an index exists for the property being queried against, use it
+      // for now only enabling for non-chained query (who's set of docs matches index)
+      // or chained queries where it is the first filter applied and prop is indexed
+      var doIndexCheck = !usingDotNotation &&
+          (!this.searchIsChained || !this.filterInitialized);
+
+      if (doIndexCheck && this.collection.binaryIndices[property] &&
+          indexedOpsList.indexOf(operator) !== -1) {
+        // this is where our lazy index rebuilding will take place
+        // basically we will leave all indexes dirty until we need them
+        // so here we will rebuild only the index tied to this property
+        // ensureIndex() will only rebuild if flagged as dirty since we are not passing force=true param
+        this.collection.ensureIndex(property);
+
+        searchByIndex = true;
+        index = this.collection.binaryIndices[property];
+      }
+
+      // the comparison function
+      var fun = LokiOps[operator];
+
+      // "shortcut" for collection data
+      var t = this.collection.data;
+      // filter data length
+      var i = 0;
+
+      // Query executed differently depending on :
+      //    - whether it is chained or not
+      //    - whether the property being queried has an index defined
+      //    - if chained, we handle first pass differently for initial filteredrows[] population
+      //
+      // For performance reasons, each case has its own if block to minimize in-loop calculations
+
+      // If not a chained query, bypass filteredrows and work directly against data
+      if (!this.searchIsChained) {
+        if (!searchByIndex) {
+          i = t.length;
+
+          if (firstOnly) {
+            if (usingDotNotation) {
+              property = property.split('.');
+              while (i--) {
+                if (dotSubScan(t[i], property, fun, value)) {
+                  return (t[i]);
+                }
+              }
+            } else {
+              while (i--) {
+                if (fun(t[i][property], value)) {
+                  return (t[i]);
+                }
+              }
+            }
+
+            return [];
+          }
+
+          // if using dot notation then treat property as keypath such as 'name.first'.
+          // currently supporting dot notation for non-indexed conditions only
+          if (usingDotNotation) {
+            property = property.split('.');
+            while (i--) {
+              if (dotSubScan(t[i], property, fun, value)) {
+                result.push(t[i]);
+              }
+            }
+          } else {
+            while (i--) {
+              if (fun(t[i][property], value)) {
+                result.push(t[i]);
+              }
+            }
+          }
+        } else {
+          // searching by binary index via calculateRange() utility method
+          var seg = this.calculateRange(operator, property, value);
+
+          // not chained so this 'find' was designated in Resultset constructor
+          // so return object itself
+          if (firstOnly) {
+            if (seg[1] !== -1) {
+              return t[index.values[seg[0]]];
+            }
+            return [];
+          }
+
+          for (i = seg[0]; i <= seg[1]; i++) {
+            result.push(t[index.values[i]]);
+          }
+        }
+
+        // not a chained query so return result as data[]
+        return result;
+      }
+
+
+      // Otherwise this is a chained query
+
+      var filter, rowIdx = 0;
+
+      // If the filteredrows[] is already initialized, use it
+      if (this.filterInitialized) {
+        filter = this.filteredrows;
+        i = filter.length;
+
+        // currently supporting dot notation for non-indexed conditions only
+        if (usingDotNotation) {
+          property = property.split('.');
+          while (i--) {
+            rowIdx = filter[i];
+            if (dotSubScan(t[rowIdx], property, fun, value)) {
+              result.push(rowIdx);
+            }
+          }
+        } else {
+          while (i--) {
+            rowIdx = filter[i];
+            if (fun(t[rowIdx][property], value)) {
+              result.push(rowIdx);
+            }
+          }
+        }
+      }
+      // first chained query so work against data[] but put results in filteredrows
+      else {
+        // if not searching by index
+        if (!searchByIndex) {
+          i = t.length;
+
+          if (usingDotNotation) {
+            property = property.split('.');
+            while (i--) {
+              if (dotSubScan(t[i], property, fun, value)) {
+                result.push(i);
+              }
+            }
+          } else {
+            while (i--) {
+              if (fun(t[i][property], value)) {
+                result.push(i);
+              }
+            }
+          }
+        } else {
+          // search by index
+          var segm = this.calculateRange(operator, property, value);
+
+          for (i = segm[0]; i <= segm[1]; i++) {
+            result.push(index.values[i]);
+          }
+        }
+
+        this.filterInitialized = true; // next time work against filteredrows[]
+      }
+
+      this.filteredrows = result;
+      return this;
+    };
+
+
+    /**
+     * where() - Used for filtering via a javascript filter function.
+     *
+     * @param {function} fun - A javascript function used for filtering current results by.
+     * @returns {Resultset} this resultset for further chain ops.
+     * @memberof Resultset
+     */
+    Resultset.prototype.where = function (fun) {
+      var viewFunction,
+        result = [];
+
+      if ('function' === typeof fun) {
+        viewFunction = fun;
+      } else {
+        throw new TypeError('Argument is not a stored view or a function');
+      }
+      try {
+        // if not a chained query then run directly against data[] and return object []
+        if (!this.searchIsChained) {
+          var i = this.collection.data.length;
+
+          while (i--) {
+            if (viewFunction(this.collection.data[i]) === true) {
+              result.push(this.collection.data[i]);
+            }
+          }
+
+          // not a chained query so returning result as data[]
+          return result;
+        }
+        // else chained query, so run against filteredrows
+        else {
+          // If the filteredrows[] is already initialized, use it
+          if (this.filterInitialized) {
+            var j = this.filteredrows.length;
+
+            while (j--) {
+              if (viewFunction(this.collection.data[this.filteredrows[j]]) === true) {
+                result.push(this.filteredrows[j]);
+              }
+            }
+
+            this.filteredrows = result;
+
+            return this;
+          }
+          // otherwise this is initial chained op, work against data, push into filteredrows[]
+          else {
+            var k = this.collection.data.length;
+
+            while (k--) {
+              if (viewFunction(this.collection.data[k]) === true) {
+                result.push(k);
+              }
+            }
+
+            this.filteredrows = result;
+            this.filterInitialized = true;
+
+            return this;
+          }
+        }
+      } catch (err) {
+        throw err;
+      }
+    };
+
+    /**
+     * count() - returns the number of documents in the resultset.
+     *
+     * @returns {number} The number of documents in the resultset.
+     * @memberof Resultset
+     */
+    Resultset.prototype.count = function () {
+      if (this.searchIsChained && this.filterInitialized) {
+        return this.filteredrows.length;
+      }
+      return this.collection.count();
+    };
+
+    /**
+     * Terminates the chain and returns array of filtered documents
+     *
+     * @param {object} options - allows specifying 'forceClones' and 'forceCloneMethod' options.
+     * @param {boolean} options.forceClones - Allows forcing the return of cloned objects even when
+     *        the collection is not configured for clone object.
+     * @param {string} options.forceCloneMethod - Allows overriding the default or collection specified cloning method.
+     *        Possible values include 'parse-stringify', 'jquery-extend-deep', and 'shallow'
+     *
+     * @returns {array} Array of documents in the resultset
+     * @memberof Resultset
+     */
+    Resultset.prototype.data = function (options) {
+      var result = [],
+        data = this.collection.data,
+        len,
+        i,
+        method;
+
+      options = options || {};
+
+      // if this is chained resultset with no filters applied, just return collection.data
+      if (this.searchIsChained && !this.filterInitialized) {
+        if (this.filteredrows.length === 0) {
+          // determine whether we need to clone objects or not
+          if (this.collection.cloneObjects || options.forceClones) {
+            len = data.length;
+            method = options.forceCloneMethod || this.collection.cloneMethod;
+
+            for (i = 0; i < len; i++) {
+              result.push(clone(data[i], method));
+            }
+            return result;
+          }
+          // otherwise we are not cloning so return sliced array with same object references
+          else {
+            return data.slice();
+          }
+        } else {
+          // filteredrows must have been set manually, so use it
+          this.filterInitialized = true;
+        }
+      }
+
+      var fr = this.filteredrows;
+      len = fr.length;
+
+      if (this.collection.cloneObjects || options.forceClones) {
+        method = options.forceCloneMethod || this.collection.cloneMethod;
+        for (i = 0; i < len; i++) {
+          result.push(clone(data[fr[i]], method));
+        }
+      }
+      else {
+        for (i = 0; i < len; i++) {
+          result.push(data[fr[i]]);
+        }
+      }
+      return result;
+    };
+
+    /**
+     * Used to run an update operation on all documents currently in the resultset.
+     *
+     * @param {function} updateFunction - User supplied updateFunction(obj) will be executed for each document object.
+     * @returns {Resultset} this resultset for further chain ops.
+     * @memberof Resultset
+     */
+    Resultset.prototype.update = function (updateFunction) {
+
+      if (typeof (updateFunction) !== "function") {
+        throw new TypeError('Argument is not a function');
+      }
+
+      // if this is chained resultset with no filters applied, we need to populate filteredrows first
+      if (this.searchIsChained && !this.filterInitialized && this.filteredrows.length === 0) {
+        this.filteredrows = this.collection.prepareFullDocIndex();
+      }
+
+      var len = this.filteredrows.length,
+        rcd = this.collection.data;
+
+      for (var idx = 0; idx < len; idx++) {
+        // pass in each document object currently in resultset to user supplied updateFunction
+        updateFunction(rcd[this.filteredrows[idx]]);
+
+        // notify collection we have changed this object so it can update meta and allow DynamicViews to re-evaluate
+        this.collection.update(rcd[this.filteredrows[idx]]);
+      }
+
+      return this;
+    };
+
+    /**
+     * Removes all document objects which are currently in resultset from collection (as well as resultset)
+     *
+     * @returns {Resultset} this (empty) resultset for further chain ops.
+     * @memberof Resultset
+     */
+    Resultset.prototype.remove = function () {
+
+      // if this is chained resultset with no filters applied, we need to populate filteredrows first
+      if (this.searchIsChained && !this.filterInitialized && this.filteredrows.length === 0) {
+        this.filteredrows = this.collection.prepareFullDocIndex();
+      }
+
+      this.collection.remove(this.data());
+
+      this.filteredrows = [];
+
+      return this;
+    };
+
+    /**
+     * data transformation via user supplied functions
+     *
+     * @param {function} mapFunction - this function accepts a single document for you to transform and return
+     * @param {function} reduceFunction - this function accepts many (array of map outputs) and returns single value
+     * @returns {value} The output of your reduceFunction
+     * @memberof Resultset
+     */
+    Resultset.prototype.mapReduce = function (mapFunction, reduceFunction) {
+      try {
+        return reduceFunction(this.data().map(mapFunction));
+      } catch (err) {
+        throw err;
+      }
+    };
+
+    /**
+     * eqJoin() - Left joining two sets of data. Join keys can be defined or calculated properties
+     * eqJoin expects the right join key values to be unique.  Otherwise left data will be joined on the last joinData object with that key
+     * @param {Array} joinData - Data array to join to.
+     * @param {(string|function)} leftJoinKey - Property name in this result set to join on or a function to produce a value to join on
+     * @param {(string|function)} rightJoinKey - Property name in the joinData to join on or a function to produce a value to join on
+     * @param {function} mapFun - (Optional) A function that receives each matching pair and maps them into output objects - function(left,right){return joinedObject}
+     * @returns {Resultset} A resultset with data in the format [{left: leftObj, right: rightObj}]
+     * @memberof Resultset
+     */
+    Resultset.prototype.eqJoin = function (joinData, leftJoinKey, rightJoinKey, mapFun) {
+
+      var leftData = [],
+        leftDataLength,
+        rightData = [],
+        rightDataLength,
+        key,
+        result = [],
+        leftKeyisFunction = typeof leftJoinKey === 'function',
+        rightKeyisFunction = typeof rightJoinKey === 'function',
+        joinMap = {};
+
+      //get the left data
+      leftData = this.data();
+      leftDataLength = leftData.length;
+
+      //get the right data
+      if (joinData instanceof Resultset) {
+        rightData = joinData.data();
+      } else if (Array.isArray(joinData)) {
+        rightData = joinData;
+      } else {
+        throw new TypeError('joinData needs to be an array or result set');
+      }
+      rightDataLength = rightData.length;
+
+      //construct a lookup table
+
+      for (var i = 0; i < rightDataLength; i++) {
+        key = rightKeyisFunction ? rightJoinKey(rightData[i]) : rightData[i][rightJoinKey];
+        joinMap[key] = rightData[i];
+      }
+
+      if (!mapFun) {
+        mapFun = function (left, right) {
+          return {
+            left: left,
+            right: right
+          };
+        };
+      }
+
+      //Run map function over each object in the resultset
+      for (var j = 0; j < leftDataLength; j++) {
+        key = leftKeyisFunction ? leftJoinKey(leftData[j]) : leftData[j][leftJoinKey];
+        result.push(mapFun(leftData[j], joinMap[key] || {}));
+      }
+
+      //return return a new resultset with no filters
+      this.collection = new Collection('joinData');
+      this.collection.insert(result);
+      this.filteredrows = [];
+      this.filterInitialized = false;
+
+      return this;
+    };
+
+    Resultset.prototype.map = function (mapFun) {
+      var data = this.data().map(mapFun);
+      //return return a new resultset with no filters
+      this.collection = new Collection('mappedData');
+      this.collection.insert(data);
+      this.filteredrows = [];
+      this.filterInitialized = false;
+
+      return this;
+    };
+
+    /**
+     * DynamicView class is a versatile 'live' view class which can have filters and sorts applied.
+     *    Collection.addDynamicView(name) instantiates this DynamicView object and notifies it
+     *    whenever documents are add/updated/removed so it can remain up-to-date. (chainable)
+     *
+     * @example
+     * var mydv = mycollection.addDynamicView('test');  // default is non-persistent
+     * mydv.applyFind({ 'doors' : 4 });
+     * mydv.applyWhere(function(obj) { return obj.name === 'Toyota'; });
+     * var results = mydv.data();
+     *
+     * @constructor DynamicView
+     * @implements LokiEventEmitter
+     * @param {Collection} collection - A reference to the collection to work against
+     * @param {string} name - The name of this dynamic view
+     * @param {object} options - (Optional) Pass in object with 'persistent' and/or 'sortPriority' options.
+     * @param {boolean} options.persistent - indicates if view is to main internal results array in 'resultdata'
+     * @param {string} options.sortPriority - 'passive' (sorts performed on call to data) or 'active' (after updates)
+     * @param {number} options.minRebuildInterval - minimum rebuild interval (need clarification to docs here)
+     */
+    function DynamicView(collection, name, options) {
+      this.collection = collection;
+      this.name = name;
+      this.rebuildPending = false;
+      this.options = options || {};
+
+      if (!this.options.hasOwnProperty('persistent')) {
+        this.options.persistent = false;
+      }
+
+      // 'persistentSortPriority':
+      // 'passive' will defer the sort phase until they call data(). (most efficient overall)
+      // 'active' will sort async whenever next idle. (prioritizes read speeds)
+      if (!this.options.hasOwnProperty('sortPriority')) {
+        this.options.sortPriority = 'passive';
+      }
+
+      if (!this.options.hasOwnProperty('minRebuildInterval')) {
+        this.options.minRebuildInterval = 1;
+      }
+
+      this.resultset = new Resultset(collection);
+      this.resultdata = [];
+      this.resultsdirty = false;
+
+      this.cachedresultset = null;
+
+      // keep ordered filter pipeline
+      this.filterPipeline = [];
+
+      // sorting member variables
+      // we only support one active search, applied using applySort() or applySimpleSort()
+      this.sortFunction = null;
+      this.sortCriteria = null;
+      this.sortDirty = false;
+
+      // for now just have 1 event for when we finally rebuilt lazy view
+      // once we refactor transactions, i will tie in certain transactional events
+
+      this.events = {
+        'rebuild': []
+      };
+    }
+
+    DynamicView.prototype = new LokiEventEmitter();
+
+
+    /**
+     * rematerialize() - intended for use immediately after deserialization (loading)
+     *    This will clear out and reapply filterPipeline ops, recreating the view.
+     *    Since where filters do not persist correctly, this method allows
+     *    restoring the view to state where user can re-apply those where filters.
+     *
+     * @param {Object} options - (Optional) allows specification of 'removeWhereFilters' option
+     * @returns {DynamicView} This dynamic view for further chained ops.
+     * @memberof DynamicView
+     * @fires DynamicView.rebuild
+     */
+    DynamicView.prototype.rematerialize = function (options) {
+      var fpl,
+        fpi,
+        idx;
+
+      options = options || {};
+
+      this.resultdata = [];
+      this.resultsdirty = true;
+      this.resultset = new Resultset(this.collection);
+
+      if (this.sortFunction || this.sortCriteria) {
+        this.sortDirty = true;
+      }
+
+      if (options.hasOwnProperty('removeWhereFilters')) {
+        // for each view see if it had any where filters applied... since they don't
+        // serialize those functions lets remove those invalid filters
+        fpl = this.filterPipeline.length;
+        fpi = fpl;
+        while (fpi--) {
+          if (this.filterPipeline[fpi].type === 'where') {
+            if (fpi !== this.filterPipeline.length - 1) {
+              this.filterPipeline[fpi] = this.filterPipeline[this.filterPipeline.length - 1];
+            }
+
+            this.filterPipeline.length--;
+          }
+        }
+      }
+
+      // back up old filter pipeline, clear filter pipeline, and reapply pipeline ops
+      var ofp = this.filterPipeline;
+      this.filterPipeline = [];
+
+      // now re-apply 'find' filterPipeline ops
+      fpl = ofp.length;
+      for (idx = 0; idx < fpl; idx++) {
+        this.applyFind(ofp[idx].val);
+      }
+
+      // during creation of unit tests, i will remove this forced refresh and leave lazy
+      this.data();
+
+      // emit rebuild event in case user wants to be notified
+      this.emit('rebuild', this);
+
+      return this;
+    };
+
+    /**
+     * branchResultset() - Makes a copy of the internal resultset for branched queries.
+     *    Unlike this dynamic view, the branched resultset will not be 'live' updated,
+     *    so your branched query should be immediately resolved and not held for future evaluation.
+     *
+     * @param {(string|array)} transform - Optional name of collection transform, or an array of transform steps
+     * @param {object} parameters - optional parameters (if optional transform requires them)
+     * @returns {Resultset} A copy of the internal resultset for branched queries.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.branchResultset = function (transform, parameters) {
+      var rs = this.resultset.branch();
+
+      if (typeof transform === 'undefined') {
+        return rs;
+      }
+
+      return rs.transform(transform, parameters);
+    };
+
+    /**
+     * toJSON() - Override of toJSON to avoid circular references
+     *
+     */
+    DynamicView.prototype.toJSON = function () {
+      var copy = new DynamicView(this.collection, this.name, this.options);
+
+      copy.resultset = this.resultset;
+      copy.resultdata = []; // let's not save data (copy) to minimize size
+      copy.resultsdirty = true;
+      copy.filterPipeline = this.filterPipeline;
+      copy.sortFunction = this.sortFunction;
+      copy.sortCriteria = this.sortCriteria;
+      copy.sortDirty = this.sortDirty;
+
+      // avoid circular reference, reapply in db.loadJSON()
+      copy.collection = null;
+
+      return copy;
+    };
+
+    /**
+     * removeFilters() - Used to clear pipeline and reset dynamic view to initial state.
+     *     Existing options should be retained.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.removeFilters = function () {
+      this.rebuildPending = false;
+      this.resultset.reset();
+      this.resultdata = [];
+      this.resultsdirty = false;
+
+      this.cachedresultset = null;
+
+      // keep ordered filter pipeline
+      this.filterPipeline = [];
+
+      // sorting member variables
+      // we only support one active search, applied using applySort() or applySimpleSort()
+      this.sortFunction = null;
+      this.sortCriteria = null;
+      this.sortDirty = false;
+    };
+
+    /**
+     * applySort() - Used to apply a sort to the dynamic view
+     * @example
+     * dv.applySort(function(obj1, obj2) {
+     *   if (obj1.name === obj2.name) return 0;
+     *   if (obj1.name > obj2.name) return 1;
+     *   if (obj1.name < obj2.name) return -1;
+     * });
+     *
+     * @param {function} comparefun - a javascript compare function used for sorting
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.applySort = function (comparefun) {
+      this.sortFunction = comparefun;
+      this.sortCriteria = null;
+
+      this.queueSortPhase();
+
+      return this;
+    };
+
+    /**
+     * applySimpleSort() - Used to specify a property used for view translation.
+     * @example
+     * dv.applySimpleSort("name");
+     *
+     * @param {string} propname - Name of property by which to sort.
+     * @param {boolean} isdesc - (Optional) If true, the sort will be in descending order.
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.applySimpleSort = function (propname, isdesc) {
+      this.sortCriteria = [
+        [propname, isdesc || false]
+      ];
+      this.sortFunction = null;
+
+      this.queueSortPhase();
+
+      return this;
+    };
+
+    /**
+     * applySortCriteria() - Allows sorting a resultset based on multiple columns.
+     * @example
+     * // to sort by age and then name (both ascending)
+     * dv.applySortCriteria(['age', 'name']);
+     * // to sort by age (ascending) and then by name (descending)
+     * dv.applySortCriteria(['age', ['name', true]);
+     * // to sort by age (descending) and then by name (descending)
+     * dv.applySortCriteria(['age', true], ['name', true]);
+     *
+     * @param {array} properties - array of property names or subarray of [propertyname, isdesc] used evaluate sort order
+     * @returns {DynamicView} Reference to this DynamicView, sorted, for future chain operations.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.applySortCriteria = function (criteria) {
+      this.sortCriteria = criteria;
+      this.sortFunction = null;
+
+      this.queueSortPhase();
+
+      return this;
+    };
+
+    /**
+     * startTransaction() - marks the beginning of a transaction.
+     *
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     */
+    DynamicView.prototype.startTransaction = function () {
+      this.cachedresultset = this.resultset.copy();
+
+      return this;
+    };
+
+    /**
+     * commit() - commits a transaction.
+     *
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     */
+    DynamicView.prototype.commit = function () {
+      this.cachedresultset = null;
+
+      return this;
+    };
+
+    /**
+     * rollback() - rolls back a transaction.
+     *
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     */
+    DynamicView.prototype.rollback = function () {
+      this.resultset = this.cachedresultset;
+
+      if (this.options.persistent) {
+        // for now just rebuild the persistent dynamic view data in this worst case scenario
+        // (a persistent view utilizing transactions which get rolled back), we already know the filter so not too bad.
+        this.resultdata = this.resultset.data();
+
+        this.emit('rebuild', this);
+      }
+
+      return this;
+    };
+
+
+    /**
+     * Implementation detail.
+     * _indexOfFilterWithId() - Find the index of a filter in the pipeline, by that filter's ID.
+     *
+     * @param {string|number} uid - The unique ID of the filter.
+     * @returns {number}: index of the referenced filter in the pipeline; -1 if not found.
+     */
+    DynamicView.prototype._indexOfFilterWithId = function (uid) {
+      if (typeof uid === 'string' || typeof uid === 'number') {
+        for (var idx = 0, len = this.filterPipeline.length; idx < len; idx += 1) {
+          if (uid === this.filterPipeline[idx].uid) {
+            return idx;
+          }
+        }
+      }
+      return -1;
+    };
+
+    /**
+     * Implementation detail.
+     * _addFilter() - Add the filter object to the end of view's filter pipeline and apply the filter to the resultset.
+     *
+     * @param {object} filter - The filter object. Refer to applyFilter() for extra details.
+     */
+    DynamicView.prototype._addFilter = function (filter) {
+      this.filterPipeline.push(filter);
+      this.resultset[filter.type](filter.val);
+    };
+
+    /**
+     * reapplyFilters() - Reapply all the filters in the current pipeline.
+     *
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     */
+    DynamicView.prototype.reapplyFilters = function () {
+      this.resultset.reset();
+
+      this.cachedresultset = null;
+      if (this.options.persistent) {
+        this.resultdata = [];
+        this.resultsdirty = true;
+      }
+
+      var filters = this.filterPipeline;
+      this.filterPipeline = [];
+
+      for (var idx = 0, len = filters.length; idx < len; idx += 1) {
+        this._addFilter(filters[idx]);
+      }
+
+      if (this.sortFunction || this.sortCriteria) {
+        this.queueSortPhase();
+      } else {
+        this.queueRebuildEvent();
+      }
+
+      return this;
+    };
+
+    /**
+     * applyFilter() - Adds or updates a filter in the DynamicView filter pipeline
+     *
+     * @param {object} filter - A filter object to add to the pipeline.
+     *    The object is in the format { 'type': filter_type, 'val', filter_param, 'uid', optional_filter_id }
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.applyFilter = function (filter) {
+      var idx = this._indexOfFilterWithId(filter.uid);
+      if (idx >= 0) {
+        this.filterPipeline[idx] = filter;
+        return this.reapplyFilters();
+      }
+
+      this.cachedresultset = null;
+      if (this.options.persistent) {
+        this.resultdata = [];
+        this.resultsdirty = true;
+      }
+
+      this._addFilter(filter);
+
+      if (this.sortFunction || this.sortCriteria) {
+        this.queueSortPhase();
+      } else {
+        this.queueRebuildEvent();
+      }
+
+      return this;
+    };
+
+    /**
+     * applyFind() - Adds or updates a mongo-style query option in the DynamicView filter pipeline
+     *
+     * @param {object} query - A mongo-style query object to apply to pipeline
+     * @param {string|number} uid - Optional: The unique ID of this filter, to reference it in the future.
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.applyFind = function (query, uid) {
+      this.applyFilter({
+        type: 'find',
+        val: query,
+        uid: uid
+      });
+      return this;
+    };
+
+    /**
+     * applyWhere() - Adds or updates a javascript filter function in the DynamicView filter pipeline
+     *
+     * @param {function} fun - A javascript filter function to apply to pipeline
+     * @param {string|number} uid - Optional: The unique ID of this filter, to reference it in the future.
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.applyWhere = function (fun, uid) {
+      this.applyFilter({
+        type: 'where',
+        val: fun,
+        uid: uid
+      });
+      return this;
+    };
+
+    /**
+     * removeFilter() - Remove the specified filter from the DynamicView filter pipeline
+     *
+     * @param {string|number} uid - The unique ID of the filter to be removed.
+     * @returns {DynamicView} this DynamicView object, for further chain ops.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.removeFilter = function (uid) {
+      var idx = this._indexOfFilterWithId(uid);
+      if (idx < 0) {
+        throw new Error("Dynamic view does not contain a filter with ID: " + uid);
+      }
+
+      this.filterPipeline.splice(idx, 1);
+      this.reapplyFilters();
+      return this;
+    };
+
+    /**
+     * count() - returns the number of documents representing the current DynamicView contents.
+     *
+     * @returns {number} The number of documents representing the current DynamicView contents.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.count = function () {
+      if (this.options.persistent) {
+        return this.resultdata.length;
+      }
+      return this.resultset.count();
+    };
+
+    /**
+     * data() - resolves and pending filtering and sorting, then returns document array as result.
+     *
+     * @returns {array} An array of documents representing the current DynamicView contents.
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.data = function () {
+      // using final sort phase as 'catch all' for a few use cases which require full rebuild
+      if (this.sortDirty || this.resultsdirty) {
+        this.performSortPhase({suppressRebuildEvent: true});
+      }
+      return (this.options.persistent) ? (this.resultdata) : (this.resultset.data());
+    };
+
+    /**
+     * queueRebuildEvent() - When the view is not sorted we may still wish to be notified of rebuild events.
+     *     This event will throttle and queue a single rebuild event when batches of updates affect the view.
+     */
+    DynamicView.prototype.queueRebuildEvent = function () {
+      if (this.rebuildPending) {
+        return;
+      }
+      this.rebuildPending = true;
+
+      var self = this;
+      setTimeout(function () {
+        if (self.rebuildPending) {
+          self.rebuildPending = false;
+          self.emit('rebuild', self);
+        }
+      }, this.options.minRebuildInterval);
+    };
+
+    /**
+     * queueSortPhase : If the view is sorted we will throttle sorting to either :
+     *    (1) passive - when the user calls data(), or
+     *    (2) active - once they stop updating and yield js thread control
+     */
+    DynamicView.prototype.queueSortPhase = function () {
+      // already queued? exit without queuing again
+      if (this.sortDirty) {
+        return;
+      }
+      this.sortDirty = true;
+
+      var self = this;
+      if (this.options.sortPriority === "active") {
+        // active sorting... once they are done and yield js thread, run async performSortPhase()
+        setTimeout(function () {
+          self.performSortPhase();
+        }, this.options.minRebuildInterval);
+      } else {
+        // must be passive sorting... since not calling performSortPhase (until data call), lets use queueRebuildEvent to
+        // potentially notify user that data has changed.
+        this.queueRebuildEvent();
+      }
+    };
+
+    /**
+     * performSortPhase() - invoked synchronously or asynchronously to perform final sort phase (if needed)
+     *
+     */
+    DynamicView.prototype.performSortPhase = function (options) {
+      // async call to this may have been pre-empted by synchronous call to data before async could fire
+      if (!this.sortDirty && !this.resultsdirty) {
+        return;
+      }
+
+      options = options || {};
+
+      if (this.sortDirty) {
+        if (this.sortFunction) {
+          this.resultset.sort(this.sortFunction);
+        } else if (this.sortCriteria) {
+          this.resultset.compoundsort(this.sortCriteria);
+        }
+
+        this.sortDirty = false;
+      }
+
+      if (this.options.persistent) {
+        // persistent view, rebuild local resultdata array
+        this.resultdata = this.resultset.data();
+        this.resultsdirty = false;
+      }
+
+      if (!options.suppressRebuildEvent) {
+        this.emit('rebuild', this);
+      }
+    };
+
+    /**
+     * evaluateDocument() - internal method for (re)evaluating document inclusion.
+     *    Called by : collection.insert() and collection.update().
+     *
+     * @param {int} objIndex - index of document to (re)run through filter pipeline.
+     * @param {bool} isNew - true if the document was just added to the collection.
+     */
+    DynamicView.prototype.evaluateDocument = function (objIndex, isNew) {
+      var ofr = this.resultset.filteredrows;
+      var oldPos = (isNew) ? (-1) : (ofr.indexOf(+objIndex));
+      var oldlen = ofr.length;
+
+      // creating a 1-element resultset to run filter chain ops on to see if that doc passes filters;
+      // mostly efficient algorithm, slight stack overhead price (this function is called on inserts and updates)
+      var evalResultset = new Resultset(this.collection);
+      evalResultset.filteredrows = [objIndex];
+      evalResultset.filterInitialized = true;
+      var filter;
+      for (var idx = 0, len = this.filterPipeline.length; idx < len; idx++) {
+        filter = this.filterPipeline[idx];
+        evalResultset[filter.type](filter.val);
+      }
+
+      // not a true position, but -1 if not pass our filter(s), 0 if passed filter(s)
+      var newPos = (evalResultset.filteredrows.length === 0) ? -1 : 0;
+
+      // wasn't in old, shouldn't be now... do nothing
+      if (oldPos === -1 && newPos === -1) return;
+
+      // wasn't in resultset, should be now... add
+      if (oldPos === -1 && newPos !== -1) {
+        ofr.push(objIndex);
+
+        if (this.options.persistent) {
+          this.resultdata.push(this.collection.data[objIndex]);
+        }
+
+        // need to re-sort to sort new document
+        if (this.sortFunction || this.sortCriteria) {
+          this.queueSortPhase();
+        } else {
+          this.queueRebuildEvent();
+        }
+
+        return;
+      }
+
+      // was in resultset, shouldn't be now... delete
+      if (oldPos !== -1 && newPos === -1) {
+        if (oldPos < oldlen - 1) {
+          // http://dvolvr.davidwaterston.com/2013/06/09/restating-the-obvious-the-fastest-way-to-truncate-an-array-in-javascript/comment-page-1/
+          ofr[oldPos] = ofr[oldlen - 1];
+          ofr.length = oldlen - 1;
+
+          if (this.options.persistent) {
+            this.resultdata[oldPos] = this.resultdata[oldlen - 1];
+            this.resultdata.length = oldlen - 1;
+          }
+        } else {
+          ofr.length = oldlen - 1;
+
+          if (this.options.persistent) {
+            this.resultdata.length = oldlen - 1;
+          }
+        }
+
+        // in case changes to data altered a sort column
+        if (this.sortFunction || this.sortCriteria) {
+          this.queueSortPhase();
+        } else {
+          this.queueRebuildEvent();
+        }
+
+        return;
+      }
+
+      // was in resultset, should still be now... (update persistent only?)
+      if (oldPos !== -1 && newPos !== -1) {
+        if (this.options.persistent) {
+          // in case document changed, replace persistent view data with the latest collection.data document
+          this.resultdata[oldPos] = this.collection.data[objIndex];
+        }
+
+        // in case changes to data altered a sort column
+        if (this.sortFunction || this.sortCriteria) {
+          this.queueSortPhase();
+        } else {
+          this.queueRebuildEvent();
+        }
+
+        return;
+      }
+    };
+
+    /**
+     * removeDocument() - internal function called on collection.delete()
+     */
+    DynamicView.prototype.removeDocument = function (objIndex) {
+      var ofr = this.resultset.filteredrows;
+      var oldPos = ofr.indexOf(+objIndex);
+      var oldlen = ofr.length;
+      var idx;
+
+      if (oldPos !== -1) {
+        // if not last row in resultdata, swap last to hole and truncate last row
+        if (oldPos < oldlen - 1) {
+          ofr[oldPos] = ofr[oldlen - 1];
+          ofr.length = oldlen - 1;
+
+          if (this.options.persistent) {
+            this.resultdata[oldPos] = this.resultdata[oldlen - 1];
+            this.resultdata.length = oldlen - 1;
+          }
+        }
+        // last row, so just truncate last row
+        else {
+          ofr.length = oldlen - 1;
+
+          if (this.options.persistent) {
+            this.resultdata.length = oldlen - 1;
+          }
+        }
+
+        // in case changes to data altered a sort column
+        if (this.sortFunction || this.sortCriteria) {
+          this.queueSortPhase();
+        } else {
+          this.queueRebuildEvent();
+        }
+      }
+
+      // since we are using filteredrows to store data array positions
+      // if they remove a document (whether in our view or not),
+      // we need to adjust array positions -1 for all document array references after that position
+      oldlen = ofr.length;
+      for (idx = 0; idx < oldlen; idx++) {
+        if (ofr[idx] > objIndex) {
+          ofr[idx]--;
+        }
+      }
+    };
+
+    /**
+     * mapReduce() - data transformation via user supplied functions
+     *
+     * @param {function} mapFunction - this function accepts a single document for you to transform and return
+     * @param {function} reduceFunction - this function accepts many (array of map outputs) and returns single value
+     * @returns The output of your reduceFunction
+     * @memberof DynamicView
+     */
+    DynamicView.prototype.mapReduce = function (mapFunction, reduceFunction) {
+      try {
+        return reduceFunction(this.data().map(mapFunction));
+      } catch (err) {
+        throw err;
+      }
+    };
+
+
+    /**
+     * Collection class that handles documents of same type
+     * @constructor Collection
+     * @implements LokiEventEmitter
+     * @param {string} name - collection name
+     * @param {array|object} options - array of property names to be indicized OR a configuration object
+     * @param {array} options.unique - array of property names to define unique constraints for
+     * @param {array} options.exact - array of property names to define exact constraints for
+     * @param {array} options.indices - array property names to define binary indexes for
+     * @param {boolean} options.asyncListeners - default is false
+     * @param {boolean} options.disableChangesApi - default is true
+     * @param {boolean} options.autoupdate - use Object.observe to update objects automatically (default: false)
+     * @param {boolean} options.clone - specify whether inserts and queries clone to/from user
+     * @param {string} options.cloneMethod - 'parse-stringify' (default), 'jquery-extend-deep', 'shallow'
+     * @param {int} options.ttlInterval - time interval for clearing out 'aged' documents; not set by default.
+     */
+    function Collection(name, options) {
+      // the name of the collection
+
+      this.name = name;
+      // the data held by the collection
+      this.data = [];
+      this.idIndex = []; // index of id
+      this.binaryIndices = {}; // user defined indexes
+      this.constraints = {
+        unique: {},
+        exact: {}
+      };
+
+      // unique contraints contain duplicate object references, so they are not persisted.
+      // we will keep track of properties which have unique contraint applied here, and regenerate on load
+      this.uniqueNames = [];
+
+      // transforms will be used to store frequently used query chains as a series of steps
+      // which itself can be stored along with the database.
+      this.transforms = {};
+
+      // the object type of the collection
+      this.objType = name;
+
+      // in autosave scenarios we will use collection level dirty flags to determine whether save is needed.
+      // currently, if any collection is dirty we will autosave the whole database if autosave is configured.
+      // defaulting to true since this is called from addCollection and adding a collection should trigger save
+      this.dirty = true;
+
+      // private holders for cached data
+      this.cachedIndex = null;
+      this.cachedBinaryIndex = null;
+      this.cachedData = null;
+      var self = this;
+
+      /* OPTIONS */
+      options = options || {};
+
+      // exact match and unique constraints
+      if (options.hasOwnProperty('unique')) {
+        if (!Array.isArray(options.unique)) {
+          options.unique = [options.unique];
+        }
+        options.unique.forEach(function (prop) {
+          self.uniqueNames.push(prop); // used to regenerate on subsequent database loads
+          self.constraints.unique[prop] = new UniqueIndex(prop);
         });
       }
 
-      return _react2.default.createElement(
-        _Paper2.default,
-        _extends({}, other, {
-          rounded: false,
-          className: className,
-          style: (0, _simpleAssign2.default)({}, styles.root, style),
-          zDepth: zDepth
-        }),
-        menuElementLeft,
-        titleElement,
-        menuElementRight,
-        children
-      );
+      if (options.hasOwnProperty('exact')) {
+        options.exact.forEach(function (prop) {
+          self.constraints.exact[prop] = new ExactIndex(prop);
+        });
+      }
+
+      // is collection transactional
+      this.transactional = options.hasOwnProperty('transactional') ? options.transactional : false;
+
+      // options to clone objects when inserting them
+      this.cloneObjects = options.hasOwnProperty('clone') ? options.clone : false;
+
+      // default clone method (if enabled) is parse-stringify
+      this.cloneMethod = options.hasOwnProperty('cloneMethod') ? options.cloneMethod : "parse-stringify";
+
+      // option to make event listeners async, default is sync
+      this.asyncListeners = options.hasOwnProperty('asyncListeners') ? options.asyncListeners : false;
+
+      // disable track changes
+      this.disableChangesApi = options.hasOwnProperty('disableChangesApi') ? options.disableChangesApi : true;
+
+      // option to observe objects and update them automatically, ignored if Object.observe is not supported
+      this.autoupdate = options.hasOwnProperty('autoupdate') ? options.autoupdate : false;
+
+      //option to activate a cleaner daemon - clears "aged" documents at set intervals.
+      this.ttl = {
+        age: null,
+        ttlInterval: null,
+        daemon: null
+      };
+      this.setTTL(options.ttl || -1, options.ttlInterval);
+
+      // currentMaxId - change manually at your own peril!
+      this.maxId = 0;
+
+      this.DynamicViews = [];
+
+      // events
+      this.events = {
+        'insert': [],
+        'update': [],
+        'pre-insert': [],
+        'pre-update': [],
+        'close': [],
+        'flushbuffer': [],
+        'error': [],
+        'delete': [],
+        'warning': []
+      };
+
+      // changes are tracked by collection and aggregated by the db
+      this.changes = [];
+
+      // initialize the id index
+      this.ensureId();
+      var indices = [];
+      // initialize optional user-supplied indices array ['age', 'lname', 'zip']
+      if (options && options.indices) {
+        if (Object.prototype.toString.call(options.indices) === '[object Array]') {
+          indices = options.indices;
+        } else if (typeof options.indices === 'string') {
+          indices = [options.indices];
+        } else {
+          throw new TypeError('Indices needs to be a string or an array of strings');
+        }
+      }
+
+      for (var idx = 0; idx < indices.length; idx++) {
+        this.ensureIndex(indices[idx]);
+      }
+
+      function observerCallback(changes) {
+
+        var changedObjects = typeof Set === 'function' ? new Set() : [];
+
+        if(!changedObjects.add)
+          changedObjects.add = function(object) {
+            if(this.indexOf(object) === -1)
+              this.push(object);
+            return this;
+          };
+
+        changes.forEach(function (change) {
+          changedObjects.add(change.object);
+        });
+
+        changedObjects.forEach(function (object) {
+          if(!hasOwnProperty.call(object, '$loki'))
+            return self.removeAutoUpdateObserver(object);
+          try {
+            self.update(object);
+          } catch(err) {}
+        });
+      }
+
+      this.observerCallback = observerCallback;
+
+      /**
+       * This method creates a clone of the current status of an object and associates operation and collection name,
+       * so the parent db can aggregate and generate a changes object for the entire db
+       */
+      function createChange(name, op, obj) {
+        self.changes.push({
+          name: name,
+          operation: op,
+          obj: JSON.parse(JSON.stringify(obj))
+        });
+      }
+
+      // clear all the changes
+      function flushChanges() {
+        self.changes = [];
+      }
+
+      this.getChanges = function () {
+        return self.changes;
+      };
+
+      this.flushChanges = flushChanges;
+
+      /**
+       * If the changes API is disabled make sure only metadata is added without re-evaluating everytime if the changesApi is enabled
+       */
+      function insertMeta(obj) {
+        if (!obj) {
+          return;
+        }
+        if (!obj.meta) {
+          obj.meta = {};
+        }
+
+        obj.meta.created = (new Date()).getTime();
+        obj.meta.revision = 0;
+      }
+
+      function updateMeta(obj) {
+        if (!obj) {
+          return;
+        }
+        obj.meta.updated = (new Date()).getTime();
+        obj.meta.revision += 1;
+      }
+
+      function createInsertChange(obj) {
+        createChange(self.name, 'I', obj);
+      }
+
+      function createUpdateChange(obj) {
+        createChange(self.name, 'U', obj);
+      }
+
+      function insertMetaWithChange(obj) {
+        insertMeta(obj);
+        createInsertChange(obj);
+      }
+
+      function updateMetaWithChange(obj) {
+        updateMeta(obj);
+        createUpdateChange(obj);
+      }
+
+
+      /* assign correct handler based on ChangesAPI flag */
+      var insertHandler, updateHandler;
+
+      function setHandlers() {
+        insertHandler = self.disableChangesApi ? insertMeta : insertMetaWithChange;
+        updateHandler = self.disableChangesApi ? updateMeta : updateMetaWithChange;
+      }
+
+      setHandlers();
+
+      this.setChangesApi = function (enabled) {
+        self.disableChangesApi = !enabled;
+        setHandlers();
+      };
+      /**
+       * built-in events
+       */
+      this.on('insert', function insertCallback(obj) {
+        insertHandler(obj);
+      });
+
+      this.on('update', function updateCallback(obj) {
+        updateHandler(obj);
+      });
+
+      this.on('delete', function deleteCallback(obj) {
+        if (!self.disableChangesApi) {
+          createChange(self.name, 'R', obj);
+        }
+      });
+
+      this.on('warning', function (warning) {
+        self.console.warn(warning);
+      });
+      // for de-serialization purposes
+      flushChanges();
     }
-  }]);
 
-  return AppBar;
-}(_react.Component);
+    Collection.prototype = new LokiEventEmitter();
 
-AppBar.muiName = 'AppBar';
-AppBar.propTypes = {
-  /**
-   * Can be used to render a tab inside an app bar for instance.
-   */
-  children: _react.PropTypes.node,
-  /**
-   * Applied to the app bar's root element.
-   */
-  className: _react.PropTypes.string,
-  /**
-   * The classname of the icon on the left of the app bar.
-   * If you are using a stylesheet for your icons, enter the class name for the icon to be used here.
-   */
-  iconClassNameLeft: _react.PropTypes.string,
-  /**
-   * Similiar to the iconClassNameLeft prop except that
-   * it applies to the icon displayed on the right of the app bar.
-   */
-  iconClassNameRight: _react.PropTypes.string,
-  /**
-   * The custom element to be displayed on the left side of the
-   * app bar such as an SvgIcon.
-   */
-  iconElementLeft: _react.PropTypes.element,
-  /**
-   * Similiar to the iconElementLeft prop except that this element is displayed on the right of the app bar.
-   */
-  iconElementRight: _react.PropTypes.element,
-  /**
-   * Override the inline-styles of the element displayed on the right side of the app bar.
-   */
-  iconStyleRight: _react.PropTypes.object,
-  /**
-   * Callback function for when the left icon is selected via a touch tap.
-   *
-   * @param {object} event TouchTap event targeting the left `IconButton`.
-   */
-  onLeftIconButtonTouchTap: _react.PropTypes.func,
-  /**
-   * Callback function for when the right icon is selected via a touch tap.
-   *
-   * @param {object} event TouchTap event targeting the right `IconButton`.
-   */
-  onRightIconButtonTouchTap: _react.PropTypes.func,
-  /**
-   * Callback function for when the title text is selected via a touch tap.
-   *
-   * @param {object} event TouchTap event targeting the `title` node.
-   */
-  onTitleTouchTap: _react.PropTypes.func,
-  /**
-   * Determines whether or not to display the Menu icon next to the title.
-   * Setting this prop to false will hide the icon.
-   */
-  showMenuIconButton: _react.PropTypes.bool,
-  /**
-   * Override the inline-styles of the root element.
-   */
-  style: _react.PropTypes.object,
-  /**
-   * The title to display on the app bar.
-   */
-  title: _react.PropTypes.node,
-  /**
-   * Override the inline-styles of the app bar's title element.
-   */
-  titleStyle: _react.PropTypes.object,
-  /**
-   * The zDepth of the component.
-   * The shadow of the app bar is also dependent on this property.
-   */
-  zDepth: _propTypes2.default.zDepth
-};
-AppBar.defaultProps = {
-  showMenuIconButton: true,
-  title: '',
-  zDepth: 1
-};
-AppBar.contextTypes = {
-  muiTheme: _react.PropTypes.object.isRequired
-};
-exports.default = AppBar;
-}).call(this,require('_process'))
-},{"../IconButton":659,"../Paper":669,"../svg-icons/navigation/menu":735,"../utils/propTypes":748,"_process":753,"react":945,"simple-assign":964,"warning":967}],638:[function(require,module,exports){
-'use strict';
+    Collection.prototype.console = {
+      log: function () {},
+      warn: function () {},
+      error: function () {},
+    };
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = undefined;
+    Collection.prototype.addAutoUpdateObserver = function (object) {
+      if(!this.autoupdate || typeof Object.observe !== 'function')
+        return;
 
-var _AppBar = require('./AppBar');
+      Object.observe(object, this.observerCallback, ['add', 'update', 'delete', 'reconfigure', 'setPrototype']);
+    };
 
-var _AppBar2 = _interopRequireDefault(_AppBar);
+    Collection.prototype.removeAutoUpdateObserver = function (object) {
+      if(!this.autoupdate || typeof Object.observe !== 'function')
+        return;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+      Object.unobserve(object, this.observerCallback);
+    };
 
-exports.default = _AppBar2.default;
-},{"./AppBar":637}],639:[function(require,module,exports){
+    /**
+     * Adds a named collection transform to the collection
+     * @param {string} name - name to associate with transform
+     * @param {array} transform - an array of transformation 'step' objects to save into the collection
+     * @memberof Collection
+     */
+    Collection.prototype.addTransform = function (name, transform) {
+      if (this.transforms.hasOwnProperty(name)) {
+        throw new Error("a transform by that name already exists");
+      }
+
+      this.transforms[name] = transform;
+    };
+
+    /**
+     * Updates a named collection transform to the collection
+     * @param {string} name - name to associate with transform
+     * @param {object} transform - a transformation object to save into collection
+     * @memberof Collection
+     */
+    Collection.prototype.setTransform = function (name, transform) {
+      this.transforms[name] = transform;
+    };
+
+    /**
+     * Removes a named collection transform from the collection
+     * @param {string} name - name of collection transform to remove
+     * @memberof Collection
+     */
+    Collection.prototype.removeTransform = function (name) {
+      delete this.transforms[name];
+    };
+
+    Collection.prototype.byExample = function (template) {
+      var k, obj, query;
+      query = [];
+      for (k in template) {
+        if (!template.hasOwnProperty(k)) continue;
+        query.push((
+          obj = {},
+          obj[k] = template[k],
+          obj
+        ));
+      }
+      return {
+        '$and': query
+      };
+    };
+
+    Collection.prototype.findObject = function (template) {
+      return this.findOne(this.byExample(template));
+    };
+
+    Collection.prototype.findObjects = function (template) {
+      return this.find(this.byExample(template));
+    };
+
+    /*----------------------------+
+    | TTL daemon                  |
+    +----------------------------*/
+    Collection.prototype.ttlDaemonFuncGen = function () {
+      var collection = this;
+      var age = this.ttl.age;
+      return function ttlDaemon() {
+        var now = Date.now();
+        var toRemove = collection.chain().where(function daemonFilter(member) {
+          var timestamp = member.meta.updated || member.meta.created;
+          var diff = now - timestamp;
+          return age < diff;
+        });
+        toRemove.remove();
+      };
+    };
+
+    Collection.prototype.setTTL = function (age, interval) {
+      if (age < 0) {
+        clearInterval(this.ttl.daemon);
+      }
+      else {
+        this.ttl.age = age;
+        this.ttl.ttlInterval = interval;
+        this.ttl.daemon = setInterval(this.ttlDaemonFuncGen(), interval);
+      }
+    };
+
+    /*----------------------------+
+    | INDEXING                    |
+    +----------------------------*/
+
+    /**
+     * create a row filter that covers all documents in the collection
+     */
+    Collection.prototype.prepareFullDocIndex = function () {
+      var len = this.data.length;
+      var indexes = new Array(len);
+      for (var i = 0; i < len; i += 1) {
+        indexes[i] = i;
+      }
+      return indexes;
+    };
+
+    /**
+     * Ensure binary index on a certain field
+     * @param {string} property - name of property to create binary index on
+     * @param {boolean} force - (Optional) flag indicating whether to construct index immediately
+     * @memberof Collection
+     */
+    Collection.prototype.ensureIndex = function (property, force) {
+      // optional parameter to force rebuild whether flagged as dirty or not
+      if (typeof (force) === 'undefined') {
+        force = false;
+      }
+
+      if (property === null || property === undefined) {
+        throw new Error('Attempting to set index without an associated property');
+      }
+
+      if (this.binaryIndices[property] && !force) {
+        if (!this.binaryIndices[property].dirty) return;
+      }
+
+      var index = {
+        'name': property,
+        'dirty': true,
+        'values': this.prepareFullDocIndex()
+      };
+      this.binaryIndices[property] = index;
+
+      var wrappedComparer =
+        (function (p, data) {
+          return function (a, b) {
+            var objAp = data[a][p],
+                objBp = data[b][p];
+            if (objAp !== objBp) {
+              if (ltHelper(objAp, objBp, false)) return -1;
+              if (gtHelper(objAp, objBp, false)) return 1;
+            }
+            return 0;
+          };
+        })(property, this.data);
+
+      index.values.sort(wrappedComparer);
+      index.dirty = false;
+
+      this.dirty = true; // for autosave scenarios
+    };
+
+    Collection.prototype.getSequencedIndexValues = function(property) {
+      var idx, idxvals = this.binaryIndices[property].values;
+      var result = "";
+
+      for(idx=0; idx<idxvals.length; idx++) {
+        result += " [" + idx + "] " + this.data[idxvals[idx]][property];
+      }
+
+      return result;
+    };
+
+    Collection.prototype.ensureUniqueIndex = function (field) {
+      var index = this.constraints.unique[field];
+      if (!index) {
+        // keep track of new unique index for regenerate after database (re)load.
+        if (this.uniqueNames.indexOf(field) == -1) {
+          this.uniqueNames.push(field);
+        }
+      }
+
+      // if index already existed, (re)loading it will likely cause collisions, rebuild always
+      this.constraints.unique[field] = index = new UniqueIndex(field);
+      this.data.forEach(function (obj) {
+        index.set(obj);
+      });
+      return index;
+    };
+
+    /**
+     * Ensure all binary indices
+     */
+    Collection.prototype.ensureAllIndexes = function (force) {
+      var key, bIndices = this.binaryIndices;
+      for (key in bIndices) {
+        if (hasOwnProperty.call(bIndices, key)) {
+          this.ensureIndex(key, force);
+        }
+      }
+    };
+
+    Collection.prototype.flagBinaryIndexesDirty = function () {
+      var key, bIndices = this.binaryIndices;
+      for (key in bIndices) {
+        if (hasOwnProperty.call(bIndices, key)) {
+          bIndices[key].dirty = true;
+        }
+      }
+    };
+
+    Collection.prototype.flagBinaryIndexDirty = function (index) {
+      if(this.binaryIndices[index])
+        this.binaryIndices[index].dirty = true;
+    };
+
+    /**
+     * Quickly determine number of documents in collection (or query)
+     * @param {object} query - (optional) query object to count results of
+     * @returns {number} number of documents in the collection
+     * @memberof Collection
+     */
+    Collection.prototype.count = function (query) {
+      if (!query) {
+        return this.data.length;
+      }
+
+      return this.chain().find(query).filteredrows.length;
+    };
+
+    /**
+     * Rebuild idIndex
+     */
+    Collection.prototype.ensureId = function () {
+      var len = this.data.length,
+        i = 0;
+
+      this.idIndex = [];
+      for (i; i < len; i += 1) {
+        this.idIndex.push(this.data[i].$loki);
+      }
+    };
+
+    /**
+     * Rebuild idIndex async with callback - useful for background syncing with a remote server
+     */
+    Collection.prototype.ensureIdAsync = function (callback) {
+      this.async(function () {
+        this.ensureId();
+      }, callback);
+    };
+
+    /**
+     * Add a dynamic view to the collection
+     * @param {string} name - name of dynamic view to add
+     * @param {object} options - (optional) options to configure dynamic view with
+     * @param {boolean} options.persistent - indicates if view is to main internal results array in 'resultdata'
+     * @param {string} options.sortPriority - 'passive' (sorts performed on call to data) or 'active' (after updates)
+     * @param {number} options.minRebuildInterval - minimum rebuild interval (need clarification to docs here)
+     * @returns {DynamicView} reference to the dynamic view added
+     * @memberof Collection
+     **/
+
+    Collection.prototype.addDynamicView = function (name, options) {
+      var dv = new DynamicView(this, name, options);
+      this.DynamicViews.push(dv);
+
+      return dv;
+    };
+
+    /**
+     * Remove a dynamic view from the collection
+     * @param {string} name - name of dynamic view to remove
+     * @memberof Collection
+     **/
+    Collection.prototype.removeDynamicView = function (name) {
+      for (var idx = 0; idx < this.DynamicViews.length; idx++) {
+        if (this.DynamicViews[idx].name === name) {
+          this.DynamicViews.splice(idx, 1);
+        }
+      }
+    };
+
+    /**
+     * Look up dynamic view reference from within the collection
+     * @param {string} name - name of dynamic view to retrieve reference of
+     * @returns {DynamicView} A reference to the dynamic view with that name
+     * @memberof Collection
+     **/
+    Collection.prototype.getDynamicView = function (name) {
+      for (var idx = 0; idx < this.DynamicViews.length; idx++) {
+        if (this.DynamicViews[idx].name === name) {
+          return this.DynamicViews[idx];
+        }
+      }
+
+      return null;
+    };
+
+    /**
+     * find and update: pass a filtering function to select elements to be updated
+     * and apply the updatefunctino to those elements iteratively
+     * @param {function} filterFunction - filter function whose results will execute update
+     * @param {function} updateFunction - update function to run against filtered documents
+     * @memberof Collection
+     */
+    Collection.prototype.findAndUpdate = function (filterFunction, updateFunction) {
+      var results = this.where(filterFunction),
+        i = 0,
+        obj;
+      try {
+        for (i; i < results.length; i++) {
+          obj = updateFunction(results[i]);
+          this.update(obj);
+        }
+
+      } catch (err) {
+        this.rollback();
+        this.console.error(err.message);
+      }
+    };
+
+    /**
+     * Adds object(s) to collection, ensure object(s) have meta properties, clone it if necessary, etc.
+     * @param {object|array} doc - the document (or array of documents) to be inserted
+     * @returns {object|array} document or documents inserted
+     * @memberof Collection
+     */
+    Collection.prototype.insert = function (doc) {
+      if (!Array.isArray(doc)) {
+        return this.insertOne(doc);
+      }
+
+      // holder to the clone of the object inserted if collections is set to clone objects
+      var obj;
+      var results = [];
+      for (var i = 0, len = doc.length; i < len; i++) {
+        obj = this.insertOne(doc[i]);
+        if (!obj) {
+          return undefined;
+        }
+        results.push(obj);
+      }
+      return results.length === 1 ? results[0] : results;
+    };
+
+    /**
+     * Adds a single object, ensures it has meta properties, clone it if necessary, etc.
+     * @param {object} doc - the document to be inserted
+     * @returns {object} document or 'undefined' if there was a problem inserting it
+     * @memberof Collection
+     */
+    Collection.prototype.insertOne = function (doc) {
+      var err = null;
+      if (typeof doc !== 'object') {
+        err = new TypeError('Document needs to be an object');
+      } else if (doc === null) {
+        err = new TypeError('Object cannot be null');
+      }
+
+      if (err !== null) {
+        this.emit('error', err);
+        throw err;
+      }
+
+      // if configured to clone, do so now... otherwise just use same obj reference
+      var obj = this.cloneObjects ? clone(doc, this.cloneMethod) : doc;
+
+      if (typeof obj.meta === 'undefined') {
+        obj.meta = {
+          revision: 0,
+          created: 0
+        };
+      }
+
+      this.emit('pre-insert', obj);
+      if (!this.add(obj)) {
+        return undefined;
+      }
+
+      this.addAutoUpdateObserver(obj);
+      this.emit('insert', obj);
+      return obj;
+    };
+
+    /**
+     * Empties the collection.
+     * @memberof Collection
+     */
+    Collection.prototype.clear = function () {
+      this.data = [];
+      this.idIndex = [];
+      this.binaryIndices = {};
+      this.cachedIndex = null;
+      this.cachedBinaryIndex = null;
+      this.cachedData = null;
+      this.maxId = 0;
+      this.DynamicViews = [];
+      this.dirty = true;
+    };
+
+    /**
+     * Updates an object and notifies collection that the document has changed.
+     * @param {object} doc - document to update within the collection
+     * @memberof Collection
+     */
+    Collection.prototype.update = function (doc) {
+      this.flagBinaryIndexesDirty();
+
+      if (Array.isArray(doc)) {
+        var k = 0,
+          len = doc.length;
+        for (k; k < len; k += 1) {
+          this.update(doc[k]);
+        }
+        return;
+      }
+
+      // verify object is a properly formed document
+      if (!hasOwnProperty.call(doc, '$loki')) {
+        throw new Error('Trying to update unsynced document. Please save the document first by using insert() or addMany()');
+      }
+      try {
+        this.startTransaction();
+        var arr = this.get(doc.$loki, true),
+          obj,
+          position,
+          self = this;
+
+        obj = arr[0]; // -internal- obj ref
+        position = arr[1]; // position in data array
+
+        if (!arr) {
+          throw new Error('Trying to update a document not in collection.');
+        }
+        this.emit('pre-update', doc);
+
+        Object.keys(this.constraints.unique).forEach(function (key) {
+          self.constraints.unique[key].update(obj, doc);
+        });
+
+        // operate the update
+        this.data[position] = doc;
+
+        if(obj !== doc) {
+          this.addAutoUpdateObserver(doc);
+        }
+
+        // now that we can efficiently determine the data[] position of newly added document,
+        // submit it for all registered DynamicViews to evaluate for inclusion/exclusion
+        for (var idx = 0; idx < this.DynamicViews.length; idx++) {
+          this.DynamicViews[idx].evaluateDocument(position, false);
+        }
+
+        this.idIndex[position] = obj.$loki;
+
+        this.commit();
+        this.dirty = true; // for autosave scenarios
+        this.emit('update', doc);
+        return doc;
+      } catch (err) {
+        this.rollback();
+        this.console.error(err.message);
+        this.emit('error', err);
+        throw (err); // re-throw error so user does not think it succeeded
+      }
+    };
+
+    /**
+     * Add object to collection
+     */
+    Collection.prototype.add = function (obj) {
+      // if parameter isn't object exit with throw
+      if ('object' !== typeof obj) {
+        throw new TypeError('Object being added needs to be an object');
+      }
+      // if object you are adding already has id column it is either already in the collection
+      // or the object is carrying its own 'id' property.  If it also has a meta property,
+      // then this is already in collection so throw error, otherwise rename to originalId and continue adding.
+      if (typeof(obj.$loki) !== 'undefined') {
+        throw new Error('Document is already in collection, please use update()');
+      }
+
+      this.flagBinaryIndexesDirty();
+
+      /*
+       * try adding object to collection
+       */
+      try {
+        this.startTransaction();
+        this.maxId++;
+
+        if (isNaN(this.maxId)) {
+          this.maxId = (this.data[this.data.length - 1].$loki + 1);
+        }
+
+        obj.$loki = this.maxId;
+        obj.meta.version = 0;
+
+        var key, constrUnique = this.constraints.unique;
+        for (key in constrUnique) {
+          if (hasOwnProperty.call(constrUnique, key)) {
+            constrUnique[key].set(obj);
+          }
+        }
+
+        // add new obj id to idIndex
+        this.idIndex.push(obj.$loki);
+
+        // add the object
+        this.data.push(obj);
+
+        // now that we can efficiently determine the data[] position of newly added document,
+        // submit it for all registered DynamicViews to evaluate for inclusion/exclusion
+        var addedPos = this.data.length - 1;
+        var dvlen = this.DynamicViews.length;
+        for (var i = 0; i < dvlen; i++) {
+          this.DynamicViews[i].evaluateDocument(addedPos, true);
+        }
+
+        this.commit();
+        this.dirty = true; // for autosave scenarios
+
+        return (this.cloneObjects) ? (clone(obj, this.cloneMethod)) : (obj);
+      } catch (err) {
+        this.rollback();
+        this.console.error(err.message);
+        this.emit('error', err);
+        throw (err); // re-throw error so user does not think it succeeded
+      }
+    };
+
+
+    Collection.prototype.removeWhere = function (query) {
+      var list;
+      if (typeof query === 'function') {
+        list = this.data.filter(query);
+      } else {
+        list = new Resultset(this, {
+          queryObj: query
+        });
+      }
+      this.remove(list);
+    };
+
+    Collection.prototype.removeDataOnly = function () {
+      this.remove(this.data.slice());
+    };
+
+    /**
+     * Remove a document from the collection
+     * @param {object} doc - document to remove from collection
+     * @memberof Collection
+     */
+    Collection.prototype.remove = function (doc) {
+      if (typeof doc === 'number') {
+        doc = this.get(doc);
+      }
+
+      if ('object' !== typeof doc) {
+        throw new Error('Parameter is not an object');
+      }
+      if (Array.isArray(doc)) {
+        var k = 0,
+          len = doc.length;
+        for (k; k < len; k += 1) {
+          this.remove(doc[k]);
+        }
+        return;
+      }
+
+      if (!hasOwnProperty.call(doc, '$loki')) {
+        throw new Error('Object is not a document stored in the collection');
+      }
+
+      this.flagBinaryIndexesDirty();
+
+      try {
+        this.startTransaction();
+        var arr = this.get(doc.$loki, true),
+          // obj = arr[0],
+          position = arr[1];
+        var self = this;
+        Object.keys(this.constraints.unique).forEach(function (key) {
+          if (doc[key] !== null && typeof doc[key] !== 'undefined') {
+            self.constraints.unique[key].remove(doc[key]);
+          }
+        });
+        // now that we can efficiently determine the data[] position of newly added document,
+        // submit it for all registered DynamicViews to remove
+        for (var idx = 0; idx < this.DynamicViews.length; idx++) {
+          this.DynamicViews[idx].removeDocument(position);
+        }
+
+        this.data.splice(position, 1);
+        this.removeAutoUpdateObserver(doc);
+
+        // remove id from idIndex
+        this.idIndex.splice(position, 1);
+
+        this.commit();
+        this.dirty = true; // for autosave scenarios
+        this.emit('delete', arr[0]);
+        delete doc.$loki;
+        delete doc.meta;
+        return doc;
+
+      } catch (err) {
+        this.rollback();
+        this.console.error(err.message);
+        this.emit('error', err);
+        return null;
+      }
+    };
+
+    /*---------------------+
+    | Finding methods     |
+    +----------------------*/
+
+    /**
+     * Get by Id - faster than other methods because of the searching algorithm
+     * @param {int} id - $loki id of document you want to retrieve
+     * @param {boolean} returnPosition - if 'true' we will return [object, position]
+     * @returns {object|array|null} Object reference if document was found, null if not,
+     *     or an array if 'returnPosition' was passed.
+     * @memberof Collection
+     */
+    Collection.prototype.get = function (id, returnPosition) {
+      var retpos = returnPosition || false,
+          data = this.idIndex,
+          max = data.length - 1,
+          min = 0,
+          mid = (min + max) >> 1;
+
+      id = typeof id === 'number' ? id : parseInt(id, 10);
+
+      if (isNaN(id)) {
+        throw new TypeError('Passed id is not an integer');
+      }
+
+      while (data[min] < data[max]) {
+        mid = (min + max) >> 1;
+
+        if (data[mid] < id) {
+          min = mid + 1;
+        } else {
+          max = mid;
+        }
+      }
+
+      if (max === min && data[min] === id) {
+        if (retpos) {
+          return [this.data[min], min];
+        }
+        return this.data[min];
+      }
+      return null;
+
+    };
+
+    /**
+     * Retrieve doc by Unique index
+     * @param {string} field - name of uniquely indexed property to use when doing lookup
+     * @param {value} value - unique value to search for
+     * @returns {object} document matching the value passed
+     * @memberof Collection
+     */
+    Collection.prototype.by = function (field, value) {
+      var self;
+      if (value === undefined) {
+        self = this;
+        return function (value) {
+          return self.by(field, value);
+        };
+      }
+
+      var result = this.constraints.unique[field].get(value);
+      if (!this.cloneObjects) {
+        return result;
+      }
+      else {
+        return clone(result, this.cloneMethod);
+      }
+    };
+
+    /**
+     * Find one object by index property, by property equal to value
+     * @param {object} query - query object used to perform search with
+     * @returns {object|null} First matching document, or null if none
+     * @memberof Collection
+     */
+    Collection.prototype.findOne = function (query) {
+      // Instantiate Resultset and exec find op passing firstOnly = true param
+      var result = new Resultset(this, {
+        queryObj: query,
+        firstOnly: true
+      });
+      if (Array.isArray(result) && result.length === 0) {
+        return null;
+      } else {
+        if (!this.cloneObjects) {
+          return result;
+        }
+        else {
+          return clone(result, this.cloneMethod);
+        }
+      }
+    };
+
+    /**
+     * Chain method, used for beginning a series of chained find() and/or view() operations
+     * on a collection.
+     *
+     * @param {array} transform - Ordered array of transform step objects similar to chain
+     * @param {object} parameters - Object containing properties representing parameters to substitute
+     * @returns {Resultset} (this) resultset, or data array if any map or join functions where called
+     * @memberof Collection
+     */
+    Collection.prototype.chain = function (transform, parameters) {
+      var rs = new Resultset(this);
+
+      if (typeof transform === 'undefined') {
+        return rs;
+      }
+
+      return rs.transform(transform, parameters);
+    };
+
+    /**
+     * Find method, api is similar to mongodb.
+     * for more complex queries use [chain()]{@link Collection#chain} or [where()]{@link Collection#where}.
+     * @example {@tutorial Query Examples}
+     * @param {object} query - 'mongo-like' query object
+     * @returns {array} Array of matching documents
+     * @memberof Collection
+     */
+    Collection.prototype.find = function (query) {
+      if (typeof (query) === 'undefined') {
+        query = 'getAll';
+      }
+
+      var results = new Resultset(this, {
+        queryObj: query
+      });
+      if (!this.cloneObjects) {
+        return results;
+      }
+      else {
+        return cloneObjectArray(results, this.cloneMethod);
+      }
+    };
+
+    /**
+     * Find object by unindexed field by property equal to value,
+     * simply iterates and returns the first element matching the query
+     */
+    Collection.prototype.findOneUnindexed = function (prop, value) {
+      var i = this.data.length,
+        doc;
+      while (i--) {
+        if (this.data[i][prop] === value) {
+          doc = this.data[i];
+          return doc;
+        }
+      }
+      return null;
+    };
+
+    /**
+     * Transaction methods
+     */
+
+    /** start the transation */
+    Collection.prototype.startTransaction = function () {
+      if (this.transactional) {
+        this.cachedData = clone(this.data, this.cloneMethod);
+        this.cachedIndex = this.idIndex;
+        this.cachedBinaryIndex = this.binaryIndices;
+
+        // propagate startTransaction to dynamic views
+        for (var idx = 0; idx < this.DynamicViews.length; idx++) {
+          this.DynamicViews[idx].startTransaction();
+        }
+      }
+    };
+
+    /** commit the transation */
+    Collection.prototype.commit = function () {
+      if (this.transactional) {
+        this.cachedData = null;
+        this.cachedIndex = null;
+        this.cachedBinaryIndex = null;
+
+        // propagate commit to dynamic views
+        for (var idx = 0; idx < this.DynamicViews.length; idx++) {
+          this.DynamicViews[idx].commit();
+        }
+      }
+    };
+
+    /** roll back the transation */
+    Collection.prototype.rollback = function () {
+      if (this.transactional) {
+        if (this.cachedData !== null && this.cachedIndex !== null) {
+          this.data = this.cachedData;
+          this.idIndex = this.cachedIndex;
+          this.binaryIndices = this.cachedBinaryIndex;
+        }
+
+        // propagate rollback to dynamic views
+        for (var idx = 0; idx < this.DynamicViews.length; idx++) {
+          this.DynamicViews[idx].rollback();
+        }
+      }
+    };
+
+    // async executor. This is only to enable callbacks at the end of the execution.
+    Collection.prototype.async = function (fun, callback) {
+      setTimeout(function () {
+        if (typeof fun === 'function') {
+          fun();
+          callback();
+        } else {
+          throw new TypeError('Argument passed for async execution is not a function');
+        }
+      }, 0);
+    };
+
+    /**
+     * Query the collection by supplying a javascript filter function.
+     * @example
+     * var results = coll.where(function(obj) {
+     *   return obj.legs === 8;
+     * });
+     *
+     * @param {function} fun - filter function to run against all collection docs
+     * @returns {array} all documents which pass your filter function
+     * @memberof Collection
+     */
+    Collection.prototype.where = function (fun) {
+      var results = new Resultset(this, {
+        queryFunc: fun
+      });
+      if (!this.cloneObjects) {
+        return results;
+      }
+      else {
+        return cloneObjectArray(results, this.cloneMethod);
+      }
+    };
+
+    /**
+     * Map Reduce operation
+     *
+     * @param {function} mapFunction - function to use as map function
+     * @param {function} reduceFunction - function to use as reduce function
+     * @returns {data} The result of your mapReduce operation
+     * @memberof Collection
+     */
+    Collection.prototype.mapReduce = function (mapFunction, reduceFunction) {
+      try {
+        return reduceFunction(this.data.map(mapFunction));
+      } catch (err) {
+        throw err;
+      }
+    };
+
+    /**
+     * Join two collections on specified properties
+     *
+     * @param {array} joinData - array of documents to 'join' to this collection
+     * @param {string} leftJoinProp - property name in collection
+     * @param {string} rightJoinProp - property name in joinData
+     * @param {function} mapFun - (Optional) map function to use
+     * @returns {Resultset} Result of the mapping operation
+     * @memberof Collection
+     */
+    Collection.prototype.eqJoin = function (joinData, leftJoinProp, rightJoinProp, mapFun) {
+      // logic in Resultset class
+      return new Resultset(this).eqJoin(joinData, leftJoinProp, rightJoinProp, mapFun);
+    };
+
+    /* ------ STAGING API -------- */
+    /**
+     * stages: a map of uniquely identified 'stages', which hold copies of objects to be
+     * manipulated without affecting the data in the original collection
+     */
+    Collection.prototype.stages = {};
+
+    /**
+     * (Staging API) create a stage and/or retrieve it
+     * @memberof Collection
+     */
+    Collection.prototype.getStage = function (name) {
+      if (!this.stages[name]) {
+        this.stages[name] = {};
+      }
+      return this.stages[name];
+    };
+    /**
+     * a collection of objects recording the changes applied through a commmitStage
+     */
+    Collection.prototype.commitLog = [];
+
+    /**
+     * (Staging API) create a copy of an object and insert it into a stage
+     * @memberof Collection
+     */
+    Collection.prototype.stage = function (stageName, obj) {
+      var copy = JSON.parse(JSON.stringify(obj));
+      this.getStage(stageName)[obj.$loki] = copy;
+      return copy;
+    };
+
+    /**
+     * (Staging API) re-attach all objects to the original collection, so indexes and views can be rebuilt
+     * then create a message to be inserted in the commitlog
+     * @param {string} stageName - name of stage
+     * @param {string} message
+     * @memberof Collection
+     */
+    Collection.prototype.commitStage = function (stageName, message) {
+      var stage = this.getStage(stageName),
+        prop,
+        timestamp = new Date().getTime();
+
+      for (prop in stage) {
+
+        this.update(stage[prop]);
+        this.commitLog.push({
+          timestamp: timestamp,
+          message: message,
+          data: JSON.parse(JSON.stringify(stage[prop]))
+        });
+      }
+      this.stages[stageName] = {};
+    };
+
+    Collection.prototype.no_op = function () {
+      return;
+    };
+
+    /**
+     * @memberof Collection
+     */
+    Collection.prototype.extract = function (field) {
+      var i = 0,
+        len = this.data.length,
+        isDotNotation = isDeepProperty(field),
+        result = [];
+      for (i; i < len; i += 1) {
+        result.push(deepProperty(this.data[i], field, isDotNotation));
+      }
+      return result;
+    };
+
+    /**
+     * @memberof Collection
+     */
+    Collection.prototype.max = function (field) {
+      return Math.max.apply(null, this.extract(field));
+    };
+
+    /**
+     * @memberof Collection
+     */
+    Collection.prototype.min = function (field) {
+      return Math.min.apply(null, this.extract(field));
+    };
+
+    /**
+     * @memberof Collection
+     */
+    Collection.prototype.maxRecord = function (field) {
+      var i = 0,
+        len = this.data.length,
+        deep = isDeepProperty(field),
+        result = {
+          index: 0,
+          value: undefined
+        },
+        max;
+
+      for (i; i < len; i += 1) {
+        if (max !== undefined) {
+          if (max < deepProperty(this.data[i], field, deep)) {
+            max = deepProperty(this.data[i], field, deep);
+            result.index = this.data[i].$loki;
+          }
+        } else {
+          max = deepProperty(this.data[i], field, deep);
+          result.index = this.data[i].$loki;
+        }
+      }
+      result.value = max;
+      return result;
+    };
+
+    /**
+     * @memberof Collection
+     */
+    Collection.prototype.minRecord = function (field) {
+      var i = 0,
+        len = this.data.length,
+        deep = isDeepProperty(field),
+        result = {
+          index: 0,
+          value: undefined
+        },
+        min;
+
+      for (i; i < len; i += 1) {
+        if (min !== undefined) {
+          if (min > deepProperty(this.data[i], field, deep)) {
+            min = deepProperty(this.data[i], field, deep);
+            result.index = this.data[i].$loki;
+          }
+        } else {
+          min = deepProperty(this.data[i], field, deep);
+          result.index = this.data[i].$loki;
+        }
+      }
+      result.value = min;
+      return result;
+    };
+
+    /**
+     * @memberof Collection
+     */
+    Collection.prototype.extractNumerical = function (field) {
+      return this.extract(field).map(parseBase10).filter(Number).filter(function (n) {
+        return !(isNaN(n));
+      });
+    };
+
+    /**
+     * Calculates the average numerical value of a property
+     *
+     * @param {string} field - name of property in docs to average
+     * @returns {number} average of property in all docs in the collection
+     * @memberof Collection
+     */
+    Collection.prototype.avg = function (field) {
+      return average(this.extractNumerical(field));
+    };
+
+    /**
+     * Calculate standard deviation of a field
+     * @memberof Collection
+     * @param {string} field
+     */
+    Collection.prototype.stdDev = function (field) {
+      return standardDeviation(this.extractNumerical(field));
+    };
+
+    /**
+     * @memberof Collection
+     * @param {string} field
+     */
+    Collection.prototype.mode = function (field) {
+      var dict = {},
+        data = this.extract(field);
+      data.forEach(function (obj) {
+        if (dict[obj]) {
+          dict[obj] += 1;
+        } else {
+          dict[obj] = 1;
+        }
+      });
+      var max,
+        prop, mode;
+      for (prop in dict) {
+        if (max) {
+          if (max < dict[prop]) {
+            mode = prop;
+          }
+        } else {
+          mode = prop;
+          max = dict[prop];
+        }
+      }
+      return mode;
+    };
+
+    /**
+     * @memberof Collection
+     * @param {string} field - property name
+     */
+    Collection.prototype.median = function (field) {
+      var values = this.extractNumerical(field);
+      values.sort(sub);
+
+      var half = Math.floor(values.length / 2);
+
+      if (values.length % 2) {
+        return values[half];
+      } else {
+        return (values[half - 1] + values[half]) / 2.0;
+      }
+    };
+
+    /**
+     * General utils, including statistical functions
+     */
+    function isDeepProperty(field) {
+      return field.indexOf('.') !== -1;
+    }
+
+    function parseBase10(num) {
+      return parseFloat(num, 10);
+    }
+
+    function isNotUndefined(obj) {
+      return obj !== undefined;
+    }
+
+    function add(a, b) {
+      return a + b;
+    }
+
+    function sub(a, b) {
+      return a - b;
+    }
+
+    function median(values) {
+      values.sort(sub);
+      var half = Math.floor(values.length / 2);
+      return (values.length % 2) ? values[half] : ((values[half - 1] + values[half]) / 2.0);
+    }
+
+    function average(array) {
+      return (array.reduce(add, 0)) / array.length;
+    }
+
+    function standardDeviation(values) {
+      var avg = average(values);
+      var squareDiffs = values.map(function (value) {
+        var diff = value - avg;
+        var sqrDiff = diff * diff;
+        return sqrDiff;
+      });
+
+      var avgSquareDiff = average(squareDiffs);
+
+      var stdDev = Math.sqrt(avgSquareDiff);
+      return stdDev;
+    }
+
+    function deepProperty(obj, property, isDeep) {
+      if (isDeep === false) {
+        // pass without processing
+        return obj[property];
+      }
+      var pieces = property.split('.'),
+        root = obj;
+      while (pieces.length > 0) {
+        root = root[pieces.shift()];
+      }
+      return root;
+    }
+
+    function binarySearch(array, item, fun) {
+      var lo = 0,
+        hi = array.length,
+        compared,
+        mid;
+      while (lo < hi) {
+        mid = (lo + hi) >> 1;
+        compared = fun.apply(null, [item, array[mid]]);
+        if (compared === 0) {
+          return {
+            found: true,
+            index: mid
+          };
+        } else if (compared < 0) {
+          hi = mid;
+        } else {
+          lo = mid + 1;
+        }
+      }
+      return {
+        found: false,
+        index: hi
+      };
+    }
+
+    function BSonSort(fun) {
+      return function (array, item) {
+        return binarySearch(array, item, fun);
+      };
+    }
+
+    function KeyValueStore() {}
+
+    KeyValueStore.prototype = {
+      keys: [],
+      values: [],
+      sort: function (a, b) {
+        return (a < b) ? -1 : ((a > b) ? 1 : 0);
+      },
+      setSort: function (fun) {
+        this.bs = new BSonSort(fun);
+      },
+      bs: function () {
+        return new BSonSort(this.sort);
+      },
+      set: function (key, value) {
+        var pos = this.bs(this.keys, key);
+        if (pos.found) {
+          this.values[pos.index] = value;
+        } else {
+          this.keys.splice(pos.index, 0, key);
+          this.values.splice(pos.index, 0, value);
+        }
+      },
+      get: function (key) {
+        return this.values[binarySearch(this.keys, key, this.sort).index];
+      }
+    };
+
+    function UniqueIndex(uniqueField) {
+      this.field = uniqueField;
+      this.keyMap = {};
+      this.lokiMap = {};
+    }
+    UniqueIndex.prototype.keyMap = {};
+    UniqueIndex.prototype.lokiMap = {};
+    UniqueIndex.prototype.set = function (obj) {
+      var fieldValue = obj[this.field];
+      if (fieldValue !== null && typeof (fieldValue) !== 'undefined') {
+        if (this.keyMap[fieldValue]) {
+          throw new Error('Duplicate key for property ' + this.field + ': ' + fieldValue);
+        } else {
+          this.keyMap[fieldValue] = obj;
+          this.lokiMap[obj.$loki] = fieldValue;
+        }
+      }
+    };
+    UniqueIndex.prototype.get = function (key) {
+      return this.keyMap[key];
+    };
+
+    UniqueIndex.prototype.byId = function (id) {
+      return this.keyMap[this.lokiMap[id]];
+    };
+    /**
+     * Updates a document's unique index given an updated object.
+     * @param  {Object} obj Original document object
+     * @param  {Object} doc New document object (likely the same as obj)
+     */
+    UniqueIndex.prototype.update = function (obj, doc) {
+      if (this.lokiMap[obj.$loki] !== doc[this.field]) {
+        var old = this.lokiMap[obj.$loki];
+        this.set(doc);
+        // make the old key fail bool test, while avoiding the use of delete (mem-leak prone)
+        this.keyMap[old] = undefined;
+      } else {
+        this.keyMap[obj[this.field]] = doc;
+      }
+    };
+    UniqueIndex.prototype.remove = function (key) {
+      var obj = this.keyMap[key];
+      if (obj !== null && typeof obj !== 'undefined') {
+        this.keyMap[key] = undefined;
+        this.lokiMap[obj.$loki] = undefined;
+      } else {
+        throw new Error('Key is not in unique index: ' + this.field);
+      }
+    };
+    UniqueIndex.prototype.clear = function () {
+      this.keyMap = {};
+      this.lokiMap = {};
+    };
+
+    function ExactIndex(exactField) {
+      this.index = {};
+      this.field = exactField;
+    }
+
+    // add the value you want returned to the key in the index
+    ExactIndex.prototype = {
+      set: function add(key, val) {
+        if (this.index[key]) {
+          this.index[key].push(val);
+        } else {
+          this.index[key] = [val];
+        }
+      },
+
+      // remove the value from the index, if the value was the last one, remove the key
+      remove: function remove(key, val) {
+        var idxSet = this.index[key];
+        for (var i in idxSet) {
+          if (idxSet[i] == val) {
+            idxSet.splice(i, 1);
+          }
+        }
+        if (idxSet.length < 1) {
+          this.index[key] = undefined;
+        }
+      },
+
+      // get the values related to the key, could be more than one
+      get: function get(key) {
+        return this.index[key];
+      },
+
+      // clear will zap the index
+      clear: function clear(key) {
+        this.index = {};
+      }
+    };
+
+    function SortedIndex(sortedField) {
+      this.field = sortedField;
+    }
+
+    SortedIndex.prototype = {
+      keys: [],
+      values: [],
+      // set the default sort
+      sort: function (a, b) {
+        return (a < b) ? -1 : ((a > b) ? 1 : 0);
+      },
+      bs: function () {
+        return new BSonSort(this.sort);
+      },
+      // and allow override of the default sort
+      setSort: function (fun) {
+        this.bs = new BSonSort(fun);
+      },
+      // add the value you want returned  to the key in the index
+      set: function (key, value) {
+        var pos = binarySearch(this.keys, key, this.sort);
+        if (pos.found) {
+          this.values[pos.index].push(value);
+        } else {
+          this.keys.splice(pos.index, 0, key);
+          this.values.splice(pos.index, 0, [value]);
+        }
+      },
+      // get all values which have a key == the given key
+      get: function (key) {
+        var bsr = binarySearch(this.keys, key, this.sort);
+        if (bsr.found) {
+          return this.values[bsr.index];
+        } else {
+          return [];
+        }
+      },
+      // get all values which have a key < the given key
+      getLt: function (key) {
+        var bsr = binarySearch(this.keys, key, this.sort);
+        var pos = bsr.index;
+        if (bsr.found) pos--;
+        return this.getAll(key, 0, pos);
+      },
+      // get all values which have a key > the given key
+      getGt: function (key) {
+        var bsr = binarySearch(this.keys, key, this.sort);
+        var pos = bsr.index;
+        if (bsr.found) pos++;
+        return this.getAll(key, pos, this.keys.length);
+      },
+
+      // get all vals from start to end
+      getAll: function (key, start, end) {
+        var results = [];
+        for (var i = start; i < end; i++) {
+          results = results.concat(this.values[i]);
+        }
+        return results;
+      },
+      // just in case someone wants to do something smart with ranges
+      getPos: function (key) {
+        return binarySearch(this.keys, key, this.sort);
+      },
+      // remove the value from the index, if the value was the last one, remove the key
+      remove: function (key, value) {
+        var pos = binarySearch(this.keys, key, this.sort).index;
+        var idxSet = this.values[pos];
+        for (var i in idxSet) {
+          if (idxSet[i] == value) idxSet.splice(i, 1);
+        }
+        if (idxSet.length < 1) {
+          this.keys.splice(pos, 1);
+          this.values.splice(pos, 1);
+        }
+      },
+      // clear will zap the index
+      clear: function () {
+        this.keys = [];
+        this.values = [];
+      }
+    };
+
+
+    Loki.LokiOps = LokiOps;
+    Loki.Collection = Collection;
+    Loki.KeyValueStore = KeyValueStore;
+    Loki.persistenceAdapters = {
+      fs: LokiFsAdapter,
+      localStorage: LokiLocalStorageAdapter
+    };
+    return Loki;
+  }());
+
+}));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./loki-indexed-adapter.js":637,"fs":32}],639:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43064,7 +48602,7 @@ Avatar.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Avatar;
-},{"react":945,"simple-assign":964}],640:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],640:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43236,7 +48774,7 @@ Badge.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Badge;
-},{"react":945,"simple-assign":964}],642:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],642:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43504,7 +49042,7 @@ CircularProgress.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = CircularProgress;
-},{"../styles/transitions":721,"../utils/autoPrefix":740,"react":945,"simple-assign":964}],644:[function(require,module,exports){
+},{"../styles/transitions":723,"../utils/autoPrefix":738,"react":944,"simple-assign":963}],644:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44096,7 +49634,7 @@ Dialog.defaultProps = {
   repositionOnUpdate: true
 };
 exports.default = Dialog;
-},{"../Paper":669,"../internal/Overlay":710,"../internal/RenderToLayer":711,"../styles/transitions":721,"keycode":390,"react":945,"react-addons-transition-group":756,"react-dom":758,"react-event-listener":759,"simple-assign":964}],646:[function(require,module,exports){
+},{"../Paper":671,"../internal/Overlay":712,"../internal/RenderToLayer":713,"../styles/transitions":723,"keycode":390,"react":944,"react-addons-transition-group":754,"react-dom":756,"react-event-listener":757,"simple-assign":963}],646:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44185,7 +49723,7 @@ Divider.defaultProps = defaultProps;
 Divider.contextTypes = contextTypes;
 
 exports.default = Divider;
-},{"react":945,"simple-assign":964}],648:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],648:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44585,7 +50123,7 @@ DropDownMenu.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = DropDownMenu;
-},{"../Menu/Menu":665,"../Popover/Popover":670,"../Popover/PopoverAnimationVertical":672,"../internal/ClearFix":705,"../styles/transitions":721,"../svg-icons/navigation/arrow-drop-down":731,"react":945,"simple-assign":964}],650:[function(require,module,exports){
+},{"../Menu/Menu":667,"../Popover/Popover":672,"../Popover/PopoverAnimationVertical":674,"../internal/ClearFix":707,"../styles/transitions":723,"../svg-icons/navigation/arrow-drop-down":731,"react":944,"simple-assign":963}],650:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44606,7 +50144,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.DropDownMenu = _DropDownMenu3.default;
 exports.MenuItem = _MenuItem3.default;
 exports.default = _DropDownMenu3.default;
-},{"../MenuItem/MenuItem":666,"./DropDownMenu":649}],651:[function(require,module,exports){
+},{"../MenuItem/MenuItem":668,"./DropDownMenu":649}],651:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44925,7 +50463,7 @@ FlatButton.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = FlatButton;
-},{"../internal/EnhancedButton":707,"../styles/transitions":721,"../utils/childUtils":743,"../utils/colorManipulator":744,"./FlatButtonLabel":652,"react":945,"simple-assign":964}],652:[function(require,module,exports){
+},{"../internal/EnhancedButton":709,"../styles/transitions":723,"../utils/childUtils":741,"../utils/colorManipulator":742,"./FlatButtonLabel":652,"react":944,"simple-assign":963}],652:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45002,7 +50540,7 @@ FlatButtonLabel.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = FlatButtonLabel;
-},{"react":945,"simple-assign":964}],653:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],653:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45388,7 +50926,7 @@ FloatingActionButton.contextTypes = {
 };
 exports.default = FloatingActionButton;
 }).call(this,require('_process'))
-},{"../FontIcon":657,"../Paper":669,"../internal/EnhancedButton":707,"../styles/transitions":721,"../utils/childUtils":743,"../utils/colorManipulator":744,"../utils/propTypes":748,"_process":753,"react":945,"simple-assign":964,"warning":967}],655:[function(require,module,exports){
+},{"../FontIcon":657,"../Paper":671,"../internal/EnhancedButton":709,"../styles/transitions":723,"../utils/childUtils":741,"../utils/colorManipulator":742,"../utils/propTypes":746,"_process":751,"react":944,"simple-assign":963,"warning":966}],655:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45550,7 +51088,7 @@ FontIcon.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = FontIcon;
-},{"../styles/transitions":721,"react":945,"simple-assign":964}],657:[function(require,module,exports){
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],657:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45883,7 +51421,7 @@ IconButton.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = IconButton;
-},{"../FontIcon":657,"../internal/EnhancedButton":707,"../internal/Tooltip":714,"../styles/transitions":721,"../utils/childUtils":743,"../utils/propTypes":748,"react":945,"simple-assign":964}],659:[function(require,module,exports){
+},{"../FontIcon":657,"../internal/EnhancedButton":709,"../internal/Tooltip":716,"../styles/transitions":723,"../utils/childUtils":741,"../utils/propTypes":746,"react":944,"simple-assign":963}],659:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46286,7 +51824,7 @@ IconMenu.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = IconMenu;
-},{"../Menu/Menu":665,"../Popover/Popover":670,"../utils/events":747,"../utils/propTypes":748,"react":945,"react-dom":758,"simple-assign":964}],661:[function(require,module,exports){
+},{"../Menu/Menu":667,"../Popover/Popover":672,"../utils/events":745,"../utils/propTypes":746,"react":944,"react-dom":756,"simple-assign":963}],661:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46307,7 +51845,236 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.IconMenu = _IconMenu3.default;
 exports.MenuItem = _MenuItem3.default;
 exports.default = _IconMenu3.default;
-},{"../MenuItem/MenuItem":666,"./IconMenu":660}],662:[function(require,module,exports){
+},{"../MenuItem/MenuItem":668,"./IconMenu":660}],662:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _simpleAssign = require('simple-assign');
+
+var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _transitions = require('../styles/transitions');
+
+var _transitions2 = _interopRequireDefault(_transitions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function getRelativeValue(value, min, max) {
+  var clampedValue = Math.min(Math.max(min, value), max);
+  var rangeValue = max - min;
+  var relValue = Math.round(clampedValue / rangeValue * 10000) / 10000;
+  return relValue * 100;
+}
+
+function getStyles(props, context) {
+  var max = props.max;
+  var min = props.min;
+  var value = props.value;
+  var palette = context.muiTheme.baseTheme.palette;
+
+
+  var styles = {
+    root: {
+      position: 'relative',
+      height: 4,
+      display: 'block',
+      width: '100%',
+      backgroundColor: palette.primary3Color,
+      borderRadius: 2,
+      margin: 0,
+      overflow: 'hidden'
+    },
+    bar: {
+      height: '100%'
+    },
+    barFragment1: {},
+    barFragment2: {}
+  };
+
+  if (props.mode === 'indeterminate') {
+    styles.barFragment1 = {
+      position: 'absolute',
+      backgroundColor: props.color || palette.primary1Color,
+      top: 0,
+      left: 0,
+      bottom: 0,
+      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.650, 0.815, 0.735, 0.395)')
+    };
+
+    styles.barFragment2 = {
+      position: 'absolute',
+      backgroundColor: props.color || palette.primary1Color,
+      top: 0,
+      left: 0,
+      bottom: 0,
+      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.165, 0.840, 0.440, 1.000)')
+    };
+  } else {
+    styles.bar.backgroundColor = props.color || palette.primary1Color;
+    styles.bar.transition = _transitions2.default.create('width', '.3s', null, 'linear');
+    styles.bar.width = getRelativeValue(value, min, max) + '%';
+  }
+
+  return styles;
+}
+
+var LinearProgress = function (_Component) {
+  _inherits(LinearProgress, _Component);
+
+  function LinearProgress() {
+    _classCallCheck(this, LinearProgress);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(LinearProgress).apply(this, arguments));
+  }
+
+  _createClass(LinearProgress, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.timers = {};
+
+      this.timers.bar1 = this.barUpdate('bar1', 0, this.refs.bar1, [[-35, 100], [100, -90]]);
+
+      this.timers.bar2 = setTimeout(function () {
+        _this2.barUpdate('bar2', 0, _this2.refs.bar2, [[-200, 100], [107, -8]]);
+      }, 850);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      clearTimeout(this.timers.bar1);
+      clearTimeout(this.timers.bar2);
+    }
+  }, {
+    key: 'barUpdate',
+    value: function barUpdate(id, step, barElement, stepValues) {
+      var _this3 = this;
+
+      if (this.props.mode !== 'indeterminate') return;
+
+      step = step || 0;
+      step %= 4;
+
+      var right = this.context.muiTheme.isRtl ? 'left' : 'right';
+      var left = this.context.muiTheme.isRtl ? 'right' : 'left';
+
+      if (step === 0) {
+        barElement.style[left] = stepValues[0][0] + '%';
+        barElement.style[right] = stepValues[0][1] + '%';
+      } else if (step === 1) {
+        barElement.style.transitionDuration = '840ms';
+      } else if (step === 2) {
+        barElement.style[left] = stepValues[1][0] + '%';
+        barElement.style[right] = stepValues[1][1] + '%';
+      } else if (step === 3) {
+        barElement.style.transitionDuration = '0ms';
+      }
+      this.timers[id] = setTimeout(function () {
+        return _this3.barUpdate(id, step + 1, barElement, stepValues);
+      }, 420);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props = this.props;
+      var style = _props.style;
+
+      var other = _objectWithoutProperties(_props, ['style']);
+
+      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+      var styles = getStyles(this.props, this.context);
+
+      return _react2.default.createElement(
+        'div',
+        _extends({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+        _react2.default.createElement(
+          'div',
+          { style: prepareStyles(styles.bar) },
+          _react2.default.createElement('div', { ref: 'bar1', style: prepareStyles(styles.barFragment1) }),
+          _react2.default.createElement('div', { ref: 'bar2', style: prepareStyles(styles.barFragment2) })
+        )
+      );
+    }
+  }]);
+
+  return LinearProgress;
+}(_react.Component);
+
+LinearProgress.propTypes = {
+  /**
+   * The mode of show your progress, indeterminate for
+   * when there is no value for progress.
+   */
+  color: _react.PropTypes.string,
+  /**
+   * The max value of progress, only works in determinate mode.
+   */
+  max: _react.PropTypes.number,
+  /**
+   * The min value of progress, only works in determinate mode.
+   */
+  min: _react.PropTypes.number,
+  /**
+   * The mode of show your progress, indeterminate for when
+   * there is no value for progress.
+   */
+  mode: _react.PropTypes.oneOf(['determinate', 'indeterminate']),
+  /**
+   * Override the inline-styles of the root element.
+   */
+  style: _react.PropTypes.object,
+  /**
+   * The value of progress, only works in determinate mode.
+   */
+  value: _react.PropTypes.number
+};
+LinearProgress.defaultProps = {
+  mode: 'indeterminate',
+  value: 0,
+  min: 0,
+  max: 100
+};
+LinearProgress.contextTypes = {
+  muiTheme: _react.PropTypes.object.isRequired
+};
+exports.default = LinearProgress;
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],663:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = undefined;
+
+var _LinearProgress = require('./LinearProgress');
+
+var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _LinearProgress2.default;
+},{"./LinearProgress":662}],664:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -46449,7 +52216,7 @@ List.contextTypes = {
 };
 exports.default = List;
 }).call(this,require('_process'))
-},{"../Subheader":683,"../utils/deprecatedPropType":745,"../utils/propTypes":748,"_process":753,"react":945,"simple-assign":964,"warning":967}],663:[function(require,module,exports){
+},{"../Subheader":685,"../utils/deprecatedPropType":743,"../utils/propTypes":746,"_process":751,"react":944,"simple-assign":963,"warning":966}],665:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47123,7 +52890,7 @@ ListItem.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = ListItem;
-},{"../IconButton":659,"../internal/EnhancedButton":707,"../styles/transitions":721,"../svg-icons/navigation/expand-less":733,"../svg-icons/navigation/expand-more":734,"../utils/colorManipulator":744,"./NestedList":664,"react":945,"react-dom":758,"recompose/shallowEqual":953,"simple-assign":964}],664:[function(require,module,exports){
+},{"../IconButton":659,"../internal/EnhancedButton":709,"../styles/transitions":723,"../svg-icons/navigation/expand-less":733,"../svg-icons/navigation/expand-more":734,"../utils/colorManipulator":742,"./NestedList":666,"react":944,"react-dom":756,"recompose/shallowEqual":952,"simple-assign":963}],666:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47206,7 +52973,7 @@ NestedList.defaultProps = {
   open: false
 };
 exports.default = NestedList;
-},{"./List":662,"react":945,"simple-assign":964}],665:[function(require,module,exports){
+},{"./List":664,"react":944,"simple-assign":963}],667:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -47895,7 +53662,7 @@ var _initialiseProps = function _initialiseProps() {
 
 exports.default = Menu;
 }).call(this,require('_process'))
-},{"../List/List":662,"../internal/ClickAwayListener":706,"../styles/transitions":721,"../utils/autoPrefix":740,"../utils/deprecatedPropType":745,"../utils/propTypes":748,"_process":753,"keycode":390,"react":945,"react-addons-update":757,"react-dom":758,"recompose/shallowEqual":953,"simple-assign":964,"warning":967}],666:[function(require,module,exports){
+},{"../List/List":664,"../internal/ClickAwayListener":708,"../styles/transitions":723,"../utils/autoPrefix":738,"../utils/deprecatedPropType":743,"../utils/propTypes":746,"_process":751,"keycode":390,"react":944,"react-addons-update":755,"react-dom":756,"recompose/shallowEqual":952,"simple-assign":963,"warning":966}],668:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48252,7 +54019,7 @@ MenuItem.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = MenuItem;
-},{"../List/ListItem":663,"../Menu/Menu":665,"../Popover/Popover":670,"../svg-icons/navigation/check":732,"react":945,"react-dom":758,"recompose/shallowEqual":953,"simple-assign":964}],667:[function(require,module,exports){
+},{"../List/ListItem":665,"../Menu/Menu":667,"../Popover/Popover":672,"../svg-icons/navigation/check":732,"react":944,"react-dom":756,"recompose/shallowEqual":952,"simple-assign":963}],669:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48267,7 +54034,7 @@ var _MenuItem2 = _interopRequireDefault(_MenuItem);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _MenuItem2.default;
-},{"./MenuItem":666}],668:[function(require,module,exports){
+},{"./MenuItem":668}],670:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48398,7 +54165,7 @@ Paper.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Paper;
-},{"../styles/transitions":721,"../utils/propTypes":748,"react":945,"simple-assign":964}],669:[function(require,module,exports){
+},{"../styles/transitions":723,"../utils/propTypes":746,"react":944,"simple-assign":963}],671:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48413,7 +54180,7 @@ var _Paper2 = _interopRequireDefault(_Paper);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Paper2.default;
-},{"./Paper":668}],670:[function(require,module,exports){
+},{"./Paper":670}],672:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48850,7 +54617,7 @@ Popover.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Popover;
-},{"../Paper":669,"../internal/RenderToLayer":711,"../utils/propTypes":748,"./PopoverAnimationDefault":671,"lodash.throttle":398,"react":945,"react-dom":758,"react-event-listener":759}],671:[function(require,module,exports){
+},{"../Paper":671,"../internal/RenderToLayer":713,"../utils/propTypes":746,"./PopoverAnimationDefault":673,"lodash.throttle":398,"react":944,"react-dom":756,"react-event-listener":757}],673:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49008,7 +54775,7 @@ PopoverDefaultAnimation.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = PopoverDefaultAnimation;
-},{"../Paper":669,"../styles/transitions":721,"../utils/propTypes":748,"react":945,"simple-assign":964}],672:[function(require,module,exports){
+},{"../Paper":671,"../styles/transitions":723,"../utils/propTypes":746,"react":944,"simple-assign":963}],674:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49141,7 +54908,7 @@ PopoverAnimationVertical.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = PopoverAnimationVertical;
-},{"../Paper":669,"../styles/transitions":721,"../utils/propTypes":748,"react":945,"simple-assign":964}],673:[function(require,module,exports){
+},{"../Paper":671,"../styles/transitions":723,"../utils/propTypes":746,"react":944,"simple-assign":963}],675:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49398,7 +55165,7 @@ RadioButton.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = RadioButton;
-},{"../internal/EnhancedSwitch":708,"../styles/transitions":721,"../svg-icons/toggle/radio-button-checked":738,"../svg-icons/toggle/radio-button-unchecked":739,"react":945,"simple-assign":964}],674:[function(require,module,exports){
+},{"../internal/EnhancedSwitch":710,"../styles/transitions":723,"../svg-icons/toggle/radio-button-checked":736,"../svg-icons/toggle/radio-button-unchecked":737,"react":944,"simple-assign":963}],676:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -49611,7 +55378,7 @@ RadioButtonGroup.contextTypes = {
 };
 exports.default = RadioButtonGroup;
 }).call(this,require('_process'))
-},{"../RadioButton":675,"_process":753,"react":945,"simple-assign":964,"warning":967}],675:[function(require,module,exports){
+},{"../RadioButton":677,"_process":751,"react":944,"simple-assign":963,"warning":966}],677:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49632,7 +55399,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.RadioButton = _RadioButton3.default;
 exports.RadioButtonGroup = _RadioButtonGroup3.default;
 exports.default = _RadioButton3.default;
-},{"./RadioButton":673,"./RadioButtonGroup":674}],676:[function(require,module,exports){
+},{"./RadioButton":675,"./RadioButtonGroup":676}],678:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50100,7 +55867,7 @@ RaisedButton.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = RaisedButton;
-},{"../Paper":669,"../internal/EnhancedButton":707,"../styles/transitions":721,"../utils/childUtils":743,"../utils/colorManipulator":744,"react":945,"simple-assign":964}],677:[function(require,module,exports){
+},{"../Paper":671,"../internal/EnhancedButton":709,"../styles/transitions":723,"../utils/childUtils":741,"../utils/colorManipulator":742,"react":944,"simple-assign":963}],679:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50115,7 +55882,7 @@ var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _RaisedButton2.default;
-},{"./RaisedButton":676}],678:[function(require,module,exports){
+},{"./RaisedButton":678}],680:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50352,7 +56119,7 @@ SelectField.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = SelectField;
-},{"../DropDownMenu":650,"../TextField":695,"react":945,"simple-assign":964}],679:[function(require,module,exports){
+},{"../DropDownMenu":650,"../TextField":697,"react":944,"simple-assign":963}],681:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50367,7 +56134,7 @@ var _SelectField2 = _interopRequireDefault(_SelectField);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _SelectField2.default;
-},{"./SelectField":678}],680:[function(require,module,exports){
+},{"./SelectField":680}],682:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51053,7 +56820,7 @@ Slider.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Slider;
-},{"../internal/FocusRipple":709,"../styles/transitions":721,"keycode":390,"react":945,"simple-assign":964}],681:[function(require,module,exports){
+},{"../internal/FocusRipple":711,"../styles/transitions":723,"keycode":390,"react":944,"simple-assign":963}],683:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51068,7 +56835,7 @@ var _Slider2 = _interopRequireDefault(_Slider);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Slider2.default;
-},{"./Slider":680}],682:[function(require,module,exports){
+},{"./Slider":682}],684:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51149,7 +56916,7 @@ Subheader.defaultProps = defaultProps;
 Subheader.contextTypes = contextTypes;
 
 exports.default = Subheader;
-},{"react":945,"simple-assign":964}],683:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],685:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51164,7 +56931,7 @@ var _Subheader2 = _interopRequireDefault(_Subheader);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Subheader2.default;
-},{"./Subheader":682}],684:[function(require,module,exports){
+},{"./Subheader":684}],686:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51318,7 +57085,7 @@ SvgIcon.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = SvgIcon;
-},{"../styles/transitions":721,"react":945,"simple-assign":964}],685:[function(require,module,exports){
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],687:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51333,7 +57100,7 @@ var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _SvgIcon2.default;
-},{"./SvgIcon":684}],686:[function(require,module,exports){
+},{"./SvgIcon":686}],688:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51418,7 +57185,7 @@ InkBar.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = InkBar;
-},{"../styles/transitions":721,"react":945,"simple-assign":964}],687:[function(require,module,exports){
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],689:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51609,7 +57376,7 @@ Tab.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Tab;
-},{"../internal/EnhancedButton":707,"react":945,"simple-assign":964}],688:[function(require,module,exports){
+},{"../internal/EnhancedButton":709,"react":944,"simple-assign":963}],690:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51669,7 +57436,7 @@ TabTemplate.propTypes = {
   selected: _react.PropTypes.bool
 };
 exports.default = TabTemplate;
-},{"react":945}],689:[function(require,module,exports){
+},{"react":944}],691:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -51974,7 +57741,7 @@ Tabs.contextTypes = {
 };
 exports.default = Tabs;
 }).call(this,require('_process'))
-},{"./InkBar":686,"./TabTemplate":688,"_process":753,"react":945,"react-dom":758,"simple-assign":964,"warning":967}],690:[function(require,module,exports){
+},{"./InkBar":688,"./TabTemplate":690,"_process":751,"react":944,"react-dom":756,"simple-assign":963,"warning":966}],692:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52194,7 +57961,7 @@ EnhancedTextarea.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = EnhancedTextarea;
-},{"react":945,"react-event-listener":759,"simple-assign":964}],691:[function(require,module,exports){
+},{"react":944,"react-event-listener":757,"simple-assign":963}],693:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -52760,7 +58527,7 @@ TextField.contextTypes = {
 };
 exports.default = TextField;
 }).call(this,require('_process'))
-},{"../styles/transitions":721,"../utils/colorManipulator":744,"../utils/deprecatedPropType":745,"./EnhancedTextarea":690,"./TextFieldHint":692,"./TextFieldLabel":693,"./TextFieldUnderline":694,"_process":753,"keycode":390,"react":945,"react-dom":758,"recompose/shallowEqual":953,"simple-assign":964,"warning":967}],692:[function(require,module,exports){
+},{"../styles/transitions":723,"../utils/colorManipulator":742,"../utils/deprecatedPropType":743,"./EnhancedTextarea":692,"./TextFieldHint":694,"./TextFieldLabel":695,"./TextFieldUnderline":696,"_process":751,"keycode":390,"react":944,"react-dom":756,"recompose/shallowEqual":952,"simple-assign":963,"warning":966}],694:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52837,7 +58604,7 @@ TextFieldHint.defaultProps = {
 };
 
 exports.default = TextFieldHint;
-},{"../styles/transitions":721,"react":945,"simple-assign":964}],693:[function(require,module,exports){
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],695:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52950,7 +58717,7 @@ TextFieldLabel.defaultProps = {
 };
 
 exports.default = TextFieldLabel;
-},{"../styles/transitions":721,"react":945,"simple-assign":964}],694:[function(require,module,exports){
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],696:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53081,7 +58848,7 @@ TextFieldUnderline.propTypes = propTypes;
 TextFieldUnderline.defaultProps = defaultProps;
 
 exports.default = TextFieldUnderline;
-},{"../styles/transitions":721,"react":945,"simple-assign":964}],695:[function(require,module,exports){
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],697:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53096,7 +58863,7 @@ var _TextField2 = _interopRequireDefault(_TextField);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _TextField2.default;
-},{"./TextField":691}],696:[function(require,module,exports){
+},{"./TextField":693}],698:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53384,7 +59151,7 @@ Toggle.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Toggle;
-},{"../Paper":669,"../internal/EnhancedSwitch":708,"../styles/transitions":721,"react":945,"simple-assign":964}],697:[function(require,module,exports){
+},{"../Paper":671,"../internal/EnhancedSwitch":710,"../styles/transitions":723,"react":944,"simple-assign":963}],699:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53399,7 +59166,7 @@ var _Toggle2 = _interopRequireDefault(_Toggle);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Toggle2.default;
-},{"./Toggle":696}],698:[function(require,module,exports){
+},{"./Toggle":698}],700:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53507,7 +59274,7 @@ Toolbar.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Toolbar;
-},{"react":945,"simple-assign":964}],699:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],701:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53718,7 +59485,7 @@ ToolbarGroup.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = ToolbarGroup;
-},{"react":945,"simple-assign":964}],700:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],702:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53810,7 +59577,7 @@ ToolbarSeparator.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = ToolbarSeparator;
-},{"react":945,"simple-assign":964}],701:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],703:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53911,7 +59678,7 @@ ToolbarTitle.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = ToolbarTitle;
-},{"react":945,"simple-assign":964}],702:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],704:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54014,7 +59781,7 @@ AutoLockScrolling.propTypes = {
   lock: _react.PropTypes.bool.isRequired
 };
 exports.default = AutoLockScrolling;
-},{"react":945}],703:[function(require,module,exports){
+},{"react":944}],705:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54157,7 +59924,7 @@ BeforeAfterWrapper.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = BeforeAfterWrapper;
-},{"react":945,"simple-assign":964}],704:[function(require,module,exports){
+},{"react":944,"simple-assign":963}],706:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54312,7 +60079,7 @@ CircleRipple.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = CircleRipple;
-},{"../styles/transitions":721,"../utils/autoPrefix":740,"react":945,"react-dom":758,"recompose/shallowEqual":953,"simple-assign":964}],705:[function(require,module,exports){
+},{"../styles/transitions":723,"../utils/autoPrefix":738,"react":944,"react-dom":756,"recompose/shallowEqual":952,"simple-assign":963}],707:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54373,7 +60140,7 @@ ClearFix.propTypes = {
 };
 
 exports.default = ClearFix;
-},{"./BeforeAfterWrapper":703,"react":945}],706:[function(require,module,exports){
+},{"./BeforeAfterWrapper":705,"react":944}],708:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54483,7 +60250,7 @@ ClickAwayListener.propTypes = {
   onClickAway: _react.PropTypes.any
 };
 exports.default = ClickAwayListener;
-},{"../utils/events":747,"react":945,"react-dom":758}],707:[function(require,module,exports){
+},{"../utils/events":745,"react":944,"react-dom":756}],709:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54866,7 +60633,7 @@ EnhancedButton.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = EnhancedButton;
-},{"../utils/childUtils":743,"../utils/events":747,"./FocusRipple":709,"./TouchRipple":715,"keycode":390,"react":945,"simple-assign":964}],708:[function(require,module,exports){
+},{"../utils/childUtils":741,"../utils/events":745,"./FocusRipple":711,"./TouchRipple":717,"keycode":390,"react":944,"simple-assign":963}],710:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -55313,7 +61080,7 @@ EnhancedSwitch.contextTypes = {
 };
 exports.default = EnhancedSwitch;
 }).call(this,require('_process'))
-},{"../styles/transitions":721,"./../Paper":669,"./FocusRipple":709,"./TouchRipple":715,"_process":753,"keycode":390,"react":945,"react-event-listener":759,"simple-assign":964,"warning":967}],709:[function(require,module,exports){
+},{"../styles/transitions":723,"./../Paper":671,"./FocusRipple":711,"./TouchRipple":717,"_process":751,"keycode":390,"react":944,"react-event-listener":757,"simple-assign":963,"warning":966}],711:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55498,7 +61265,7 @@ FocusRipple.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = FocusRipple;
-},{"../styles/transitions":721,"../utils/autoPrefix":740,"./ScaleIn":712,"react":945,"react-dom":758,"recompose/shallowEqual":953,"simple-assign":964}],710:[function(require,module,exports){
+},{"../styles/transitions":723,"../utils/autoPrefix":738,"./ScaleIn":714,"react":944,"react-dom":756,"recompose/shallowEqual":952,"simple-assign":963}],712:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55626,7 +61393,7 @@ Overlay.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Overlay;
-},{"../styles/transitions":721,"./AutoLockScrolling":702,"react":945,"simple-assign":964}],711:[function(require,module,exports){
+},{"../styles/transitions":723,"./AutoLockScrolling":704,"react":944,"simple-assign":963}],713:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55800,7 +61567,7 @@ RenderToLayer.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = RenderToLayer;
-},{"../utils/dom":746,"react":945,"react-dom":758}],712:[function(require,module,exports){
+},{"../utils/dom":744,"react":944,"react-dom":756}],714:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55914,7 +61681,7 @@ ScaleIn.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = ScaleIn;
-},{"./ScaleInChild":713,"react":945,"react-addons-transition-group":756,"simple-assign":964}],713:[function(require,module,exports){
+},{"./ScaleInChild":715,"react":944,"react-addons-transition-group":754,"simple-assign":963}],715:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56068,7 +61835,7 @@ ScaleInChild.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = ScaleInChild;
-},{"../styles/transitions":721,"../utils/autoPrefix":740,"react":945,"react-dom":758,"simple-assign":964}],714:[function(require,module,exports){
+},{"../styles/transitions":723,"../utils/autoPrefix":738,"react":944,"react-dom":756,"simple-assign":963}],716:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56274,7 +62041,7 @@ Tooltip.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = Tooltip;
-},{"../styles/transitions":721,"react":945,"simple-assign":964}],715:[function(require,module,exports){
+},{"../styles/transitions":723,"react":944,"simple-assign":963}],717:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56568,7 +62335,7 @@ TouchRipple.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = TouchRipple;
-},{"../utils/dom":746,"./CircleRipple":704,"react":945,"react-addons-transition-group":756,"react-addons-update":757,"react-dom":758,"simple-assign":964}],716:[function(require,module,exports){
+},{"../utils/dom":744,"./CircleRipple":706,"react":944,"react-addons-transition-group":754,"react-addons-update":755,"react-dom":756,"simple-assign":963}],718:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56625,7 +62392,7 @@ MuiThemeProvider.childContextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = MuiThemeProvider;
-},{"./getMuiTheme":719,"react":945}],717:[function(require,module,exports){
+},{"./getMuiTheme":721,"react":944}],719:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56668,7 +62435,7 @@ exports.default = {
     shadowColor: _colors.fullBlack
   }
 };
-},{"../../utils/colorManipulator":744,"../colors":718,"../spacing":720}],718:[function(require,module,exports){
+},{"../../utils/colorManipulator":742,"../colors":720,"../spacing":722}],720:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56959,7 +62726,7 @@ var faintBlack = exports.faintBlack = 'rgba(0, 0, 0, 0.12)';
 var fullWhite = exports.fullWhite = 'rgba(255, 255, 255, 1)';
 var darkWhite = exports.darkWhite = 'rgba(255, 255, 255, 0.87)';
 var lightWhite = exports.lightWhite = 'rgba(255, 255, 255, 0.54)';
-},{}],719:[function(require,module,exports){
+},{}],721:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57317,7 +63084,7 @@ function getMuiTheme(muiTheme) {
 
   return muiTheme;
 }
-},{"../utils/autoprefixer":741,"../utils/callOnce":742,"../utils/colorManipulator":744,"../utils/rtl":749,"./baseThemes/lightBaseTheme":717,"./colors":718,"./typography":722,"./zIndex":723,"lodash.merge":396,"recompose/compose":946}],720:[function(require,module,exports){
+},{"../utils/autoprefixer":739,"../utils/callOnce":740,"../utils/colorManipulator":742,"../utils/rtl":747,"./baseThemes/lightBaseTheme":719,"./colors":720,"./typography":724,"./zIndex":725,"lodash.merge":396,"recompose/compose":945}],722:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57337,7 +63104,7 @@ exports.default = {
   desktopSubheaderHeight: 48,
   desktopToolbarHeight: 56
 };
-},{}],721:[function(require,module,exports){
+},{}],723:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57372,7 +63139,7 @@ exports.default = {
     return property + ' ' + duration + ' ' + easeFunction + ' ' + delay;
   }
 };
-},{}],722:[function(require,module,exports){
+},{}],724:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57404,7 +63171,7 @@ var Typography = function Typography() {
 };
 
 exports.default = new Typography();
-},{"./colors":718}],723:[function(require,module,exports){
+},{"./colors":720}],725:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57422,39 +63189,7 @@ exports.default = {
   snackbar: 2900,
   tooltip: 3000
 };
-},{}],724:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _pure = require('recompose/pure');
-
-var _pure2 = _interopRequireDefault(_pure);
-
-var _SvgIcon = require('../../SvgIcon');
-
-var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var AvMic = function AvMic(props) {
-  return _react2.default.createElement(
-    _SvgIcon2.default,
-    props,
-    _react2.default.createElement('path', { d: 'M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z' })
-  );
-};
-AvMic = (0, _pure2.default)(AvMic);
-AvMic.displayName = 'AvMic';
-
-exports.default = AvMic;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],725:[function(require,module,exports){
+},{}],726:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57486,7 +63221,7 @@ AvPause = (0, _pure2.default)(AvPause);
 AvPause.displayName = 'AvPause';
 
 exports.default = AvPause;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],726:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],727:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57518,39 +63253,7 @@ AvStop = (0, _pure2.default)(AvStop);
 AvStop.displayName = 'AvStop';
 
 exports.default = AvStop;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],727:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _pure = require('recompose/pure');
-
-var _pure2 = _interopRequireDefault(_pure);
-
-var _SvgIcon = require('../../SvgIcon');
-
-var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var AvVolumeUp = function AvVolumeUp(props) {
-  return _react2.default.createElement(
-    _SvgIcon2.default,
-    props,
-    _react2.default.createElement('path', { d: 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z' })
-  );
-};
-AvVolumeUp = (0, _pure2.default)(AvVolumeUp);
-AvVolumeUp.displayName = 'AvVolumeUp';
-
-exports.default = AvVolumeUp;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],728:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],728:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57582,7 +63285,7 @@ CommunicationCall = (0, _pure2.default)(CommunicationCall);
 CommunicationCall.displayName = 'CommunicationCall';
 
 exports.default = CommunicationCall;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],729:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],729:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57614,7 +63317,7 @@ CommunicationDialpad = (0, _pure2.default)(CommunicationDialpad);
 CommunicationDialpad.displayName = 'CommunicationDialpad';
 
 exports.default = CommunicationDialpad;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],730:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],730:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57646,7 +63349,7 @@ CommunicationMessage = (0, _pure2.default)(CommunicationMessage);
 CommunicationMessage.displayName = 'CommunicationMessage';
 
 exports.default = CommunicationMessage;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],731:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],731:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57678,7 +63381,7 @@ NavigationArrowDropDown = (0, _pure2.default)(NavigationArrowDropDown);
 NavigationArrowDropDown.displayName = 'NavigationArrowDropDown';
 
 exports.default = NavigationArrowDropDown;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],732:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],732:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57710,7 +63413,7 @@ NavigationCheck = (0, _pure2.default)(NavigationCheck);
 NavigationCheck.displayName = 'NavigationCheck';
 
 exports.default = NavigationCheck;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],733:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],733:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57742,7 +63445,7 @@ NavigationExpandLess = (0, _pure2.default)(NavigationExpandLess);
 NavigationExpandLess.displayName = 'NavigationExpandLess';
 
 exports.default = NavigationExpandLess;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],734:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],734:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57774,71 +63477,7 @@ NavigationExpandMore = (0, _pure2.default)(NavigationExpandMore);
 NavigationExpandMore.displayName = 'NavigationExpandMore';
 
 exports.default = NavigationExpandMore;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],735:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _pure = require('recompose/pure');
-
-var _pure2 = _interopRequireDefault(_pure);
-
-var _SvgIcon = require('../../SvgIcon');
-
-var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var NavigationMenu = function NavigationMenu(props) {
-  return _react2.default.createElement(
-    _SvgIcon2.default,
-    props,
-    _react2.default.createElement('path', { d: 'M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z' })
-  );
-};
-NavigationMenu = (0, _pure2.default)(NavigationMenu);
-NavigationMenu.displayName = 'NavigationMenu';
-
-exports.default = NavigationMenu;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],736:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _pure = require('recompose/pure');
-
-var _pure2 = _interopRequireDefault(_pure);
-
-var _SvgIcon = require('../../SvgIcon');
-
-var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var NavigationMoreVert = function NavigationMoreVert(props) {
-  return _react2.default.createElement(
-    _SvgIcon2.default,
-    props,
-    _react2.default.createElement('path', { d: 'M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z' })
-  );
-};
-NavigationMoreVert = (0, _pure2.default)(NavigationMoreVert);
-NavigationMoreVert.displayName = 'NavigationMoreVert';
-
-exports.default = NavigationMoreVert;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],737:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],735:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57870,7 +63509,7 @@ SocialPerson = (0, _pure2.default)(SocialPerson);
 SocialPerson.displayName = 'SocialPerson';
 
 exports.default = SocialPerson;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],738:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],736:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57902,7 +63541,7 @@ ToggleRadioButtonChecked = (0, _pure2.default)(ToggleRadioButtonChecked);
 ToggleRadioButtonChecked.displayName = 'ToggleRadioButtonChecked';
 
 exports.default = ToggleRadioButtonChecked;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],739:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],737:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57934,7 +63573,7 @@ ToggleRadioButtonUnchecked = (0, _pure2.default)(ToggleRadioButtonUnchecked);
 ToggleRadioButtonUnchecked.displayName = 'ToggleRadioButtonUnchecked';
 
 exports.default = ToggleRadioButtonUnchecked;
-},{"../../SvgIcon":685,"react":945,"recompose/pure":952}],740:[function(require,module,exports){
+},{"../../SvgIcon":687,"react":944,"recompose/pure":951}],738:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57945,7 +63584,7 @@ exports.default = {
     style[key] = value;
   }
 };
-},{}],741:[function(require,module,exports){
+},{}],739:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -58005,7 +63644,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var hasWarnedAboutUserAgent = false;
 }).call(this,require('_process'))
-},{"_process":753,"inline-style-prefixer":372,"warning":967}],742:[function(require,module,exports){
+},{"_process":751,"inline-style-prefixer":372,"warning":966}],740:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -58034,7 +63673,7 @@ function callOnce() {
   }
 }
 }).call(this,require('_process'))
-},{"_process":753,"warning":967}],743:[function(require,module,exports){
+},{"_process":751,"warning":966}],741:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58083,7 +63722,7 @@ function extendChildren(children, extendedProps, extendedChildren) {
     return _react2.default.cloneElement(child, newProps, newChildren);
   }) : children;
 }
-},{"react":945,"react-addons-create-fragment":755}],744:[function(require,module,exports){
+},{"react":944,"react-addons-create-fragment":753}],742:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58316,7 +63955,7 @@ function lighten(color, coefficient) {
 
   return convertColorToString(color);
 }
-},{}],745:[function(require,module,exports){
+},{}],743:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -58341,7 +63980,7 @@ function deprecated(propType, explanation) {
   };
 }
 }).call(this,require('_process'))
-},{"_process":753,"warning":967}],746:[function(require,module,exports){
+},{"_process":751,"warning":966}],744:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58366,7 +64005,7 @@ exports.default = {
     };
   }
 };
-},{}],747:[function(require,module,exports){
+},{}],745:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58406,7 +64045,7 @@ exports.default = {
     return ['keydown', 'keypress', 'keyup'].indexOf(event.type) !== -1;
   }
 };
-},{}],748:[function(require,module,exports){
+},{}],746:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58438,7 +64077,7 @@ exports.default = {
   zDepth: _react.PropTypes.oneOf([0, 1, 2, 3, 4, 5])
 
 };
-},{"react":945}],749:[function(require,module,exports){
+},{"react":944}],747:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58522,7 +64161,7 @@ function rtl(muiTheme) {
     };
   }
 }
-},{}],750:[function(require,module,exports){
+},{}],748:[function(require,module,exports){
 //! moment.js
 //! version : 2.13.0
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -62563,7 +68202,7 @@ function rtl(muiTheme) {
     return _moment;
 
 }));
-},{}],751:[function(require,module,exports){
+},{}],749:[function(require,module,exports){
 'use strict';
 /* eslint-disable no-unused-vars */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -62648,7 +68287,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],752:[function(require,module,exports){
+},{}],750:[function(require,module,exports){
 (function (process){
 // Generated by CoffeeScript 1.7.1
 (function() {
@@ -62684,7 +68323,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 }).call(this);
 
 }).call(this,require('_process'))
-},{"_process":753}],753:[function(require,module,exports){
+},{"_process":751}],751:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -62749,7 +68388,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],754:[function(require,module,exports){
+},{}],752:[function(require,module,exports){
 (function (global){
 var now = require('performance-now')
   , root = typeof window === 'undefined' ? global : window
@@ -62825,18 +68464,18 @@ module.exports.polyfill = function() {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"performance-now":752}],755:[function(require,module,exports){
+},{"performance-now":750}],753:[function(require,module,exports){
 module.exports = require('react/lib/ReactFragment').create;
-},{"react/lib/ReactFragment":870}],756:[function(require,module,exports){
+},{"react/lib/ReactFragment":869}],754:[function(require,module,exports){
 module.exports = require('react/lib/ReactTransitionGroup');
-},{"react/lib/ReactTransitionGroup":893}],757:[function(require,module,exports){
+},{"react/lib/ReactTransitionGroup":892}],755:[function(require,module,exports){
 module.exports = require('react/lib/update');
-},{"react/lib/update":943}],758:[function(require,module,exports){
+},{"react/lib/update":942}],756:[function(require,module,exports){
 'use strict';
 
 module.exports = require('react/lib/ReactDOM');
 
-},{"react/lib/ReactDOM":840}],759:[function(require,module,exports){
+},{"react/lib/ReactDOM":839}],757:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -62933,7 +68572,7 @@ EventListener.propTypes = {
   elementName: _react.PropTypes.string
 };
 exports.default = EventListener;
-},{"react":945}],760:[function(require,module,exports){
+},{"react":944}],758:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -63175,7 +68814,7 @@ var Motion = _react2['default'].createClass({
 
 exports['default'] = Motion;
 module.exports = exports['default'];
-},{"./mapToZero":763,"./shouldStopAnimation":768,"./stepper":770,"./stripStyle":771,"performance-now":752,"raf":754,"react":945}],761:[function(require,module,exports){
+},{"./mapToZero":761,"./shouldStopAnimation":766,"./stepper":768,"./stripStyle":769,"performance-now":750,"raf":752,"react":944}],759:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -63438,7 +69077,7 @@ var StaggeredMotion = _react2['default'].createClass({
 
 exports['default'] = StaggeredMotion;
 module.exports = exports['default'];
-},{"./mapToZero":763,"./shouldStopAnimation":768,"./stepper":770,"./stripStyle":771,"performance-now":752,"raf":754,"react":945}],762:[function(require,module,exports){
+},{"./mapToZero":761,"./shouldStopAnimation":766,"./stepper":768,"./stripStyle":769,"performance-now":750,"raf":752,"react":944}],760:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -63927,7 +69566,7 @@ module.exports = exports['default'];
 
 // the array that keeps track of currently rendered stuff! Including stuff
 // that you've unmounted but that's still animating. This is where it lives
-},{"./mapToZero":763,"./mergeDiff":764,"./shouldStopAnimation":768,"./stepper":770,"./stripStyle":771,"performance-now":752,"raf":754,"react":945}],763:[function(require,module,exports){
+},{"./mapToZero":761,"./mergeDiff":762,"./shouldStopAnimation":766,"./stepper":768,"./stripStyle":769,"performance-now":750,"raf":752,"react":944}],761:[function(require,module,exports){
 
 
 // currently used to initiate the velocity style object to 0
@@ -63947,7 +69586,7 @@ function mapToZero(obj) {
 }
 
 module.exports = exports['default'];
-},{}],764:[function(require,module,exports){
+},{}],762:[function(require,module,exports){
 
 
 // core keys merging algorithm. If previous render's keys are [a, b], and the
@@ -64056,7 +69695,7 @@ function mergeDiff(prev, next, onRemove) {
 
 module.exports = exports['default'];
 // to loop through and find a key's index each time), but I no longer care
-},{}],765:[function(require,module,exports){
+},{}],763:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -64067,7 +69706,7 @@ exports["default"] = {
   stiff: { stiffness: 210, damping: 20 }
 };
 module.exports = exports["default"];
-},{}],766:[function(require,module,exports){
+},{}],764:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -64099,7 +69738,7 @@ exports.presets = _interopRequire(_presets);
 var _reorderKeys = require('./reorderKeys');
 
 exports.reorderKeys = _interopRequire(_reorderKeys);
-},{"./Motion":760,"./StaggeredMotion":761,"./TransitionMotion":762,"./presets":765,"./reorderKeys":767,"./spring":769}],767:[function(require,module,exports){
+},{"./Motion":758,"./StaggeredMotion":759,"./TransitionMotion":760,"./presets":763,"./reorderKeys":765,"./spring":767}],765:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -64119,7 +69758,7 @@ function reorderKeys() {
 
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"_process":753}],768:[function(require,module,exports){
+},{"_process":751}],766:[function(require,module,exports){
 
 
 // usage assumption: currentStyle values have already been rendered but it says
@@ -64151,7 +69790,7 @@ function shouldStopAnimation(currentStyle, style, currentVelocity) {
 }
 
 module.exports = exports['default'];
-},{}],769:[function(require,module,exports){
+},{}],767:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -64175,7 +69814,7 @@ function spring(val, config) {
 }
 
 module.exports = exports['default'];
-},{"./presets":765}],770:[function(require,module,exports){
+},{"./presets":763}],768:[function(require,module,exports){
 
 
 // stepper is used a lot. Saves allocation to return the same array wrapper.
@@ -64219,7 +69858,7 @@ function stepper(secondPerFrame, x, v, destX, k, b, precision) {
 
 module.exports = exports["default"];
 // array reference around.
-},{}],771:[function(require,module,exports){
+},{}],769:[function(require,module,exports){
 
 // turn {x: {val: 1, stiffness: 1, damping: 2}, y: 2} generated by
 // `{x: spring(1, {stiffness: 1, damping: 2}), y: 2}` into {x: 1, y: 2}
@@ -64241,7 +69880,7 @@ function stripStyle(style) {
 }
 
 module.exports = exports['default'];
-},{}],772:[function(require,module,exports){
+},{}],770:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64270,7 +69909,7 @@ var actionTypes = {
 };
 
 exports.default = actionTypes;
-},{}],773:[function(require,module,exports){
+},{}],771:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64328,7 +69967,7 @@ function batch(model, actions) {
 exports.default = {
   batch: batch
 };
-},{"../action-types":772,"lodash/every":580,"lodash/partition":620}],774:[function(require,module,exports){
+},{"../action-types":770,"lodash/every":580,"lodash/partition":620}],772:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64609,7 +70248,7 @@ exports.default = {
   validateFields: validateFields,
   validateFieldsErrors: validateFieldsErrors
 };
-},{"../action-types":772,"../utils":787,"./batch-actions":773,"lodash/get":590,"lodash/mapValues":613}],775:[function(require,module,exports){
+},{"../action-types":770,"../utils":785,"./batch-actions":771,"lodash/get":590,"lodash/mapValues":613}],773:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64635,7 +70274,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var actions = _extends({}, _fieldActions2.default, _modelActions2.default, _batchActions2.default);
 
 exports.default = actions;
-},{"./batch-actions":773,"./field-actions":774,"./model-actions":776}],776:[function(require,module,exports){
+},{"./batch-actions":771,"./field-actions":772,"./model-actions":774}],774:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64862,7 +70501,7 @@ exports.default = {
   load: load,
   omit: omit
 };
-},{"../action-types":772,"icepick":356,"lodash/endsWith":578,"lodash/get":590,"lodash/isEqual":599}],777:[function(require,module,exports){
+},{"../action-types":770,"icepick":356,"lodash/endsWith":578,"lodash/get":590,"lodash/isEqual":599}],775:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -64989,7 +70628,7 @@ Control.propTypes = {
 };
 
 exports.default = (0, _connect2.default)(selector)(Control);
-},{"../utils/sequence":788,"lodash/get":590,"lodash/memoize":614,"react":945,"react-redux/lib/components/connect":791}],778:[function(require,module,exports){
+},{"../utils/sequence":786,"lodash/get":590,"lodash/memoize":614,"react":944,"react-redux/lib/components/connect":789}],776:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65192,7 +70831,7 @@ function selector(state, _ref2) {
 }
 
 exports.default = (0, _connect2.default)(selector)(Errors);
-},{"../utils":787,"lodash/compact":576,"lodash/get":590,"lodash/isArray":594,"lodash/isPlainObject":604,"lodash/iteratee":608,"lodash/map":612,"react":945,"react-redux/lib/components/connect":791}],779:[function(require,module,exports){
+},{"../utils":785,"lodash/compact":576,"lodash/get":590,"lodash/isArray":594,"lodash/isPlainObject":604,"lodash/iteratee":608,"lodash/map":612,"react":944,"react-redux/lib/components/connect":789}],777:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65436,7 +71075,7 @@ function createFieldClass() {
 exports.controlPropsMap = controlPropsMap;
 exports.createFieldClass = createFieldClass;
 exports.default = createFieldClass(controlPropsMap);
-},{"../actions":775,"../utils":787,"./control-component":777,"lodash/get":590,"lodash/identity":592,"lodash/isEqual":599,"lodash/omit":618,"react":945,"react-redux/lib/components/connect":791}],780:[function(require,module,exports){
+},{"../actions":773,"../utils":785,"./control-component":775,"lodash/get":590,"lodash/identity":592,"lodash/isEqual":599,"lodash/omit":618,"react":944,"react-redux/lib/components/connect":789}],778:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65654,7 +71293,7 @@ function selector(state, _ref) {
 }
 
 exports.default = (0, _connect2.default)(selector)(Form);
-},{"../actions":775,"../reducers/form-reducer":783,"../utils":787,"lodash/get":590,"lodash/mapValues":613,"lodash/merge":615,"react":945,"react-redux/lib/components/connect":791}],781:[function(require,module,exports){
+},{"../actions":773,"../reducers/form-reducer":781,"../utils":785,"lodash/get":590,"lodash/mapValues":613,"lodash/merge":615,"react":944,"react-redux/lib/components/connect":789}],779:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65698,7 +71337,7 @@ var modelReducerEnhancer = createModelReducerEnhancer(_modelReducer3.default);
 
 exports.createModelReducerEnhancer = createModelReducerEnhancer;
 exports.default = modelReducerEnhancer;
-},{"../reducers/model-reducer":785}],782:[function(require,module,exports){
+},{"../reducers/model-reducer":783}],780:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -65763,7 +71402,7 @@ exports.getField = _formReducer.getField;
 exports.initialFieldState = _formReducer.initialFieldState;
 exports.modeled = _modeledEnhancer2.default;
 exports.track = _track.track;
-},{"./action-types":772,"./actions":775,"./components/errors-component":778,"./components/field-component":779,"./components/form-component":780,"./enhancers/modeled-enhancer":781,"./reducers/form-reducer":783,"./reducers/model-form-reducer":784,"./reducers/model-reducer":785,"./utils/track":789}],783:[function(require,module,exports){
+},{"./action-types":770,"./actions":773,"./components/errors-component":776,"./components/field-component":777,"./components/form-component":778,"./enhancers/modeled-enhancer":779,"./reducers/form-reducer":781,"./reducers/model-form-reducer":782,"./reducers/model-reducer":783,"./utils/track":787}],781:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66249,7 +71888,7 @@ exports.initialFieldState = initialFieldState;
 exports.initialFormState = initialFormState;
 exports.getField = getField;
 exports.default = _createFormReducer;
-},{"../action-types":772,"../actions/field-actions":774,"../utils":787,"flat":354,"icepick":356,"lodash/every":580,"lodash/get":590,"lodash/isBoolean":597,"lodash/isEqual":599,"lodash/isPlainObject":604,"lodash/map":612,"lodash/mapValues":613,"lodash/startsWith":626,"lodash/toPath":632}],784:[function(require,module,exports){
+},{"../action-types":770,"../actions/field-actions":772,"../utils":785,"flat":354,"icepick":356,"lodash/every":580,"lodash/get":590,"lodash/isBoolean":597,"lodash/isEqual":599,"lodash/isPlainObject":604,"lodash/map":612,"lodash/mapValues":613,"lodash/startsWith":626,"lodash/toPath":632}],782:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66290,7 +71929,7 @@ function modelForm(model) {
 
 exports.modelForm = modelForm;
 exports.default = modelFormReducer;
-},{"./form-reducer":783,"./model-reducer":785,"redux":961}],785:[function(require,module,exports){
+},{"./form-reducer":781,"./model-reducer":783,"redux":960}],783:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66407,7 +72046,7 @@ function createModelReducer() {
 exports.createModeler = createModeler;
 exports.createModelReducer = createModelReducer;
 exports.default = modelReducer;
-},{"../action-types":772,"icepick":356,"lodash/get":590,"lodash/isEqual":599,"lodash/toPath":632}],786:[function(require,module,exports){
+},{"../action-types":770,"icepick":356,"lodash/get":590,"lodash/isEqual":599,"lodash/toPath":632}],784:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66442,7 +72081,7 @@ var flattenObject = function flatten(target) {
 };
 
 exports.default = flattenObject;
-},{}],787:[function(require,module,exports){
+},{}],785:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66625,7 +72264,7 @@ exports.getForm = getForm;
 exports.getFieldFromState = getFieldFromState;
 exports.invertValidators = invertValidators;
 exports.invertValidity = invertValidity;
-},{"../reducers/form-reducer":783,"./flatten":786,"lodash/endsWith":578,"lodash/every":580,"lodash/findKey":581,"lodash/get":590,"lodash/isPlainObject":604,"lodash/mapValues":613,"lodash/memoize":614,"lodash/some":624,"lodash/startsWith":626,"lodash/toPath":632}],788:[function(require,module,exports){
+},{"../reducers/form-reducer":781,"./flatten":784,"lodash/endsWith":578,"lodash/every":580,"lodash/findKey":581,"lodash/get":590,"lodash/isPlainObject":604,"lodash/mapValues":613,"lodash/memoize":614,"lodash/some":624,"lodash/startsWith":626,"lodash/toPath":632}],786:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66863,7 +72502,7 @@ function sequenceEventActions(props) {
 }
 
 exports.sequenceEventActions = sequenceEventActions;
-},{"../actions":775,"./index":787,"icepick":356,"lodash/capitalize":574,"lodash/fp/compose":586,"lodash/identity":592,"lodash/isEqual":599,"lodash/mapValues":613,"lodash/memoize":614,"lodash/merge":615,"lodash/partial":619}],789:[function(require,module,exports){
+},{"../actions":773,"./index":785,"icepick":356,"lodash/capitalize":574,"lodash/fp/compose":586,"lodash/identity":592,"lodash/isEqual":599,"lodash/mapValues":613,"lodash/memoize":614,"lodash/merge":615,"lodash/partial":619}],787:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -66902,7 +72541,7 @@ function track(model, predicate) {
 }
 
 exports.track = track;
-},{"lodash/findKey":581,"lodash/get":590}],790:[function(require,module,exports){
+},{"lodash/findKey":581,"lodash/get":590}],788:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -66983,7 +72622,7 @@ Provider.childContextTypes = {
   store: _storeShape2["default"].isRequired
 };
 }).call(this,require('_process'))
-},{"../utils/storeShape":794,"../utils/warning":795,"_process":753,"react":945}],791:[function(require,module,exports){
+},{"../utils/storeShape":792,"../utils/warning":793,"_process":751,"react":944}],789:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -67379,7 +73018,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps) {
   };
 }
 }).call(this,require('_process'))
-},{"../utils/shallowEqual":793,"../utils/storeShape":794,"../utils/warning":795,"../utils/wrapActionCreators":796,"_process":753,"hoist-non-react-statics":355,"invariant":388,"lodash/isPlainObject":604,"react":945}],792:[function(require,module,exports){
+},{"../utils/shallowEqual":791,"../utils/storeShape":792,"../utils/warning":793,"../utils/wrapActionCreators":794,"_process":751,"hoist-non-react-statics":355,"invariant":388,"lodash/isPlainObject":604,"react":944}],790:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -67397,7 +73036,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 exports.Provider = _Provider2["default"];
 exports.connect = _connect2["default"];
-},{"./components/Provider":790,"./components/connect":791}],793:[function(require,module,exports){
+},{"./components/Provider":788,"./components/connect":789}],791:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -67424,7 +73063,7 @@ function shallowEqual(objA, objB) {
 
   return true;
 }
-},{}],794:[function(require,module,exports){
+},{}],792:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -67436,7 +73075,7 @@ exports["default"] = _react.PropTypes.shape({
   dispatch: _react.PropTypes.func.isRequired,
   getState: _react.PropTypes.func.isRequired
 });
-},{"react":945}],795:[function(require,module,exports){
+},{"react":944}],793:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -67461,7 +73100,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],796:[function(require,module,exports){
+},{}],794:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -67474,7 +73113,7 @@ function wrapActionCreators(actionCreators) {
     return (0, _redux.bindActionCreators)(actionCreators, dispatch);
   };
 }
-},{"redux":961}],797:[function(require,module,exports){
+},{"redux":960}],795:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -67526,7 +73165,7 @@ var invariant = function (condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 }).call(this,require('_process'))
-},{"_process":753}],798:[function(require,module,exports){
+},{"_process":751}],796:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -67562,7 +73201,7 @@ var keyOf = function (oneKeyObj) {
 };
 
 module.exports = keyOf;
-},{}],799:[function(require,module,exports){
+},{}],797:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -67734,7 +73373,7 @@ function createTapEventPlugin(shouldRejectClick) {
 
 module.exports = createTapEventPlugin;
 
-},{"./TouchEventUtils":800,"fbjs/lib/keyOf":798,"react/lib/EventConstants":819,"react/lib/EventPluginUtils":822,"react/lib/EventPropagators":823,"react/lib/SyntheticUIEvent":911,"react/lib/ViewportMetrics":914}],800:[function(require,module,exports){
+},{"./TouchEventUtils":798,"fbjs/lib/keyOf":796,"react/lib/EventConstants":818,"react/lib/EventPluginUtils":821,"react/lib/EventPropagators":822,"react/lib/SyntheticUIEvent":910,"react/lib/ViewportMetrics":913}],798:[function(require,module,exports){
 /**
  * Copyright 2013-2014 Facebook, Inc.
  *
@@ -67778,14 +73417,14 @@ var TouchEventUtils = {
 
 module.exports = TouchEventUtils;
 
-},{}],801:[function(require,module,exports){
+},{}],799:[function(require,module,exports){
 module.exports = function(lastTouchEvent, clickTimestamp) {
   if (lastTouchEvent && (clickTimestamp - lastTouchEvent) < 750) {
     return true;
   }
 };
 
-},{}],802:[function(require,module,exports){
+},{}],800:[function(require,module,exports){
 (function (process){
 var invariant = require('fbjs/lib/invariant');
 var defaultClickRejectionStrategy = require('./defaultClickRejectionStrategy');
@@ -67815,7 +73454,7 @@ should be injected by the application.'
 };
 
 }).call(this,require('_process'))
-},{"./TapEventPlugin.js":799,"./defaultClickRejectionStrategy":801,"_process":753,"fbjs/lib/invariant":797,"react/lib/EventPluginHub":820}],803:[function(require,module,exports){
+},{"./TapEventPlugin.js":797,"./defaultClickRejectionStrategy":799,"_process":751,"fbjs/lib/invariant":795,"react/lib/EventPluginHub":819}],801:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -67978,7 +73617,305 @@ TimeAgo.defaultProps = {
   }
 };
 exports.default = TimeAgo;
-},{"react":945}],804:[function(require,module,exports){
+},{"react":944}],802:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var POSITIONS = {
+  above: 'above',
+  inside: 'inside',
+  below: 'below',
+  invisible: 'invisible'
+};
+
+var propTypes = {
+  debug: _react.PropTypes.bool,
+  // threshold is percentage of the height of the visible part of the
+  // scrollable ancestor (e.g. 0.1)
+  threshold: _react.PropTypes.number,
+  onEnter: _react.PropTypes.func,
+  onLeave: _react.PropTypes.func,
+  onPositionChange: _react.PropTypes.func,
+  fireOnRapidScroll: _react.PropTypes.bool,
+  scrollableAncestor: _react.PropTypes.any
+};
+
+var defaultProps = {
+  threshold: 0,
+  onEnter: function onEnter() {},
+  onLeave: function onLeave() {},
+  onPositionChange: function onPositionChange() {},
+
+  fireOnRapidScroll: true
+};
+
+function debugLog() {
+  console.log(arguments); // eslint-disable-line no-console
+}
+
+/**
+ * Calls a function when you scroll to the element.
+ */
+
+var Waypoint = (function (_React$Component) {
+  _inherits(Waypoint, _React$Component);
+
+  function Waypoint() {
+    _classCallCheck(this, Waypoint);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Waypoint).apply(this, arguments));
+  }
+
+  _createClass(Waypoint, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      if (this.props.scrollableParent) {
+        // eslint-disable-line react/prop-types
+        throw new Error('The `scrollableParent` prop has changed name ' + 'to `scrollableAncestor`.');
+      }
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      if (!Waypoint.getWindow()) {
+        return;
+      }
+
+      this._handleScroll = this._handleScroll.bind(this);
+      this.scrollableAncestor = this._findScrollableAncestor();
+      if (this.props.debug) {
+        debugLog('scrollableAncestor', this.scrollableAncestor);
+      }
+      this.scrollableAncestor.addEventListener('scroll', this._handleScroll);
+      window.addEventListener('resize', this._handleScroll);
+      this._handleScroll(null);
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      if (!Waypoint.getWindow()) {
+        return;
+      }
+
+      // The element may have moved.
+      this._handleScroll(null);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      if (!Waypoint.getWindow()) {
+        return;
+      }
+
+      if (this.scrollableAncestor) {
+        // At the time of unmounting, the scrollable ancestor might no longer
+        // exist. Guarding against this prevents the following error:
+        //
+        //   Cannot read property 'removeEventListener' of undefined
+        this.scrollableAncestor.removeEventListener('scroll', this._handleScroll);
+      }
+      window.removeEventListener('resize', this._handleScroll);
+    }
+
+    /**
+     * Traverses up the DOM to find an ancestor container which has an overflow
+     * style that allows for scrolling.
+     *
+     * @return {Object} the closest ancestor element with an overflow style that
+     *   allows for scrolling. If none is found, the `window` object is returned
+     *   as a fallback.
+     */
+
+  }, {
+    key: '_findScrollableAncestor',
+    value: function _findScrollableAncestor() {
+      if (this.props.scrollableAncestor) {
+        return this.props.scrollableAncestor;
+      }
+
+      var node = _reactDom2.default.findDOMNode(this);
+
+      while (node.parentNode) {
+        node = node.parentNode;
+
+        if (node === document) {
+          // This particular node does not have a computed style.
+          continue;
+        }
+
+        if (node === document.documentElement) {
+          // This particular node does not have a scroll bar, it uses the window.
+          continue;
+        }
+
+        var style = window.getComputedStyle(node);
+        var overflowY = style.getPropertyValue('overflow-y') || style.getPropertyValue('overflow');
+
+        if (overflowY === 'auto' || overflowY === 'scroll') {
+          return node;
+        }
+      }
+
+      // A scrollable ancestor element was not found, which means that we need to
+      // do stuff on window.
+      return window;
+    }
+
+    /**
+     * @param {Object} event the native scroll event coming from the scrollable
+     *   ancestor, or resize event coming from the window. Will be undefined if
+     *   called by a React lifecyle method
+     */
+
+  }, {
+    key: '_handleScroll',
+    value: function _handleScroll(event) {
+      var currentPosition = this._currentPosition();
+      var previousPosition = this._previousPosition || null;
+      if (this.props.debug) {
+        debugLog('currentPosition', currentPosition);
+        debugLog('previousPosition', previousPosition);
+      }
+
+      // Save previous position as early as possible to prevent cycles
+      this._previousPosition = currentPosition;
+
+      if (previousPosition === currentPosition) {
+        // No change since last trigger
+        return;
+      }
+
+      var callbackArg = {
+        currentPosition: currentPosition,
+        previousPosition: previousPosition,
+        event: event
+      };
+      this.props.onPositionChange.call(this, callbackArg);
+
+      if (currentPosition === POSITIONS.inside) {
+        this.props.onEnter.call(this, callbackArg);
+      } else if (previousPosition === POSITIONS.inside) {
+        this.props.onLeave.call(this, callbackArg);
+      }
+
+      var isRapidScrollDown = previousPosition === POSITIONS.below && currentPosition === POSITIONS.above;
+      var isRapidScrollUp = previousPosition === POSITIONS.above && currentPosition === POSITIONS.below;
+      if (this.props.fireOnRapidScroll && (isRapidScrollDown || isRapidScrollUp)) {
+        // If the scroll event isn't fired often enough to occur while the
+        // waypoint was visible, we trigger both callbacks anyway.
+        this.props.onEnter.call(this, {
+          currentPosition: POSITIONS.inside,
+          previousPosition: previousPosition,
+          event: event
+        });
+        this.props.onLeave.call(this, {
+          currentPosition: currentPosition,
+          previousPosition: POSITIONS.inside,
+          event: event
+        });
+      }
+    }
+
+    /**
+     * @return {string} The current position of the waypoint in relation to the
+     *   visible portion of the scrollable parent. One of `POSITIONS.above`,
+     *   `POSITIONS.below`, or `POSITIONS.inside`.
+     */
+
+  }, {
+    key: '_currentPosition',
+    value: function _currentPosition() {
+      var waypointTop = _reactDom2.default.findDOMNode(this).getBoundingClientRect().top;
+      var contextHeight = undefined;
+      var contextScrollTop = undefined;
+      if (this.scrollableAncestor === window) {
+        contextHeight = window.innerHeight;
+        contextScrollTop = 0;
+      } else {
+        contextHeight = this.scrollableAncestor.offsetHeight;
+        contextScrollTop = _reactDom2.default.findDOMNode(this.scrollableAncestor).getBoundingClientRect().top;
+      }
+      if (this.props.debug) {
+        debugLog('waypoint top', waypointTop);
+        debugLog('scrollableAncestor height', contextHeight);
+        debugLog('scrollableAncestor scrollTop', contextScrollTop);
+      }
+      var thresholdPx = contextHeight * this.props.threshold;
+      var contextBottom = contextScrollTop + contextHeight;
+
+      if (contextHeight === 0) {
+        return Waypoint.invisible;
+      }
+
+      if (contextScrollTop <= waypointTop + thresholdPx && waypointTop - thresholdPx <= contextBottom) {
+        return Waypoint.inside;
+      }
+
+      if (contextBottom < waypointTop - thresholdPx) {
+        return Waypoint.below;
+      }
+
+      if (waypointTop + thresholdPx < contextScrollTop) {
+        return Waypoint.above;
+      }
+
+      return Waypoint.invisible;
+    }
+
+    /**
+     * @return {Object}
+     */
+
+  }, {
+    key: 'render',
+    value: function render() {
+      // We need an element that we can locate in the DOM to determine where it is
+      // rendered relative to the top of its context.
+      return _react2.default.createElement('span', { style: { fontSize: 0 } });
+    }
+  }]);
+
+  return Waypoint;
+})(_react2.default.Component);
+
+exports.default = Waypoint;
+
+Waypoint.propTypes = propTypes;
+Waypoint.above = POSITIONS.above;
+Waypoint.below = POSITIONS.below;
+Waypoint.inside = POSITIONS.inside;
+Waypoint.invisible = POSITIONS.invisible;
+Waypoint.getWindow = function () {
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+};
+Waypoint.defaultProps = defaultProps;
+Waypoint.displayName = 'Waypoint';
+module.exports = exports['default'];
+
+},{"react":944,"react-dom":756}],803:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -68003,7 +73940,7 @@ var AutoFocusUtils = {
 };
 
 module.exports = AutoFocusUtils;
-},{"./ReactDOMComponentTree":844,"fbjs/lib/focusNode":337}],805:[function(require,module,exports){
+},{"./ReactDOMComponentTree":843,"fbjs/lib/focusNode":337}],804:[function(require,module,exports){
 /**
  * Copyright 2013-present Facebook, Inc.
  * All rights reserved.
@@ -68392,7 +74329,7 @@ var BeforeInputEventPlugin = {
 };
 
 module.exports = BeforeInputEventPlugin;
-},{"./EventConstants":819,"./EventPropagators":823,"./FallbackCompositionState":824,"./SyntheticCompositionEvent":902,"./SyntheticInputEvent":906,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/keyOf":347}],806:[function(require,module,exports){
+},{"./EventConstants":818,"./EventPropagators":822,"./FallbackCompositionState":823,"./SyntheticCompositionEvent":901,"./SyntheticInputEvent":905,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/keyOf":347}],805:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -68541,7 +74478,7 @@ var CSSProperty = {
 };
 
 module.exports = CSSProperty;
-},{}],807:[function(require,module,exports){
+},{}],806:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -68749,7 +74686,7 @@ var CSSPropertyOperations = {
 
 module.exports = CSSPropertyOperations;
 }).call(this,require('_process'))
-},{"./CSSProperty":806,"./ReactInstrumentation":874,"./dangerousStyleValue":919,"_process":753,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/camelizeStyleName":331,"fbjs/lib/hyphenateStyleName":342,"fbjs/lib/memoizeStringOnly":349,"fbjs/lib/warning":353}],808:[function(require,module,exports){
+},{"./CSSProperty":805,"./ReactInstrumentation":873,"./dangerousStyleValue":918,"_process":751,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/camelizeStyleName":331,"fbjs/lib/hyphenateStyleName":342,"fbjs/lib/memoizeStringOnly":349,"fbjs/lib/warning":353}],807:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -68857,7 +74794,7 @@ PooledClass.addPoolingTo(CallbackQueue);
 
 module.exports = CallbackQueue;
 }).call(this,require('_process'))
-},{"./PooledClass":828,"_process":753,"fbjs/lib/invariant":343,"object-assign":751}],809:[function(require,module,exports){
+},{"./PooledClass":827,"_process":751,"fbjs/lib/invariant":343,"object-assign":749}],808:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -69183,7 +75120,7 @@ var ChangeEventPlugin = {
 };
 
 module.exports = ChangeEventPlugin;
-},{"./EventConstants":819,"./EventPluginHub":820,"./EventPropagators":823,"./ReactDOMComponentTree":844,"./ReactUpdates":895,"./SyntheticEvent":904,"./getEventTarget":927,"./isEventSupported":934,"./isTextInputElement":935,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/keyOf":347}],810:[function(require,module,exports){
+},{"./EventConstants":818,"./EventPluginHub":819,"./EventPropagators":822,"./ReactDOMComponentTree":843,"./ReactUpdates":894,"./SyntheticEvent":903,"./getEventTarget":926,"./isEventSupported":933,"./isTextInputElement":934,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/keyOf":347}],809:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -69380,7 +75317,7 @@ var DOMChildrenOperations = {
 
 module.exports = DOMChildrenOperations;
 }).call(this,require('_process'))
-},{"./DOMLazyTree":811,"./Danger":815,"./ReactDOMComponentTree":844,"./ReactInstrumentation":874,"./ReactMultiChildUpdateTypes":879,"./createMicrosoftUnsafeLocalFunction":918,"./setInnerHTML":939,"./setTextContent":940,"_process":753}],811:[function(require,module,exports){
+},{"./DOMLazyTree":810,"./Danger":814,"./ReactDOMComponentTree":843,"./ReactInstrumentation":873,"./ReactMultiChildUpdateTypes":878,"./createMicrosoftUnsafeLocalFunction":917,"./setInnerHTML":938,"./setTextContent":939,"_process":751}],810:[function(require,module,exports){
 /**
  * Copyright 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -69498,7 +75435,7 @@ DOMLazyTree.queueHTML = queueHTML;
 DOMLazyTree.queueText = queueText;
 
 module.exports = DOMLazyTree;
-},{"./DOMNamespaces":812,"./createMicrosoftUnsafeLocalFunction":918,"./setTextContent":940}],812:[function(require,module,exports){
+},{"./DOMNamespaces":811,"./createMicrosoftUnsafeLocalFunction":917,"./setTextContent":939}],811:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -69519,7 +75456,7 @@ var DOMNamespaces = {
 };
 
 module.exports = DOMNamespaces;
-},{}],813:[function(require,module,exports){
+},{}],812:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -69735,7 +75672,7 @@ var DOMProperty = {
 
 module.exports = DOMProperty;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],814:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],813:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -69960,7 +75897,7 @@ var DOMPropertyOperations = {
 
 module.exports = DOMPropertyOperations;
 }).call(this,require('_process'))
-},{"./DOMProperty":813,"./ReactDOMComponentTree":844,"./ReactDOMInstrumentation":852,"./ReactInstrumentation":874,"./quoteAttributeValueForBrowser":937,"_process":753,"fbjs/lib/warning":353}],815:[function(require,module,exports){
+},{"./DOMProperty":812,"./ReactDOMComponentTree":843,"./ReactDOMInstrumentation":851,"./ReactInstrumentation":873,"./quoteAttributeValueForBrowser":936,"_process":751,"fbjs/lib/warning":353}],814:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -70107,7 +76044,7 @@ var Danger = {
 
 module.exports = Danger;
 }).call(this,require('_process'))
-},{"./DOMLazyTree":811,"_process":753,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/createNodesFromMarkup":334,"fbjs/lib/emptyFunction":335,"fbjs/lib/getMarkupWrap":339,"fbjs/lib/invariant":343}],816:[function(require,module,exports){
+},{"./DOMLazyTree":810,"_process":751,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/createNodesFromMarkup":334,"fbjs/lib/emptyFunction":335,"fbjs/lib/getMarkupWrap":339,"fbjs/lib/invariant":343}],815:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -70135,7 +76072,7 @@ var keyOf = require('fbjs/lib/keyOf');
 var DefaultEventPluginOrder = [keyOf({ ResponderEventPlugin: null }), keyOf({ SimpleEventPlugin: null }), keyOf({ TapEventPlugin: null }), keyOf({ EnterLeaveEventPlugin: null }), keyOf({ ChangeEventPlugin: null }), keyOf({ SelectEventPlugin: null }), keyOf({ BeforeInputEventPlugin: null })];
 
 module.exports = DefaultEventPluginOrder;
-},{"fbjs/lib/keyOf":347}],817:[function(require,module,exports){
+},{"fbjs/lib/keyOf":347}],816:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -70186,7 +76123,7 @@ var DisabledInputUtils = {
 };
 
 module.exports = DisabledInputUtils;
-},{}],818:[function(require,module,exports){
+},{}],817:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -70292,7 +76229,7 @@ var EnterLeaveEventPlugin = {
 };
 
 module.exports = EnterLeaveEventPlugin;
-},{"./EventConstants":819,"./EventPropagators":823,"./ReactDOMComponentTree":844,"./SyntheticMouseEvent":908,"fbjs/lib/keyOf":347}],819:[function(require,module,exports){
+},{"./EventConstants":818,"./EventPropagators":822,"./ReactDOMComponentTree":843,"./SyntheticMouseEvent":907,"fbjs/lib/keyOf":347}],818:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -70390,7 +76327,7 @@ var EventConstants = {
 };
 
 module.exports = EventConstants;
-},{"fbjs/lib/keyMirror":346}],820:[function(require,module,exports){
+},{"fbjs/lib/keyMirror":346}],819:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -70628,7 +76565,7 @@ var EventPluginHub = {
 
 module.exports = EventPluginHub;
 }).call(this,require('_process'))
-},{"./EventPluginRegistry":821,"./EventPluginUtils":822,"./ReactErrorUtils":866,"./accumulateInto":915,"./forEachAccumulated":923,"_process":753,"fbjs/lib/invariant":343}],821:[function(require,module,exports){
+},{"./EventPluginRegistry":820,"./EventPluginUtils":821,"./ReactErrorUtils":865,"./accumulateInto":914,"./forEachAccumulated":922,"_process":751,"fbjs/lib/invariant":343}],820:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -70872,7 +76809,7 @@ var EventPluginRegistry = {
 
 module.exports = EventPluginRegistry;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],822:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],821:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -71102,7 +77039,7 @@ var EventPluginUtils = {
 
 module.exports = EventPluginUtils;
 }).call(this,require('_process'))
-},{"./EventConstants":819,"./ReactErrorUtils":866,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],823:[function(require,module,exports){
+},{"./EventConstants":818,"./ReactErrorUtils":865,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],822:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -71242,7 +77179,7 @@ var EventPropagators = {
 
 module.exports = EventPropagators;
 }).call(this,require('_process'))
-},{"./EventConstants":819,"./EventPluginHub":820,"./EventPluginUtils":822,"./accumulateInto":915,"./forEachAccumulated":923,"_process":753,"fbjs/lib/warning":353}],824:[function(require,module,exports){
+},{"./EventConstants":818,"./EventPluginHub":819,"./EventPluginUtils":821,"./accumulateInto":914,"./forEachAccumulated":922,"_process":751,"fbjs/lib/warning":353}],823:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -71338,7 +77275,7 @@ _assign(FallbackCompositionState.prototype, {
 PooledClass.addPoolingTo(FallbackCompositionState);
 
 module.exports = FallbackCompositionState;
-},{"./PooledClass":828,"./getTextContentAccessor":931,"object-assign":751}],825:[function(require,module,exports){
+},{"./PooledClass":827,"./getTextContentAccessor":930,"object-assign":749}],824:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -71548,7 +77485,7 @@ var HTMLDOMPropertyConfig = {
 };
 
 module.exports = HTMLDOMPropertyConfig;
-},{"./DOMProperty":813}],826:[function(require,module,exports){
+},{"./DOMProperty":812}],825:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -71607,7 +77544,7 @@ var KeyEscapeUtils = {
 };
 
 module.exports = KeyEscapeUtils;
-},{}],827:[function(require,module,exports){
+},{}],826:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -71743,7 +77680,7 @@ var LinkedValueUtils = {
 
 module.exports = LinkedValueUtils;
 }).call(this,require('_process'))
-},{"./ReactPropTypeLocations":886,"./ReactPropTypes":887,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],828:[function(require,module,exports){
+},{"./ReactPropTypeLocations":885,"./ReactPropTypes":886,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],827:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -71865,7 +77802,7 @@ var PooledClass = {
 
 module.exports = PooledClass;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],829:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],828:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -71955,7 +77892,7 @@ var React = {
 
 module.exports = React;
 }).call(this,require('_process'))
-},{"./ReactChildren":832,"./ReactClass":833,"./ReactComponent":834,"./ReactDOMFactories":848,"./ReactElement":863,"./ReactElementValidator":864,"./ReactPropTypes":887,"./ReactVersion":896,"./onlyChild":936,"_process":753,"fbjs/lib/warning":353,"object-assign":751}],830:[function(require,module,exports){
+},{"./ReactChildren":831,"./ReactClass":832,"./ReactComponent":833,"./ReactDOMFactories":847,"./ReactElement":862,"./ReactElementValidator":863,"./ReactPropTypes":886,"./ReactVersion":895,"./onlyChild":935,"_process":751,"fbjs/lib/warning":353,"object-assign":749}],829:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -72273,7 +78210,7 @@ var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
 });
 
 module.exports = ReactBrowserEventEmitter;
-},{"./EventConstants":819,"./EventPluginRegistry":821,"./ReactEventEmitterMixin":867,"./ViewportMetrics":914,"./getVendorPrefixedEventName":932,"./isEventSupported":934,"object-assign":751}],831:[function(require,module,exports){
+},{"./EventConstants":818,"./EventPluginRegistry":820,"./ReactEventEmitterMixin":866,"./ViewportMetrics":913,"./getVendorPrefixedEventName":931,"./isEventSupported":933,"object-assign":749}],830:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-present, Facebook, Inc.
@@ -72401,7 +78338,7 @@ var ReactChildReconciler = {
 
 module.exports = ReactChildReconciler;
 }).call(this,require('_process'))
-},{"./KeyEscapeUtils":826,"./ReactReconciler":889,"./instantiateReactComponent":933,"./shouldUpdateReactComponent":941,"./traverseAllChildren":942,"_process":753,"fbjs/lib/warning":353}],832:[function(require,module,exports){
+},{"./KeyEscapeUtils":825,"./ReactReconciler":888,"./instantiateReactComponent":932,"./shouldUpdateReactComponent":940,"./traverseAllChildren":941,"_process":751,"fbjs/lib/warning":353}],831:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -72593,7 +78530,7 @@ var ReactChildren = {
 };
 
 module.exports = ReactChildren;
-},{"./PooledClass":828,"./ReactElement":863,"./traverseAllChildren":942,"fbjs/lib/emptyFunction":335}],833:[function(require,module,exports){
+},{"./PooledClass":827,"./ReactElement":862,"./traverseAllChildren":941,"fbjs/lib/emptyFunction":335}],832:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -73320,7 +79257,7 @@ var ReactClass = {
 
 module.exports = ReactClass;
 }).call(this,require('_process'))
-},{"./ReactComponent":834,"./ReactElement":863,"./ReactNoopUpdateQueue":883,"./ReactPropTypeLocationNames":885,"./ReactPropTypeLocations":886,"_process":753,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/keyMirror":346,"fbjs/lib/keyOf":347,"fbjs/lib/warning":353,"object-assign":751}],834:[function(require,module,exports){
+},{"./ReactComponent":833,"./ReactElement":862,"./ReactNoopUpdateQueue":882,"./ReactPropTypeLocationNames":884,"./ReactPropTypeLocations":885,"_process":751,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/keyMirror":346,"fbjs/lib/keyOf":347,"fbjs/lib/warning":353,"object-assign":749}],833:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -73444,7 +79381,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = ReactComponent;
 }).call(this,require('_process'))
-},{"./ReactInstrumentation":874,"./ReactNoopUpdateQueue":883,"./canDefineProperty":917,"_process":753,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],835:[function(require,module,exports){
+},{"./ReactInstrumentation":873,"./ReactNoopUpdateQueue":882,"./canDefineProperty":916,"_process":751,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],834:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -73484,7 +79421,7 @@ var ReactComponentBrowserEnvironment = {
 };
 
 module.exports = ReactComponentBrowserEnvironment;
-},{"./DOMChildrenOperations":810,"./ReactDOMIDOperations":850}],836:[function(require,module,exports){
+},{"./DOMChildrenOperations":809,"./ReactDOMIDOperations":849}],835:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-present, Facebook, Inc.
@@ -73538,7 +79475,7 @@ var ReactComponentEnvironment = {
 
 module.exports = ReactComponentEnvironment;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],837:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],836:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2016-present, Facebook, Inc.
@@ -73686,7 +79623,7 @@ var ReactComponentTreeDevtool = {
 
 module.exports = ReactComponentTreeDevtool;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],838:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],837:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -74612,7 +80549,7 @@ var ReactCompositeComponent = {
 
 module.exports = ReactCompositeComponent;
 }).call(this,require('_process'))
-},{"./ReactComponentEnvironment":836,"./ReactCurrentOwner":839,"./ReactElement":863,"./ReactErrorUtils":866,"./ReactInstanceMap":873,"./ReactInstrumentation":874,"./ReactNodeTypes":882,"./ReactPropTypeLocationNames":885,"./ReactPropTypeLocations":886,"./ReactReconciler":889,"./ReactUpdateQueue":894,"./shouldUpdateReactComponent":941,"_process":753,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":751}],839:[function(require,module,exports){
+},{"./ReactComponentEnvironment":835,"./ReactCurrentOwner":838,"./ReactElement":862,"./ReactErrorUtils":865,"./ReactInstanceMap":872,"./ReactInstrumentation":873,"./ReactNodeTypes":881,"./ReactPropTypeLocationNames":884,"./ReactPropTypeLocations":885,"./ReactReconciler":888,"./ReactUpdateQueue":893,"./shouldUpdateReactComponent":940,"_process":751,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":749}],838:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -74644,7 +80581,7 @@ var ReactCurrentOwner = {
 };
 
 module.exports = ReactCurrentOwner;
-},{}],840:[function(require,module,exports){
+},{}],839:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -74748,7 +80685,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = React;
 }).call(this,require('_process'))
-},{"./ReactDOMComponentTree":844,"./ReactDefaultInjection":862,"./ReactMount":877,"./ReactReconciler":889,"./ReactUpdates":895,"./ReactVersion":896,"./findDOMNode":921,"./getNativeComponentFromComposite":929,"./renderSubtreeIntoContainer":938,"_process":753,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/warning":353}],841:[function(require,module,exports){
+},{"./ReactDOMComponentTree":843,"./ReactDefaultInjection":861,"./ReactMount":876,"./ReactReconciler":888,"./ReactUpdates":894,"./ReactVersion":895,"./findDOMNode":920,"./getNativeComponentFromComposite":928,"./renderSubtreeIntoContainer":937,"_process":751,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/warning":353}],840:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -74773,7 +80710,7 @@ var ReactDOMButton = {
 };
 
 module.exports = ReactDOMButton;
-},{"./DisabledInputUtils":817}],842:[function(require,module,exports){
+},{"./DisabledInputUtils":816}],841:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -75725,7 +81662,7 @@ _assign(ReactDOMComponent.prototype, ReactDOMComponent.Mixin, ReactMultiChild.Mi
 
 module.exports = ReactDOMComponent;
 }).call(this,require('_process'))
-},{"./AutoFocusUtils":804,"./CSSPropertyOperations":807,"./DOMLazyTree":811,"./DOMNamespaces":812,"./DOMProperty":813,"./DOMPropertyOperations":814,"./EventConstants":819,"./EventPluginHub":820,"./EventPluginRegistry":821,"./ReactBrowserEventEmitter":830,"./ReactComponentBrowserEnvironment":835,"./ReactDOMButton":841,"./ReactDOMComponentFlags":843,"./ReactDOMComponentTree":844,"./ReactDOMInput":851,"./ReactDOMOption":853,"./ReactDOMSelect":854,"./ReactDOMTextarea":857,"./ReactInstrumentation":874,"./ReactMultiChild":878,"./ReactServerRenderingTransaction":891,"./escapeTextContentForBrowser":920,"./isEventSupported":934,"./validateDOMNesting":944,"_process":753,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343,"fbjs/lib/keyOf":347,"fbjs/lib/shallowEqual":352,"fbjs/lib/warning":353,"object-assign":751}],843:[function(require,module,exports){
+},{"./AutoFocusUtils":803,"./CSSPropertyOperations":806,"./DOMLazyTree":810,"./DOMNamespaces":811,"./DOMProperty":812,"./DOMPropertyOperations":813,"./EventConstants":818,"./EventPluginHub":819,"./EventPluginRegistry":820,"./ReactBrowserEventEmitter":829,"./ReactComponentBrowserEnvironment":834,"./ReactDOMButton":840,"./ReactDOMComponentFlags":842,"./ReactDOMComponentTree":843,"./ReactDOMInput":850,"./ReactDOMOption":852,"./ReactDOMSelect":853,"./ReactDOMTextarea":856,"./ReactInstrumentation":873,"./ReactMultiChild":877,"./ReactServerRenderingTransaction":890,"./escapeTextContentForBrowser":919,"./isEventSupported":933,"./validateDOMNesting":943,"_process":751,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343,"fbjs/lib/keyOf":347,"fbjs/lib/shallowEqual":352,"fbjs/lib/warning":353,"object-assign":749}],842:[function(require,module,exports){
 /**
  * Copyright 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -75744,7 +81681,7 @@ var ReactDOMComponentFlags = {
 };
 
 module.exports = ReactDOMComponentFlags;
-},{}],844:[function(require,module,exports){
+},{}],843:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -75933,7 +81870,7 @@ var ReactDOMComponentTree = {
 
 module.exports = ReactDOMComponentTree;
 }).call(this,require('_process'))
-},{"./DOMProperty":813,"./ReactDOMComponentFlags":843,"_process":753,"fbjs/lib/invariant":343}],845:[function(require,module,exports){
+},{"./DOMProperty":812,"./ReactDOMComponentFlags":842,"_process":751,"fbjs/lib/invariant":343}],844:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -75969,7 +81906,7 @@ function ReactDOMContainerInfo(topLevelWrapper, node) {
 
 module.exports = ReactDOMContainerInfo;
 }).call(this,require('_process'))
-},{"./validateDOMNesting":944,"_process":753}],846:[function(require,module,exports){
+},{"./validateDOMNesting":943,"_process":751}],845:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -76033,7 +81970,7 @@ ReactDOMDebugTool.addDevtool(ReactDOMUnknownPropertyDevtool);
 
 module.exports = ReactDOMDebugTool;
 }).call(this,require('_process'))
-},{"./ReactDOMUnknownPropertyDevtool":859,"_process":753,"fbjs/lib/warning":353}],847:[function(require,module,exports){
+},{"./ReactDOMUnknownPropertyDevtool":858,"_process":751,"fbjs/lib/warning":353}],846:[function(require,module,exports){
 /**
  * Copyright 2014-present, Facebook, Inc.
  * All rights reserved.
@@ -76094,7 +82031,7 @@ _assign(ReactDOMEmptyComponent.prototype, {
 });
 
 module.exports = ReactDOMEmptyComponent;
-},{"./DOMLazyTree":811,"./ReactDOMComponentTree":844,"object-assign":751}],848:[function(require,module,exports){
+},{"./DOMLazyTree":810,"./ReactDOMComponentTree":843,"object-assign":749}],847:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -76273,7 +82210,7 @@ var ReactDOMFactories = mapObject({
 
 module.exports = ReactDOMFactories;
 }).call(this,require('_process'))
-},{"./ReactElement":863,"./ReactElementValidator":864,"_process":753,"fbjs/lib/mapObject":348}],849:[function(require,module,exports){
+},{"./ReactElement":862,"./ReactElementValidator":863,"_process":751,"fbjs/lib/mapObject":348}],848:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -76292,7 +82229,7 @@ var ReactDOMFeatureFlags = {
 };
 
 module.exports = ReactDOMFeatureFlags;
-},{}],850:[function(require,module,exports){
+},{}],849:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -76327,7 +82264,7 @@ var ReactDOMIDOperations = {
 };
 
 module.exports = ReactDOMIDOperations;
-},{"./DOMChildrenOperations":810,"./ReactDOMComponentTree":844}],851:[function(require,module,exports){
+},{"./DOMChildrenOperations":809,"./ReactDOMComponentTree":843}],850:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -76536,7 +82473,7 @@ function _handleChange(event) {
 
 module.exports = ReactDOMInput;
 }).call(this,require('_process'))
-},{"./DOMPropertyOperations":814,"./DisabledInputUtils":817,"./LinkedValueUtils":827,"./ReactDOMComponentTree":844,"./ReactUpdates":895,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":751}],852:[function(require,module,exports){
+},{"./DOMPropertyOperations":813,"./DisabledInputUtils":816,"./LinkedValueUtils":826,"./ReactDOMComponentTree":843,"./ReactUpdates":894,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":749}],851:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -76553,7 +82490,7 @@ module.exports = ReactDOMInput;
 var ReactDOMDebugTool = require('./ReactDOMDebugTool');
 
 module.exports = { debugTool: ReactDOMDebugTool };
-},{"./ReactDOMDebugTool":846}],853:[function(require,module,exports){
+},{"./ReactDOMDebugTool":845}],852:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -76665,7 +82602,7 @@ var ReactDOMOption = {
 
 module.exports = ReactDOMOption;
 }).call(this,require('_process'))
-},{"./ReactChildren":832,"./ReactDOMComponentTree":844,"./ReactDOMSelect":854,"_process":753,"fbjs/lib/warning":353,"object-assign":751}],854:[function(require,module,exports){
+},{"./ReactChildren":831,"./ReactDOMComponentTree":843,"./ReactDOMSelect":853,"_process":751,"fbjs/lib/warning":353,"object-assign":749}],853:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -76881,7 +82818,7 @@ function _handleChange(event) {
 
 module.exports = ReactDOMSelect;
 }).call(this,require('_process'))
-},{"./DisabledInputUtils":817,"./LinkedValueUtils":827,"./ReactDOMComponentTree":844,"./ReactUpdates":895,"_process":753,"fbjs/lib/warning":353,"object-assign":751}],855:[function(require,module,exports){
+},{"./DisabledInputUtils":816,"./LinkedValueUtils":826,"./ReactDOMComponentTree":843,"./ReactUpdates":894,"_process":751,"fbjs/lib/warning":353,"object-assign":749}],854:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -77094,7 +83031,7 @@ var ReactDOMSelection = {
 };
 
 module.exports = ReactDOMSelection;
-},{"./getNodeForCharacterOffset":930,"./getTextContentAccessor":931,"fbjs/lib/ExecutionEnvironment":329}],856:[function(require,module,exports){
+},{"./getNodeForCharacterOffset":929,"./getTextContentAccessor":930,"fbjs/lib/ExecutionEnvironment":329}],855:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -77267,7 +83204,7 @@ _assign(ReactDOMTextComponent.prototype, {
 
 module.exports = ReactDOMTextComponent;
 }).call(this,require('_process'))
-},{"./DOMChildrenOperations":810,"./DOMLazyTree":811,"./ReactDOMComponentTree":844,"./ReactInstrumentation":874,"./escapeTextContentForBrowser":920,"./validateDOMNesting":944,"_process":753,"fbjs/lib/invariant":343,"object-assign":751}],857:[function(require,module,exports){
+},{"./DOMChildrenOperations":809,"./DOMLazyTree":810,"./ReactDOMComponentTree":843,"./ReactInstrumentation":873,"./escapeTextContentForBrowser":919,"./validateDOMNesting":943,"_process":751,"fbjs/lib/invariant":343,"object-assign":749}],856:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -77412,7 +83349,7 @@ function _handleChange(event) {
 
 module.exports = ReactDOMTextarea;
 }).call(this,require('_process'))
-},{"./DOMPropertyOperations":814,"./DisabledInputUtils":817,"./LinkedValueUtils":827,"./ReactDOMComponentTree":844,"./ReactUpdates":895,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":751}],858:[function(require,module,exports){
+},{"./DOMPropertyOperations":813,"./DisabledInputUtils":816,"./LinkedValueUtils":826,"./ReactDOMComponentTree":843,"./ReactUpdates":894,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":749}],857:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015-present, Facebook, Inc.
@@ -77549,7 +83486,7 @@ module.exports = {
   traverseEnterLeave: traverseEnterLeave
 };
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],859:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],858:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -77616,7 +83553,7 @@ var ReactDOMUnknownPropertyDevtool = {
 
 module.exports = ReactDOMUnknownPropertyDevtool;
 }).call(this,require('_process'))
-},{"./DOMProperty":813,"./EventPluginRegistry":821,"_process":753,"fbjs/lib/warning":353}],860:[function(require,module,exports){
+},{"./DOMProperty":812,"./EventPluginRegistry":820,"_process":751,"fbjs/lib/warning":353}],859:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2016-present, Facebook, Inc.
@@ -77869,7 +83806,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = ReactDebugTool;
 }).call(this,require('_process'))
-},{"./ReactComponentTreeDevtool":837,"./ReactInvalidSetStateWarningDevTool":875,"./ReactNativeOperationHistoryDevtool":881,"_process":753,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/performanceNow":351,"fbjs/lib/warning":353}],861:[function(require,module,exports){
+},{"./ReactComponentTreeDevtool":836,"./ReactInvalidSetStateWarningDevTool":874,"./ReactNativeOperationHistoryDevtool":880,"_process":751,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/performanceNow":351,"fbjs/lib/warning":353}],860:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -77938,7 +83875,7 @@ var ReactDefaultBatchingStrategy = {
 };
 
 module.exports = ReactDefaultBatchingStrategy;
-},{"./ReactUpdates":895,"./Transaction":913,"fbjs/lib/emptyFunction":335,"object-assign":751}],862:[function(require,module,exports){
+},{"./ReactUpdates":894,"./Transaction":912,"fbjs/lib/emptyFunction":335,"object-assign":749}],861:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -78023,7 +83960,7 @@ function inject() {
 module.exports = {
   inject: inject
 };
-},{"./BeforeInputEventPlugin":805,"./ChangeEventPlugin":809,"./DefaultEventPluginOrder":816,"./EnterLeaveEventPlugin":818,"./HTMLDOMPropertyConfig":825,"./ReactComponentBrowserEnvironment":835,"./ReactDOMComponent":842,"./ReactDOMComponentTree":844,"./ReactDOMEmptyComponent":847,"./ReactDOMTextComponent":856,"./ReactDOMTreeTraversal":858,"./ReactDefaultBatchingStrategy":861,"./ReactEventListener":868,"./ReactInjection":871,"./ReactReconcileTransaction":888,"./SVGDOMPropertyConfig":897,"./SelectEventPlugin":898,"./SimpleEventPlugin":899}],863:[function(require,module,exports){
+},{"./BeforeInputEventPlugin":804,"./ChangeEventPlugin":808,"./DefaultEventPluginOrder":815,"./EnterLeaveEventPlugin":817,"./HTMLDOMPropertyConfig":824,"./ReactComponentBrowserEnvironment":834,"./ReactDOMComponent":841,"./ReactDOMComponentTree":843,"./ReactDOMEmptyComponent":846,"./ReactDOMTextComponent":855,"./ReactDOMTreeTraversal":857,"./ReactDefaultBatchingStrategy":860,"./ReactEventListener":867,"./ReactInjection":870,"./ReactReconcileTransaction":887,"./SVGDOMPropertyConfig":896,"./SelectEventPlugin":897,"./SimpleEventPlugin":898}],862:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-present, Facebook, Inc.
@@ -78339,7 +84276,7 @@ ReactElement.isValidElement = function (object) {
 
 module.exports = ReactElement;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":839,"./canDefineProperty":917,"_process":753,"fbjs/lib/warning":353,"object-assign":751}],864:[function(require,module,exports){
+},{"./ReactCurrentOwner":838,"./canDefineProperty":916,"_process":751,"fbjs/lib/warning":353,"object-assign":749}],863:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-present, Facebook, Inc.
@@ -78623,7 +84560,7 @@ var ReactElementValidator = {
 
 module.exports = ReactElementValidator;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":839,"./ReactElement":863,"./ReactPropTypeLocationNames":885,"./ReactPropTypeLocations":886,"./canDefineProperty":917,"./getIteratorFn":928,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],865:[function(require,module,exports){
+},{"./ReactCurrentOwner":838,"./ReactElement":862,"./ReactPropTypeLocationNames":884,"./ReactPropTypeLocations":885,"./canDefineProperty":916,"./getIteratorFn":927,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],864:[function(require,module,exports){
 /**
  * Copyright 2014-present, Facebook, Inc.
  * All rights reserved.
@@ -78654,7 +84591,7 @@ var ReactEmptyComponent = {
 ReactEmptyComponent.injection = ReactEmptyComponentInjection;
 
 module.exports = ReactEmptyComponent;
-},{}],866:[function(require,module,exports){
+},{}],865:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -78733,7 +84670,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = ReactErrorUtils;
 }).call(this,require('_process'))
-},{"_process":753}],867:[function(require,module,exports){
+},{"_process":751}],866:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -78767,7 +84704,7 @@ var ReactEventEmitterMixin = {
 };
 
 module.exports = ReactEventEmitterMixin;
-},{"./EventPluginHub":820}],868:[function(require,module,exports){
+},{"./EventPluginHub":819}],867:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -78925,7 +84862,7 @@ var ReactEventListener = {
 };
 
 module.exports = ReactEventListener;
-},{"./PooledClass":828,"./ReactDOMComponentTree":844,"./ReactUpdates":895,"./getEventTarget":927,"fbjs/lib/EventListener":328,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/getUnboundedScrollPosition":340,"object-assign":751}],869:[function(require,module,exports){
+},{"./PooledClass":827,"./ReactDOMComponentTree":843,"./ReactUpdates":894,"./getEventTarget":926,"fbjs/lib/EventListener":328,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/getUnboundedScrollPosition":340,"object-assign":749}],868:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -78947,7 +84884,7 @@ var ReactFeatureFlags = {
 };
 
 module.exports = ReactFeatureFlags;
-},{}],870:[function(require,module,exports){
+},{}],869:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015-present, Facebook, Inc.
@@ -79017,7 +84954,7 @@ var ReactFragment = {
 
 module.exports = ReactFragment;
 }).call(this,require('_process'))
-},{"./ReactChildren":832,"./ReactElement":863,"_process":753,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],871:[function(require,module,exports){
+},{"./ReactChildren":831,"./ReactElement":862,"_process":751,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],870:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -79054,7 +84991,7 @@ var ReactInjection = {
 };
 
 module.exports = ReactInjection;
-},{"./DOMProperty":813,"./EventPluginHub":820,"./EventPluginUtils":822,"./ReactBrowserEventEmitter":830,"./ReactClass":833,"./ReactComponentEnvironment":836,"./ReactEmptyComponent":865,"./ReactNativeComponent":880,"./ReactUpdates":895}],872:[function(require,module,exports){
+},{"./DOMProperty":812,"./EventPluginHub":819,"./EventPluginUtils":821,"./ReactBrowserEventEmitter":829,"./ReactClass":832,"./ReactComponentEnvironment":835,"./ReactEmptyComponent":864,"./ReactNativeComponent":879,"./ReactUpdates":894}],871:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -79179,7 +85116,7 @@ var ReactInputSelection = {
 };
 
 module.exports = ReactInputSelection;
-},{"./ReactDOMSelection":855,"fbjs/lib/containsNode":332,"fbjs/lib/focusNode":337,"fbjs/lib/getActiveElement":338}],873:[function(require,module,exports){
+},{"./ReactDOMSelection":854,"fbjs/lib/containsNode":332,"fbjs/lib/focusNode":337,"fbjs/lib/getActiveElement":338}],872:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -79228,7 +85165,7 @@ var ReactInstanceMap = {
 };
 
 module.exports = ReactInstanceMap;
-},{}],874:[function(require,module,exports){
+},{}],873:[function(require,module,exports){
 /**
  * Copyright 2016-present, Facebook, Inc.
  * All rights reserved.
@@ -79245,7 +85182,7 @@ module.exports = ReactInstanceMap;
 var ReactDebugTool = require('./ReactDebugTool');
 
 module.exports = { debugTool: ReactDebugTool };
-},{"./ReactDebugTool":860}],875:[function(require,module,exports){
+},{"./ReactDebugTool":859}],874:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2016-present, Facebook, Inc.
@@ -79284,7 +85221,7 @@ var ReactInvalidSetStateWarningDevTool = {
 
 module.exports = ReactInvalidSetStateWarningDevTool;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/warning":353}],876:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/warning":353}],875:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -79335,7 +85272,7 @@ var ReactMarkupChecksum = {
 };
 
 module.exports = ReactMarkupChecksum;
-},{"./adler32":916}],877:[function(require,module,exports){
+},{"./adler32":915}],876:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -79831,7 +85768,7 @@ var ReactMount = {
 
 module.exports = ReactMount;
 }).call(this,require('_process'))
-},{"./DOMLazyTree":811,"./DOMProperty":813,"./ReactBrowserEventEmitter":830,"./ReactCurrentOwner":839,"./ReactDOMComponentTree":844,"./ReactDOMContainerInfo":845,"./ReactDOMFeatureFlags":849,"./ReactElement":863,"./ReactFeatureFlags":869,"./ReactInstrumentation":874,"./ReactMarkupChecksum":876,"./ReactReconciler":889,"./ReactUpdateQueue":894,"./ReactUpdates":895,"./instantiateReactComponent":933,"./setInnerHTML":939,"./shouldUpdateReactComponent":941,"_process":753,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],878:[function(require,module,exports){
+},{"./DOMLazyTree":810,"./DOMProperty":812,"./ReactBrowserEventEmitter":829,"./ReactCurrentOwner":838,"./ReactDOMComponentTree":843,"./ReactDOMContainerInfo":844,"./ReactDOMFeatureFlags":848,"./ReactElement":862,"./ReactFeatureFlags":868,"./ReactInstrumentation":873,"./ReactMarkupChecksum":875,"./ReactReconciler":888,"./ReactUpdateQueue":893,"./ReactUpdates":894,"./instantiateReactComponent":932,"./setInnerHTML":938,"./shouldUpdateReactComponent":940,"_process":751,"fbjs/lib/emptyObject":336,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],877:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -80257,7 +86194,7 @@ var ReactMultiChild = {
 
 module.exports = ReactMultiChild;
 }).call(this,require('_process'))
-},{"./ReactChildReconciler":831,"./ReactComponentEnvironment":836,"./ReactCurrentOwner":839,"./ReactInstrumentation":874,"./ReactMultiChildUpdateTypes":879,"./ReactReconciler":889,"./flattenChildren":922,"_process":753,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343}],879:[function(require,module,exports){
+},{"./ReactChildReconciler":830,"./ReactComponentEnvironment":835,"./ReactCurrentOwner":838,"./ReactInstrumentation":873,"./ReactMultiChildUpdateTypes":878,"./ReactReconciler":888,"./flattenChildren":921,"_process":751,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343}],878:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -80290,7 +86227,7 @@ var ReactMultiChildUpdateTypes = keyMirror({
 });
 
 module.exports = ReactMultiChildUpdateTypes;
-},{"fbjs/lib/keyMirror":346}],880:[function(require,module,exports){
+},{"fbjs/lib/keyMirror":346}],879:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-present, Facebook, Inc.
@@ -80388,7 +86325,7 @@ var ReactNativeComponent = {
 
 module.exports = ReactNativeComponent;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343,"object-assign":751}],881:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343,"object-assign":749}],880:[function(require,module,exports){
 /**
  * Copyright 2016-present, Facebook, Inc.
  * All rights reserved.
@@ -80426,7 +86363,7 @@ var ReactNativeOperationHistoryDevtool = {
 };
 
 module.exports = ReactNativeOperationHistoryDevtool;
-},{}],882:[function(require,module,exports){
+},{}],881:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -80466,7 +86403,7 @@ var ReactNodeTypes = {
 
 module.exports = ReactNodeTypes;
 }).call(this,require('_process'))
-},{"./ReactElement":863,"_process":753,"fbjs/lib/invariant":343}],883:[function(require,module,exports){
+},{"./ReactElement":862,"_process":751,"fbjs/lib/invariant":343}],882:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015-present, Facebook, Inc.
@@ -80564,7 +86501,7 @@ var ReactNoopUpdateQueue = {
 
 module.exports = ReactNoopUpdateQueue;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/warning":353}],884:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/warning":353}],883:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -80659,7 +86596,7 @@ var ReactOwner = {
 
 module.exports = ReactOwner;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],885:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],884:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -80686,7 +86623,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = ReactPropTypeLocationNames;
 }).call(this,require('_process'))
-},{"_process":753}],886:[function(require,module,exports){
+},{"_process":751}],885:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -80709,7 +86646,7 @@ var ReactPropTypeLocations = keyMirror({
 });
 
 module.exports = ReactPropTypeLocations;
-},{"fbjs/lib/keyMirror":346}],887:[function(require,module,exports){
+},{"fbjs/lib/keyMirror":346}],886:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -81090,7 +87027,7 @@ function getClassName(propValue) {
 }
 
 module.exports = ReactPropTypes;
-},{"./ReactElement":863,"./ReactPropTypeLocationNames":885,"./getIteratorFn":928,"fbjs/lib/emptyFunction":335}],888:[function(require,module,exports){
+},{"./ReactElement":862,"./ReactPropTypeLocationNames":884,"./getIteratorFn":927,"fbjs/lib/emptyFunction":335}],887:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -81253,7 +87190,7 @@ _assign(ReactReconcileTransaction.prototype, Transaction.Mixin, Mixin);
 PooledClass.addPoolingTo(ReactReconcileTransaction);
 
 module.exports = ReactReconcileTransaction;
-},{"./CallbackQueue":808,"./PooledClass":828,"./ReactBrowserEventEmitter":830,"./ReactInputSelection":872,"./Transaction":913,"object-assign":751}],889:[function(require,module,exports){
+},{"./CallbackQueue":807,"./PooledClass":827,"./ReactBrowserEventEmitter":829,"./ReactInputSelection":871,"./Transaction":912,"object-assign":749}],888:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -81427,7 +87364,7 @@ var ReactReconciler = {
 
 module.exports = ReactReconciler;
 }).call(this,require('_process'))
-},{"./ReactInstrumentation":874,"./ReactRef":890,"_process":753,"fbjs/lib/invariant":343}],890:[function(require,module,exports){
+},{"./ReactInstrumentation":873,"./ReactRef":889,"_process":751,"fbjs/lib/invariant":343}],889:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -81506,7 +87443,7 @@ ReactRef.detachRefs = function (instance, element) {
 };
 
 module.exports = ReactRef;
-},{"./ReactOwner":884}],891:[function(require,module,exports){
+},{"./ReactOwner":883}],890:[function(require,module,exports){
 /**
  * Copyright 2014-present, Facebook, Inc.
  * All rights reserved.
@@ -81580,7 +87517,7 @@ _assign(ReactServerRenderingTransaction.prototype, Transaction.Mixin, Mixin);
 PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 
 module.exports = ReactServerRenderingTransaction;
-},{"./PooledClass":828,"./Transaction":913,"object-assign":751}],892:[function(require,module,exports){
+},{"./PooledClass":827,"./Transaction":912,"object-assign":749}],891:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -81678,7 +87615,7 @@ var ReactTransitionChildMapping = {
 };
 
 module.exports = ReactTransitionChildMapping;
-},{"./flattenChildren":922}],893:[function(require,module,exports){
+},{"./flattenChildren":921}],892:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -81890,7 +87827,7 @@ var ReactTransitionGroup = React.createClass({
 });
 
 module.exports = ReactTransitionGroup;
-},{"./React":829,"./ReactTransitionChildMapping":892,"fbjs/lib/emptyFunction":335,"object-assign":751}],894:[function(require,module,exports){
+},{"./React":828,"./ReactTransitionChildMapping":891,"fbjs/lib/emptyFunction":335,"object-assign":749}],893:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015-present, Facebook, Inc.
@@ -82108,7 +88045,7 @@ var ReactUpdateQueue = {
 
 module.exports = ReactUpdateQueue;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":839,"./ReactInstanceMap":873,"./ReactUpdates":895,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],895:[function(require,module,exports){
+},{"./ReactCurrentOwner":838,"./ReactInstanceMap":872,"./ReactUpdates":894,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],894:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -82370,7 +88307,7 @@ var ReactUpdates = {
 
 module.exports = ReactUpdates;
 }).call(this,require('_process'))
-},{"./CallbackQueue":808,"./PooledClass":828,"./ReactFeatureFlags":869,"./ReactInstrumentation":874,"./ReactReconciler":889,"./Transaction":913,"_process":753,"fbjs/lib/invariant":343,"object-assign":751}],896:[function(require,module,exports){
+},{"./CallbackQueue":807,"./PooledClass":827,"./ReactFeatureFlags":868,"./ReactInstrumentation":873,"./ReactReconciler":888,"./Transaction":912,"_process":751,"fbjs/lib/invariant":343,"object-assign":749}],895:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -82385,7 +88322,7 @@ module.exports = ReactUpdates;
 'use strict';
 
 module.exports = '15.1.0';
-},{}],897:[function(require,module,exports){
+},{}],896:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -82686,7 +88623,7 @@ Object.keys(ATTRS).forEach(function (key) {
 });
 
 module.exports = SVGDOMPropertyConfig;
-},{}],898:[function(require,module,exports){
+},{}],897:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -82883,7 +88820,7 @@ var SelectEventPlugin = {
 };
 
 module.exports = SelectEventPlugin;
-},{"./EventConstants":819,"./EventPropagators":823,"./ReactDOMComponentTree":844,"./ReactInputSelection":872,"./SyntheticEvent":904,"./isTextInputElement":935,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/getActiveElement":338,"fbjs/lib/keyOf":347,"fbjs/lib/shallowEqual":352}],899:[function(require,module,exports){
+},{"./EventConstants":818,"./EventPropagators":822,"./ReactDOMComponentTree":843,"./ReactInputSelection":871,"./SyntheticEvent":903,"./isTextInputElement":934,"fbjs/lib/ExecutionEnvironment":329,"fbjs/lib/getActiveElement":338,"fbjs/lib/keyOf":347,"fbjs/lib/shallowEqual":352}],898:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -83513,7 +89450,7 @@ var SimpleEventPlugin = {
 
 module.exports = SimpleEventPlugin;
 }).call(this,require('_process'))
-},{"./EventConstants":819,"./EventPropagators":823,"./ReactDOMComponentTree":844,"./SyntheticAnimationEvent":900,"./SyntheticClipboardEvent":901,"./SyntheticDragEvent":903,"./SyntheticEvent":904,"./SyntheticFocusEvent":905,"./SyntheticKeyboardEvent":907,"./SyntheticMouseEvent":908,"./SyntheticTouchEvent":909,"./SyntheticTransitionEvent":910,"./SyntheticUIEvent":911,"./SyntheticWheelEvent":912,"./getEventCharCode":924,"_process":753,"fbjs/lib/EventListener":328,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343,"fbjs/lib/keyOf":347}],900:[function(require,module,exports){
+},{"./EventConstants":818,"./EventPropagators":822,"./ReactDOMComponentTree":843,"./SyntheticAnimationEvent":899,"./SyntheticClipboardEvent":900,"./SyntheticDragEvent":902,"./SyntheticEvent":903,"./SyntheticFocusEvent":904,"./SyntheticKeyboardEvent":906,"./SyntheticMouseEvent":907,"./SyntheticTouchEvent":908,"./SyntheticTransitionEvent":909,"./SyntheticUIEvent":910,"./SyntheticWheelEvent":911,"./getEventCharCode":923,"_process":751,"fbjs/lib/EventListener":328,"fbjs/lib/emptyFunction":335,"fbjs/lib/invariant":343,"fbjs/lib/keyOf":347}],899:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -83553,7 +89490,7 @@ function SyntheticAnimationEvent(dispatchConfig, dispatchMarker, nativeEvent, na
 SyntheticEvent.augmentClass(SyntheticAnimationEvent, AnimationEventInterface);
 
 module.exports = SyntheticAnimationEvent;
-},{"./SyntheticEvent":904}],901:[function(require,module,exports){
+},{"./SyntheticEvent":903}],900:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -83592,7 +89529,7 @@ function SyntheticClipboardEvent(dispatchConfig, dispatchMarker, nativeEvent, na
 SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 
 module.exports = SyntheticClipboardEvent;
-},{"./SyntheticEvent":904}],902:[function(require,module,exports){
+},{"./SyntheticEvent":903}],901:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -83629,7 +89566,7 @@ function SyntheticCompositionEvent(dispatchConfig, dispatchMarker, nativeEvent, 
 SyntheticEvent.augmentClass(SyntheticCompositionEvent, CompositionEventInterface);
 
 module.exports = SyntheticCompositionEvent;
-},{"./SyntheticEvent":904}],903:[function(require,module,exports){
+},{"./SyntheticEvent":903}],902:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -83666,7 +89603,7 @@ function SyntheticDragEvent(dispatchConfig, dispatchMarker, nativeEvent, nativeE
 SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 
 module.exports = SyntheticDragEvent;
-},{"./SyntheticMouseEvent":908}],904:[function(require,module,exports){
+},{"./SyntheticMouseEvent":907}],903:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -83930,7 +89867,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
   }
 }
 }).call(this,require('_process'))
-},{"./PooledClass":828,"_process":753,"fbjs/lib/emptyFunction":335,"fbjs/lib/warning":353,"object-assign":751}],905:[function(require,module,exports){
+},{"./PooledClass":827,"_process":751,"fbjs/lib/emptyFunction":335,"fbjs/lib/warning":353,"object-assign":749}],904:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -83967,7 +89904,7 @@ function SyntheticFocusEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 
 module.exports = SyntheticFocusEvent;
-},{"./SyntheticUIEvent":911}],906:[function(require,module,exports){
+},{"./SyntheticUIEvent":910}],905:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84005,7 +89942,7 @@ function SyntheticInputEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticEvent.augmentClass(SyntheticInputEvent, InputEventInterface);
 
 module.exports = SyntheticInputEvent;
-},{"./SyntheticEvent":904}],907:[function(require,module,exports){
+},{"./SyntheticEvent":903}],906:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84090,7 +90027,7 @@ function SyntheticKeyboardEvent(dispatchConfig, dispatchMarker, nativeEvent, nat
 SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 
 module.exports = SyntheticKeyboardEvent;
-},{"./SyntheticUIEvent":911,"./getEventCharCode":924,"./getEventKey":925,"./getEventModifierState":926}],908:[function(require,module,exports){
+},{"./SyntheticUIEvent":910,"./getEventCharCode":923,"./getEventKey":924,"./getEventModifierState":925}],907:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84163,7 +90100,7 @@ function SyntheticMouseEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 
 module.exports = SyntheticMouseEvent;
-},{"./SyntheticUIEvent":911,"./ViewportMetrics":914,"./getEventModifierState":926}],909:[function(require,module,exports){
+},{"./SyntheticUIEvent":910,"./ViewportMetrics":913,"./getEventModifierState":925}],908:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84209,7 +90146,7 @@ function SyntheticTouchEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 
 module.exports = SyntheticTouchEvent;
-},{"./SyntheticUIEvent":911,"./getEventModifierState":926}],910:[function(require,module,exports){
+},{"./SyntheticUIEvent":910,"./getEventModifierState":925}],909:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84249,7 +90186,7 @@ function SyntheticTransitionEvent(dispatchConfig, dispatchMarker, nativeEvent, n
 SyntheticEvent.augmentClass(SyntheticTransitionEvent, TransitionEventInterface);
 
 module.exports = SyntheticTransitionEvent;
-},{"./SyntheticEvent":904}],911:[function(require,module,exports){
+},{"./SyntheticEvent":903}],910:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84309,7 +90246,7 @@ function SyntheticUIEvent(dispatchConfig, dispatchMarker, nativeEvent, nativeEve
 SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 
 module.exports = SyntheticUIEvent;
-},{"./SyntheticEvent":904,"./getEventTarget":927}],912:[function(require,module,exports){
+},{"./SyntheticEvent":903,"./getEventTarget":926}],911:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84364,7 +90301,7 @@ function SyntheticWheelEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 
 module.exports = SyntheticWheelEvent;
-},{"./SyntheticMouseEvent":908}],913:[function(require,module,exports){
+},{"./SyntheticMouseEvent":907}],912:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -84598,7 +90535,7 @@ var Transaction = {
 
 module.exports = Transaction;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],914:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],913:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84626,7 +90563,7 @@ var ViewportMetrics = {
 };
 
 module.exports = ViewportMetrics;
-},{}],915:[function(require,module,exports){
+},{}],914:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-present, Facebook, Inc.
@@ -84688,7 +90625,7 @@ function accumulateInto(current, next) {
 
 module.exports = accumulateInto;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343}],916:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343}],915:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84732,7 +90669,7 @@ function adler32(data) {
 }
 
 module.exports = adler32;
-},{}],917:[function(require,module,exports){
+},{}],916:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -84759,7 +90696,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = canDefineProperty;
 }).call(this,require('_process'))
-},{"_process":753}],918:[function(require,module,exports){
+},{"_process":751}],917:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84792,7 +90729,7 @@ var createMicrosoftUnsafeLocalFunction = function (func) {
 };
 
 module.exports = createMicrosoftUnsafeLocalFunction;
-},{}],919:[function(require,module,exports){
+},{}],918:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -84872,7 +90809,7 @@ function dangerousStyleValue(name, value, component) {
 
 module.exports = dangerousStyleValue;
 }).call(this,require('_process'))
-},{"./CSSProperty":806,"_process":753,"fbjs/lib/warning":353}],920:[function(require,module,exports){
+},{"./CSSProperty":805,"_process":751,"fbjs/lib/warning":353}],919:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -84911,7 +90848,7 @@ function escapeTextContentForBrowser(text) {
 }
 
 module.exports = escapeTextContentForBrowser;
-},{}],921:[function(require,module,exports){
+},{}],920:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -84972,7 +90909,7 @@ function findDOMNode(componentOrElement) {
 
 module.exports = findDOMNode;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":839,"./ReactDOMComponentTree":844,"./ReactInstanceMap":873,"./getNativeComponentFromComposite":929,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],922:[function(require,module,exports){
+},{"./ReactCurrentOwner":838,"./ReactDOMComponentTree":843,"./ReactInstanceMap":872,"./getNativeComponentFromComposite":928,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],921:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -85024,7 +90961,7 @@ function flattenChildren(children) {
 
 module.exports = flattenChildren;
 }).call(this,require('_process'))
-},{"./KeyEscapeUtils":826,"./traverseAllChildren":942,"_process":753,"fbjs/lib/warning":353}],923:[function(require,module,exports){
+},{"./KeyEscapeUtils":825,"./traverseAllChildren":941,"_process":751,"fbjs/lib/warning":353}],922:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85055,7 +90992,7 @@ var forEachAccumulated = function (arr, cb, scope) {
 };
 
 module.exports = forEachAccumulated;
-},{}],924:[function(require,module,exports){
+},{}],923:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85106,7 +91043,7 @@ function getEventCharCode(nativeEvent) {
 }
 
 module.exports = getEventCharCode;
-},{}],925:[function(require,module,exports){
+},{}],924:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85209,7 +91146,7 @@ function getEventKey(nativeEvent) {
 }
 
 module.exports = getEventKey;
-},{"./getEventCharCode":924}],926:[function(require,module,exports){
+},{"./getEventCharCode":923}],925:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85253,7 +91190,7 @@ function getEventModifierState(nativeEvent) {
 }
 
 module.exports = getEventModifierState;
-},{}],927:[function(require,module,exports){
+},{}],926:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85289,7 +91226,7 @@ function getEventTarget(nativeEvent) {
 }
 
 module.exports = getEventTarget;
-},{}],928:[function(require,module,exports){
+},{}],927:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85330,7 +91267,7 @@ function getIteratorFn(maybeIterable) {
 }
 
 module.exports = getIteratorFn;
-},{}],929:[function(require,module,exports){
+},{}],928:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85361,7 +91298,7 @@ function getNativeComponentFromComposite(inst) {
 }
 
 module.exports = getNativeComponentFromComposite;
-},{"./ReactNodeTypes":882}],930:[function(require,module,exports){
+},{"./ReactNodeTypes":881}],929:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85436,7 +91373,7 @@ function getNodeForCharacterOffset(root, offset) {
 }
 
 module.exports = getNodeForCharacterOffset;
-},{}],931:[function(require,module,exports){
+},{}],930:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85470,7 +91407,7 @@ function getTextContentAccessor() {
 }
 
 module.exports = getTextContentAccessor;
-},{"fbjs/lib/ExecutionEnvironment":329}],932:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":329}],931:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85572,7 +91509,7 @@ function getVendorPrefixedEventName(eventName) {
 }
 
 module.exports = getVendorPrefixedEventName;
-},{"fbjs/lib/ExecutionEnvironment":329}],933:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":329}],932:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -85719,7 +91656,7 @@ function instantiateReactComponent(node) {
 
 module.exports = instantiateReactComponent;
 }).call(this,require('_process'))
-},{"./ReactCompositeComponent":838,"./ReactEmptyComponent":865,"./ReactInstrumentation":874,"./ReactNativeComponent":880,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":751}],934:[function(require,module,exports){
+},{"./ReactCompositeComponent":837,"./ReactEmptyComponent":864,"./ReactInstrumentation":873,"./ReactNativeComponent":879,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353,"object-assign":749}],933:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85780,7 +91717,7 @@ function isEventSupported(eventNameSuffix, capture) {
 }
 
 module.exports = isEventSupported;
-},{"fbjs/lib/ExecutionEnvironment":329}],935:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":329}],934:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85822,7 +91759,7 @@ function isTextInputElement(elem) {
 }
 
 module.exports = isTextInputElement;
-},{}],936:[function(require,module,exports){
+},{}],935:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -85861,7 +91798,7 @@ function onlyChild(children) {
 
 module.exports = onlyChild;
 }).call(this,require('_process'))
-},{"./ReactElement":863,"_process":753,"fbjs/lib/invariant":343}],937:[function(require,module,exports){
+},{"./ReactElement":862,"_process":751,"fbjs/lib/invariant":343}],936:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85888,7 +91825,7 @@ function quoteAttributeValueForBrowser(value) {
 }
 
 module.exports = quoteAttributeValueForBrowser;
-},{"./escapeTextContentForBrowser":920}],938:[function(require,module,exports){
+},{"./escapeTextContentForBrowser":919}],937:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85905,7 +91842,7 @@ module.exports = quoteAttributeValueForBrowser;
 var ReactMount = require('./ReactMount');
 
 module.exports = ReactMount.renderSubtreeIntoContainer;
-},{"./ReactMount":877}],939:[function(require,module,exports){
+},{"./ReactMount":876}],938:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -85988,7 +91925,7 @@ if (ExecutionEnvironment.canUseDOM) {
 }
 
 module.exports = setInnerHTML;
-},{"./createMicrosoftUnsafeLocalFunction":918,"fbjs/lib/ExecutionEnvironment":329}],940:[function(require,module,exports){
+},{"./createMicrosoftUnsafeLocalFunction":917,"fbjs/lib/ExecutionEnvironment":329}],939:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -86029,7 +91966,7 @@ if (ExecutionEnvironment.canUseDOM) {
 }
 
 module.exports = setTextContent;
-},{"./escapeTextContentForBrowser":920,"./setInnerHTML":939,"fbjs/lib/ExecutionEnvironment":329}],941:[function(require,module,exports){
+},{"./escapeTextContentForBrowser":919,"./setInnerHTML":938,"fbjs/lib/ExecutionEnvironment":329}],940:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -86072,7 +92009,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 }
 
 module.exports = shouldUpdateReactComponent;
-},{}],942:[function(require,module,exports){
+},{}],941:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -86233,7 +92170,7 @@ function traverseAllChildren(children, callback, traverseContext) {
 
 module.exports = traverseAllChildren;
 }).call(this,require('_process'))
-},{"./KeyEscapeUtils":826,"./ReactCurrentOwner":839,"./ReactElement":863,"./getIteratorFn":928,"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],943:[function(require,module,exports){
+},{"./KeyEscapeUtils":825,"./ReactCurrentOwner":838,"./ReactElement":862,"./getIteratorFn":927,"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/warning":353}],942:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-present, Facebook, Inc.
@@ -86348,7 +92285,7 @@ function update(value, spec) {
 
 module.exports = update;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/invariant":343,"fbjs/lib/keyOf":347,"object-assign":751}],944:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/invariant":343,"fbjs/lib/keyOf":347,"object-assign":749}],943:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015-present, Facebook, Inc.
@@ -86720,12 +92657,12 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = validateDOMNesting;
 }).call(this,require('_process'))
-},{"_process":753,"fbjs/lib/emptyFunction":335,"fbjs/lib/warning":353,"object-assign":751}],945:[function(require,module,exports){
+},{"_process":751,"fbjs/lib/emptyFunction":335,"fbjs/lib/warning":353,"object-assign":749}],944:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib/React');
 
-},{"./lib/React":829}],946:[function(require,module,exports){
+},{"./lib/React":828}],945:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -86739,7 +92676,7 @@ var _flowRight2 = _interopRequireDefault(_flowRight);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _flowRight2.default;
-},{"lodash/flowRight":582}],947:[function(require,module,exports){
+},{"lodash/flowRight":582}],946:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -86783,7 +92720,7 @@ var createElement = function createElement(Component, props, children) {
 };
 
 exports.default = createElement;
-},{"./isReferentiallyTransparentFunctionComponent":951,"react":945}],948:[function(require,module,exports){
+},{"./isReferentiallyTransparentFunctionComponent":950,"react":944}],947:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -86843,7 +92780,7 @@ var createHelper = function createHelper(func, helperName) {
 
 exports.default = createHelper;
 }).call(this,require('_process'))
-},{"./wrapDisplayName":955,"_process":753}],949:[function(require,module,exports){
+},{"./wrapDisplayName":954,"_process":751}],948:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -86862,7 +92799,7 @@ var getDisplayName = function getDisplayName(Component) {
 };
 
 exports.default = getDisplayName;
-},{}],950:[function(require,module,exports){
+},{}],949:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -86876,7 +92813,7 @@ var isClassComponent = function isClassComponent(Component) {
 };
 
 exports.default = isClassComponent;
-},{}],951:[function(require,module,exports){
+},{}],950:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -86894,7 +92831,7 @@ var isReferentiallyTransparentFunctionComponent = function isReferentiallyTransp
 };
 
 exports.default = isReferentiallyTransparentFunctionComponent;
-},{"./isClassComponent.js":950}],952:[function(require,module,exports){
+},{"./isClassComponent.js":949}],951:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -86920,7 +92857,7 @@ var pure = (0, _shouldUpdate2.default)(function (props, nextProps) {
 });
 
 exports.default = (0, _createHelper2.default)(pure, 'pure', true, true);
-},{"./createHelper":948,"./shallowEqual":953,"./shouldUpdate":954}],953:[function(require,module,exports){
+},{"./createHelper":947,"./shallowEqual":952,"./shouldUpdate":953}],952:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -86960,7 +92897,7 @@ function shallowEqual(objA, objB) {
 
   return true;
 }
-},{}],954:[function(require,module,exports){
+},{}],953:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -87016,7 +92953,7 @@ var shouldUpdate = function shouldUpdate(test) {
 };
 
 exports.default = (0, _createHelper2.default)(shouldUpdate, 'shouldUpdate');
-},{"./createElement":947,"./createHelper":948,"react":945}],955:[function(require,module,exports){
+},{"./createElement":946,"./createHelper":947,"react":944}],954:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -87034,7 +92971,7 @@ var wrapDisplayName = function wrapDisplayName(BaseComponent, hocName) {
 };
 
 exports.default = wrapDisplayName;
-},{"./getDisplayName":949}],956:[function(require,module,exports){
+},{"./getDisplayName":948}],955:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -87093,7 +93030,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":959}],957:[function(require,module,exports){
+},{"./compose":958}],956:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -87145,7 +93082,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],958:[function(require,module,exports){
+},{}],957:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -87275,7 +93212,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":960,"./utils/warning":962,"_process":753,"lodash/isPlainObject":604}],959:[function(require,module,exports){
+},{"./createStore":959,"./utils/warning":961,"_process":751,"lodash/isPlainObject":604}],958:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -87316,7 +93253,7 @@ function compose() {
     if (typeof _ret === "object") return _ret.v;
   }
 }
-},{}],960:[function(require,module,exports){
+},{}],959:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -87579,7 +93516,7 @@ function createStore(reducer, initialState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
 }
-},{"lodash/isPlainObject":604,"symbol-observable":965}],961:[function(require,module,exports){
+},{"lodash/isPlainObject":604,"symbol-observable":964}],960:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -87628,7 +93565,7 @@ exports.bindActionCreators = _bindActionCreators2["default"];
 exports.applyMiddleware = _applyMiddleware2["default"];
 exports.compose = _compose2["default"];
 }).call(this,require('_process'))
-},{"./applyMiddleware":956,"./bindActionCreators":957,"./combineReducers":958,"./compose":959,"./createStore":960,"./utils/warning":962,"_process":753}],962:[function(require,module,exports){
+},{"./applyMiddleware":955,"./bindActionCreators":956,"./combineReducers":957,"./compose":958,"./createStore":959,"./utils/warning":961,"_process":751}],961:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -87654,7 +93591,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],963:[function(require,module,exports){
+},{}],962:[function(require,module,exports){
 (function (process,global){
 /**
  * Copyright (c) 2014, Facebook, Inc.
@@ -88326,7 +94263,7 @@ function warning(message) {
 );
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":753}],964:[function(require,module,exports){
+},{"_process":751}],963:[function(require,module,exports){
 module.exports = function (target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i];
@@ -88339,7 +94276,7 @@ module.exports = function (target) {
   return target;
 };
 
-},{}],965:[function(require,module,exports){
+},{}],964:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -88347,7 +94284,7 @@ module.exports = function (target) {
 module.exports = require('./ponyfill')(global || window || this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":966}],966:[function(require,module,exports){
+},{"./ponyfill":965}],965:[function(require,module,exports){
 'use strict';
 
 module.exports = function symbolObservablePonyfill(root) {
@@ -88368,7 +94305,7 @@ module.exports = function symbolObservablePonyfill(root) {
 	return result;
 };
 
-},{}],967:[function(require,module,exports){
+},{}],966:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -88432,7 +94369,7 @@ if (process.env.NODE_ENV !== 'production') {
 module.exports = warning;
 
 }).call(this,require('_process'))
-},{"_process":753}],968:[function(require,module,exports){
+},{"_process":751}],967:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -88468,7 +94405,7 @@ exports.default = {
   }
 };
 
-},{}],969:[function(require,module,exports){
+},{}],968:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -88502,7 +94439,7 @@ exports.default = {
   }
 };
 
-},{}],970:[function(require,module,exports){
+},{}],969:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -88512,9 +94449,9 @@ exports.default = {
   component: {
     WebkitTransition: 'opacity 1s',
     transition: 'opacity 1s',
-    width: '100%',
-    marginBottom: '100px'
+    width: '100%'
   },
+  //marginBottom     : '100px',
   fab: {
     position: 'fixed',
     bottom: '30px',
@@ -88526,29 +94463,7 @@ exports.default = {
   }
 };
 
-},{}],971:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {
-  controls: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: '30px',
-    padding: '10px 0',
-    marginLeft: '20px'
-  },
-  slider: {
-    width: '100%',
-    marginTop: '22px',
-    padding: '0 20px 0 20px'
-  }
-};
-
-},{}],972:[function(require,module,exports){
+},{}],970:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -88584,7 +94499,7 @@ exports.default = {
   }
 };
 
-},{}],973:[function(require,module,exports){
+},{}],971:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -88597,9 +94512,9 @@ exports.default = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    WebkitTransition: 'background-color 2s',
-    transition: 'background-color 2s'
+    WebkitTransition: 'opacity 2s',
+    transition: 'opacity 2s'
   }
 };
 
-},{}]},{},[3]);
+},{}]},{},[4]);

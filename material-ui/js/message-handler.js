@@ -16,9 +16,11 @@ import {
 export default function(eventType, data) {
   switch (eventType) {
     case 'echo':
-      console.log('>>> echo >>>')
-      console.log(data)
-      console.log('<<<<<<<<<<<<')
+      if ('noop' !== data.event) {
+        console.log('>>> echo >>>')
+        console.log(data)
+        console.log('<<<<<<<<<<<<')
+      }
       break
     case 'initialize':
       console.log(JSON.stringify(data))
@@ -30,8 +32,8 @@ export default function(eventType, data) {
         const chan = data[key]
         if (chan) {
           store.dispatch(updateChannel(key, chan))
-          if ('ring' == chan.mode) {
-            new Notification(`Incoming call from ${chan.number}.`)
+          if ('ring' == chan.mode && 'incoming' == chan.direction && chan.contact) {
+            new Notification(`Incoming call from ${chan.contact.number}.`)
           }
         } else {
           //
@@ -48,9 +50,6 @@ export default function(eventType, data) {
         const message = data[id]
         if (message) {
           store.dispatch(addMessage(id, message))
-          if ('sms_in' === message.type) {
-            store.dispatch(toastrAddMessage('New message from ' + message.endpoint))
-          }
         } else {
           store.dispatch(removeMessage(id))
         }
