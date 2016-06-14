@@ -1,5 +1,7 @@
-import React from 'react'
-import App   from './app'
+import React     from 'react'
+import _         from 'lodash'
+import Dashboard from './dashboard'
+import styles    from '../styles/ui'
 
 import { 
   APP_STATUS_CONNECTED, 
@@ -11,14 +13,11 @@ import {
 import { connect } 
   from 'react-redux'
 import CircularProgress 
-  from 'material-ui/lib/circular-progress'
+  from 'material-ui/CircularProgress'
 import Dialog 
-  from 'material-ui/lib/dialog'
+  from 'material-ui/Dialog'
 
-class Ui extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+class Root extends React.Component {
   render() {
     const { 
       app : { status, error }, 
@@ -27,15 +26,15 @@ class Ui extends React.Component {
     switch (status) {
       case APP_STATUS_CONNECTING:
       case APP_STATUS_CONNECTED:
-        const backgroundColor = (APP_STATUS_CONNECTING == status) ? 'white' : 'transparent'
+        //const opacity = (APP_STATUS_CONNECTING == status) ? 1 : 0
         return (
-          <div style={{backgroundColor, ...styles.spinner}}>
+          <div style={{...styles.spinner}}>
             <CircularProgress size={1} />
           </div>
         )
       case APP_STATUS_INITIALIZED:
         return (
-          <App sendMessage={sendMessage} />
+          <Dashboard sendMessage={sendMessage} />
         )
       case APP_STATUS_ERROR:
       default:
@@ -52,20 +51,4 @@ class Ui extends React.Component {
   }
 }
 
-const styles = {
-  spinner: {
-    width            : '100%',
-    height           : '100%',
-    display          : 'flex',
-    justifyContent   : 'center',
-    alignItems       : 'center',
-    WebkitTransition : 'background-color 2s',
-    transition       : 'background-color 2s',
-  }
-}
-
-const UiComponent = connect(state => ({
-  app : state.app,
-}))(Ui)
-
-export default UiComponent
+export default connect(state => _.pick(state, ['app']))(Root)

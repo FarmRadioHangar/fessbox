@@ -41,7 +41,7 @@ function startAPI(route, apiHandler) {
 	function onApiRequest(request, response) {
 		route(apiHandler, request, response, true);
 	}
-	http.createServer(onApiRequest).listen(19990).setTimeout(25000);
+	http.createServer(onApiRequest).listen(19990).setTimeout(55000);
 }
 
 startAPI(router.route, apiHandler);

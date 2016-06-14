@@ -1,10 +1,13 @@
 import 'babel-polyfill' 
+
 import React            from 'react'
-import ReactDOM         from 'react-dom'
+import { render }       from 'react-dom'
+import getMuiTheme      from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getUrlParam      from './url-params'
 import store            from './store'
 import messageHandler   from './message-handler'
-import Ui               from '../modules/ui'
+import Root             from '../modules/ui'
 
 import injectTapEventPlugin 
   from 'react-tap-event-plugin'
@@ -18,14 +21,15 @@ import { updateAppStatus }
   from './actions'
 
 const userId   = getUrlParam('user_id') 
-const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' // '192.168.1.38:19998'
+const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' 
 const language = getUrlParam('language') || 'en' 
 
-const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
+const ws = new ReconnectingWebSocket(`ws://${hostUrl}/${userId ? `?user_id=${userId}` : ''}`) 
 
 ws.onopen = () => { 
   console.log('WebSocket connection established.') 
   store.dispatch(updateAppStatus(APP_STATUS_CONNECTED))
+  ws.keepAlive(2 * 1000, {event: 'noop'})
 } 
 
 ws.onclose = () => { 
@@ -38,7 +42,7 @@ function parseMessage(message) {
     try {
       return JSON.parse(message)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
   return null
@@ -47,10 +51,6 @@ function parseMessage(message) {
 ws.onmessage = (e => { 
   const message = parseMessage(e.data)
   if (message) {
-    console.log('>>> Message')
-    console.log(message)
-    console.log('<<<')
-  
     messageHandler(message.event, message.data)
   }
 })
@@ -60,18 +60,13 @@ ws.onerror = e => {
   store.dispatch(updateAppStatus(APP_STATUS_ERROR, 'Error establishing WebSocket connection.'))
 }
 
-function sendMessage(type, data) {
-  ws.send(JSON.stringify({
-    event : type, 
-    data
-  }))
-}
-
 injectTapEventPlugin()
 
-ReactDOM.render(
+render(
   <Provider store={store}>
-    <Ui sendMessage={sendMessage} />
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <Root sendMessage={(event, data) => ws.send({event, data})} />
+    </MuiThemeProvider>
   </Provider>,
   document.getElementById('main')
 )
