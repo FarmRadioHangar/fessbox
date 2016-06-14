@@ -21,7 +21,7 @@ export default combineReducers({
   smsForm: formReducer('sms'),
   call: modelReducer('call', { 
     channel : 'auto', 
-    mode    : 'master',
+    mode    : 0,
   }),
   callForm: formReducer('call'),
 })

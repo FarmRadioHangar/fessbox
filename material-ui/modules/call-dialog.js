@@ -1,8 +1,13 @@
-import React         from 'react'
+import React, { Component } from 'react'
 import ChannelSelect from './channel-select'
 import MaterialField from './material-field'
 import validators    from './validators'
 import _             from 'lodash'
+
+import { connect }  
+  from 'react-redux'
+import { getField } 
+  from 'react-redux-form'
 
 import Dialog 
   from 'material-ui/Dialog'
@@ -15,32 +20,35 @@ import SelectField
 import MenuItem 
   from 'material-ui/MenuItem'
 
-import { connect } 
-  from 'react-redux'
-import { getField } 
-  from 'react-redux-form'
-
-class CallDialog extends React.Component {
+class CallDialog extends Component {
   makeCall() {
     const { 
-      sendMessage, 
-      onClose, 
       call,
+      onClose, 
+      sendMessage, 
     } = this.props
+    var mode
+    switch (call.mode) {
+      case 1:
+        mode = 'private'
+        break
+      default:
+        mode = 'master'
+    }
     sendMessage('callNumber', {
       number     : call.number,
       channel_id : ('auto' === call.channel) ? null : call.channel.id,
-      mode       : 'master',
+      mode,
     })
     onClose()
   }
   render() {
     const { 
-      open, 
-      onClose, 
-      channels, 
       call,
       callForm,
+      channels, 
+      onClose, 
+      open, 
     } = this.props
     const actions = [
       <FlatButton
@@ -79,17 +87,13 @@ class CallDialog extends React.Component {
           <ChannelSelect channels={freeChannels} />
         </MaterialField>
         <MaterialField 
-          validators    = {_.pick(validators, ['required'])}
           model         = 'call.mode'>
           <SelectField 
             fullWidth         = {true}
             floatingLabelText = 'Call mode'
             defaultValue      = 'master'>
-            <MenuItem value={'master'} primaryText='Master' />
-            <MenuItem value={'private'} primaryText='Private' />
-            {/*
-            <MenuItem value={'ivr'} primaryText='IVR' />
-            */}
+            <MenuItem value={0} primaryText='On Air (Master)' />
+            <MenuItem value={1} primaryText='Private' />
           </SelectField>
         </MaterialField>
         <MaterialField 

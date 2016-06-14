@@ -17,6 +17,12 @@ class ConfirmDialog extends React.Component {
       onConfirm,
       app : { dialogState },
     } = this.props
+
+    const { message } = dialogState ? dialogState : {}
+
+    //console.log('dialogState')
+    //console.log(dialogState)
+
     const actions = [
       <FlatButton
         label           = 'Cancel'
@@ -26,7 +32,7 @@ class ConfirmDialog extends React.Component {
       <FlatButton
         label           = 'Ok'
         primary         = {true}
-        onTouchTap      = {() => onConfirm(dialogState.messageId)}
+        onTouchTap      = {() => onConfirm(message.id, message['$loki'])}
       />,
     ]
     return (

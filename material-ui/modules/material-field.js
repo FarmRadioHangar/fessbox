@@ -13,9 +13,11 @@ const MaterialField = createFieldClass({
     onChange: (e, val) => props.onChange(val),
     onFocus: () => props.onFocus(props.modelValue),
     onBlur: () => props.onBlur(props.modelValue),
-    value: props.modelValue,
+    defaultValue: props.modelValue,
   }),
   'SelectField': props => ({
+    onChange: (e, val) => props.onChange(val),
+    value: props.modelValue,
   }),
   'ChannelSelect': props => ({
     onChange: props.onChange,

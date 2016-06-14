@@ -1,4 +1,4 @@
-import React         from 'react'
+import React, { Component } from 'react'
 import ChannelSelect from './channel-select'
 import MaterialField from './material-field'
 import validators    from './validators'
@@ -18,28 +18,28 @@ import { getField }
 
 let count = 1
 
-class SmsDialog extends React.Component {
+class SmsDialog extends Component {
   handleSubmit(e) {
     e.preventDefault()
     const { sms, onClose, sendMessage } = this.props
     const id = Date.now()+String(count++%99999)
     let payload = { 
       type       : 'sms_out',
-	    endpoint   : sms.recipient,
-	    content    : sms.content,
-	    channel_id : ('auto' === sms.channel) ? null : sms.channel.id,
+      endpoint   : sms.recipient,
+      content    : sms.content,
+      channel_id : ('auto' === sms.channel) ? null : sms.channel.id,
     }
     if (sms.message) {
       payload.reply_to = sms.message.id
     }
     sendMessage('messageSend', { [id]: payload })
     onClose()
-	}
+  }
   render() {
     const { 
-      open, 
-      onClose, 
       channels,
+      onClose, 
+      open, 
       sms,
       smsForm,
     } = this.props
@@ -74,52 +74,48 @@ class SmsDialog extends React.Component {
         modal            = {false}
         open             = {open}
         onRequestClose   = {onClose}>
+        <MaterialField 
+          validators = {_.pick(validators, ['required'])}
+          model      = 'sms.channel'>
+          <ChannelSelect channels={freeChannels} />
+        </MaterialField>
+        <MaterialField 
+          validators = {_.pick(validators, ['required', 'phoneNumber'])}
+          model      = 'sms.recipient'>
+          <TextField 
+            errorText         = {errorText(getField(smsForm, 'recipient').errors)}
+            errorStyle        = {validators.isPartial(sms.recipient) ? {color: 'orange'} : {}}
+            floatingLabelText = 'Send to'
+            hintText          = {'Recipient\'s phone number'}
+            fullWidth         = {true} />
+        </MaterialField>
+        {sms.message && (
+          <TextField 
+            floatingLabelText = 'Original message'
+            fullWidth         = {true}
+            multiLine         = {true}
+            disabled          = {true}
+            value             = {sms.message.content}
+            rows              = {3} />
+        )}
+        <MaterialField 
+          validators = {{ 
+            required      : validators.required,
+            messageLength : validators.maxLength(160), 
+          }}
+          model      = 'sms.content'>
+          <TextField 
+            errorText         = {errorText(getField(smsForm, 'content').errors)}
+            floatingLabelText = 'Message content'
+            hintText          = 'Type your message here'
+            fullWidth         = {true}
+            multiLine         = {true}
+            rows              = {3} />
+        </MaterialField>
         <div>
-          <form onSubmit={::this.handleSubmit}>
-            <MaterialField 
-              validators = {_.pick(validators, ['required'])}
-              model      = 'sms.channel'>
-              <ChannelSelect channels={freeChannels} />
-            </MaterialField>
-            <MaterialField 
-              validators = {_.pick(validators, ['required', 'phoneNumber'])}
-              model      = 'sms.recipient'>
-              <TextField 
-                errorText         = {errorText(getField(smsForm, 'recipient').errors)}
-                errorStyle        = {validators.isPartial(sms.recipient) ? {color: 'orange'} : {}}
-                floatingLabelText = 'Send to'
-                hintText          = {'Recipient\'s phone number'}
-                fullWidth         = {true} />
-            </MaterialField>
-            {sms.message && (
-              <TextField 
-                floatingLabelText = 'Original message'
-                fullWidth         = {true}
-                multiLine         = {true}
-                disabled          = {true}
-                value             = {sms.message.content}
-                rows              = {3} />
-            )}
-            <MaterialField 
-              validators = {{ 
-                required      : validators.required,
-                messageLength : validators.maxLength(160), 
-              }}
-              model      = 'sms.content'>
-              <TextField 
-                errorText         = {errorText(getField(smsForm, 'content').errors)}
-                floatingLabelText = 'Message content'
-                hintText          = 'Type your message here'
-                fullWidth         = {true}
-                multiLine         = {true}
-                rows              = {3} />
-            </MaterialField>
-            <div>
-              {sms.content && sms.content.length <= 160 && (
-                <div>Characters remaining: {160 - sms.content.length}</div>
-              )}
-            </div>
-          </form>
+          {sms.content && sms.content.length <= 160 && (
+            <div>Characters remaining: {160 - sms.content.length}</div>
+          )}
         </div>
       </Dialog>
     )

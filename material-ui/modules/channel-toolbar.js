@@ -12,6 +12,7 @@ import ToolbarSeparator
 
 class ChannelToolbar extends React.Component {
   render() {
+    //console.log('render channel toolbar')
     const { id, label, mode, contact, timer } = this.props
     return (
       <Toolbar style={{background: 'none'}}>
