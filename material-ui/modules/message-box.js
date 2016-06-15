@@ -75,7 +75,7 @@ class MessageBox extends Component {
             <Checkbox 
               checked = {messages.onlyFavorites}
               onClick = {::this.toggleFilterOnlyFavorites} 
-              label   = 'Show only favorites' 
+              label   = 'Show only starred' 
             />
           </div>
         )}
