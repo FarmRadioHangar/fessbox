@@ -16,6 +16,7 @@ import {
   MESSAGE_UNSTAR,
   MESSAGE_WINDOW_GROW,
   MESSAGE_WINDOW_REQUEST_OLDER,
+  SET_ONLY_FAVORITES_FILTER,
   TOASTR_ADD_MESSAGE,
   TOASTR_REFRESH,
   TOASTR_REMOVE_MESSAGE,
@@ -126,6 +127,13 @@ export function unstarMessage(id) {
   return {
     type : MESSAGE_UNSTAR, 
     id,
+  }
+}
+
+export function setFilterOnlyFavorites(filter) {
+  return {
+    type : SET_ONLY_FAVORITES_FILTER, 
+    filter,
   }
 }
 
