@@ -8,6 +8,7 @@ import {
   MESSAGE_UNSTAR,
   MESSAGE_WINDOW_GROW,
   MESSAGE_WINDOW_REQUEST_OLDER,
+  SET_ONLY_FAVORITES_FILTER,
 } from '../constants'
 
 function fetchVisible(offset, limit) {
@@ -18,15 +19,20 @@ function fetchVisible(offset, limit) {
                  .data()
 }
 
+function fetchFavorites() {
+  return messages.chain().find({'favorite': {'$eq': true}}).data()
+}
+
 const MAX_WINDOW_SIZE = 512
 const BATCH_SIZE = 5
 
 const initialState = {
-  total    : 0,
-  visible  : [],
-  offset   : 0,
-  limit    : 0,
-  unread   : 0,
+  total         : 0,
+  visible       : [],
+  offset        : 0,
+  limit         : 0,
+  unread        : 0,
+  onlyFavorites : false,
 }
 
 export default function(state = initialState, action) {
@@ -52,9 +58,18 @@ export default function(state = initialState, action) {
     case MESSAGE_UNSTAR: {
       let message = { ...messages.get(action.id), favorite : false }
       const updated = messages.update(message)
-      return {
-        ...state,
-        visible : state.visible.map(m => m['$loki'] === action.id ? updated : m),
+      if (state.onlyFavorites) {
+        const visible = fetchFavorites()
+        return {
+          ...state,
+          total : visible.length,
+          visible,
+        }
+      } else {
+        return {
+          ...state,
+          visible : state.visible.map(m => m['$loki'] === action.id ? updated : m),
+        }
       }
     }
     case MESSAGE_STAR: {
@@ -108,7 +123,8 @@ export default function(state = initialState, action) {
       })
       return {
         ...state, limit, offset, unread,
-        visible : fetchVisible(offset, state.offset - offset).concat(state.visible.slice(0, s)),
+        visible : fetchVisible(offset, state.offset - offset)
+                  .concat(state.visible.slice(0, s)),
       }
     }
     case MESSAGE_REMOVE: {
@@ -138,6 +154,24 @@ export default function(state = initialState, action) {
             : state.unread
       }
       return { ...state, unread, total, visible }
+    }
+    case SET_ONLY_FAVORITES_FILTER: {
+      if (action.filter) {
+        const visible = fetchFavorites()
+        return {
+          ...state,
+          onlyFavorites : true,
+          total         : visible.length,
+          visible,
+        }
+      } else {
+        return {
+          ...state,
+          onlyFavorites : false,
+          visible       : fetchVisible(state.offset, state.limit),
+          total         : messages.count(),
+        }
+      }
     }
     default:
       return state
