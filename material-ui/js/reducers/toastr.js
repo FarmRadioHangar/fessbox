@@ -2,7 +2,6 @@ import {
   APP_INITIALIZE, 
   TOASTR_ADD_MESSAGE,
   TOASTR_REMOVE_MESSAGE,
-  TOASTR_REFRESH,
 } from '../constants'
 
 const initialState = {
@@ -12,17 +11,6 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case TOASTR_REFRESH: {
-      if (!state.messages.length) {
-        return state
-      }
-      const threshold = (Date.now() | 0) - 5000
-      const messages = state.messages.filter(message => message.added > threshold)
-      return {
-        ...state,
-        messages,
-      }
-    }
     case TOASTR_REMOVE_MESSAGE: {
       const messages = state.messages.filter(message => message.key != action.key)
       return {
