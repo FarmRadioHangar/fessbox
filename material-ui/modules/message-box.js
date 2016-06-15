@@ -94,9 +94,9 @@ class MessageBox extends Component {
                       <span className='mdl-list__item-primary-content'>
                         <span style={{float: 'left', width: '40px', height: '40px'}}>
                           {'sms_in' === message.type ? (
-                            <i className='material-icons'>call_made</i>
-                          ) : (
                             <i className='material-icons'>call_received</i>
+                          ) : (
+                            <i className='material-icons'>call_made</i>
                           )}
                         </span>
                         <span>
