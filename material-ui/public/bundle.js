@@ -1996,11 +1996,11 @@ var MessageBox = function (_Component) {
                         'sms_in' === message.type ? _react2.default.createElement(
                           'i',
                           { className: 'material-icons' },
-                          'call_made'
+                          'call_received'
                         ) : _react2.default.createElement(
                           'i',
                           { className: 'material-icons' },
-                          'call_received'
+                          'call_made'
                         )
                       ),
                       _react2.default.createElement(
@@ -2496,7 +2496,7 @@ var Channel = function (_Component) {
                 _react2.default.createElement(_Avatar2.default, { style: { marginTop: '12px' }, backgroundColor: '#ffffff', color: _colors.red500, icon: _react2.default.createElement(
                     'i',
                     { className: 'material-icons faa-ring' },
-                    'call_made'
+                    'call_received'
                   ) }),
                 _react2.default.createElement(
                   _Subheader2.default,
@@ -2586,7 +2586,7 @@ var Channel = function (_Component) {
                 _react2.default.createElement(_Avatar2.default, { style: { marginTop: '13px' }, backgroundColor: '#ffffff', color: _colors.amber500, icon: _react2.default.createElement(
                     'i',
                     { className: 'material-icons' },
-                    'call_received'
+                    'call_made'
                   ) }),
                 _react2.default.createElement(
                   _Subheader2.default,

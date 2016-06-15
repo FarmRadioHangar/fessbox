@@ -231,7 +231,7 @@ class Channel extends Component {
             <div>
               <div style={{display: 'flex', flexDirection: 'row'}}>
                 <Avatar style={{marginTop: '12px'}} backgroundColor='#ffffff' color={red500} icon={
-                  <i className='material-icons faa-ring'>call_made</i>
+                  <i className='material-icons faa-ring'>call_received</i>
                 } />
                 <Subheader style={{flex: 2, paddingTop: '8px'}}>
                   {id}
@@ -331,7 +331,7 @@ class Channel extends Component {
             <div>
               <div style={{display: 'flex', flexDirection: 'row'}}>
                 <Avatar style={{marginTop: '13px'}} backgroundColor='#ffffff' color={amber500} icon={
-                  <i className='material-icons'>call_received</i>
+                  <i className='material-icons'>call_made</i>
                 } />
                 <Subheader style={{flex: 2, paddingTop: '8px'}}>
                   {id}
