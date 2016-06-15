@@ -71,7 +71,7 @@ class MessageBox extends Component {
     return (
       <div ref='root' style={{height: '100%'}}>
         {active && (
-          <div style={{bottom: 0, zIndex: 1000, borderTop: '1px solid rgb(228, 228, 228)', width: '100%', padding: '16px 0 17px 21px', background: '#fafafa', position: 'fixed'}}>
+          <div style={{top: '72px', zIndex: 1000, borderBottom: '1px solid rgb(228, 228, 228)', width: '100%', padding: '15px 0 16px 21px', background: '#fafafa', position: 'fixed'}}>
             <Checkbox 
               checked = {messages.onlyFavorites}
               onClick = {::this.toggleFilterOnlyFavorites} 
@@ -88,7 +88,7 @@ class MessageBox extends Component {
           <div>
             {messages.visible.length ? (
               <div>
-                <ul style={active ? {background: '#ffffff'} : {minHeight: '7000px'}} className='mdl-list'>
+                <ul style={active ? {background: '#ffffff', marginTop: '47px'} : {minHeight: '7000px'}} className='mdl-list'>
                   {messages.visible.map((message, i) => 
                     <li key={i} className='mdl-list__item mdl-list__item--three-line' style={{borderTop: '1px solid #eee'}}>
                       <span className='mdl-list__item-primary-content'>
@@ -154,7 +154,7 @@ class MessageBox extends Component {
                 </ul>
               </div>
             ) : (
-              <div style={active ? {padding: '20px', background: '#ffffff'} : {minHeight: '7000px'}}>
+              <div style={active ? {marginTop: '72px', padding: '20px', background: '#ffffff'} : {minHeight: '7000px'}}>
                 No messages
               </div>
             )}
