@@ -1986,7 +1986,7 @@ var MessageBox = function (_Component) {
           _react2.default.createElement(_Checkbox2.default, {
             checked: messages.onlyFavorites,
             onClick: this.toggleFilterOnlyFavorites.bind(this),
-            label: 'Show only favorites'
+            label: 'Show only starred'
           })
         ),
         _react2.default.createElement(
