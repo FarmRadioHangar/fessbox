@@ -320,7 +320,7 @@ ami.on('devicestatechange', function(evt) {
 				break;
 			case 'NOT_INUSE':
 				if (!s.ui.mixer.channels[channelInfo[1]]) {
-					s.loadChannel(channelInfo[1]);
+					//s.loadChannel(channelInfo[1]);
 					//s.ui.mixer.channels[channelInfo[1]].type = 'sip';
 					//s.ui.mixer.channels[channelInfo[1]].mode = 'free';
 					//s.ui.mixer.channels[channelInfo[1]].direction = 'operator';
@@ -336,7 +336,7 @@ ami.on('devicestatechange', function(evt) {
 				break;
 			case 'INUSE':
 				if (!s.ui.mixer.channels[channelInfo[1]]) {
-					s.loadChannel(channelInfo[1]);
+					//s.loadChannel(channelInfo[1]);
 					//s.ui.mixer.channels[channelInfo[1]].type = 'sip';
 					//s.ui.mixer.channels[channelInfo[1]].mode = 'free';
 					//s.ui.mixer.channels[channelInfo[1]].direction = 'operator';
@@ -354,6 +354,7 @@ ami.on('devicestatechange', function(evt) {
 
 ami.on('donglecallstatechange', function(evt) {
 //	{"event":"DongleCallStateChange","privilege":"call,all","device":"airtel2","callidx":"1","newstate":"released"}
+//	 {"event":"DongleCallStateChange","privilege":"call,all","device":"airtel1","callidx":"1","newstate":"active"}
 //	console.error(JSON.stringify(evt));
 });
 
@@ -507,6 +508,19 @@ ami.on('confbridgeleave', function(evt) {
    */
 });
 
+// handling remote answer in special case when dialing out with originateLocal
+ami.on('dialend', function (evt) {
+//	{"event":"DialEnd","privilege":"call,all","channel":"Local/2663@ext-meetme-00000005;1","channelstate":"6","channelstatedesc":"Up","calleridnum":"+255689514544","calleridname":"<unknown>","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"macro-dialout-trunk","exten":"s","priority":"30","uniqueid":"1465851477.78","linkedid":"1465851477.78","destchannel":"Dongle/airtel1-0100000004","destchannelstate":"6","destchannelstatedesc":"Up","destcalleridnum":"0687754487","destcalleridname":"<unknown>","destconnectedlinenum":"+255689514544","destconnectedlinename":"<unknown>","destlanguage":"en","destaccountcode":"","destcontext":"from-trunk","destexten":"","destpriority":"1","destuniqueid":"1465851477.84","destlinkedid":"1465851477.78","dialstatus":"ANSWER"}
+	var  channelInfo = evt.destchannel.split(/[\/-]/, 3);
+	if (channelInfo[0] === 'Dongle' && s.ui.mixer.channels[channelInfo[1]]) {
+		if (evt.dialstatus === "ANSWER") {
+			var localChannel = evt.channel.split(/[\/@]/, 3);
+			if (localChannel[1] === astConf.virtual.master) {
+				engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
+			}
+		}
+	}
+});
 
 ami.on('newchannel', function(evt) {
 //{"event":"Newchannel","privilege":"call,all","channel":"SIP/703-00000000","channelstate":"0","channelstatedesc":"Down","calleridnum":"703","calleridname":"Damjan Laptop","accountcode":"","exten":"2663","context":"from-internal","uniqueid":"1445360462.0"}

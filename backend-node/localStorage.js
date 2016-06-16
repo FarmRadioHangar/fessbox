@@ -108,7 +108,7 @@ function loadSnapshot() {
 
 function loadOperator(channel_id) {
 	redisClient.hgetall("operator." + channel_id, function (err, res) {
-		if (!err) {
+		if (0 && !err) { // disabled until moved to mixerLib
 			exports.ui.operators[channel_id] = res;
 			myLib.consoleLog('debug', "loadOperator - data loaded from redis", channel_id);
 			return true;

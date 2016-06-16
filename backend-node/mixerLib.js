@@ -38,8 +38,12 @@ exports.channelMode = function (channel_id, channel) {
 				case 'ring':
 					return exports.channelUpdateProperties(channel_id, channel);
 				default:
-					myLib.consoleLog('panic', 'unknown channelMode:', channel.mode);
-					throw Error ('unknown channelMode:' + channel.mode);
+					if (s.ui.mixer.channels[channel.mode]) {
+						return exports.channelUpdateProperties(channel_id, channel);
+					} else {
+						myLib.consoleLog('panic', 'unknown channelMode:', channel.mode);
+						throw Error ('unknown channelMode:' + channel.mode);
+					}
 			}
 	}
 };
@@ -61,7 +65,7 @@ exports.channelUpdateProperties = function (channel_id, data) {
 				s.ui.mixer.channels[channel_id][key] = data[key];
 				changed = true;
 			} else {
-				myLib.consoleLog('debug', "mixerLib::channelUpdateProperties", "value already set for " + [channel_id, key].join('.'), data[key]);
+				//myLib.consoleLog('debug', "mixerLib::channelUpdateProperties", "value already set for " + [channel_id, key].join('.'), data[key]);
 			}
 		}
 	}
