@@ -1,8 +1,13 @@
-import React         from 'react'
+import React, { Component } from 'react'
 import ChannelSelect from './channel-select'
 import MaterialField from './material-field'
 import validators    from './validators'
 import _             from 'lodash'
+
+import { connect }  
+  from 'react-redux'
+import { getField } 
+  from 'react-redux-form'
 
 import Dialog 
   from 'material-ui/Dialog'
@@ -15,32 +20,36 @@ import SelectField
 import MenuItem 
   from 'material-ui/MenuItem'
 
-import { connect } 
-  from 'react-redux'
-import { getField } 
-  from 'react-redux-form'
-
-class CallDialog extends React.Component {
+class CallDialog extends Component {
   makeCall() {
     const { 
-      sendMessage, 
-      onClose, 
       call,
+      onClose, 
+      sendMessage, 
     } = this.props
+    var mode
+    switch (call.mode) {
+      case 1:
+        mode = 'private'
+        break
+      default:
+        mode = 'master'
+    }
     sendMessage('callNumber', {
       number     : call.number,
       channel_id : ('auto' === call.channel) ? null : call.channel.id,
-      mode       : 'master',
+      mode,
     })
     onClose()
   }
   render() {
     const { 
-      open, 
-      onClose, 
-      channels, 
       call,
       callForm,
+      channels, 
+      onClose, 
+      open, 
+      mixer : { userChanFree },
     } = this.props
     const actions = [
       <FlatButton
@@ -76,8 +85,22 @@ class CallDialog extends React.Component {
         <MaterialField 
           validators    = {_.pick(validators, ['required'])}
           model         = 'call.channel'>
-          <ChannelSelect channels={freeChannels} />
+          <ChannelSelect 
+            channels    = {freeChannels} 
+          />
         </MaterialField>
+        {userChanFree && (
+          <MaterialField 
+            model         = 'call.mode'>
+            <SelectField 
+              fullWidth         = {true}
+              floatingLabelText = 'Call mode'
+              defaultValue      = 'master'>
+              <MenuItem value={0} primaryText='On Air (Master)' />
+              <MenuItem value={1} primaryText='Private' />
+            </SelectField>
+          </MaterialField>
+        )}
         <MaterialField 
           validators    = {_.pick(validators, ['required', 'phoneNumber'])}
           model         = 'call.number'>
@@ -93,4 +116,4 @@ class CallDialog extends React.Component {
   }
 }
 
-export default connect(state => _.pick(state, ['call', 'callForm']))(CallDialog)
+export default connect(state => _.pick(state, ['call', 'callForm', 'mixer']))(CallDialog)

@@ -1,102 +1,135 @@
-import React         from 'react'
-import _             from 'lodash'
+import React, { Component } from 'react'
+import ReactDOM      from 'react-dom'
+import Mixer         from './mixer'
+import MessageBox    from './message-box'
 import SmsDialog     from './sms-dialog'
 import CallDialog    from './call-dialog'
 import ConfirmDialog from './confirm-dialog'
-import MessageBox    from './message-box'
-import Mixer         from './mixer'
 import Toastr        from './toastr'
 import styles        from '../styles/dashboard'
 
 import { connect } 
   from 'react-redux'
+import { setDialog, removeMessage, toastrAddMessage }
+  from '../js/actions'
 import { actions } 
   from 'react-redux-form'
-import { setDialog, removeMessage, markAllMessagesRead, toastrAddMessage }
-  from '../js/actions'
 
-import AppBar from 'material-ui/AppBar'
-import Tabs   from 'material-ui/Tabs/Tabs'
-import Tab    from 'material-ui/Tabs/Tab'
+import Tabs  from 'material-ui/Tabs/Tabs'
+import Tab   from 'material-ui/Tabs/Tab'
+import Badge from 'material-ui/Badge'
 import FloatingActionButton 
-              from 'material-ui/FloatingActionButton'
-import Badge  from 'material-ui/Badge'
-
+  from 'material-ui/FloatingActionButton'
 import IconCommunicationDialpad
   from 'material-ui/svg-icons/communication/dialpad'
 import IconCommunicationMessage
   from 'material-ui/svg-icons/communication/message'
 
-class Dashboard extends React.Component {
+let msgListScrollPos = 0
+
+class Dashboard extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      tab     : 'mixer',
-      opacity : 0,
+      tab       : 'mixer',
+      opacity   : 0,
+      scrollPos : 0,
     }
   }
-  activateTab(tab) {
-    const { dispatch } = this.props
-    this.setState({tab})
-    if ('messages' === tab) {
-      dispatch(markAllMessagesRead())
-    }
-  }
-  renderAppBar() {
-    return (
-      <div>
-        <AppBar iconElementLeft={<span />} title='VoxBox' />
-      </div>
-    )
-  }
-  handleDeleteMessage(id) {
+  handleDeleteMessage(id, lokiId) {
     const { dispatch, sendMessage } = this.props
     dispatch(setDialog(null))
     sendMessage('messageDelete', { 
       [id]: null
     })
-    dispatch(removeMessage(id))
-    dispatch(toastrAddMessage('The message was deleted'))
+    dispatch(removeMessage(lokiId))
+    dispatch(toastrAddMessage('The message was deleted.'))
+  }
+  scrollNode() {
+    return ReactDOM.findDOMNode(this.refs.messageList).parentNode.parentNode
+  }
+  componentDidMount() {
+    this.scrollNode().addEventListener('scroll', ::this.handleScrollEvent)
+    window.setTimeout(() => this.setState({opacity: 1}), 130)
+  }
+  componentWillUnmount() {
+    this.scrollNode().removeEventListener('scroll', ::this.handleScrollEvent)
+  }
+  handleScrollEvent(e) {
+    const { tab } = this.state
+    if ('messages' === tab) {
+      msgListScrollPos = e.target.scrollTop
+    }
+  }
+  activateTab(tab) {
+    const { dispatch } = this.props
+    const scrollPos = 'messages' === tab ? msgListScrollPos : 0
+    this.setState({tab, scrollPos})
   }
   renderDialog() {
     const { 
-      mixer: { channelList }, 
-      app: { dialog }, 
+      app   : { dialog }, 
+      mixer : { channelList }, 
       sendMessage, 
       dispatch,
     } = this.props
     return (
-			<div>
+      <div>
         <CallDialog 
           channels    = {channelList}
           onClose     = {() => dispatch(setDialog(null))} 
           open        = {'call' == dialog} 
           sendMessage = {sendMessage}
         />
-				<SmsDialog
+        <SmsDialog
           channels    = {channelList}
           onClose     = {() => dispatch(setDialog(null))} 
           open        = {'sms' == dialog} 
           sendMessage = {sendMessage}
         />
-				<ConfirmDialog
+        <ConfirmDialog
           onClose     = {() => dispatch(setDialog(null))} 
           onConfirm   = {::this.handleDeleteMessage}
           open        = {'confirm' == dialog} 
           sendMessage = {sendMessage}
         />
-			</div>
+      </div>
     )
+  }
+  renderFAB() {
+    const { dispatch } = this.props
+    switch (this.state.tab) {
+      case 'mixer':
+        return (
+          <FloatingActionButton 
+            style   = {styles.fab}
+            onClick = {() => {
+              dispatch(actions.reset('call'))
+              dispatch(setDialog('call')) 
+            }}>
+            <IconCommunicationDialpad />
+          </FloatingActionButton>
+        )
+      case 'messages':
+        return (
+          <FloatingActionButton 
+            style   = {styles.fab}
+            onClick = {() => {
+              dispatch(actions.reset('sms'))
+              dispatch(setDialog('sms')) 
+            }}>
+            <IconCommunicationMessage />
+          </FloatingActionButton>
+        )
+      case 'call_log':
+      case 'config':
+      default:
+        return <span />
+    }
   }
   renderTabs() {
     const { tab } = this.state
-    const { 
-      messages : {
-        messageCount,
-        unreadCount,
-      },
-      sendMessage,
-    } = this.props
+    const { sendMessage, messages : { unread } } = this.props
     const mixerIcon = (
       <span>
         <i className='material-icons'>volume_up</i>
@@ -105,91 +138,57 @@ class Dashboard extends React.Component {
     const inboxIcon = (
       <span>
         <i className='material-icons'>message</i>
-        {!!unreadCount && (
+        {!!unread && (
           <Badge
             style        = {styles.badge}
-            badgeContent = {unreadCount}
+            badgeContent = {unread}
             primary      = {true}>
           </Badge>
         )}
       </span>
     )
-    const buildIcon = (
-      <span>
-        <i className='material-icons'>build</i>
-      </span>
-    )
     return (
-      <Tabs value={tab}>
-        <Tab 
-          onActive = {() => this.activateTab('mixer')}
-          icon     = {mixerIcon}
-          label    = 'Mixer'
-          value    = 'mixer'>
-          <Mixer sendMessage={sendMessage} />
-        </Tab>
-        <Tab
-          onActive = {() => this.activateTab('messages')}
-          icon     = {inboxIcon}
-          label    = 'Messages'
-          value    = 'messages'>
-          <MessageBox sendMessage={sendMessage} />
-        </Tab>
-        {/*
-        <Tab
-          onActive = {() => this.activateTab('config')}
-          icon     = {buildIcon}
-          label    = 'Configuration'
-          value    = 'config'>
-          <div>
-            Config
-          </div>
-        </Tab>
-        */}
-      </Tabs>
+      <div style={{height: '100%'}}>
+        <Tabs 
+          contentContainerStyle = {{
+            position  : 'fixed',
+            top       : '72px',
+            width     : '100%',
+            height    : 'calc(100% - 72px)',
+            overflowX : 'hidden',
+            overflowY : 'scroll',
+          }}
+          value = {tab}>
+          <Tab 
+            onActive = {() => this.activateTab('mixer')}
+            icon     = {mixerIcon}
+            label    = 'Mixer'
+            value    = 'mixer'>
+            <Mixer style={{height: '100%'}} sendMessage={sendMessage} />
+          </Tab>
+          <Tab
+            onActive = {() => this.activateTab('messages')}
+            icon     = {inboxIcon}
+            label    = 'Messages'
+            value    = 'messages'>
+            <MessageBox 
+              scrollPos   = {this.state.scrollPos}
+              active      = {'messages' === this.state.tab}
+              ref         = 'messageList'
+              style       = {{height: '100%'}}
+              sendMessage = {sendMessage} />
+          </Tab>
+        </Tabs>
+      </div>
     )
-  }
-  renderFAB() {
-    const { dispatch } = this.props
-    switch (this.state.tab) {
-      case 'mixer':
-				return (
-					<FloatingActionButton
-						onClick = {() => { 
-              dispatch(actions.reset('call'))
-              dispatch(setDialog('call')) 
-            }}
-						style   = {styles.fab}>
-            <IconCommunicationDialpad />
-					</FloatingActionButton>
-        )
-      case 'messages':
-				return (
-					<FloatingActionButton
-						onClick = {() => { 
-              dispatch(actions.reset('sms'))
-              dispatch(setDialog('sms')) 
-            }}
-						style   = {styles.fab}>
-            <IconCommunicationMessage />
-					</FloatingActionButton>
-        )
-      case 'call_log':
-      case 'config':
-      default:
-				return <span />
-		}
-  }
-  componentDidMount() {
-    window.setTimeout(() => this.setState({opacity: 1}), 100)
   }
   render() {
+    const { sendMessage } = this.props
     const { opacity } = this.state
     return (
       <div style={{opacity, ...styles.component}}>
         <Toastr />
         {this.renderDialog()}
-        {this.renderAppBar()}
         {this.renderTabs()}
         {this.renderFAB()}
       </div>

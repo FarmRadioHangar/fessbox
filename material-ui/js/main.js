@@ -1,13 +1,13 @@
 import 'babel-polyfill' 
 
 import React            from 'react'
-import ReactDOM         from 'react-dom'
+import { render }       from 'react-dom'
 import getMuiTheme      from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getUrlParam      from './url-params'
 import store            from './store'
 import messageHandler   from './message-handler'
-import Ui               from '../modules/ui'
+import Root             from '../modules/ui'
 
 import injectTapEventPlugin 
   from 'react-tap-event-plugin'
@@ -24,11 +24,12 @@ const userId   = getUrlParam('user_id')
 const hostUrl  = getUrlParam('host_url') || 'fessbox.local:19998' 
 const language = getUrlParam('language') || 'en' 
 
-const ws = new ReconnectingWebSocket(`ws://${hostUrl}/?user_id=${userId}`) 
+const ws = new ReconnectingWebSocket(`ws://${hostUrl}/${userId ? `?user_id=${userId}` : ''}`) 
 
 ws.onopen = () => { 
   console.log('WebSocket connection established.') 
   store.dispatch(updateAppStatus(APP_STATUS_CONNECTED))
+  ws.keepAlive(2 * 1000, {event: 'noop'})
 } 
 
 ws.onclose = () => { 
@@ -61,10 +62,10 @@ ws.onerror = e => {
 
 injectTapEventPlugin()
 
-ReactDOM.render(
+render(
   <Provider store={store}>
     <MuiThemeProvider muiTheme={getMuiTheme()}>
-      <Ui sendMessage={(event, data) => ws.send(JSON.stringify({event, data}))} />
+      <Root sendMessage={(event, data) => ws.send({event, data})} />
     </MuiThemeProvider>
   </Provider>,
   document.getElementById('main')

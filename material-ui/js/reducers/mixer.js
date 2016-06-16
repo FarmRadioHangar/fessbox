@@ -1,150 +1,19 @@
+import getUrlParam from '../url-params'
+
 import { 
   APP_INITIALIZE, 
-  CHANNEL_UPDATE,
   CHANNEL_CONTACT_UPDATE,
+  CHANNEL_SET_MUTED,
+  CHANNEL_UPDATE,
   CHANNEL_VOLUME_UPDATE,
 } from '../constants'
 
-const initialState = {
-  channelList : [],
-}
+const userId = getUrlParam('user_id') 
 
-//const initialState = {
-//  "channels": {
-//    "airtel1": {
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "ring",
-//      "muted": false,
-//      "timestamp": 1461056646818,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "johannes",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-//    "tigo1": {
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "master",
-//      "muted": false,
-//      "timestamp": 1461066884306,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "johannes",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-////    "tigo1": {
-////      "type": "dongle",
-////      "level": 67,
-////      "direction": null,
-////      "label": "+255718885887",
-////      "mode": "defunct",
-////      "muted": false,
-////      "timestamp": null,
-////      "autoanswer": null,
-////      "contact": null,
-////      "recording": false
-////    },
-//    "vodacom1": {
-//      "type": "Dongle",
-//      "level": 67,
-//      "direction": null,
-//      "label": "+255754885885",
-//      "mode": "free",
-//      "muted": false,
-//      "timestamp": null,
-//      "autoanswer": null,
-//      "contact": null,
-//      "recording": false,
-//      "number": "+255754885885",
-//      "error": "not connected"
-//    }
-//  },
-//  "master": {
-//    "level": 79,
-//    "on_air": true,
-//    "muted": false,
-//    "recording": false,
-//    "delay": 0,
-//    "out": {
-//      "level": 66,
-//      "muted": false
-//    },
-//    "in": {
-//      "level": 75,
-//      "muted": false
-//    }
-//  },
-//  "host": {
-//    "level": 75,
-//    "muted": false
-//  },
-//  "channelList": [
-//    {
-//      "id": "airtel1",
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "ring",
-//      "muted": false,
-//      "timestamp": 1461056646818,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "johannes",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-//    {
-//      "id": "vodacom1",
-//      "type": "Dongle",
-//      "level": 67,
-//      "direction": null,
-//      "label": "+255754885885",
-//      "mode": "free",
-//      "muted": false,
-//      "timestamp": null,
-//      "autoanswer": null,
-//      "contact": null,
-//      "recording": false,
-//      "number": "+255754885885",
-//      "error": "not connected"
-//    },
-//    {
-//      "id": "tigo1",
-//      "type": "Dongle",
-//      "level": 56,
-//      "direction": "incoming",
-//      "label": "+255689514544",
-//      "mode": "master",
-//      "muted": false,
-//      "timestamp": 1461066884306,
-//      "autoanswer": null,
-//      "contact": {
-//        "name": "Uri Geller",
-//        "number": "+255678647268"
-//      },
-//      "recording": false,
-//      "number": "+255689514544",
-//      "error": "not connected"
-//    },
-//  ]
-//}
+const initialState = {
+  channelList  : [], 
+  userChanFree : false,
+}
 
 function modeWeight(mode) {
   /**/ if ('master'  === mode) { return 1 } 
@@ -162,22 +31,38 @@ function compareChannels(a, b) {
 
 function channelList(channels) {
   return Object.entries(channels)
-      .filter(item => 'operator' !== item[1].direction)
+      .filter(item => (item[1] && 'operator' !== item[1].direction))
       .sort(compareChannels)
       .map(([id, chan]) => { 
-    return {
-      id,
-      ...chan,
-    }
+    return { id, ...chan, }
   })
 }
 
 export default function(state = initialState, action) {
   switch (action.type) {
     case APP_INITIALIZE: {
+      if (!action.data.mixer) 
+        return state
+      const channels = action.data.mixer.channels || {}
+      const connectedChan = userId ? channels[userId] : null
       return {
         ...action.data.mixer,
-        channelList : channelList(action.data.mixer.channels),
+        channelList  : channelList(channels),
+        userChanFree : !!connectedChan && ('free' === connectedChan.mode),
+      }
+    }
+    case CHANNEL_SET_MUTED: {
+      const channels = {
+        ...state.channels,
+        [action.id] : {
+          ...state.channels[action.id],
+          muted : action.muted,
+        }
+      }
+      return {
+        ...state, 
+        channels, 
+        channelList : channelList(channels),
       }
     }
     case CHANNEL_UPDATE: {
@@ -185,10 +70,12 @@ export default function(state = initialState, action) {
         ...state.channels,
         [action.id] : action.data, 
       }
+      const connectedChan = userId ? channels[userId] : null
       return {
         ...state, 
         channels, 
-        channelList : channelList(channels),
+        channelList  : channelList(channels),
+        userChanFree : !!connectedChan && ('free' === connectedChan.mode),
       }
     }
     case CHANNEL_VOLUME_UPDATE: {

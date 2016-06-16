@@ -3,7 +3,7 @@ export default {
     WebkitTransition : 'opacity 1s',
     transition       : 'opacity 1s',
     width            : '100%',
-    marginBottom     : '100px',
+    //marginBottom     : '100px',
   },
   fab: {
     position         : 'fixed',

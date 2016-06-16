@@ -103,6 +103,10 @@ export default class Channel extends React.Component {
   }
   renderChannel() {
     const { mode, muted, level, contact } = this.props
+
+        console.log('channel')
+        console.log(this.props)
+
     switch (mode) {
       case 'free':
         return (
@@ -242,6 +246,15 @@ export default class Channel extends React.Component {
     }
   }
   render() {
+
+      console.log('ping')
+
+    return (
+      <div>
+        {JSON.stringify(this.props, null, 2)}
+      </div>
+    )
+
     const { mode, timestamp } = this.props
     const hours = moment(this.state.now).diff(timestamp, 'hours')
     const colors = {
