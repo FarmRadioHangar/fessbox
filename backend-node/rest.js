@@ -48,3 +48,12 @@ exports.callNumber = function (response, params) {
 	});
 	myLib.httpGeneric(200, "ok", response, "DEBUG::callNumber");
 };
+
+exports.getObjects = function (response, params) {
+	var path = params.name.split('.');
+	var objects = s[path[0]];
+	for(var i = 1; i < path.length; i++) {
+		 objects = objects[path[i]];
+	}
+	myLib.httpGeneric(200,  JSON.stringify(objects, null, 4), response, "DEBUG::getObjects");
+};

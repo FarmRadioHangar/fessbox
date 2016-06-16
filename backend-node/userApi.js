@@ -75,7 +75,7 @@ exports.callNumber = function (number, mode, channel_id, cbErr) {
 		default:
 			if (!s.ui.operators[mode]) {
 				cbErr('invalid call-out mode');
-			} else if (s.ui.mixer[mode].mode !== 'free') {
+			} else if (s.ui.mixer.channels[mode].mode !== 'free') {
 				cbErr(mode + " is currently busy");
 			} else {
 				pbxProvider.originateLocal(number, mode, channel_id, cbErr);

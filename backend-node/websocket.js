@@ -2,6 +2,7 @@ var eventHandlers = require("./eventHandlers");
 var myLib = require("./myLib");
 
 var url = require("url");
+
 var WebSocketServer = require('ws').Server;
 var wss;
 
@@ -34,7 +35,7 @@ exports.startListening = function(options) {
 			var location = url.parse(ws.upgradeReq.url, true);
 
 			ws.on('message', function incoming(message) {
-				myLib.consoleLog('debug', 'websocket::receivedEvent', message);
+				//myLib.consoleLog('debug', 'websocket::receivedEvent', message);
 				message = JSON.parse(message);
 				if (!message.event) {
 					ws.send(serializeEvent("input_error", "message format error, should be { event: String, data: Object }"));
@@ -71,6 +72,7 @@ exports.startListening = function(options) {
 			eventHandlers.initialize(location.query.user_id, null, function (event, initState) {
 				ws.send(serializeEvent("initialize", initState));
 				myLib.consoleLog("debug", "websocket::on-connection", "initialize", location.query);
+				//myLib.consoleLog("debug", "websocket::on-connection", "initialize", initState);
 			});
 		});
 
