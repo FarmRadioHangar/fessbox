@@ -2414,9 +2414,10 @@ var Channel = function (_Component) {
       var id = _props.id;
       var mode = _props.mode;
       var sendMessage = _props.sendMessage;
+      var userId = _props.userId;
 
       if ('free' != mode) {
-        sendMessage('channelMode', _defineProperty({}, id, newMode));
+        sendMessage('channelMode', _defineProperty({}, id, 'host' === newMode ? '' + userId : newMode));
       }
     }
   }, {
@@ -2571,9 +2572,77 @@ var Channel = function (_Component) {
         */
 
   }, {
+    key: 'renderControls',
+    value: function renderControls(mode, userChanFree) {
+      var _this2 = this;
+
+      console.log(mode);
+      switch (mode) {
+        case 'master':
+          return _react2.default.createElement(
+            'span',
+            null,
+            _react2.default.createElement(_FlatButton2.default, {
+              primary: true,
+              label: 'On hold',
+              onClick: function onClick() {
+                return _this2.setMode('on_hold');
+              }
+            }),
+            userChanFree && _react2.default.createElement(_FlatButton2.default, {
+              primary: true,
+              label: 'Private',
+              onClick: function onClick() {
+                return _this2.setMode('host');
+              }
+            })
+          );
+        case 'on_hold':
+          return _react2.default.createElement(
+            'span',
+            null,
+            _react2.default.createElement(_FlatButton2.default, {
+              primary: true,
+              label: 'Master',
+              onClick: function onClick() {
+                return _this2.setMode('master');
+              }
+            }),
+            userChanFree && _react2.default.createElement(_FlatButton2.default, {
+              primary: true,
+              label: 'Private',
+              onClick: function onClick() {
+                return _this2.setMode('host');
+              }
+            })
+          );
+        case 'xxx':
+          return _react2.default.createElement(
+            'span',
+            null,
+            _react2.default.createElement(_FlatButton2.default, {
+              primary: true,
+              label: 'On hold',
+              onClick: function onClick() {
+                return _this2.setMode('on_hold');
+              }
+            }),
+            _react2.default.createElement(_FlatButton2.default, {
+              primary: true,
+              label: 'Master',
+              onClick: function onClick() {
+                return _this2.setMode('master');
+              }
+            })
+          );
+        default:
+          return _react2.default.createElement('span', null);
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       var _props6 = this.props;
       var contact = _props6.contact;
@@ -2682,21 +2751,21 @@ var Channel = function (_Component) {
                       primary: true,
                       label: 'Answer',
                       onClick: function onClick() {
-                        return _this2.setMode('master');
+                        return _this3.setMode('master');
                       }
                     }),
                     _react2.default.createElement(_FlatButton2.default, {
                       primary: true,
                       label: 'On hold',
                       onClick: function onClick() {
-                        return _this2.setMode('on_hold');
+                        return _this3.setMode('on_hold');
                       }
                     }),
                     _react2.default.createElement(_FlatButton2.default, {
                       primary: true,
                       label: 'Reject',
                       onClick: function onClick() {
-                        return _this2.setMode('free');
+                        return _this3.setMode('free');
                       }
                     })
                   )
@@ -2765,14 +2834,14 @@ var Channel = function (_Component) {
                     label: 'Hold call',
                     primary: true,
                     onClick: function onClick() {
-                      return _this2.setMode('on_hold');
+                      return _this3.setMode('on_hold');
                     }
                   }),
                   _react2.default.createElement(_FlatButton2.default, {
                     label: 'Cancel',
                     primary: true,
                     onClick: function onClick() {
-                      return _this2.setMode('free');
+                      return _this3.setMode('free');
                     }
                   })
                 )
@@ -2850,31 +2919,12 @@ var Channel = function (_Component) {
                   label: 'Edit contact',
                   onClick: this.toggleEdit.bind(this)
                 }),
-                'master' === mode ? _react2.default.createElement(_FlatButton2.default, {
-                  primary: true,
-                  label: 'On hold',
-                  onClick: function onClick() {
-                    return _this2.setMode('on_hold');
-                  }
-                }) : _react2.default.createElement(_FlatButton2.default, {
-                  primary: true,
-                  label: 'Master',
-                  onClick: function onClick() {
-                    return _this2.setMode('master');
-                  }
-                }),
-                userChanFree && _react2.default.createElement(_FlatButton2.default, {
-                  primary: true,
-                  label: 'Private',
-                  onClick: function onClick() {
-                    return _this2.setMode('host');
-                  }
-                }),
+                this.renderControls(mode, userChanFree),
                 _react2.default.createElement(_FlatButton2.default, {
                   secondary: true,
                   label: 'Hang up',
                   onClick: function onClick() {
-                    return _this2.setMode('free');
+                    return _this3.setMode('free');
                   }
                 })
               ),
@@ -3039,7 +3089,9 @@ var Mixer = function (_Component2) {
       //console.log(this.props)
 
       var _props7 = this.props;
-      var diff = _props7.app.diff;
+      var _props7$app = _props7.app;
+      var diff = _props7$app.diff;
+      var userId = _props7$app.userId;
       var dispatch = _props7.dispatch;
       var _props7$mixer = _props7.mixer;
       var channelList = _props7$mixer.channelList;
@@ -3061,6 +3113,7 @@ var Mixer = function (_Component2) {
                 { style: { minHeight: '96px' } },
                 _react2.default.createElement(Channel, _extends({}, channel, {
                   userChanFree: userChanFree,
+                  userId: userId,
                   diff: diff,
                   dispatch: dispatch,
                   sendMessage: sendMessage

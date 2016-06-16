@@ -66,10 +66,10 @@ class Channel extends Component {
     }
   }
   setMode(newMode) {
-    const { id, mode, sendMessage } = this.props
+    const { id, mode, sendMessage, userId } = this.props
     if ('free' != mode) {
       sendMessage('channelMode', { 
-        [id]: newMode 
+        [id]: 'host' === newMode ? ''+userId : newMode 
       })
     }
   }
@@ -197,6 +197,63 @@ class Channel extends Component {
     )
   }
       */
+
+  renderControls(mode, userChanFree) {
+      console.log(mode)
+    switch (mode) {
+      case 'master':
+       return (
+         <span>
+           <FlatButton
+             primary    = {true}
+             label      = 'On hold'
+             onClick    = {() => this.setMode('on_hold')}
+           />
+           {userChanFree && (
+             <FlatButton
+               primary    = {true}
+               label      = 'Private'
+               onClick    = {() => this.setMode('host')}
+             />
+           )}
+         </span>
+       )
+      case 'on_hold':
+       return (
+         <span>
+           <FlatButton
+             primary    = {true}
+             label      = 'Master'
+             onClick    = {() => this.setMode('master')}
+           />
+           {userChanFree && (
+             <FlatButton
+               primary    = {true}
+               label      = 'Private'
+               onClick    = {() => this.setMode('host')}
+             />
+           )}
+         </span>
+       )
+      case 'xxx':
+       return (
+         <span>
+           <FlatButton
+             primary    = {true}
+             label      = 'On hold'
+             onClick    = {() => this.setMode('on_hold')}
+           />
+           <FlatButton
+             primary    = {true}
+             label      = 'Master'
+             onClick    = {() => this.setMode('master')}
+           />
+         </span>
+       )
+      default:
+        return <span />
+    }
+  }
   render() {
     const { 
       contact, 
@@ -466,26 +523,7 @@ class Channel extends Component {
                   label      = 'Edit contact' 
                   onClick    = {::this.toggleEdit}
                 />
-                {'master' === mode ? (
-                  <FlatButton
-                    primary    = {true}
-                    label      = 'On hold'
-                    onClick    = {() => this.setMode('on_hold')}
-                  />
-                ) : (
-                  <FlatButton
-                    primary    = {true}
-                    label      = 'Master'
-                    onClick    = {() => this.setMode('master')}
-                  />
-                )}
-                {userChanFree && (
-                  <FlatButton
-                    primary    = {true}
-                    label      = 'Private'
-                    onClick    = {() => this.setMode('host')}
-                  />
-                )}
+                {this.renderControls(mode, userChanFree)}
                 <FlatButton
                   secondary  = {true}
                   label      = 'Hang up'
@@ -635,7 +673,7 @@ class Mixer extends Component {
       //console.log(this.props)
 
     const { 
-      app : { diff }, 
+      app : { diff, userId }, 
       dispatch, 
       mixer : { channelList, userChanFree }, 
       sendMessage,
@@ -648,6 +686,7 @@ class Mixer extends Component {
               <div style={{minHeight: '96px'}}>
                 <Channel {...channel} 
                   userChanFree = {userChanFree}
+                  userId       = {userId}
                   diff         = {diff}
                   dispatch     = {dispatch}
                   sendMessage  = {sendMessage}
