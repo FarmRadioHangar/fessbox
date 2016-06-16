@@ -26,6 +26,9 @@ exports.updateChannelContact = updateChannelContact;
 exports.toastrAddMessage = toastrAddMessage;
 exports.toastrRemoveMessage = toastrRemoveMessage;
 exports.toastrRefresh = toastrRefresh;
+exports.updateUser = updateUser;
+exports.removeUser = removeUser;
+exports.updateUserLevel = updateUserLevel;
 
 var _constants = require('./constants');
 
@@ -204,6 +207,29 @@ function toastrRefresh() {
   };
 }
 
+function updateUser(userId, info) {
+  return {
+    type: _constants.USER_UPDATE,
+    userId: userId,
+    info: info
+  };
+}
+
+function removeUser(userId) {
+  return {
+    type: _constants.USER_REMOVE,
+    userId: userId
+  };
+}
+
+function updateUserLevel(userId, level) {
+  return {
+    type: _constants.USER_UPDATE_LEVEL,
+    userId: userId,
+    level: level
+  };
+}
+
 },{"./constants":2}],2:[function(require,module,exports){
 'use strict';
 
@@ -239,6 +265,10 @@ var CHANNEL_VOLUME_UPDATE = exports.CHANNEL_VOLUME_UPDATE = 'CHANNEL_VOLUME_UPDA
 var TOASTR_ADD_MESSAGE = exports.TOASTR_ADD_MESSAGE = 'TOASTR_ADD_MESSAGE';
 var TOASTR_REFRESH = exports.TOASTR_REFRESH = 'TOASTR_REFRESH';
 var TOASTR_REMOVE_MESSAGE = exports.TOASTR_REMOVE_MESSAGE = 'TOASTR_REMOVE_MESSAGE';
+
+var USER_UPDATE = exports.USER_UPDATE = 'USER_UPDATE';
+var USER_REMOVE = exports.USER_REMOVE = 'USER_REMOVE';
+var USER_UPDATE_LEVEL = exports.USER_UPDATE_LEVEL = 'USER_UPDATE_LEVEL';
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -370,6 +400,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (eventType, data) {
+  console.log(eventType);
   switch (eventType) {
     case 'echo':
       if ('noop' !== data.event) {
@@ -396,6 +427,11 @@ exports.default = function (eventType, data) {
         }
       });
       break;
+    case 'channelContactInfo':
+      Object.keys(msg.data).forEach(function (chan) {
+        _store2.default.dispatch((0, _actions.updateChannelContact)(chan, msg.data[chan]));
+      });
+      break;
     case 'channelVolumeChange':
       Object.keys(data).forEach(function (id) {
         _store2.default.dispatch((0, _actions.updateChannelVolume)(id, data[id]));
@@ -408,6 +444,16 @@ exports.default = function (eventType, data) {
           _store2.default.dispatch((0, _actions.addMessage)(id, message));
         } else {
           _store2.default.dispatch((0, _actions.removeMessage)(id));
+        }
+      });
+      break;
+    case 'userUpdate':
+      Object.keys(msg.data).forEach(function (id) {
+        var user = msg.data[user];
+        if (user) {
+          _store2.default.dispatch(updateUser(id, user));
+        } else {
+          _store2.default.dispatch(removeUser(id));
         }
       });
       break;
@@ -505,8 +551,15 @@ exports.default = function () {
 
   switch (action.type) {
     case _constants.APP_INITIALIZE:
+      if (!action.data || !action.data.mixer) {
+        return {
+          'status': _constants.APP_STATUS_ERROR,
+          'error': 'Initialization failed: Unexpected response from server.'
+        };
+      }
       return _extends({}, state, {
-        'status': _constants.APP_STATUS_INITIALIZED
+        'status': _constants.APP_STATUS_INITIALIZED,
+        'userId': userId
       });
     case _constants.APP_UPDATE_STATUS:
       return _extends({}, state, {
@@ -527,17 +580,26 @@ exports.default = function () {
   }
 };
 
+var _urlParams = require('../url-params');
+
+var _urlParams2 = _interopRequireDefault(_urlParams);
+
 var _constants = require('../constants');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var userId = (0, _urlParams2.default)('user_id');
 
 var initialState = {
   'status': _constants.APP_STATUS_CONNECTING,
   'error': null,
   'dialog': null,
   'dialogState': null,
-  'diff': 0
+  'diff': 0,
+  'userId': null
 };
 
-},{"../constants":2}],8:[function(require,module,exports){
+},{"../constants":2,"../url-params":13}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -774,46 +836,52 @@ exports.default = function () {
   switch (action.type) {
     case _constants.APP_INITIALIZE:
       {
+        if (!action.data.mixer) return state;
+        var channels = action.data.mixer.channels || {};
+        var connectedChan = userId ? channels[userId] : null;
         return _extends({}, action.data.mixer, {
-          channelList: channelList(action.data.mixer.channels)
+          channelList: channelList(channels),
+          userChanFree: !!connectedChan && 'free' === connectedChan.mode
         });
       }
     case _constants.CHANNEL_SET_MUTED:
       {
-        var channels = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
+        var _channels = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
           muted: action.muted
         })));
-        return _extends({}, state, {
-          channels: channels,
-          channelList: channelList(channels)
-        });
-      }
-    case _constants.CHANNEL_UPDATE:
-      {
-        var _channels = _extends({}, state.channels, _defineProperty({}, action.id, action.data));
         return _extends({}, state, {
           channels: _channels,
           channelList: channelList(_channels)
         });
       }
-    case _constants.CHANNEL_VOLUME_UPDATE:
+    case _constants.CHANNEL_UPDATE:
       {
-        var _channels2 = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
-          level: action.level
-        })));
+        var _channels2 = _extends({}, state.channels, _defineProperty({}, action.id, action.data));
+        var _connectedChan = userId ? _channels2[userId] : null;
         return _extends({}, state, {
           channels: _channels2,
-          channelList: channelList(_channels2)
+          channelList: channelList(_channels2),
+          userChanFree: !!_connectedChan && 'free' === _connectedChan.mode
         });
       }
-    case _constants.CHANNEL_CONTACT_UPDATE:
+    case _constants.CHANNEL_VOLUME_UPDATE:
       {
         var _channels3 = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
-          contact: Object.assign({}, state.channels[action.id].contact, action.info)
+          level: action.level
         })));
         return _extends({}, state, {
           channels: _channels3,
           channelList: channelList(_channels3)
+        });
+      }
+    case _constants.CHANNEL_CONTACT_UPDATE:
+      {
+        var _channels4 = _extends({}, state.channels, _defineProperty({}, action.id, _extends({}, state.channels[action.id], {
+          contact: Object.assign({}, state.channels[action.id].contact, action.info)
+        })));
+        return _extends({}, state, {
+          channels: _channels4,
+          channelList: channelList(_channels4)
         });
       }
     default:
@@ -821,12 +889,21 @@ exports.default = function () {
   }
 };
 
+var _urlParams = require('../url-params');
+
+var _urlParams2 = _interopRequireDefault(_urlParams);
+
 var _constants = require('../constants');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var userId = (0, _urlParams2.default)('user_id');
+
 var initialState = {
-  channelList: []
+  channelList: [],
+  userChanFree: false
 };
 
 function modeWeight(mode) {
@@ -852,7 +929,7 @@ function compareChannels(a, b) {
 
 function channelList(channels) {
   return Object.entries(channels).filter(function (item) {
-    return 'operator' !== item[1].direction;
+    return item[1] && 'operator' !== item[1].direction;
   }).sort(compareChannels).map(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2);
 
@@ -863,7 +940,7 @@ function channelList(channels) {
   });
 }
 
-},{"../constants":2}],10:[function(require,module,exports){
+},{"../constants":2,"../url-params":13}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -920,23 +997,68 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.default = function () {
   var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
   var action = arguments[1];
 
   switch (action.type) {
     case _constants.APP_INITIALIZE:
-      return action.data.users ? action.data.users : state;
+      {
+        var users = action.data.users || {};
+        var connectedUser = userId ? users[userId] : null;
+        return _extends({}, users, {
+          connectedUser: connectedUser,
+          userId: userId
+        });
+      }
+    case _constants.USER_REMOVE:
+      {
+        var _users = _lodash2.default.omit(state, action.userId);
+        var _connectedUser = userId ? _users[userId] : null;
+        return _extends({}, _users, {
+          connectedUser: _connectedUser,
+          userId: state.userId
+        });
+      }
+    case _constants.USER_UPDATE:
+      {
+        return _extends({}, state, _defineProperty({}, action.userId, action.info));
+      }
+    case _constants.USER_UPDATE_LEVEL:
+      {
+        return _extends({}, state, _defineProperty({}, action.userId, Object.assign({}, state[action.userId], {
+          level: action.level
+        })));
+      }
     default:
       return state;
   }
 };
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _urlParams = require('../url-params');
+
+var _urlParams2 = _interopRequireDefault(_urlParams);
+
 var _constants = require('../constants');
 
-var initialState = {};
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../constants":2}],12:[function(require,module,exports){
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var userId = (0, _urlParams2.default)('user_id');
+
+var initialState = {
+  'userId': null,
+  'connectedUser': null
+};
+
+},{"../constants":2,"../url-params":13,"lodash":611}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1074,6 +1196,7 @@ var CallDialog = function (_Component) {
       var channels = _props2.channels;
       var onClose = _props2.onClose;
       var open = _props2.open;
+      var userChanFree = _props2.mixer.userChanFree;
 
       var actions = [_react2.default.createElement(_FlatButton2.default, {
         label: 'Cancel',
@@ -1111,9 +1234,11 @@ var CallDialog = function (_Component) {
           {
             validators: _lodash2.default.pick(_validators2.default, ['required']),
             model: 'call.channel' },
-          _react2.default.createElement(_channelSelect2.default, { channels: freeChannels })
+          _react2.default.createElement(_channelSelect2.default, {
+            channels: freeChannels
+          })
         ),
-        _react2.default.createElement(
+        userChanFree && _react2.default.createElement(
           _materialField2.default,
           {
             model: 'call.mode' },
@@ -1147,7 +1272,7 @@ var CallDialog = function (_Component) {
 }(_react.Component);
 
 exports.default = (0, _reactRedux.connect)(function (state) {
-  return _lodash2.default.pick(state, ['call', 'callForm']);
+  return _lodash2.default.pick(state, ['call', 'callForm', 'mixer']);
 })(CallDialog);
 
 },{"./channel-select":15,"./material-field":19,"./validators":25,"lodash":611,"material-ui/Dialog":648,"material-ui/FlatButton":655,"material-ui/MenuItem":671,"material-ui/SelectField":683,"material-ui/TextField":702,"react":938,"react-redux":784,"react-redux-form":774}],15:[function(require,module,exports){
@@ -2315,6 +2440,7 @@ var Channel = function (_Component) {
       var dispatch = _props3.dispatch;
 
       sendMessage('channelVolume', _defineProperty({}, id, value));
+      dispatch((0, _actions.updateChannelVolume)(id, value));
     }
   }, {
     key: 'updateContact',
@@ -2458,6 +2584,7 @@ var Channel = function (_Component) {
       var mode = _props6.mode;
       var muted = _props6.muted;
       var timestamp = _props6.timestamp;
+      var userChanFree = _props6.userChanFree;
       var edit = this.state.edit;
 
       switch (mode) {
@@ -2736,6 +2863,13 @@ var Channel = function (_Component) {
                     return _this2.setMode('master');
                   }
                 }),
+                userChanFree && _react2.default.createElement(_FlatButton2.default, {
+                  primary: true,
+                  label: 'Private',
+                  onClick: function onClick() {
+                    return _this2.setMode('host');
+                  }
+                }),
                 _react2.default.createElement(_FlatButton2.default, {
                   secondary: true,
                   label: 'Hang up',
@@ -2794,10 +2928,10 @@ var Channel = function (_Component) {
                   { style: { flex: 4 } },
                   _react2.default.createElement(_Slider2.default, {
                     onChange: this.updateLevel.bind(this),
-                    onDragStop: function onDragStop() {},
                     disabled: muted,
                     min: 1,
                     max: 100,
+                    value: level,
                     defaultValue: level })
                 )
               )
@@ -2907,7 +3041,9 @@ var Mixer = function (_Component2) {
       var _props7 = this.props;
       var diff = _props7.app.diff;
       var dispatch = _props7.dispatch;
-      var channelList = _props7.mixer.channelList;
+      var _props7$mixer = _props7.mixer;
+      var channelList = _props7$mixer.channelList;
+      var userChanFree = _props7$mixer.userChanFree;
       var sendMessage = _props7.sendMessage;
 
       return _react2.default.createElement(
@@ -2924,6 +3060,7 @@ var Mixer = function (_Component2) {
                 'div',
                 { style: { minHeight: '96px' } },
                 _react2.default.createElement(Channel, _extends({}, channel, {
+                  userChanFree: userChanFree,
                   diff: diff,
                   dispatch: dispatch,
                   sendMessage: sendMessage

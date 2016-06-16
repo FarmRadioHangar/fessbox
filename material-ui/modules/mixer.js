@@ -85,6 +85,7 @@ class Channel extends Component {
     sendMessage('channelVolume', { 
       [id]: value
     })
+    dispatch(updateChannelVolume(id, value))
   }
   updateContact() {
     const { id, dispatch, sendMessage } = this.props
@@ -206,6 +207,7 @@ class Channel extends Component {
       mode, 
       muted, 
       timestamp, 
+      userChanFree,
     } = this.props
     const { edit } = this.state
     switch (mode) {
@@ -477,6 +479,13 @@ class Channel extends Component {
                     onClick    = {() => this.setMode('master')}
                   />
                 )}
+                {userChanFree && (
+                  <FlatButton
+                    primary    = {true}
+                    label      = 'Private'
+                    onClick    = {() => this.setMode('host')}
+                  />
+                )}
                 <FlatButton
                   secondary  = {true}
                   label      = 'Hang up'
@@ -519,10 +528,10 @@ class Channel extends Component {
                 <div style={{flex: 4}}>
                   <Slider 
                     onChange       = {::this.updateLevel}
-                    onDragStop     = {() => {}}
                     disabled       = {muted}
                     min            = {1}
                     max            = {100}
+                    value          = {level}
                     defaultValue   = {level} />
                 </div>
               </div>
@@ -628,7 +637,7 @@ class Mixer extends Component {
     const { 
       app : { diff }, 
       dispatch, 
-      mixer : { channelList }, 
+      mixer : { channelList, userChanFree }, 
       sendMessage,
     } = this.props
     return (
@@ -638,9 +647,10 @@ class Mixer extends Component {
             <div key={channel.id}>
               <div style={{minHeight: '96px'}}>
                 <Channel {...channel} 
-                  diff        = {diff}
-                  dispatch    = {dispatch}
-                  sendMessage = {sendMessage}
+                  userChanFree = {userChanFree}
+                  diff         = {diff}
+                  dispatch     = {dispatch}
+                  sendMessage  = {sendMessage}
                 />
               </div>
               <Divider />

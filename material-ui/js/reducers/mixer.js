@@ -1,3 +1,5 @@
+import getUrlParam from '../url-params'
+
 import { 
   APP_INITIALIZE, 
   CHANNEL_CONTACT_UPDATE,
@@ -6,8 +8,11 @@ import {
   CHANNEL_VOLUME_UPDATE,
 } from '../constants'
 
+const userId = getUrlParam('user_id') 
+
 const initialState = {
-  channelList : [],
+  channelList  : [], 
+  userChanFree : false,
 }
 
 function modeWeight(mode) {
@@ -26,7 +31,7 @@ function compareChannels(a, b) {
 
 function channelList(channels) {
   return Object.entries(channels)
-      .filter(item => 'operator' !== item[1].direction)
+      .filter(item => (item[1] && 'operator' !== item[1].direction))
       .sort(compareChannels)
       .map(([id, chan]) => { 
     return { id, ...chan, }
@@ -36,9 +41,14 @@ function channelList(channels) {
 export default function(state = initialState, action) {
   switch (action.type) {
     case APP_INITIALIZE: {
+      if (!action.data.mixer) 
+        return state
+      const channels = action.data.mixer.channels || {}
+      const connectedChan = userId ? channels[userId] : null
       return {
         ...action.data.mixer,
-        channelList : channelList(action.data.mixer.channels),
+        channelList  : channelList(channels),
+        userChanFree : !!connectedChan && ('free' === connectedChan.mode),
       }
     }
     case CHANNEL_SET_MUTED: {
@@ -60,10 +70,12 @@ export default function(state = initialState, action) {
         ...state.channels,
         [action.id] : action.data, 
       }
+      const connectedChan = userId ? channels[userId] : null
       return {
         ...state, 
         channels, 
-        channelList : channelList(channels),
+        channelList  : channelList(channels),
+        userChanFree : !!connectedChan && ('free' === connectedChan.mode),
       }
     }
     case CHANNEL_VOLUME_UPDATE: {

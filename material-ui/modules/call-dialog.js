@@ -49,6 +49,7 @@ class CallDialog extends Component {
       channels, 
       onClose, 
       open, 
+      mixer : { userChanFree },
     } = this.props
     const actions = [
       <FlatButton
@@ -84,18 +85,22 @@ class CallDialog extends Component {
         <MaterialField 
           validators    = {_.pick(validators, ['required'])}
           model         = 'call.channel'>
-          <ChannelSelect channels={freeChannels} />
+          <ChannelSelect 
+            channels    = {freeChannels} 
+          />
         </MaterialField>
-        <MaterialField 
-          model         = 'call.mode'>
-          <SelectField 
-            fullWidth         = {true}
-            floatingLabelText = 'Call mode'
-            defaultValue      = 'master'>
-            <MenuItem value={0} primaryText='On Air (Master)' />
-            <MenuItem value={1} primaryText='Private' />
-          </SelectField>
-        </MaterialField>
+        {userChanFree && (
+          <MaterialField 
+            model         = 'call.mode'>
+            <SelectField 
+              fullWidth         = {true}
+              floatingLabelText = 'Call mode'
+              defaultValue      = 'master'>
+              <MenuItem value={0} primaryText='On Air (Master)' />
+              <MenuItem value={1} primaryText='Private' />
+            </SelectField>
+          </MaterialField>
+        )}
         <MaterialField 
           validators    = {_.pick(validators, ['required', 'phoneNumber'])}
           model         = 'call.number'>
@@ -111,4 +116,4 @@ class CallDialog extends Component {
   }
 }
 
-export default connect(state => _.pick(state, ['call', 'callForm']))(CallDialog)
+export default connect(state => _.pick(state, ['call', 'callForm', 'mixer']))(CallDialog)

@@ -20,6 +20,10 @@ import {
   TOASTR_ADD_MESSAGE,
   TOASTR_REFRESH,
   TOASTR_REMOVE_MESSAGE,
+  USERS_INITIALIZE,
+  USER_REMOVE,
+  USER_UPDATE,
+  USER_UPDATE_LEVEL,
 } from './constants'
 
 export function updateAppStatus(status, error) {
@@ -196,3 +200,27 @@ export function toastrRefresh() {
     type : TOASTR_REFRESH,
   }
 }
+
+export function updateUser(userId, info) {
+  return {
+    type : USER_UPDATE, 
+    userId, 
+    info,
+  }
+}
+
+export function removeUser(userId) {
+  return {
+    type : USER_REMOVE, 
+    userId,
+  }
+}
+
+export function updateUserLevel(userId, level) {
+  return {
+    type : USER_UPDATE_LEVEL, 
+    userId, 
+    level,
+  }
+}
+
