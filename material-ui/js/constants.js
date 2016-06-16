@@ -27,3 +27,7 @@ export const CHANNEL_VOLUME_UPDATE        = 'CHANNEL_VOLUME_UPDATE'
 export const TOASTR_ADD_MESSAGE           = 'TOASTR_ADD_MESSAGE'
 export const TOASTR_REFRESH               = 'TOASTR_REFRESH'
 export const TOASTR_REMOVE_MESSAGE        = 'TOASTR_REMOVE_MESSAGE'
+
+export const USER_UPDATE                  = 'USER_UPDATE'
+export const USER_REMOVE                  = 'USER_REMOVE'
+export const USER_UPDATE_LEVEL            = 'USER_UPDATE_LEVEL'

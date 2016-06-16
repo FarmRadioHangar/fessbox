@@ -8,12 +8,16 @@ import {
   setDiff,
   showNotification, 
   toastrAddMessage, 
+  channelContactInfo,
   updateAppStatus, 
+  updateCaller,
   updateChannel, 
   updateChannelVolume, 
+  updateChannelContact,
 } from './actions'
 
 export default function(eventType, data) {
+  console.log(eventType)
   switch (eventType) {
     case 'echo':
       if ('noop' !== data.event) {
@@ -40,6 +44,11 @@ export default function(eventType, data) {
         }
       })
       break
+    case 'channelContactInfo':
+      Object.keys(msg.data).forEach(chan => {
+        store.dispatch(updateChannelContact(chan, msg.data[chan]))
+      })
+      break
     case 'channelVolumeChange':
       Object.keys(data).forEach(id => {
         store.dispatch(updateChannelVolume(id, data[id]))
@@ -52,6 +61,16 @@ export default function(eventType, data) {
           store.dispatch(addMessage(id, message))
         } else {
           store.dispatch(removeMessage(id))
+        }
+      })
+      break
+    case 'userUpdate':
+      Object.keys(msg.data).forEach(id => {
+        const user = msg.data[user]
+        if (user) {
+          store.dispatch(updateUser(id, user)) 
+        } else {
+          store.dispatch(removeUser(id)) 
         }
       })
       break
