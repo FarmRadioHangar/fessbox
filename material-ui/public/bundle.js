@@ -2769,6 +2769,13 @@ var Channel = function (_Component) {
                         return _this3.setMode('master');
                       }
                     }),
+                    userChanFree && _react2.default.createElement(_FlatButton2.default, {
+                      primary: true,
+                      label: 'Private',
+                      onClick: function onClick() {
+                        return _this3.setMode('host');
+                      }
+                    }),
                     _react2.default.createElement(_FlatButton2.default, {
                       primary: true,
                       label: 'On hold',
