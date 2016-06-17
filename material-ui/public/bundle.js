@@ -400,7 +400,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (eventType, data) {
-  console.log(eventType);
   switch (eventType) {
     case 'echo':
       if ('noop' !== data.event) {
@@ -420,7 +419,9 @@ exports.default = function (eventType, data) {
         if (chan) {
           _store2.default.dispatch((0, _actions.updateChannel)(key, chan));
           if ('ring' == chan.mode && 'incoming' == chan.direction && chan.contact) {
-            new Notification('Incoming call from ' + chan.contact.number + '.');
+            var text = 'Incoming call from ' + chan.contact.number + '.';
+            showDesktopNotification(text);
+            _store2.default.dispatch((0, _actions.toastrAddMessage)(text));
           }
         } else {
           //
@@ -485,6 +486,20 @@ var _actions = require('./actions');
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function showDesktopNotification(msg) {
+  if (!('Notification' in window)) {
+    return;
+  } else if (Notification.permission === 'granted') {
+    var notification = new Notification(msg);
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission(function (permission) {
+      if (permission === 'granted') {
+        var notification = new Notification(msg);
+      }
+    });
+  }
+}
 
 },{"./actions":1,"./constants":2,"./store":12}],6:[function(require,module,exports){
 'use strict';
