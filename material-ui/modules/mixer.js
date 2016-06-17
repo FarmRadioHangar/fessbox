@@ -330,6 +330,13 @@ class Channel extends Component {
                       label      = 'Answer'
                       onClick    = {() => this.setMode('master')}
                     />
+                    {userChanFree && (
+                      <FlatButton
+                        primary    = {true}
+                        label      = 'Private'
+                        onClick    = {() => this.setMode('host')}
+                      />
+                    )}
                     <FlatButton
                       primary    = {true}
                       label      = 'On hold'

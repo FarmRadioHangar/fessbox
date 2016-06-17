@@ -16,8 +16,21 @@ import {
   updateChannelContact,
 } from './actions'
 
+function showDesktopNotification(msg) {
+  if (!('Notification' in window)) {
+    return
+  } else if (Notification.permission === 'granted') {
+    var notification = new Notification(msg);
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission((permission) => {
+      if (permission === 'granted') {
+        var notification = new Notification(msg);
+      }
+    })
+  }
+}
+
 export default function(eventType, data) {
-  console.log(eventType)
   switch (eventType) {
     case 'echo':
       if ('noop' !== data.event) {
@@ -37,7 +50,9 @@ export default function(eventType, data) {
         if (chan) {
           store.dispatch(updateChannel(key, chan))
           if ('ring' == chan.mode && 'incoming' == chan.direction && chan.contact) {
-            new Notification(`Incoming call from ${chan.contact.number}.`)
+            const text = `Incoming call from ${chan.contact.number}.`
+            showDesktopNotification(text)
+            //store.dispatch(toastrAddMessage(text))
           }
         } else {
           //

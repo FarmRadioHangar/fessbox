@@ -129,10 +129,26 @@ class Dashboard extends Component {
   }
   renderTabs() {
     const { tab } = this.state
-    const { sendMessage, messages : { unread } } = this.props
+    const { 
+      sendMessage, 
+      messages : { unread }, 
+      mixer : { ringing },
+    } = this.props
     const mixerIcon = (
       <span>
         <i className='material-icons'>volume_up</i>
+        {ringing && (
+          <Badge
+            style        = {styles.badge}
+            badgeContent = {
+              <i style={{
+                fontSize  : '12pt', 
+                marginTop : '1px',
+              }} className='material-icons faa-ring animated'>notifications_active</i>
+            }
+            primary      = {true}>
+          </Badge>
+        )}
       </span>
     )
     const inboxIcon = (
@@ -173,7 +189,7 @@ class Dashboard extends Component {
             value    = 'messages'>
             <MessageBox 
               scrollPos   = {this.state.scrollPos}
-              active      = {'messages' === this.state.tab}
+              active      = {'messages' === tab}
               ref         = 'messageList'
               style       = {{height: '100%'}}
               sendMessage = {sendMessage} />

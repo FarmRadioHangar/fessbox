@@ -400,7 +400,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (eventType, data) {
-  console.log(eventType);
   switch (eventType) {
     case 'echo':
       if ('noop' !== data.event) {
@@ -420,11 +419,13 @@ exports.default = function (eventType, data) {
         if (chan) {
           _store2.default.dispatch((0, _actions.updateChannel)(key, chan));
           if ('ring' == chan.mode && 'incoming' == chan.direction && chan.contact) {
-            new Notification('Incoming call from ' + chan.contact.number + '.');
+            var text = 'Incoming call from ' + chan.contact.number + '.';
+            showDesktopNotification(text);
+            //store.dispatch(toastrAddMessage(text))
           }
         } else {
-          //
-        }
+            //
+          }
       });
       break;
     case 'channelContactInfo':
@@ -485,6 +486,20 @@ var _actions = require('./actions');
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function showDesktopNotification(msg) {
+  if (!('Notification' in window)) {
+    return;
+  } else if (Notification.permission === 'granted') {
+    var notification = new Notification(msg);
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission(function (permission) {
+      if (permission === 'granted') {
+        var notification = new Notification(msg);
+      }
+    });
+  }
+}
 
 },{"./actions":1,"./constants":2,"./store":12}],6:[function(require,module,exports){
 'use strict';
@@ -841,7 +856,8 @@ exports.default = function () {
         var connectedChan = userId ? channels[userId] : null;
         return _extends({}, action.data.mixer, {
           channelList: channelList(channels),
-          userChanFree: !!connectedChan && 'free' === connectedChan.mode
+          userChanFree: !!connectedChan && 'free' === connectedChan.mode,
+          ringing: false
         });
       }
     case _constants.CHANNEL_SET_MUTED:
@@ -858,9 +874,19 @@ exports.default = function () {
       {
         var _channels2 = _extends({}, state.channels, _defineProperty({}, action.id, action.data));
         var _connectedChan = userId ? _channels2[userId] : null;
+        var chans = channelList(_channels2);
+        var ringing = false;
+        for (var i = 0; i < chans.length; i++) {
+          var chan = chans[i];
+          if ('ring' == chan.mode && 'incoming' == chan.direction) {
+            ringing = true;
+            break;
+          }
+        }
         return _extends({}, state, {
           channels: _channels2,
-          channelList: channelList(_channels2),
+          channelList: chans,
+          ringing: ringing,
           userChanFree: !!_connectedChan && 'free' === _connectedChan.mode
         });
       }
@@ -903,7 +929,8 @@ var userId = (0, _urlParams2.default)('user_id');
 
 var initialState = {
   channelList: [],
-  userChanFree: false
+  userChanFree: false,
+  ringing: false
 };
 
 function modeWeight(mode) {
@@ -1793,6 +1820,7 @@ var Dashboard = function (_Component) {
       var _props3 = this.props;
       var sendMessage = _props3.sendMessage;
       var unread = _props3.messages.unread;
+      var ringing = _props3.mixer.ringing;
 
       var mixerIcon = _react2.default.createElement(
         'span',
@@ -1801,7 +1829,18 @@ var Dashboard = function (_Component) {
           'i',
           { className: 'material-icons' },
           'volume_up'
-        )
+        ),
+        ringing && _react2.default.createElement(_Badge2.default, {
+          style: _dashboard2.default.badge,
+          badgeContent: _react2.default.createElement(
+            'i',
+            { style: {
+                fontSize: '12pt',
+                marginTop: '1px'
+              }, className: 'material-icons faa-ring animated' },
+            'notifications_active'
+          ),
+          primary: true })
       );
       var inboxIcon = _react2.default.createElement(
         'span',
@@ -1853,7 +1892,7 @@ var Dashboard = function (_Component) {
               value: 'messages' },
             _react2.default.createElement(_messageBox2.default, {
               scrollPos: this.state.scrollPos,
-              active: 'messages' === this.state.tab,
+              active: 'messages' === tab,
               ref: 'messageList',
               style: { height: '100%' },
               sendMessage: sendMessage })
@@ -2752,6 +2791,13 @@ var Channel = function (_Component) {
                       label: 'Answer',
                       onClick: function onClick() {
                         return _this3.setMode('master');
+                      }
+                    }),
+                    userChanFree && _react2.default.createElement(_FlatButton2.default, {
+                      primary: true,
+                      label: 'Private',
+                      onClick: function onClick() {
+                        return _this3.setMode('host');
                       }
                     }),
                     _react2.default.createElement(_FlatButton2.default, {

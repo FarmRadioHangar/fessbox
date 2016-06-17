@@ -13,6 +13,7 @@ const userId = getUrlParam('user_id')
 const initialState = {
   channelList  : [], 
   userChanFree : false,
+  ringing      : false,
 }
 
 function modeWeight(mode) {
@@ -49,6 +50,7 @@ export default function(state = initialState, action) {
         ...action.data.mixer,
         channelList  : channelList(channels),
         userChanFree : !!connectedChan && ('free' === connectedChan.mode),
+        ringing      : false,
       }
     }
     case CHANNEL_SET_MUTED: {
@@ -71,10 +73,20 @@ export default function(state = initialState, action) {
         [action.id] : action.data, 
       }
       const connectedChan = userId ? channels[userId] : null
+      const chans = channelList(channels)
+      let ringing = false
+      for (let i = 0; i < chans.length; i++) {
+        const chan = chans[i]
+        if ('ring' == chan.mode && 'incoming' == chan.direction) {
+          ringing = true
+          break
+        }
+      }
       return {
         ...state, 
         channels, 
-        channelList  : channelList(channels),
+        channelList : chans,
+        ringing,
         userChanFree : !!connectedChan && ('free' === connectedChan.mode),
       }
     }
