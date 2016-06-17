@@ -52,7 +52,7 @@ export default function(eventType, data) {
           if ('ring' == chan.mode && 'incoming' == chan.direction && chan.contact) {
             const text = `Incoming call from ${chan.contact.number}.`
             showDesktopNotification(text)
-            store.dispatch(toastrAddMessage(text))
+            //store.dispatch(toastrAddMessage(text))
           }
         } else {
           //
