@@ -626,7 +626,6 @@ class Channel extends Component {
         )
         */
       case 'defunct':
-      default:
         return (
           <div style={{display: 'flex', flexDirection: 'row'}}>
             <Avatar backgroundColor='#ffffff' color={grey500} style={{marginTop: '13px'}} icon={
@@ -639,6 +638,23 @@ class Channel extends Component {
               Defunct channel
             </Subheader>
             <Subheader style={{flex: 2, paddingTop: '8px', color: '#cecece', textAlign: 'right'}}>
+              {label}
+            </Subheader>
+          </div>
+        )
+      default:
+        return (
+          <div style={{display: 'flex', flexDirection: 'row'}}>
+            <Avatar backgroundColor='#ffffff' color={red500} style={{marginTop: '13px'}} icon={
+              <i className='material-icons'>phone_locked</i>
+            } />
+            <Subheader style={{flex: 2, paddingTop: '8px'}}>
+              {id}
+            </Subheader>
+            <Subheader style={{flex: 8, paddingTop: '8px', color: red500, textTransform: 'uppercase'}}>
+              Channel in use (private mode)
+            </Subheader>
+            <Subheader style={{flex: 2, paddingTop: '8px', textAlign: 'right'}}>
               {label}
             </Subheader>
           </div>

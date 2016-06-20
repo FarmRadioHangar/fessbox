@@ -3059,7 +3059,6 @@ var Channel = function (_Component) {
         )
         */
         case 'defunct':
-        default:
           return _react2.default.createElement(
             'div',
             { style: { display: 'flex', flexDirection: 'row' } },
@@ -3081,6 +3080,31 @@ var Channel = function (_Component) {
             _react2.default.createElement(
               _Subheader2.default,
               { style: { flex: 2, paddingTop: '8px', color: '#cecece', textAlign: 'right' } },
+              label
+            )
+          );
+        default:
+          return _react2.default.createElement(
+            'div',
+            { style: { display: 'flex', flexDirection: 'row' } },
+            _react2.default.createElement(_Avatar2.default, { backgroundColor: '#ffffff', color: _colors.red500, style: { marginTop: '13px' }, icon: _react2.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'phone_locked'
+              ) }),
+            _react2.default.createElement(
+              _Subheader2.default,
+              { style: { flex: 2, paddingTop: '8px' } },
+              id
+            ),
+            _react2.default.createElement(
+              _Subheader2.default,
+              { style: { flex: 8, paddingTop: '8px', color: _colors.red500, textTransform: 'uppercase' } },
+              'Channel in use (private mode)'
+            ),
+            _react2.default.createElement(
+              _Subheader2.default,
+              { style: { flex: 2, paddingTop: '8px', textAlign: 'right' } },
               label
             )
           );
