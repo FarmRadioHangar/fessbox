@@ -16,6 +16,19 @@ import {
   updateChannelContact,
 } from './actions'
 
+let messages = []
+
+function queueMessage(id, message) {
+  messages.push({id, message})
+}
+
+setInterval(() => {
+  if (messages.length) {
+    const { id, message } = messages.shift()
+    store.dispatch(addMessage(id, message))
+  }
+}, 20)
+
 function showDesktopNotification(msg) {
   if (!('Notification' in window)) {
     return
@@ -73,7 +86,8 @@ export default function(eventType, data) {
       Object.keys(data).forEach(id => {
         const message = data[id]
         if (message) {
-          store.dispatch(addMessage(id, message))
+          //store.dispatch(addMessage(id, message))
+          queueMessage(id, message)
         } else {
           store.dispatch(removeMessage(id))
         }
