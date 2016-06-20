@@ -198,8 +198,7 @@ class Channel extends Component {
   }
       */
 
-  renderControls(mode, userChanFree) {
-      console.log(mode)
+  renderControls(mode, userChanFree, userId) {
     switch (mode) {
       case 'master':
        return (
@@ -235,7 +234,7 @@ class Channel extends Component {
            )}
          </span>
        )
-      case 'xxx':
+      case userId:
        return (
          <span>
            <FlatButton
@@ -265,6 +264,7 @@ class Channel extends Component {
       muted, 
       timestamp, 
       userChanFree,
+      userId,
     } = this.props
     const { edit } = this.state
     switch (mode) {
@@ -480,6 +480,7 @@ class Channel extends Component {
         }
       case 'master':
       case 'on_hold':
+      case userId:
         const hours = moment(this.state.now).diff(timestamp, 'hours')
         const timer = (('master' === mode || 'on_hold' === mode) && timestamp) ? (
           <span style={{marginLeft: '20px'}}>
@@ -530,7 +531,7 @@ class Channel extends Component {
                   label      = 'Edit contact' 
                   onClick    = {::this.toggleEdit}
                 />
-                {this.renderControls(mode, userChanFree)}
+                {this.renderControls(mode, userChanFree, userId)}
                 <FlatButton
                   secondary  = {true}
                   label      = 'Hang up'

@@ -2612,10 +2612,9 @@ var Channel = function (_Component) {
 
   }, {
     key: 'renderControls',
-    value: function renderControls(mode, userChanFree) {
+    value: function renderControls(mode, userChanFree, userId) {
       var _this2 = this;
 
-      console.log(mode);
       switch (mode) {
         case 'master':
           return _react2.default.createElement(
@@ -2655,7 +2654,7 @@ var Channel = function (_Component) {
               }
             })
           );
-        case 'xxx':
+        case userId:
           return _react2.default.createElement(
             'span',
             null,
@@ -2693,6 +2692,7 @@ var Channel = function (_Component) {
       var muted = _props6.muted;
       var timestamp = _props6.timestamp;
       var userChanFree = _props6.userChanFree;
+      var userId = _props6.userId;
       var edit = this.state.edit;
 
       switch (mode) {
@@ -2896,6 +2896,7 @@ var Channel = function (_Component) {
           }
         case 'master':
         case 'on_hold':
+        case userId:
           var hours = (0, _moment2.default)(this.state.now).diff(timestamp, 'hours');
           var timer = ('master' === mode || 'on_hold' === mode) && timestamp ? _react2.default.createElement(
             'span',
@@ -2965,7 +2966,7 @@ var Channel = function (_Component) {
                   label: 'Edit contact',
                   onClick: this.toggleEdit.bind(this)
                 }),
-                this.renderControls(mode, userChanFree),
+                this.renderControls(mode, userChanFree, userId),
                 _react2.default.createElement(_FlatButton2.default, {
                   secondary: true,
                   label: 'Hang up',
@@ -49219,15 +49220,20 @@ var CircularProgress = function (_Component) {
 
       if (step === 0) {
         path.style.strokeDasharray = '1, 200';
+        //path.style.strokeDasharray = '10, 10';
         path.style.strokeDashoffset = 0;
         path.style.transitionDuration = '0ms';
       } else if (step === 1) {
         path.style.strokeDasharray = '89, 200';
+        //path.style.strokeDasharray = '10, 10';
         path.style.strokeDashoffset = -35;
+        //path.style.strokeDashoffset = 0;
         path.style.transitionDuration = '750ms';
       } else {
         path.style.strokeDasharray = '89, 200';
+        //path.style.strokeDasharray = '10, 10';
         path.style.strokeDashoffset = -124;
+        //path.style.strokeDashoffset = 0;
         path.style.transitionDuration = '850ms';
       }
 
@@ -49240,6 +49246,7 @@ var CircularProgress = function (_Component) {
     value: function rotateWrapper(wrapper) {
       var _this3 = this;
 
+      return;
       if (this.props.mode !== 'indeterminate') return;
 
       _autoPrefix2.default.set(wrapper.style, 'transform', 'rotate(0deg)');
@@ -49343,6 +49350,7 @@ CircularProgress.contextTypes = {
   muiTheme: _react.PropTypes.object.isRequired
 };
 exports.default = CircularProgress;
+
 },{"../styles/transitions":728,"../utils/autoPrefix":745,"react":938,"simple-assign":957}],646:[function(require,module,exports){
 'use strict';
 
