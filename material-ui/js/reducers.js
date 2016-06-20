@@ -17,6 +17,7 @@ export default combineReducers({
   toastr,
   sms: modelReducer('sms', { 
     channel : 'auto',
+    content : '',
   }),
   smsForm: formReducer('sms'),
   call: modelReducer('call', { 

@@ -541,7 +541,8 @@ exports.default = (0, _redux.combineReducers)({
   users: _users2.default,
   toastr: _toastr2.default,
   sms: (0, _reactReduxForm.modelReducer)('sms', {
-    channel: 'auto'
+    channel: 'auto',
+    content: ''
   }),
   smsForm: (0, _reactReduxForm.formReducer)('sms'),
   call: (0, _reactReduxForm.modelReducer)('call', {
