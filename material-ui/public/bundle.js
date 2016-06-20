@@ -1232,7 +1232,7 @@ var CallDialog = function (_Component) {
         onTouchTap: onClose
       }), _react2.default.createElement(_FlatButton2.default, {
         label: 'Call',
-        disabled: callForm.pristine || !callForm.valid,
+        disabled: callForm.pristine || !callForm.valid || !callForm.fields.number || callForm.fields.number.pristine,
         primary: true,
         keyboardFocused: true,
         onTouchTap: this.makeCall.bind(this)
@@ -3304,13 +3304,17 @@ var SmsDialog = function (_Component) {
       var sms = _props2.sms;
       var smsForm = _props2.smsForm;
 
+
+      console.log(sms);
+      console.log(smsForm);
+
       var actions = [_react2.default.createElement(_FlatButton2.default, {
         label: 'Cancel',
         secondary: true,
         onTouchTap: onClose
       }), _react2.default.createElement(_FlatButton2.default, {
         label: 'Send',
-        disabled: smsForm.pristine || !smsForm.valid,
+        disabled: smsForm.pristine || !smsForm.valid || !smsForm.fields.recipient || smsForm.fields.recipient.pristine,
         primary: true,
         keyboardFocused: true,
         onTouchTap: this.handleSubmit.bind(this)
@@ -3365,7 +3369,7 @@ var SmsDialog = function (_Component) {
           _materialField2.default,
           {
             validators: {
-              required: _validators2.default.required,
+              //required      : validators.required,
               messageLength: _validators2.default.maxLength(160)
             },
             model: 'sms.content' },

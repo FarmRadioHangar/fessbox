@@ -59,7 +59,7 @@ class CallDialog extends Component {
       />,
       <FlatButton
         label           = 'Call'
-        disabled        = {callForm.pristine || !callForm.valid}
+        disabled        = {callForm.pristine || !callForm.valid || !callForm.fields.number || callForm.fields.number.pristine}
         primary         = {true}
         keyboardFocused = {true}
         onTouchTap      = {::this.makeCall}
