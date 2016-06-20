@@ -44,8 +44,8 @@ class SmsDialog extends Component {
       smsForm,
     } = this.props
 
-    console.log(sms)
-    console.log(smsForm)
+    //console.log(sms)
+    //console.log(smsForm)
 
     const actions = [
       <FlatButton

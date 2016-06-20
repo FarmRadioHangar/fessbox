@@ -442,7 +442,8 @@ exports.default = function (eventType, data) {
       Object.keys(data).forEach(function (id) {
         var message = data[id];
         if (message) {
-          _store2.default.dispatch((0, _actions.addMessage)(id, message));
+          //store.dispatch(addMessage(id, message))
+          queueMessage(id, message);
         } else {
           _store2.default.dispatch((0, _actions.removeMessage)(id));
         }
@@ -486,6 +487,23 @@ var _actions = require('./actions');
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var messages = [];
+
+function queueMessage(id, message) {
+  messages.push({ id: id, message: message });
+}
+
+setInterval(function () {
+  if (messages.length) {
+    var _messages$shift = messages.shift();
+
+    var id = _messages$shift.id;
+    var message = _messages$shift.message;
+
+    _store2.default.dispatch((0, _actions.addMessage)(id, message));
+  }
+}, 20);
 
 function showDesktopNotification(msg) {
   if (!('Notification' in window)) {
@@ -3304,9 +3322,8 @@ var SmsDialog = function (_Component) {
       var sms = _props2.sms;
       var smsForm = _props2.smsForm;
 
-
-      console.log(sms);
-      console.log(smsForm);
+      //console.log(sms)
+      //console.log(smsForm)
 
       var actions = [_react2.default.createElement(_FlatButton2.default, {
         label: 'Cancel',
