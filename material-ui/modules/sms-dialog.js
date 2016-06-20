@@ -43,6 +43,10 @@ class SmsDialog extends Component {
       sms,
       smsForm,
     } = this.props
+
+    console.log(sms)
+    console.log(smsForm)
+
     const actions = [
       <FlatButton
         label           = 'Cancel'
@@ -51,7 +55,7 @@ class SmsDialog extends Component {
       />,
       <FlatButton
         label           = 'Send'
-        disabled        = {smsForm.pristine || !smsForm.valid}
+        disabled        = {smsForm.pristine || !smsForm.valid || !smsForm.fields.recipient || smsForm.fields.recipient.pristine}
         primary         = {true}
         keyboardFocused = {true}
         onTouchTap      = {::this.handleSubmit}
@@ -100,7 +104,7 @@ class SmsDialog extends Component {
         )}
         <MaterialField 
           validators = {{ 
-            required      : validators.required,
+            //required      : validators.required,
             messageLength : validators.maxLength(160), 
           }}
           model      = 'sms.content'>
