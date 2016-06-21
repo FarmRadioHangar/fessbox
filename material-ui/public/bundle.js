@@ -717,6 +717,11 @@ exports.default = function () {
     case _constants.MESSAGE_WINDOW_GROW:
       {
         var _ret4 = function () {
+          if (state.onlyFavorites) {
+            return {
+              v: state
+            };
+          }
           var limit = state.limit + BATCH_SIZE;
           var offset = state.offset;
           if (limit > MAX_WINDOW_SIZE) {
@@ -748,7 +753,7 @@ exports.default = function () {
     case _constants.MESSAGE_WINDOW_REQUEST_OLDER:
       {
         var _ret5 = function () {
-          if (0 == state.offset) {
+          if (state.onlyFavorites || 0 == state.offset) {
             return {
               v: state
             };
@@ -799,7 +804,7 @@ exports.default = function () {
         var visible = state.visible;
         var _unread = state.unread;
         var total = state.total + 1;
-        if (state.offset + state.limit >= total) {
+        if (!state.onlyFavorites && state.offset + state.limit >= total) {
           visible = visible.concat(_message);
         } else {
           _unread = 'sms_in' === action.message.type ? state.unread + 1 : state.unread;
@@ -2284,7 +2289,7 @@ var MessageBox = function (_Component) {
               { style: active ? { marginTop: '72px', padding: '20px', background: '#ffffff' } : { minHeight: '7000px' } },
               'No messages'
             ),
-            more > 0 && _react2.default.createElement(
+            !messages.onlyFavorites && more > 0 && _react2.default.createElement(
               'div',
               { style: { borderTop: '3px solid rgb(0, 188, 212)' } },
               _react2.default.createElement(
@@ -2561,74 +2566,6 @@ var Channel = function (_Component) {
         window.clearInterval(timer);
       }
     }
-    /*
-    renderControls() {
-      const { id, label, muted, level, contact } = this.props
-      return (
-        <div>
-        {/*
-          <div style={{margin: '-20px 20px 0'}}>
-            <div style={{textAlign: 'center'}}>
-              {!!this.state.edit ? (
-                <div>
-                  <TextField 
-                    ref               = 'contact'
-                    defaultValue      = {contact.name}
-                    floatingLabelText = 'Contact name' 
-                  />
-                  <FlatButton
-                    style             = {{marginLeft: '10px'}}
-                    label             = 'Save'
-                    onTouchTap        = {::this.updateContact}
-                  />
-                  <FlatButton
-                    style             = {{marginLeft: '10px'}}
-                    label             = 'Cancel'
-                    onTouchTap        = {::this.toggleEdit}
-                  />
-                </div>
-              ) : (
-                <div>
-                  {contact && contact.name && (
-                    <p style={{fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)'}}>
-                      {contact.name}
-                    </p>
-                  )}
-                  <RaisedButton
-                    style      = {{marginTop: '10px'}}
-                    primary    = {true}
-                    label      = 'Edit contact'
-                    icon       = {<IconSocialPerson />}
-                    onTouchTap = {::this.toggleEdit}
-                  />
-                </div>
-              )}
-              {contact && (
-                <p style={{margin: '15px 0 0'}}>{contact.number}</p>
-              )}
-            </div>
-            <div style={styles.controls}>
-              <div style={styles.toggle}>
-                <Toggle 
-                  onToggle       = {::this.toggleMuted}
-                  defaultToggled = {!muted} />
-              </div>
-              <div style={styles.slider}>
-                <Slider 
-                  onChange       = {::this.updateLevel}
-                  onDragStop     = {() => {}}
-                  disabled       = {muted}
-                  min            = {1}
-                  max            = {100}
-                  defaultValue   = {level} />
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    }
-        */
-
   }, {
     key: 'renderControls',
     value: function renderControls(mode, userChanFree, userId) {
@@ -3053,30 +2990,6 @@ var Channel = function (_Component) {
               )
             )
           );
-        /*
-        return (
-          <div>
-            hold
-          {/*
-            {this.renderControls()}
-            <div style={{padding: '10px'}}>
-              <FlatButton
-                style      = {{color: green500, ...styles.button}}
-                label      = 'Master'
-                icon       = {<IconCommunicationCall />}
-                onClick    = {() => this.setMode('master')}
-              />
-              <FlatButton
-                style      = {{color: red500, ...styles.button}}
-                label      = 'Hang up'
-                icon       = {<IconAvStop />}
-                onClick    = {() => this.setMode('free')}
-              />
-            </div>
-          /}
-          </div>
-        )
-        */
         case 'defunct':
           return _react2.default.createElement(
             'div',
@@ -3129,34 +3042,6 @@ var Channel = function (_Component) {
           );
       }
     }
-    /*
-      render() {
-        //console.log('chan')
-    
-        return (
-          <div>
-            {::this.renderChannel()}
-          <div style={styles.component}>
-            <Paper
-              style={{
-                borderLeft : `12px solid ${colors[mode] || '#00bcd4'}`,
-              }}>
-              <ChannelToolbar {...this.props} 
-                timer = {(('master' === mode || 'on_hold' === mode) && timestamp) ? (
-                  <span style={{marginLeft: '20px'}}>
-                    {hours > 0 && <span>{hours}:</span>}
-                    {moment(Math.max(0, moment(this.state.now).diff(timestamp))).format('mm:ss')}
-                  </span>
-                ) : null}
-              />
-              {::this.renderChannel()}
-            </Paper>
-          </div>
-          </div>
-        )
-      }
-      */
-
   }]);
 
   return Channel;
@@ -3174,10 +3059,6 @@ var Mixer = function (_Component2) {
   _createClass(Mixer, [{
     key: 'render',
     value: function render() {
-
-      //console.log('mixer')
-      //console.log(this.props)
-
       var _props7 = this.props;
       var _props7$app = _props7.app;
       var diff = _props7$app.diff;
