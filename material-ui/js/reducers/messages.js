@@ -146,7 +146,7 @@ export default function(state = initialState, action) {
       let visible = state.visible
       let unread = state.unread
       const total = state.total + 1
-      if (state.offset + state.limit >= total) {
+      if (!state.onlyFavorites && (state.offset + state.limit >= total)) {
         visible = visible.concat(message)
       } else {
         unread = ('sms_in' === action.message.type)
