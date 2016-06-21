@@ -130,74 +130,6 @@ class Channel extends Component {
       window.clearInterval(timer)
     }
   }
-  /*
-  renderControls() {
-    const { id, label, muted, level, contact } = this.props
-    return (
-      <div>
-      {/*
-        <div style={{margin: '-20px 20px 0'}}>
-          <div style={{textAlign: 'center'}}>
-            {!!this.state.edit ? (
-              <div>
-                <TextField 
-                  ref               = 'contact'
-                  defaultValue      = {contact.name}
-                  floatingLabelText = 'Contact name' 
-                />
-                <FlatButton
-                  style             = {{marginLeft: '10px'}}
-                  label             = 'Save'
-                  onTouchTap        = {::this.updateContact}
-                />
-                <FlatButton
-                  style             = {{marginLeft: '10px'}}
-                  label             = 'Cancel'
-                  onTouchTap        = {::this.toggleEdit}
-                />
-              </div>
-            ) : (
-              <div>
-                {contact && contact.name && (
-                  <p style={{fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)'}}>
-                    {contact.name}
-                  </p>
-                )}
-                <RaisedButton
-                  style      = {{marginTop: '10px'}}
-                  primary    = {true}
-                  label      = 'Edit contact'
-                  icon       = {<IconSocialPerson />}
-                  onTouchTap = {::this.toggleEdit}
-                />
-              </div>
-            )}
-            {contact && (
-              <p style={{margin: '15px 0 0'}}>{contact.number}</p>
-            )}
-          </div>
-          <div style={styles.controls}>
-            <div style={styles.toggle}>
-              <Toggle 
-                onToggle       = {::this.toggleMuted}
-                defaultToggled = {!muted} />
-            </div>
-            <div style={styles.slider}>
-              <Slider 
-                onChange       = {::this.updateLevel}
-                onDragStop     = {() => {}}
-                disabled       = {muted}
-                min            = {1}
-                max            = {100}
-                defaultValue   = {level} />
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-      */
-
   renderControls(mode, userChanFree, userId) {
     switch (mode) {
       case 'master':
@@ -350,46 +282,6 @@ class Channel extends Component {
                   </div>
                 </div>
               </div>
-            {/*
-              <div style={{marginTop: '-35px', textAlign: 'center', padding: '0 0 20px 0'}}>
-                <p>
-                  <i style={{fontSize: '400%', color: '#4caf50'}} className='material-icons faa-ring animated'>ring_volume</i>
-                </p>
-                {contact && (
-                  <div>
-                    <p style={{fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)'}}>
-                      {contact.name ? (
-                        <span>Incoming call from {contact.name}</span>
-                      ) : (
-                        <span>Incoming call</span>
-                      )}
-                    </p>
-                    <p style={{margin: '15px 0 0'}}>{contact.number}</p>
-                  </div>
-                )}
-              </div>
-              <Divider />
-              <div style={{padding: '10px'}}>
-                <FlatButton
-                  style      = {{color: green500, ...styles.button}}
-                  label      = 'Answer'
-                  icon       = {<IconCommunicationCall />}
-                  onClick    = {() => this.setMode('master')}
-                />
-                <FlatButton
-                  style      = {{color: grey500, ...styles.button}}
-                  label      = 'On hold'
-                  icon       = {<IconAvPause />}
-                  onClick    = {() => this.setMode('on_hold')}
-                />
-                <FlatButton
-                  style      = {{color: red500, ...styles.button}}
-                  label      = 'Reject'
-                  icon       = {<IconAvStop />}
-                  onClick    = {() => this.setMode('free')}
-                />
-              </div>
-            */}
             </div>
           )
         } else {
@@ -441,40 +333,6 @@ class Channel extends Component {
                   />
                 </div>
               </div>
-            {/*
-              <div style={{marginTop: '-35px', textAlign: 'center', padding: '0 0 20px 0'}}>
-                <p>
-                  <i style={{fontSize: '400%', color: '#4caf50'}} className='material-icons faa-ring animated'>ring_volume</i>
-                </p>
-                {contact && (
-                  <div>
-                    <p style={{fontSize: '20px', color: 'rgba(0, 0, 0, 0.4)'}}>
-                      {contact.name ? (
-                        <span>Calling {contact.name}</span>
-                      ) : (
-                        <span>Calling</span>
-                      )}
-                    </p>
-                    <p style={{margin: '15px 0 0'}}>{contact.number}</p>
-                  </div>
-                )}
-              </div>
-              <Divider />
-              <div style={{padding: '10px'}}>
-                <FlatButton
-                  style      = {{color: grey500, ...styles.button}}
-                  label      = 'Hold call'
-                  icon       = {<IconAvPause />}
-                  onClick    = {() => this.setMode('on_hold')}
-                />
-                <FlatButton
-                  style      = {{color: red500, ...styles.button}}
-                  label      = 'Cancel'
-                  icon       = {<IconAvStop />}
-                  onClick    = {() => this.setMode('free')}
-                />
-              </div>
-            */}
             </div>
           )
         }
@@ -582,49 +440,8 @@ class Channel extends Component {
                 </div>
               </div>
             </div>
-          {/*
-            {this.renderControls()}
-            <div style={{padding: '10px'}}>
-              <FlatButton
-                style      = {{color: grey500, ...styles.button}}
-                label      = 'On hold'
-                icon       = {<IconAvPause />}
-                onClick    = {() => this.setMode('on_hold')}
-              />
-              <FlatButton
-                style      = {{color: red500, ...styles.button}}
-                label      = 'Hang up'
-                icon       = {<IconAvStop />}
-                onClick    = {() => this.setMode('free')}
-              />
-            </div>
-          */}
           </div>
         )
-        /*
-        return (
-          <div>
-            hold
-          {/*
-            {this.renderControls()}
-            <div style={{padding: '10px'}}>
-              <FlatButton
-                style      = {{color: green500, ...styles.button}}
-                label      = 'Master'
-                icon       = {<IconCommunicationCall />}
-                onClick    = {() => this.setMode('master')}
-              />
-              <FlatButton
-                style      = {{color: red500, ...styles.button}}
-                label      = 'Hang up'
-                icon       = {<IconAvStop />}
-                onClick    = {() => this.setMode('free')}
-              />
-            </div>
-          /}
-          </div>
-        )
-        */
       case 'defunct':
         return (
           <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -661,41 +478,10 @@ class Channel extends Component {
         )
     }
   }
-/*
-  render() {
-    //console.log('chan')
-
-    return (
-      <div>
-        {::this.renderChannel()}
-      <div style={styles.component}>
-        <Paper
-          style={{
-            borderLeft : `12px solid ${colors[mode] || '#00bcd4'}`,
-          }}>
-          <ChannelToolbar {...this.props} 
-            timer = {(('master' === mode || 'on_hold' === mode) && timestamp) ? (
-              <span style={{marginLeft: '20px'}}>
-                {hours > 0 && <span>{hours}:</span>}
-                {moment(Math.max(0, moment(this.state.now).diff(timestamp))).format('mm:ss')}
-              </span>
-            ) : null}
-          />
-          {::this.renderChannel()}
-        </Paper>
-      </div>
-      </div>
-    )
-  }
-  */
 }
 
 class Mixer extends Component {
   render() {
-
-      //console.log('mixer')
-      //console.log(this.props)
-
     const { 
       app : { diff, userId }, 
       dispatch, 

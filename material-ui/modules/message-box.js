@@ -158,7 +158,7 @@ class MessageBox extends Component {
                 No messages
               </div>
             )}
-            {more > 0 && (
+            {!messages.onlyFavorites && (more > 0) && (
               <div style={{borderTop: '3px solid rgb(0, 188, 212)'}}>
                 <div style={{fontSize: '13pt', marginTop: '12px', marginBottom: '120px', textAlign: 'center'}}>
                   <p style={{marginBottom: 0}}>

@@ -81,6 +81,9 @@ export default function(state = initialState, action) {
       }
     }
     case MESSAGE_WINDOW_GROW: {
+      if (state.onlyFavorites) {
+        return state
+      }
       let limit = state.limit + BATCH_SIZE
       let offset = state.offset
       if (limit > MAX_WINDOW_SIZE) {
@@ -108,7 +111,7 @@ export default function(state = initialState, action) {
       }
     }
     case MESSAGE_WINDOW_REQUEST_OLDER: {
-      if (0 == state.offset) {
+      if (state.onlyFavorites || 0 == state.offset) {
         return state
       }
       const diff = Math.min(state.offset, BATCH_SIZE)
@@ -146,7 +149,7 @@ export default function(state = initialState, action) {
       let visible = state.visible
       let unread = state.unread
       const total = state.total + 1
-      if (state.offset + state.limit >= total) {
+      if (!state.onlyFavorites && (state.offset + state.limit >= total)) {
         visible = visible.concat(message)
       } else {
         unread = ('sms_in' === action.message.type)
