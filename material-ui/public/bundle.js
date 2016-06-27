@@ -2135,6 +2135,8 @@ var MessageBox = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props;
       var messages = _props.messages;
       var dispatch = _props.dispatch;
@@ -2291,7 +2293,7 @@ var MessageBox = function (_Component) {
             ),
             !messages.onlyFavorites && more > 0 && _react2.default.createElement(
               'div',
-              { style: { borderTop: '3px solid rgb(0, 188, 212)' } },
+              { onClick: this.fetchMoreMessages.bind(this), style: { borderTop: '3px solid rgb(0, 188, 212)' } },
               _react2.default.createElement(
                 'div',
                 { style: { fontSize: '13pt', marginTop: '12px', marginBottom: '120px', textAlign: 'center' } },
@@ -2309,7 +2311,16 @@ var MessageBox = function (_Component) {
                   { style: { color: 'rgb(0, 188, 212)' } },
                   more,
                   ' new incoming message',
-                  1 == more ? '' : 's'
+                  1 == more ? '' : 's',
+                  ' | ',
+                  _react2.default.createElement(
+                    'a',
+                    { href: '#', onClick: function onClick(e) {
+                        e.preventDefault();
+                        _this2.fetchMoreMessages();
+                      } },
+                    'Fetch more messages'
+                  )
                 ) : _react2.default.createElement(
                   'span',
                   { style: { color: 'rgb(0, 188, 212)' } },
@@ -2318,7 +2329,15 @@ var MessageBox = function (_Component) {
                   1 == more ? '' : 's',
                   ' (',
                   messages.unread,
-                  ' new incoming)'
+                  ' new incoming)  | ',
+                  _react2.default.createElement(
+                    'a',
+                    { href: '#', onClick: function onClick(e) {
+                        e.preventDefault();
+                        _this2.fetchMoreMessages();
+                      } },
+                    'Fetch more messages'
+                  )
                 )
               ),
               _react2.default.createElement(_reactWaypoint2.default, {
