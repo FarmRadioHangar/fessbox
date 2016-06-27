@@ -159,7 +159,7 @@ class MessageBox extends Component {
               </div>
             )}
             {!messages.onlyFavorites && (more > 0) && (
-              <div style={{borderTop: '3px solid rgb(0, 188, 212)'}}>
+              <div onClick={::this.fetchMoreMessages} style={{borderTop: '3px solid rgb(0, 188, 212)'}}>
                 <div style={{fontSize: '13pt', marginTop: '12px', marginBottom: '120px', textAlign: 'center'}}>
                   <p style={{marginBottom: 0}}>
                     <i className='material-icons'>expand_more</i>
@@ -167,10 +167,18 @@ class MessageBox extends Component {
                   {more === messages.unread ? (
                     <span style={{color: 'rgb(0, 188, 212)'}}>
                       {more} new incoming message{1 == more ? '' : 's'}
+                      &nbsp;|&nbsp;<a href='#' onClick={e => {
+                        e.preventDefault()
+                        this.fetchMoreMessages()
+                      }}>Fetch more messages</a>
                     </span>
                   ) : (
                     <span style={{color: 'rgb(0, 188, 212)'}}>
                       {more} more message{1 == more ? '' : 's'} ({messages.unread} new incoming)
+                      &nbsp;|&nbsp;<a href='#' onClick={e => {
+                        e.preventDefault()
+                        this.fetchMoreMessages()
+                      }}>Fetch more messages</a>
                     </span>
                   )}
                 </div>
