@@ -517,6 +517,7 @@ class Channel extends Component {
       contact, 
       dispatch,
       id, 
+      sendMessage,
     } = this.props
 
     const actions = [
@@ -536,6 +537,9 @@ class Channel extends Component {
             type : 'CHANNEL_CONTACT_UPDATE', 
             info : { name },
             id, 
+          })
+          sendMessage('channelContactInfo', { 
+            [id] : { name },
           })
           this.toggleEdit()
         }}

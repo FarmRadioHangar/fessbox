@@ -78476,6 +78476,7 @@
 	      var contact = _props4.contact;
 	      var dispatch = _props4.dispatch;
 	      var id = _props4.id;
+	      var sendMessage = _props4.sendMessage;
 
 
 	      var actions = [_react2.default.createElement(_FlatButton2.default, {
@@ -78494,6 +78495,7 @@
 	            info: { name: name },
 	            id: id
 	          });
+	          sendMessage('channelContactInfo', _defineProperty({}, id, { name: name }));
 	          _this4.toggleEdit();
 	        }
 	      })];
