@@ -117,7 +117,7 @@ export default function(type: string, data: Object): void {
       break
     case 'event_error':
     case 'input_error':
-      console.log(`Error: ${eventType}`)
+      console.log(`Error: ${type}`)
       console.error(data.msg)
       break
     default:
