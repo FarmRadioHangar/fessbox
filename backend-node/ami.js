@@ -97,36 +97,14 @@ ami.on('devicestatelistcomplete', function(evt) {
 //					module: 'chan_alsa'
 					action: "Command",
 					command: 'core show channeltype console'
-				},  function(err, res) {
-						myLib.consoleLog('debug', "ModuleCheck", [err, res]);
+				}, function(err, res) {
+					myLib.consoleLog('debug', "ModuleCheck", [err, res]);
 					if (err) {
 						myLib.consoleLog('error', "ModuleCheck", err);
 						s.ui.mixer.master.in = null;
 						s.ui.mixer.master.out = null;
-						eventCallbacks.initialized();
-					} else {
-						ami.action({
-							action: "Command",
-							command: "console dial " + astConf.virtual.master + "@from-internal" // todo: dial different context with appropriete confbridge properties
-						}, function(err, res) {
-							myLib.consoleLog('debug',  "console dial", res);
-							if (!err) {
-								myLib.consoleLog('log', 'init', "Console connected to master");
-								s.ui.mixer.master.on_air = true;
-								if (astConf.console.in) {
-									//s.ui.mixer.master.in = s.loadSettings("master.in");
-									//s.ui.mixer.host = s.loadSettings("master.in"); // obsolete
-								}
-								if (astConf.console.out) {
-									//s.ui.mixer.master.out = s.loadSettings("master.out");
-								}
-							} else {
-								s.ui.mixer.master.in = null;
-								s.ui.mixer.master.out = null;
-								eventCallbacks.initialized();
-							}
-						});
 					}
+					eventCallbacks.initialized();
 				});
 			}
 		}
@@ -420,6 +398,9 @@ ami.on('musiconholdstart', function(evt) {
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	if (s.asterisk.channels[channelInfo[1]]) {
 		engineApi.channelUpdate(channelInfo[1], { mode: 'on_hold' });
+	} else if (channelInfo[0] === 'ALSA') {
+		consoleHangup();
+		s.asterisk.conference.on_air = null;
 	}
 });
 
@@ -461,9 +442,16 @@ ami.on('hanguprequest', function(evt) {
 
 ami.on('confbridgejoin', function(evt) {
 //	{"event":"ConfbridgeJoin","privilege":"call,all","channel":"SIP/703-00000000","uniqueid":"1444910756.0","conference":"2663","calleridnum":"703","calleridname":"Damjan Laptop"}
+//	{"event":"ConfbridgeJoin","privilege":"call,all","conference":"2663","bridgeuniqueid":"e245cfd0-8b0b-45ca-98e1-7e45e1f3aea4","bridgetype":"base","bridgetechnology":"softmix","bridgecreator":"ConfBridge","bridgename":"2663","bridgenumchannels":"0","channel":"Dongle/airtel1-0100000003","channelstate":"6","channelstatedesc":"Up","calleridnum":"+38975562837","calleridname":"airtel1","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-internal","exten":"STARTMEETME","priority":"5","uniqueid":"1471239540.45","linkedid":"1471239540.45","admin":"No"}
 	if (evt.conference === astConf.virtual.master) {
 		var channelInfo = evt.channel.split(/[\/-]/, 3);
+console.log(" XXXXXXXXXXX chanInfo", channelInfo, evt.bridgenumchannels, s.asterisk.channels[channelInfo[1]]);
+
 		if (s.asterisk.channels[channelInfo[1]]) {
+	console.log(" LLLLLL ", "console to master!");
+				consoleToMaster();
+		if (!evt.bridgenumchannels) {
+				}
 			s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 			engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
 		} else if (channelInfo[0] === 'ALSA') {
@@ -474,7 +462,7 @@ ami.on('confbridgejoin', function(evt) {
 			if (s.ui.mixer.master.out && typeof s.ui.mixer.master.out.muted === 'boolean') {
 				setAmiChannelMuted(evt.channel, s.ui.mixer.master.out.muted, 'out', function() {});
 			}
-			eventCallbacks.initialized();
+			//eventCallbacks.initialized();
 			/*
 					//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
 					exports.setChannelVolume(channelInfo[1], s.ui.mixer.channels[channelInfo[1]].level, function() {});
@@ -1213,3 +1201,26 @@ ami.on('peerstatus', function(evt) {
 });
 */
 
+var consoleToMaster = function() {
+	console.log(" ZZZZZZ ", "console to master!");
+	ami.action({
+		action: "Command",
+		command: "console dial " + astConf.virtual.master + "@ext-meetme" // todo: dial different context with appropriete confbridge properties
+	}, function(err, res) {
+		myLib.consoleLog('debug', "console dial", res);
+		if (!err) {
+			myLib.consoleLog('log', 'init', "Console connected to master");
+		} else {
+			myLib.consoleLog('panic', 'init', "Console NOT connected to master!");
+		}
+	});
+};
+
+var consoleHangup = function() {
+	ami.action({
+		action: "Command",
+		command: "console hangup"
+	}, function(err, res) {
+		myLib.consoleLog('debug', "console hangup", res);
+	});
+};
