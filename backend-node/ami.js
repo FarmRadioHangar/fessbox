@@ -445,13 +445,11 @@ ami.on('confbridgejoin', function(evt) {
 //	{"event":"ConfbridgeJoin","privilege":"call,all","conference":"2663","bridgeuniqueid":"e245cfd0-8b0b-45ca-98e1-7e45e1f3aea4","bridgetype":"base","bridgetechnology":"softmix","bridgecreator":"ConfBridge","bridgename":"2663","bridgenumchannels":"0","channel":"Dongle/airtel1-0100000003","channelstate":"6","channelstatedesc":"Up","calleridnum":"+38975562837","calleridname":"airtel1","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-internal","exten":"STARTMEETME","priority":"5","uniqueid":"1471239540.45","linkedid":"1471239540.45","admin":"No"}
 	if (evt.conference === astConf.virtual.master) {
 		var channelInfo = evt.channel.split(/[\/-]/, 3);
-console.log(" XXXXXXXXXXX chanInfo", channelInfo, evt.bridgenumchannels, s.asterisk.channels[channelInfo[1]]);
 
 		if (s.asterisk.channels[channelInfo[1]]) {
-	console.log(" LLLLLL ", "console to master!");
+			if (!evt.bridgenumchannels == "0") {
 				consoleToMaster();
-		if (!evt.bridgenumchannels) {
-				}
+			}
 			s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 			engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
 		} else if (channelInfo[0] === 'ALSA') {
@@ -1202,7 +1200,6 @@ ami.on('peerstatus', function(evt) {
 */
 
 var consoleToMaster = function() {
-	console.log(" ZZZZZZ ", "console to master!");
 	ami.action({
 		action: "Command",
 		command: "console dial " + astConf.virtual.master + "@ext-meetme" // todo: dial different context with appropriete confbridge properties
