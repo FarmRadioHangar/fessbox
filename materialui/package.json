@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "awesome-websocket": "0.0.25",
+    "datejs": "^1.0.0-rc3",
     "lodash": "^4.13.1",
     "material-ui": "^0.15.2",
     "moment": "^2.14.1",
