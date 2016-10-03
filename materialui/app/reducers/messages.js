@@ -29,12 +29,15 @@ const initialState = {
   ids     : [],
 }
 
+const sorted = (ids) => ids.sort((a, b) => 
+    (all.messages[a].timestamp > all.messages[b].timestamp)) 
+
 export default function(state = initialState, action) {
   switch (action.type) {
     case 'APP_INITIALIZE': {
       const inbox = action.data.inbox
-      all.ids = action.data.inbox.ids
       all.messages = action.data.inbox.messages
+      all.ids = sorted(action.data.inbox.ids)
       const { unread, total, visible } = collect(10)
       return {
         ...state, unread, total, visible,
