@@ -29,9 +29,11 @@ const initialState = {
   ids     : [],
 }
 
-const sorted = (ids) => ids.sort((a, b) => 
-    (Number(all.messages[a].timestamp) 
-   > Number(all.messages[b].timestamp)))
+const sorted = (ids) => ids.sort((a, b) => { 
+  console.log(Number(all.messages[a].timestamp))
+  console.log(Number(all.messages[b].timestamp))
+  return (Number(all.messages[a].timestamp) - Number(all.messages[b].timestamp))
+})
 
 export default function(state = initialState, action) {
   switch (action.type) {
