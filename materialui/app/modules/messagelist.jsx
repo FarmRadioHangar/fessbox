@@ -1,9 +1,10 @@
 // @flow
 import React, { Component } from 'react'
 import ReactDOM, { render } from 'react-dom'
-import { connect } from 'react-redux'
-import Infinite from 'react-infinite'
-import _ from 'lodash'
+import { connect }          from 'react-redux'
+import Infinite             from 'react-infinite'
+import _                    from 'lodash'
+import                           'datejs'
 
 import { 
   Icon, 
@@ -34,6 +35,8 @@ import RadioButtonGroup
   from 'material-ui/RadioButton/RadioButtonGroup'
 
 import CallDialog from './calldialog.jsx'
+
+const formatDate = (ts) => (new Date(Number(ts))).toString('MMM dd H:mm')
 
 class SendSMSDialog extends Component {
 
@@ -288,6 +291,11 @@ const Message = (props) => {
           )}
           subtitle = {message.content}>
           {message.endpoint} 
+          {!isNaN(message.timestamp) && (
+            <span style={{color: '#999'}}>&nbsp;&mdash;&nbsp;
+              {formatDate(message.timestamp)}
+            </span> 
+          )}
         </ListItemContent>
         <ListItemAction style={{marginRight: '13px'}}>
           <a href='#' onClick={toggleStarred}>
