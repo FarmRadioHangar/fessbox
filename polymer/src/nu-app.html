@@ -4,6 +4,8 @@
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="nu-channel-list.html">
@@ -50,15 +52,15 @@
 
           <iron-pages selected=[[selected]]>
             <nu-channel-list>
-              <paper-fab icon="communication:phone"></paper-fab>
+              <paper-fab onclick="modal.open()" icon="communication:phone"></paper-fab>
             </nu-channel-list>
             <nu-message-list>
-              <paper-fab icon="communication:message"></paper-fab>
+              <paper-fab onclick="modal.open()" icon="communication:message"></paper-fab>
             </nu-message-list>
             <nu-logs>
             </nu-logs>
             <nu-contacts>
-              <paper-fab icon="create"></paper-fab>
+              <paper-fab onclick="modal.open()" icon="create"></paper-fab>
             </nu-contacts>
           </iron-pages>
 
@@ -67,6 +69,13 @@
       </app-drawer-layout>
 
     </div>
+
+    <paper-dialog id="modal" modal>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+      </div>
+    </paper-dialog>
 
   </template>
 
