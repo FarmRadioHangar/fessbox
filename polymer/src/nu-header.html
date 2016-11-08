@@ -40,7 +40,7 @@
 
     <app-toolbar>
       <div main-title>Voxbox</div>
-      <paper-button>Hangar FM</paper-button>
+      <paper-button on-tap="handleTopicTap">Hangar FM</paper-button>
       <paper-icon-button icon="settings" on-tap="handleHamburgerTap"></paper-icon-button>
     </app-toolbar>
 
@@ -68,6 +68,10 @@
 
       handleHamburgerTap: function() {
         this.fire('hamburger-tap');
+      },
+
+      handleTopicTap: function() {
+        this.fire('topic-tap');
       },
 
       properties: {

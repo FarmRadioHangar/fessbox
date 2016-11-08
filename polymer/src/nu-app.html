@@ -46,7 +46,8 @@
           <app-header fixed>
             <nu-header 
               selected         = "{{selected}}"
-              on-hamburger-tap = "handleHamburgerTap">
+              on-hamburger-tap = "handleHamburgerTap"
+              on-topic-tap     = "handleTopicTap">
             </nu-header>
           </app-header>
 
@@ -86,6 +87,10 @@
 
       handleHamburgerTap: function(event) {
         drawer.toggle();
+      },
+
+      handleTopicTap: function(event) {
+        modal.open();
       }
 
     });
