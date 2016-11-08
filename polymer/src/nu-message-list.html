@@ -25,7 +25,7 @@
       }
 
       .list-item {
-        height: 50px;
+        height: 80px;
       }
 
       paper-spinner {
@@ -89,6 +89,8 @@
                 self.push('items', message);
               });
               self.set('loading', false);
+              localStorage.setItem('_voxbox_messageIds', JSON.stringify(response.data.ids));
+              localStorage.setItem('_voxbox_messages', JSON.stringify(response.data.messages));
             }, 700);
           }
         }
