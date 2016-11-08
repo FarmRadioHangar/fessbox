@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
@@ -93,17 +94,6 @@
 
       is: "nu-app",
 
-      updateOnlineStatus: function(event) {
-        console.log('Connection status: ' + (navigator.onLine ? 'online' : 'offline'));
-        this.set('online', navigator.onLine);
-      },
-
-      ready: function() {
-        window.addEventListener("online",  this.updateOnlineStatus.bind(this));
-        window.addEventListener("offline", this.updateOnlineStatus.bind(this));
-        this.updateOnlineStatus();
-      },
-
       handleHamburgerTap: function(event) {
         drawer.toggle();
       },
@@ -112,14 +102,10 @@
         dialog.open();
       },
 
-      properties: {
-        online: {
-          type: Boolean,
-          value: true
-        }
-      }
+      behaviors: [Polymer.AppNetworkStatusBehavior]
 
     });
+
   </script>
 
 </dom-module>
