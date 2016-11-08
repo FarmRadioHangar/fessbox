@@ -83,7 +83,7 @@ function saveSnapshot(exit) {
 		if (err) {
 			console.error("ERROR::saveSnapshot - " + JSON.stringify(err));
 		} else {
-			console.log("NOTICE::saveSnapshot - data saved to disk");
+			console.error("NOTICE::saveSnapshot - data saved to disk");
 		}
 		if (exit) {
 			exit();
@@ -99,9 +99,9 @@ function loadSnapshot() {
 			operators: myData.operators
 		};
 		exports.asterisk = myData.asterisk;
-		console.log("NOTICE::loadSnapshot - data loaded from disk");
+		console.error("NOTICE::loadSnapshot - data loaded from disk");
 	} else {
-		console.log("NOTICE::loadSnapshot - " + stateFile + " not found, starting with empty state");
+		console.error("NOTICE::loadSnapshot - " + stateFile + " not found, starting with empty state");
 		loadDefaults();
 	}
 }
@@ -135,7 +135,7 @@ function saveOperator(channel_id, cb) {
 		if (err) {
 			console.error("ERROR::saveOperator - " + JSON.stringify(err));
 		} else {
-			console.log("NOTICE::saveOperator - data saved to disk", JSON.stringify(exports.ui.operators[channel_id]));
+			console.error("NOTICE::saveOperator - data saved to disk", JSON.stringify(exports.ui.operators[channel_id]));
 		}
 	});
    */
@@ -209,23 +209,23 @@ function saveChannel(channel_id, cb) {
 		if (err) {
 			console.error("ERROR::saveChannel - " + JSON.stringify(err));
 		} else {
-			console.log("NOTICE::saveChannel - data saved to disk", JSON.stringify(exports.ui.mixer.channels[channel_id]));
+			console.error("NOTICE::saveChannel - data saved to disk", JSON.stringify(exports.ui.mixer.channels[channel_id]));
 		}
 	});
    */
 }
 
 function messageTagAdd(message_ids, tag, cb) {
-	redisClient.sadd(tag, message_ids, cb);
+	redisClient.sadd("msgTags:" + tag, message_ids, cb);
 }
 
 function messageTagRemove(message_ids, tag, cb) {
-	redisClient.srem(tag, message_ids, cb);
+	redisClient.srem("msgTags:" + tag, message_ids, cb);
 }
 
 function messageSave(message_id, message) {
 	/*
-	console.log("messageSave");
+	console.error("messageSave");
 	redisClient.keys('*', redis.print);
 	redisClient.flushdb();
 	redisClient.keys('*', redis.print);
@@ -311,6 +311,8 @@ exports.loadOperator = loadOperator;
 exports.loadChannel = loadChannel;
 exports.loadSnapshot = loadSnapshot;
 exports.messages = {
+	tag: messageTagAdd,
+	untag: messageTagRemove,
 	save: messageSave,
 	delete: messageDelete,
 	fetch: messageFetch

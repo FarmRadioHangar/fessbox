@@ -39,6 +39,12 @@ exports.messageSend = function(operator_id, data, cb) {
 	}
 };
 
+exports.messageTagsAdd = function(operator_id, data, cb) {
+};
+
+exports.messageTagsRemove = function(operator_id, data, cb) {
+};
+
 exports.messageDelete = function(operator_id, data, cb) {
 	// todo: consider sending to all from userApi when really deleted, instead of updating only others right away
 	// current version is more responsive and less consistent

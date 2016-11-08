@@ -13,7 +13,7 @@ var s = require("./localStorage");
 var wss = require("./websocket");
 
 exports.getCurrentState = function (operator_id, cb) {
-	//console.log('operators', operator_id, JSON.stringify(s.ui.operators[operator_id]));
+	//console.error('operators', operator_id, JSON.stringify(s.ui.operators[operator_id]));
 	var operators;
 	if (operator_id) {
 		operators = {};
@@ -47,6 +47,12 @@ exports.inboxFetch = function (count, reference_id, cb) {
 
 exports.messageSend = function (data, cb) {
 	contentProviders[data.type].sendContent(data, cb);
+};
+
+exports.messagesTag = function (data, cb) {
+};
+
+exports.messagesUntag = function (data, cb) {
 };
 
 exports.messageDelete = function (data, cbErr) {
@@ -319,7 +325,7 @@ exports.setChannelMode = function (channel_id, value, cbErr) {
 				}
 				break;
 			default: // channel_id is currently connected to other channel.
-				console.log(channel_id + ' is currently connected to other channel', s.ui.mixer.channels[channel_id].direction, value);
+				console.error(channel_id + ' is currently connected to other channel', s.ui.mixer.channels[channel_id].direction, value);
 
 				if (s.ui.mixer.channels[channel_id].direction === 'operator') {
 					if (value === 'master') {

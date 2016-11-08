@@ -57,14 +57,57 @@ function consoleLog(level, label, message, values) {
 		values = JSON.stringify(values, null, 4);
 	}
 	if (level === "error" || level === "log") {
-		console[level](logStamp, level, label, message, values);
+		//console[level](logStamp, level, label, message, values);
+		console.error(logStamp, level, label, message, values);
 	} else if (level === 'warning') {
-		console.log(logStamp, level, label, message, values);
+		//console.log(logStamp, level, label, message, values);
+		console.error(logStamp, level, label, message, values);
 	} else if (level === 'debug') {
 		console.error('||||', Date.now(), level, label, message, values);
 	} else {
 		console.error(logStamp, "undefined log level: " + level, label, message, values);
 	}
+}
+
+function jsonLog(metadata, labels, tags, values, extra) {
+	// temp handling of old log
+	if (typeof metadata === 'string') {
+		var temp = message;
+		[].unshift.call(arguments, {});
+		values  = temp;
+	}
+	if (typeof labels  === 'string') {
+		labels = [labels];
+	}
+
+	var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+	var timestamp = Date.now();
+	var localISOTime = (new Date(timestamp - tzoffset)).toISOString();
+	var debugEntry = JSON.stringify({
+		logStamp: localISOTime.slice(0, -1),
+		timestamp: timestamp,
+		metadata: metadata,
+		labels: labels,
+		tags: tags,
+		values: values,
+		extra: extra
+	});
+	//websocket.emitDebugEvent(debugEntry);
+	console.log(debugEntry);
+
+	if (values !== null && typeof (values) === 'object') {
+		values = JSON.stringify(values, null, 4);
+	}
+	if (extra !== null && typeof (extra) === 'object') {
+		extra = JSON.stringify(extra, null, 4);
+	}
+
+	var errorLabels = ["warning", "error", "panic", "alert"];
+	labels.forEach(function (label){
+		if (errorLabels.indexOf(label) !== -1) {
+			console.error(">>>>", debugEntry.logStamp, labels, tags, values, metadata, extra);
+		}
+	});
 }
 
 exports.checkObjectProperties = function (params, required) {
@@ -90,6 +133,7 @@ exports.checkObjectProperties = function (params, required) {
 
 exports.httpGeneric = httpGeneric;
 exports.mailSend = mailSend;
+exports.jsonLog = jsonLog;
 exports.consoleLog = consoleLog;
 exports.msecDuration = function(hms) {
 	// expects HH:MM:SS

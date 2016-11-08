@@ -235,7 +235,7 @@ ami.on('coreshowchannel', function (evt) {
 //		case 'Local':
 		case 'SIP':
 			if (astConf.operators.indexOf(channelInfo[1]) !== -1) {
-					console.log('internal name set', evt.channel);
+					console.error('internal name set', evt.channel);
 				s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 				if (evt.application === "ConfBridge") { //todo: make sure is the 'master' conference
 					s.ui.mixer.channels[channelInfo[1]].mode = 'master';
@@ -265,7 +265,7 @@ ami.on('confbridgelist', function (evt) {
 		if (channelInfo[0] === 'ALSA') {
 			s.asterisk.conference.on_air = evt.channel;
 		} else {
-			//console.log(s.ui.mixer.channels, channelInfo[1]);
+			//console.error(s.ui.mixer.channels, channelInfo[1]);
 			//s.asterisk.conference.members[channelInfo[1]] = evt.channel;
 			s.ui.mixer.channels[channelInfo[1]].mode = 'master';
 			s.ui.mixer.channels[channelInfo[1]].muted = evt.muted === "No" ? false : true;
@@ -513,7 +513,7 @@ ami.on('newchannel', function(evt) {
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-input","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.1"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-output","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.2"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Dongle/airtel2-0100000000","channelstate":"4","channelstatedesc":"Ring","calleridnum":"+255682120818","calleridname":"airtel2","accountcode":"","exten":"+255788333330","context":"from-trunk","uniqueid":"1446819272.2"}
-	console.log(JSON.stringify(evt, null, 4));
+	console.error(JSON.stringify(evt, null, 4));
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	var newChannel = {};
 	switch (channelInfo[0]) {
@@ -533,8 +533,8 @@ ami.on('newchannel', function(evt) {
 								name:  evt.calleridname
 							}
 						});
-						console.log("xxx", channelInfo[1], s.ui.mixer.channels);
-						console.log("setting initial chan volume", s.ui.mixer.channels[channelInfo[1]].level);
+						console.error("xxx", channelInfo[1], s.ui.mixer.channels);
+						console.error("setting initial chan volume", s.ui.mixer.channels[channelInfo[1]].level);
 						//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
 						exports.setChannelVolume(channelInfo[1], s.ui.mixer.channels[channelInfo[1]].level, function() {});
 						if (s.ui.mixer.channels[channelInfo[1]].muted) {
@@ -606,13 +606,13 @@ function amiSimpleAction(action, channel, cb) {
 			if (cb) {
 				cb(res);
 			} else {
-				console.log(JSON.stringify(res));
+				console.error(JSON.stringify(res));
 			}
 		} else {
 			if (cb) {
 				cb(err,res);
 			} else {
-				console.log(JSON.stringify(err));
+				console.error(JSON.stringify(err));
 			}
 		}
 	});
@@ -624,13 +624,13 @@ function amiAction(options, cb) {
 			if (cb) {
 				cb(res);
 			} else {
-				console.log(JSON.stringify(res));
+				console.error(JSON.stringify(res));
 			}
 		} else {
 			if (cb) {
 				cb(err,res);
 			} else {
-				console.log(JSON.stringify(err));
+				console.error(JSON.stringify(err));
 			}
 		}
 	});
@@ -646,13 +646,13 @@ function amiSimpleCommand(command, cb) {
 			if (cb) {
 				cb(res);
 			} else {
-				console.log(JSON.stringify(res));
+				console.error(JSON.stringify(res));
 			}
 		} else {
 			if (cb) {
 				cb(err,res);
 			} else {
-				console.log(JSON.stringify(err));
+				console.error(JSON.stringify(err));
 			}
 		}
 	});
@@ -666,9 +666,9 @@ function setVar(channel, variable, value) {
 		value: value
 	}, function(err, res) {
 		if (!err) {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(err.toString());
+			console.error(err.toString());
 		}
 	});
 }
@@ -681,9 +681,9 @@ function getVar(channel, variable, cb) {
 	}, function(err, res) {
 		if (!err) {
 			cb(res.value);
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(err.toString());
+			console.error(err.toString());
 		}
 	});
 }
@@ -704,9 +704,9 @@ function amiConnectToMaster(channel) {
 		priority: 1
 	}, function(err, res) {
 		if (!err) {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		}
 	});
 };
@@ -730,9 +730,9 @@ function connectNumbers(number1, number2) {
 		}
 	}, function(err, res) {
 		if (!err) {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(err.toString());
+			console.error(err.toString());
 		}
 	});
 }
@@ -755,7 +755,7 @@ function setAmiChannelMuted(channel, value, direction, cb) {
 function setAmiChannelVolume(channel, level, direction, cb) {
 	if (channel) { // temp
 		var variable = 'VOLUME(' + direction + ')';
-		console.log("setting chan volume!", channel, variable, level);
+		console.error("setting chan volume!", channel, variable, level);
 		// todo: use the setVar function
 		ami.action({
 			action: 'Setvar',
@@ -784,7 +784,7 @@ function sendSMS(device, number, content, cb) {
 	}, function(err, res) {
 		if (!err) {
 			// {"response":"Success","actionid":"1458358510030","message":"[airtel1] SMS queued for send","id":"0x73c4dcc8"}
-			console.log('sms ok', JSON.stringify(res));
+			console.error('sms ok', JSON.stringify(res));
 			cb(null, res.id);
 		} else {
 			// {"response":"Error","actionid":"1458491768683","message":"Number not specified"}
@@ -831,7 +831,7 @@ function amiOriginate(channel, destination, cb) {
 	}, function(err, res) {
 		if (!err) {
 			cb();
-			console.log("originate sucess!!", JSON.stringify(res));
+			console.error("originate sucess!!", JSON.stringify(res));
 		} else {
 			cb(["originate error", channel, destination, res.message].join('::'));
 		}
@@ -853,7 +853,7 @@ function amiRedirect(channel, destination, cb) {
 		} else {
 			cb(JSON.stringify(res));
 		}
-		console.log(JSON.stringify(res));
+		console.error(JSON.stringify(res));
 	});
 }
 
@@ -872,10 +872,10 @@ function amiRedirectBoth(channel, destination, channel2, destination2, cb) {
 //		{"response":"Success","actionid":"1448369953448","message":"Dual Redirect successful"}
 		if (!err) {
 			cb();
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
 			cb(JSON.stringify(res));
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		}
 	});
 }
@@ -1061,8 +1061,8 @@ exports.setChanModes = function (channel_id, destination, channel_id2, destinati
 	if (astConf.virtual[destination2]) {
 		destination2 = astConf.virtual[destination2];
 	}
-	console.log("exports.setChanModes", channel_id, destination, channel_id2, destination2);
-	console.log("exports.setChanModes", s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2);
+	console.error("exports.setChanModes", channel_id, destination, channel_id2, destination2);
+	console.error("exports.setChanModes", s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2);
 	amiRedirectBoth(s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2, cb);
 };
 
