@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="nu-message-item.html">
 
@@ -23,20 +24,40 @@
         flex: 1 1 auto;
       }
 
-      .item {
+      .list-item {
         height: 50px;
+      }
+
+      paper-spinner {
+        --paper-spinner-stroke-width: 6px;
+        width: 128px; 
+        height: 128px; 
+        left: calc(50vw - 64px);
+      }
+
+      .spinner-container {
+        position: absolute;
+        display: flex; 
+        align-items: center; 
+        width: 100vw; 
+        height: calc(100vh - 230px);
       }
 
     </style>
 
+    <div class="spinner-container">
+      <paper-spinner alt="Loading messages" active=[[loading]]></paper-spinner>
+    </div>
+
     <iron-list 
+      hidden$        = "[[loading]]"
       items          = "[[items]]"
       selected-items = "{{selectedItems}}"
       selection-enabled 
       multi-selection>
 
       <template>
-        <div class="item">
+        <div class="list-item">
           <nu-message-item></nu-message-item>
         </div>
       </template>
@@ -59,12 +80,14 @@
         //this._ws = new WebSocket("ws://thehangar.farmradio.org:51234");
         this._ws.onmessage = function(event) {
           var response = JSON.parse(event.data);
-          console.log(response);
           if (response.event == "inboxMessages") {
-            response.data.ids.forEach(function(id) {
-              var message = response.data.messages[id];
-              self.push('items', message);
-            });
+            window.setTimeout(function() {
+              self.set('loading', false);
+              response.data.ids.forEach(function(id) {
+                var message = response.data.messages[id];
+                self.push('items', message);
+              });
+            }, 700);
           }
         }
         this._ws.onopen = function(event) {
@@ -73,6 +96,7 @@
       },
 
       fetchMessages: function() {
+        this.set('loading', true);
         this._ws.send(JSON.stringify({
           event: 'inboxFetch',
           data: {
@@ -88,6 +112,10 @@
           type: Array,
           value: [],
           notify: true
+        },
+        loading: {
+          type: Boolean,
+          value: true
         }
       }
 
