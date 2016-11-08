@@ -24,6 +24,7 @@
     "iron-list": "PolymerElements/iron-list#^1.3.13",
     "paper-item": "PolymerElements/paper-item#^1.2.1",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
-    "paper-menu": "PolymerElements/paper-menu#^1.2.2"
+    "paper-menu": "PolymerElements/paper-menu#^1.2.2",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0"
   }
 }
