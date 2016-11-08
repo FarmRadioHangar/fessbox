@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="nu-tab.html">
 
@@ -41,7 +42,9 @@
     <app-toolbar>
       <div main-title>Voxbox</div>
       <paper-button on-tap="handleTopicTap">Hangar FM</paper-button>
+      <iron-icon hidden$="[[online]]" id="offline_notification" icon="warning"></iron-icon>
       <paper-icon-button icon="settings" on-tap="handleHamburgerTap"></paper-icon-button>
+      <paper-tooltip for="offline_notification" offset="0">No connection</paper-tooltip>
     </app-toolbar>
 
     <paper-tabs selected="{{selected}}">
@@ -79,6 +82,10 @@
           type: Number,
           value: 0,
           notify: true
+        },
+        online: {
+          type: Boolean,
+          value: true
         }
       }
 

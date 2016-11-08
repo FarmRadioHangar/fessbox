@@ -46,6 +46,7 @@
           <app-header fixed>
             <nu-header 
               selected         = "{{selected}}"
+              online           = "[[online]]"
               on-hamburger-tap = "handleHamburgerTap"
               on-topic-tap     = "handleTopicTap">
             </nu-header>
@@ -93,13 +94,13 @@
       is: "nu-app",
 
       updateOnlineStatus: function(event) {
-        var condition = navigator.onLine ? "online" : "offline";
-        console.log('Connection status: ' + condition);
+        console.log('Connection status: ' + (navigator.onLine ? 'online' : 'offline'));
+        this.set('online', navigator.onLine);
       },
 
       ready: function() {
-        window.addEventListener("online",  this.updateOnlineStatus);
-        window.addEventListener("offline", this.updateOnlineStatus);
+        window.addEventListener("online",  this.updateOnlineStatus.bind(this));
+        window.addEventListener("offline", this.updateOnlineStatus.bind(this));
         this.updateOnlineStatus();
       },
 
@@ -109,6 +110,13 @@
 
       handleTopicTap: function(event) {
         dialog.open();
+      },
+
+      properties: {
+        online: {
+          type: Boolean,
+          value: true
+        }
       }
 
     });
