@@ -55,13 +55,11 @@
 
       ready: function() {
         var self = this;
-        //this._ws = new WebSocket("ws://192.168.1.7:19998");
-        this._ws = new WebSocket("ws://thehangar.farmradio.org:51234");
+        this._ws = new WebSocket("ws://192.168.1.7:19998");
+        //this._ws = new WebSocket("ws://thehangar.farmradio.org:51234");
         this._ws.onmessage = function(event) {
           var response = JSON.parse(event.data);
-
           console.log(response);
-
           if (response.event == "inboxMessages") {
             response.data.ids.forEach(function(id) {
               var message = response.data.messages[id];
