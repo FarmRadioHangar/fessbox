@@ -84,6 +84,17 @@
 
       is: "nu-app",
 
+      updateOnlineStatus: function(event) {
+        var condition = navigator.onLine ? "online" : "offline";
+        console.log('Connection status: ' + condition);
+      },
+
+      ready: function() {
+        window.addEventListener("online",  this.updateOnlineStatus);
+        window.addEventListener("offline", this.updateOnlineStatus);
+        this.updateOnlineStatus();
+      },
+
       handleHamburgerTap: function(event) {
         drawer.toggle();
       }
