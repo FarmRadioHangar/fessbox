@@ -59,6 +59,9 @@
         this._ws = new WebSocket("ws://thehangar.farmradio.org:51234");
         this._ws.onmessage = function(event) {
           var response = JSON.parse(event.data);
+
+          console.log(response);
+
           if (response.event == "inboxMessages") {
             response.data.ids.forEach(function(id) {
               var message = response.data.messages[id];

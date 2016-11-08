@@ -46,7 +46,8 @@
           <app-header fixed>
             <nu-header 
               selected         = "{{selected}}"
-              on-hamburger-tap = "handleHamburgerTap">
+              on-hamburger-tap = "handleHamburgerTap"
+              on-topic-tap     = "handleTopicTap">
             </nu-header>
           </app-header>
 
@@ -77,6 +78,13 @@
       </div>
     </paper-dialog>
 
+    <paper-dialog id="dialog">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+      </div>
+    </paper-dialog>
+
   </template>
 
   <script>
@@ -97,6 +105,10 @@
 
       handleHamburgerTap: function(event) {
         drawer.toggle();
+      },
+
+      handleTopicTap: function(event) {
+        dialog.open();
       }
 
     });
