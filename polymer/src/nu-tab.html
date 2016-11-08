@@ -1,0 +1,35 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="nu-tab">
+
+  <template>
+
+    <style include="iron-flex"></style>
+
+    <style>
+
+      :host {}
+
+      iron-icon, label {
+        padding: 2px;
+      }
+
+    </style>
+
+    <div class="layout vertical center">
+      <iron-icon icon="[[icon]]"></iron-icon>
+      <label>[[label]]</label>
+    </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: "nu-tab"
+    });
+
+  </script>
+
+</dom-module>

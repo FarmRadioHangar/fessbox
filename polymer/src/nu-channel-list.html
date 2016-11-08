@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="nu-channel.html">
+
+<dom-module id="nu-channel-list">
+
+  <template>
+
+    <style>
+
+      :host {}
+
+      paper-material {
+        min-height: 200px;
+        margin: 40px;
+        background: white;
+      }
+
+    </style>
+
+    <div>
+      <paper-material>
+        <nu-channel></nu-channel>
+      </paper-material>
+      <paper-material>
+        <nu-channel></nu-channel>
+      </paper-material>
+      <paper-material>
+        <nu-channel></nu-channel>
+      </paper-material>
+      <paper-material>
+        <nu-channel></nu-channel>
+      </paper-material>
+      <paper-material>
+        <nu-channel></nu-channel>
+      </paper-material>
+    </div>
+    <content></content>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: "nu-channel-list"
+    });
+
+  </script>
+
+</dom-module>

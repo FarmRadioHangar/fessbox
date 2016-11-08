@@ -1,0 +1,99 @@
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="nu-message-item.html">
+
+<dom-module id="nu-message-list">
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      iron-list {
+        flex: 1 1 auto;
+      }
+
+      .item {
+        height: 50px;
+      }
+
+    </style>
+
+    <iron-list 
+      items          = "[[items]]"
+      selected-items = "{{selectedItems}}"
+      selection-enabled 
+      multi-selection>
+
+      <template>
+        <div class="item">
+          <nu-message-item></nu-message-item>
+        </div>
+      </template>
+
+    </iron-list>
+      
+    <content></content>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: "nu-message-list",
+
+      ready: function() {
+        /*
+        var self = this;
+        //this._ws = new WebSocket("ws://192.168.1.7:19998");
+        this._ws = new WebSocket("ws://thehangar.farmradio.org:51234");
+        this._ws.onmessage = function(event) {
+          var response = JSON.parse(event.data);
+          if (response.event == "inboxMessages") {
+            response.data.ids.forEach(function(id) {
+              var message = response.data.messages[id];
+              self.push('items', message);
+            });
+          }
+        }
+        this._ws.onopen = function(event) {
+          this.fetchMessages();
+        }.bind(this);
+        */
+      },
+
+      fetchMessages: function() {
+        this._ws.send(JSON.stringify({
+          event: 'inboxFetch',
+          data: {
+            filter: [], 
+            after_id: null,
+            count: 1100
+          }
+        }));
+      },
+
+      properties: {
+        items: {
+          type: Array,
+          value: [],
+          notify: true
+        }
+      }
+
+    });
+
+  </script>
+
+</dom-module>
