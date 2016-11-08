@@ -1,6 +1,13 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 
+<style>
+  .vaadin-grid-header.vaadin-grid {
+    position: fixed !important;
+    top: 130px !important;
+  }
+</style>
+
 <dom-module id="nu-logs">
 
   <template>
@@ -14,11 +21,19 @@
     <vaadin-grid id="simple" visible-rows="20">
       <table>
         <colgroup>
-          <col name="Number"/>
-          <col name="Direction"/>
-          <col name="Time of call"/>
-          <col name="Duration"/>
+          <col>
+          <col>
+          <col>
+          <col>
         </colgroup>
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Direction</th>
+            <th>Time of call</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
         <tbody>
           <tr>
             <td>0719 456 337</td>
