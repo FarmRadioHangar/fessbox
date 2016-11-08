@@ -91,7 +91,12 @@
           }
         }
         this._ws.onopen = function(event) {
+          var self = this;
           this.fetchMessages();
+          window.setInterval(function() {
+            self._ws.send(JSON.stringify({event: 'ping', data: null}));
+            console.log('Ping?');
+          }, 4000);
         }.bind(this);
       },
 
