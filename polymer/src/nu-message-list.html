@@ -82,11 +82,11 @@
           var response = JSON.parse(event.data);
           if (response.event == "inboxMessages") {
             window.setTimeout(function() {
-              self.set('loading', false);
               response.data.ids.forEach(function(id) {
                 var message = response.data.messages[id];
                 self.push('items', message);
               });
+              self.set('loading', false);
             }, 700);
           }
         }
