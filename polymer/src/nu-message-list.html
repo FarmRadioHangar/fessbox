@@ -93,6 +93,8 @@
               localStorage.setItem('_voxbox_messageIds', JSON.stringify(response.data.ids));
               localStorage.setItem('_voxbox_messages', JSON.stringify(response.data.messages));
             }, 700);
+          } else {
+            console.log(response.event);
           }
         }
         this._ws.onopen = function(event) {

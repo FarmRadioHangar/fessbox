@@ -1,0 +1,38 @@
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="nu-topic-dialog">
+
+  <template>
+
+    <style>
+
+      :host {}
+
+    </style>
+
+    <paper-dialog id="dialog">
+      <h1>Change topic</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+      </div>
+    </paper-dialog>
+ 
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: "nu-topic-dialog",
+
+      open: function() {
+        this.$.dialog.open();
+      }
+
+    });
+
+  </script>
+
+</dom-module>
