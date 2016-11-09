@@ -1,3 +1,4 @@
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="nu-contacts">
@@ -8,34 +9,48 @@
 
       :host {}
 
+      .item {
+        @apply(--layout-horizontal);
+        cursor: pointer;
+        padding: 16px 22px;
+        border-bottom: 1px solid #DDD;
+      }
+
+      .pad {
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        padding: 0 16px;
+      }
+
+      .primary {
+        font-size: 16px;
+      }
+
+      .secondary {
+        font-size: 14px;
+      }
+
     </style>
 
-    <div>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-      Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br> Contacts<br>
-    </div>
+    <iron-list items="[[items]]">
+      <template>
+
+        <div class="item">
+          <div>
+            <img class="avatar" src="[[item.image]]">
+            <div class="pad">
+              <div class="primary">
+                [[item.name]]
+              </div>
+              <div class="secondary dim">[[item.name]]</div>
+            </div>
+            <iron-icon icon="icon" class="star"></iron-icon>
+          </div>
+          <div class="border"></div>
+        </div>
+
+      </template>
+    </iron-list>
     <content></content>
 
   </template>
@@ -43,7 +58,71 @@
   <script>
 
     Polymer({
-      is: "nu-contacts"
+
+      is: "nu-contacts",
+
+      properties: {
+        items: {
+          type: Array,
+          value: [
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            },
+            {
+              name: 'abc'
+            }
+          ]
+        }
+      }
+
     });
 
   </script>
