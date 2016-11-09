@@ -1,8 +1,12 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<dom-module id="nu-call-dialog">
+<dom-module id="nu-add-contact-dialog">
 
   <template>
 
@@ -10,22 +14,19 @@
 
       :host {}
 
+      paper-dialog {
+        width: 600px;
+      }
+
     </style>
 
     <paper-dialog id="modal" modal entry-animation="fade-in-animation" exit-animation="fade-out-animation">
-      <h2>Make a call</h2>
-      <div>
-        <label id="label1">Channel:</label>
-        <paper-radio-group aria-labelledby="label1">
-          <paper-radio-button name="a">Airtel 1</paper-radio-button>
-          <paper-radio-button name="b">Tigo</paper-radio-button>
-          <paper-radio-button name="c">Auto-select</paper-radio-button>
-        </paper-radio-group>
-      </div>
+      <h2>Add contact</h2>
+      <paper-input label="Name"></paper-input>
       <paper-input label="Number"></paper-input>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm autofocus>Call</paper-button>
+        <paper-button dialog-confirm autofocus>Save</paper-button>
       </div>
     </paper-dialog>
  
@@ -35,7 +36,7 @@
 
     Polymer({
 
-      is: "nu-call-dialog",
+      is: "nu-add-contact-dialog",
 
       open: function() {
         this.$.modal.open();

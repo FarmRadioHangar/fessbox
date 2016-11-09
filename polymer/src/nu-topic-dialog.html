@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="nu-topic-dialog">
@@ -9,13 +10,18 @@
 
       :host {}
 
+      paper-dialog {
+        width: 700px;
+      }
+
     </style>
 
-    <paper-dialog id="dialog">
-      <h1>Change topic</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <paper-dialog id="dialog" modal>
+      <h2>Set a new topic</h2>
+      <paper-input label="Topic"></paper-input>
       <div class="buttons">
-        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Update</paper-button>
       </div>
     </paper-dialog>
  

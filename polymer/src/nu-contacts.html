@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="nu-contacts">
@@ -14,6 +15,8 @@
         cursor: pointer;
         padding: 16px 22px;
         border-bottom: 1px solid #DDD;
+        background: white;
+        align-items: center;
       }
 
       .pad {
@@ -28,6 +31,16 @@
 
       .secondary {
         font-size: 14px;
+        color: grey;
+      }
+
+      .avatar {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--paper-amber-500);
       }
 
     </style>
@@ -35,16 +48,16 @@
     <iron-list items="[[items]]">
       <template>
 
-        <div class="item">
-          <div>
-            <img class="avatar" src="[[item.image]]">
+        <div>
+          <div class="item">
+            <div class="avatar" item-icon></div>
             <div class="pad">
               <div class="primary">
                 [[item.name]]
               </div>
-              <div class="secondary dim">[[item.name]]</div>
+              <div class="secondary">[[item.number]]</div>
             </div>
-            <iron-icon icon="icon" class="star"></iron-icon>
+            <iron-icon icon="star" class="star"></iron-icon>
           </div>
           <div class="border"></div>
         </div>
@@ -66,58 +79,100 @@
           type: Array,
           value: [
             {
-              name: 'abc'
+              name: 'Elvis Presley',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Wagner Shelton',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Angelia Rowe',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Flora Tran',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Crawford Jordan',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Bentley Guthrie',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Elvis Presley',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Wagner Shelton',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Angelia Rowe',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Flora Tran',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Crawford Jordan',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Bentley Guthrie',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Elvis Presley',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Wagner Shelton',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Angelia Rowe',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Flora Tran',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Crawford Jordan',
+              number: '255 713 733 333'
             },
             {
-              name: 'abc'
+              name: 'Bentley Guthrie',
+              number: '255 713 733 333'
+            },
+            {
+              name: 'Elvis Presley',
+              number: '255 713 733 333'
+            },
+            {
+              name: 'Wagner Shelton',
+              number: '255 713 733 333'
+            },
+            {
+              name: 'Angelia Rowe',
+              number: '255 713 733 333'
+            },
+            {
+              name: 'Flora Tran',
+              number: '255 713 733 333'
+            },
+            {
+              name: 'Crawford Jordan',
+              number: '255 713 733 333'
+            },
+            {
+              name: 'Bentley Guthrie',
+              number: '255 713 733 333'
             }
           ]
         }
