@@ -1,3 +1,7 @@
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-icon/paper-icon.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="nu-message-item.html">
 
 <dom-module id="nu-message-item">
@@ -9,15 +13,69 @@
       :host {
       }
 
+      paper-material {
+        height: 210px;
+        margin: 10px;
+        background: white;
+        padding: 0 4px 0 12px;
+      }
+
+      paper-checkbox {
+        padding: 0 12px;
+      }
+
+      .item {
+        @apply(--layout-horizontal);
+        align-items: top;
+      }
+      
+      .date {
+        font-size: 12px;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+      }
+
+      .divider {
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        align-self: center;
+      }
+ 
+      paper-item-body {
+        justify-content: initial;
+        padding: 12px 12px 12px 0;
+      }
+      
     </style>
 
-    <div>
+    <paper-material class="item">
 
-      [[item.content]]
-      <paper-icon-button class="dropdown-trigger" icon="more-vert"></paper-icon-button>
-      <hr />
+      <div class="divider">
+        <paper-checkbox checked=[[selected]]></paper-checkbox>
+        <!--
+        <paper-icon-button on-tap="onToggleFavorite" icon="star" class="star"></paper-icon-button>
+        <paper-icon-button on-tap="onExpandActions" icon="expand-more"></paper-icon-button>
+        -->
+      </div>
 
-    </div>
+      <paper-item-body three-line>
+        <div on-tap="stopEventPropagation" secondary class="date">[[_formatDate(item.timestamp)]]</div>
+        <div on-tap="stopEventPropagation">[[item.endpoint]]</div>
+      </paper-item-body>
+
+      <!--
+        <div on-tap="stopEventPropagation" secondary style="white-space: normal;">
+          [[item.content]]
+        </div>
+      -->
+
+      <!--
+          [[item.content]]
+          <paper-icon-button class="dropdown-trigger" icon="more-vert"></paper-icon-button>
+      -->
+
+    </paper-material>
 
   </template>
 
@@ -25,7 +83,11 @@
 
     Polymer({
 
-      is: "nu-message-item"
+      is: "nu-message-item",
+
+      _formatDate: function(stamp) {
+        return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
+      },
 
     });
 

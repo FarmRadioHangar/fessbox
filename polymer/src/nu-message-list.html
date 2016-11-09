@@ -15,7 +15,7 @@
 
       :host {
         display: block;
-        height: calc(100vh - 132px);
+        height: calc(100vh - 115px);
         width: 100vw;
         display: flex;
         flex-direction: column;
@@ -26,7 +26,8 @@
       }
 
       .list-item {
-        height: 80px;
+        height: 230px;
+        width: 290px;
       }
 
       paper-spinner {
@@ -55,13 +56,12 @@
       items          = "[[items]]"
       selected-items = "{{selectedItems}}"
       selection-enabled 
-      multi-selection>
+      multi-selection
+      grid>
 
       <template>
         <div class="list-item">
-          <nu-message-item
-            item = "[[item]]">
-          </nu-message-item>
+          <nu-message-item item="[[item]]"></nu-message-item>
         </div>
       </template>
 
@@ -77,6 +77,15 @@
 
       is: "nu-message-list",
 
+      _init: function(ids, messages) {
+        ids.forEach(function(id) {
+          var message = messages[id];
+          this.push('items', message);
+        }.bind(this));
+        this.set('loading', false);
+        document.querySelector('iron-list').fire('iron-resize');
+      },
+
       ready: function() {
         var self = this;
         this._ws = new WebSocket("ws://192.168.1.7:19998");
@@ -85,11 +94,7 @@
           var response = JSON.parse(event.data);
           if (response.event == "inboxMessages") {
             window.setTimeout(function() {
-              response.data.ids.forEach(function(id) {
-                var message = response.data.messages[id];
-                self.push('items', message);
-              });
-              self.set('loading', false);
+              self._init(response.data.ids, response.data.messages);
               localStorage.setItem('_voxbox_messageIds', JSON.stringify(response.data.ids));
               localStorage.setItem('_voxbox_messages', JSON.stringify(response.data.messages));
             }, 700);
@@ -104,6 +109,11 @@
             self._ws.send(JSON.stringify({event: 'ping', data: null}));
             console.log('Ping?');
           }, 4000);
+        }.bind(this);
+        this._ws.onerror = function(event) {
+          var ids = JSON.parse(localStorage.getItem('_voxbox_messageIds'));
+          var messages = JSON.parse(localStorage.getItem('_voxbox_messages'));
+          this._init(ids, messages);
         }.bind(this);
       },
 
