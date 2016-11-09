@@ -11,11 +11,20 @@
 
     </style>
 
-    <paper-dialog id="modal" modal>
-      <h1>New call</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <paper-dialog id="modal" modal entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+      <h2>Make a call</h2>
+      <div>
+        <label id="label1">Channel:</label>
+        <paper-radio-group aria-labelledby="label1">
+          <paper-radio-button name="a">Airtel 1</paper-radio-button>
+          <paper-radio-button name="b">Tigo</paper-radio-button>
+          <paper-radio-button name="c">Auto-select</paper-radio-button>
+        </paper-radio-group>
+      </div>
+      <paper-input label="Number"></paper-input>
       <div class="buttons">
-        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Call</paper-button>
       </div>
     </paper-dialog>
  
