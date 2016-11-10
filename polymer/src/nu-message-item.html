@@ -21,10 +21,14 @@
       }
 
       paper-checkbox {
-        padding: 0 12px;
+        padding: 21px 10px;
       }
 
       .item {
+        @apply(--layout-vertical);
+      }
+
+      .meta {
         @apply(--layout-horizontal);
         align-items: top;
       }
@@ -35,13 +39,15 @@
         text-transform: uppercase;
       }
 
-      .divider {
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        align-self: center;
+      .star {
+        color: var(--paper-pink-a200); 
       }
- 
+
+      .controls {
+        align-self: flex-end;
+        @apply(--layout-horizontal);
+      }
+
       paper-item-body {
         justify-content: initial;
         padding: 12px 12px 12px 0;
@@ -49,32 +55,36 @@
       
     </style>
 
-    <paper-material class="item">
+    <paper-material>
+      <div class="item">
 
-      <div class="divider">
-        <paper-checkbox checked=[[selected]]></paper-checkbox>
-        <!--
-        <paper-icon-button on-tap="onToggleFavorite" icon="star" class="star"></paper-icon-button>
-        <paper-icon-button on-tap="onExpandActions" icon="expand-more"></paper-icon-button>
-        -->
-      </div>
-
-      <paper-item-body three-line>
-        <div on-tap="stopEventPropagation" secondary class="date">[[_formatDate(item.timestamp)]]</div>
-        <div on-tap="stopEventPropagation">[[item.endpoint]]</div>
-      </paper-item-body>
-
-      <!--
-        <div on-tap="stopEventPropagation" secondary style="white-space: normal;">
-          [[item.content]]
+        <div class="meta">
+          <paper-item-body style="min-height: 32px;">
+            <div secondary class="date">[[_formatDate(item.timestamp)]]</div>
+            <div>[[item.endpoint]]</div>
+          </paper-item-body>
+          <paper-checkbox checked=[[selected]]></paper-checkbox>
         </div>
-      -->
 
-      <!--
-          [[item.content]]
-          <paper-icon-button class="dropdown-trigger" icon="more-vert"></paper-icon-button>
-      -->
+        <paper-item-body style="min-height: 100px; padding: 0;">
+          <div secondary style="white-space: normal;">
+            [[item.content]]
+          </div>
+        </paper-item-body>
 
+        <div class="controls">
+          <paper-icon-button 
+            on-tap = "onToggleFavorite"
+            icon   = "star"
+            class  = "star">
+          </paper-icon-button>
+          <paper-icon-button 
+            class  = "dropdown-trigger"
+            icon   = "more-vert">
+          </paper-icon-button>
+        </div>
+
+      </div>
     </paper-material>
 
   </template>

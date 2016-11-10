@@ -113,6 +113,7 @@
         this._ws.onerror = function(event) {
           var ids = JSON.parse(localStorage.getItem('_voxbox_messageIds'));
           var messages = JSON.parse(localStorage.getItem('_voxbox_messages'));
+          console.log(messages);
           this._init(ids, messages);
         }.bind(this);
       },
