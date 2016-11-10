@@ -1,5 +1,5 @@
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../bower_components/paper-icon/paper-icon.html">
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
@@ -80,7 +80,7 @@
             class  = "star">
           </paper-icon-button>
           <paper-icon-button 
-            class  = "dropdown-trigger"
+            on-tap = "onTapActionMenu"
             icon   = "more-vert">
           </paper-icon-button>
         </div>
@@ -98,6 +98,10 @@
 
       formatDate: function(stamp) {
         return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
+      },
+
+      onTapActionMenu: function(event) {
+        this.fire('tap-action-menu');
       },
 
       onToggleFavorite: function(event) {
