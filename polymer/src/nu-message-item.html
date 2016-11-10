@@ -64,7 +64,7 @@
             <div secondary class="date">[[formatDate(item.timestamp)]]</div>
             <div>[[item.endpoint]]</div>
           </paper-item-body>
-          <paper-checkbox checked=[[selected]]></paper-checkbox>
+          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
         </div>
 
         <paper-item-body style="min-height: 100px; padding: 0;">
@@ -105,6 +105,17 @@
       },
 
       onToggleFavorite: function(event) {
+      },
+
+      toggleSelected: function(event) {
+        this.fire('toggle-selected');
+      },
+
+      properties: {
+        selected: {
+          type: Boolean,
+          value: false
+        }
       }
 
     });

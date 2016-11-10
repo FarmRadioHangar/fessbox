@@ -1,7 +1,6 @@
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
@@ -9,6 +8,7 @@
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="nu-message-item.html">
+<link rel="import" href="nu-message-ribbon.html">
 <link rel="import" href="nu-overlay.html">
 
 <dom-module id="nu-message-list">
@@ -52,11 +52,9 @@
 
     </style>
 
-    <div style="box-sizing: content-box; width: 100%; height: 52px; background: white; display: table; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06), 0 2px 0 rgba(0, 0, 0, 0.075), 0 3px 0 rgba(0, 0, 0, 0.05), 0 4px 0 rgba(0, 0, 0, 0.015); z-index: 1;">
-      <div style="display: flex; height: 52px; align-items: center; /* float: right; */ margin: 0 12px;">
-        <paper-icon-button icon="search"></paper-icon-button>
-      </div>
-    </div>
+    <template is="dom-if" if="[[selectedItems.length]]">
+      <nu-message-ribbon></nu-message-ribbon>
+    </template>
 
     <nu-overlay id="actions">
       <p>Hello world!</p>
@@ -65,6 +63,7 @@
     </nu-overlay>
 
     <iron-list 
+      id             = "messageList"
       hidden$        = "[[loading]]"
       items          = "[[items]]"
       selected-items = "{{selectedItems}}"
@@ -76,6 +75,9 @@
         <div class="list-item">
           <nu-message-item 
             item               = "[[item]]"
+            index              = "[[index]]"
+            selected           = "[[selected]]"
+            on-toggle-selected = "toggleSelected"
             on-tap-action-menu = "showOverlay">
           </nu-message-item>
         </div>
@@ -99,6 +101,11 @@
     Polymer({
 
       is: "nu-message-list",
+
+      isEmpty: function(x) {
+        console.log(x.length);
+        return !!x.length;
+      },
 
       _init: function(ids, messages) {
         ids.forEach(function(id) {
@@ -145,6 +152,10 @@
         actions.open();
       },
 
+      toggleSelected: function(event) {
+        this.$.messageList.toggleSelectionForItem(event.model.item);
+      },
+
       fetchMessages: function() {
         this.set('loading', true);
         this._ws.send(JSON.stringify({
@@ -166,6 +177,9 @@
         loading: {
           type: Boolean,
           value: true
+        },
+        selectedItems: {
+          type: Object
         }
       }
 
