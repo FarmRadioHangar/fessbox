@@ -1,6 +1,8 @@
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
@@ -41,6 +43,19 @@
         left: calc(50vw - 64px);
       }
 
+      paper-fab {
+        position: fixed;
+          /*
+        left: 50%;
+          */
+        right: 30px;
+        top: 190px;
+        z-index: 200;
+        background: white;
+        --paper-fab-background: { color: white; }
+        --paper-fab-iron-icon: { color: grey; }
+      }
+
       .spinner-container {
         position: absolute;
         display: flex; 
@@ -52,15 +67,17 @@
 
     </style>
 
-    <template is="dom-if" if="[[selectedItems.length]]">
-      <nu-message-ribbon></nu-message-ribbon>
-    </template>
+    <nu-message-ribbon
+      has-selection = "[[selectedItems.length]]">
+    </nu-message-ribbon>
 
     <nu-overlay id="actions">
       <p>Hello world!</p>
       <button>Button</button>
       <button onclick="actions.close()">Close</button>
     </nu-overlay>
+
+    <paper-fab icon="hardware:keyboard-arrow-down"></paper-fab>
 
     <iron-list 
       id             = "messageList"
@@ -84,7 +101,7 @@
       </template>
 
     </iron-list>
-      
+
     <div class="spinner-container">
       <paper-spinner 
         alt    = "Loading messages"
@@ -117,6 +134,7 @@
       },
 
       ready: function() {
+        console.log('ready');
         var self = this;
         this._ws = new WebSocket("ws://192.168.1.7:19998");
         //this._ws = new WebSocket("ws://thehangar.farmradio.org:51234");
