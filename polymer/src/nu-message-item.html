@@ -18,7 +18,7 @@
         height: 210px;
         margin: 10px;
         background: white;
-        padding: 0 4px 0 12px;
+        padding: 0 12px;
       }
 
       paper-checkbox {
@@ -60,11 +60,11 @@
       <div class="item">
 
         <div class="meta">
+          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
           <paper-item-body style="min-height: 32px;">
             <div secondary class="date">[[formatDate(item.timestamp)]]</div>
             <div>[[item.endpoint]]</div>
           </paper-item-body>
-          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
         </div>
 
         <paper-item-body style="min-height: 100px; padding: 0;">
