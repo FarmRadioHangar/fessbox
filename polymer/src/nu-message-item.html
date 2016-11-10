@@ -60,7 +60,7 @@
 
         <div class="meta">
           <paper-item-body style="min-height: 32px;">
-            <div secondary class="date">[[_formatDate(item.timestamp)]]</div>
+            <div secondary class="date">[[formatDate(item.timestamp)]]</div>
             <div>[[item.endpoint]]</div>
           </paper-item-body>
           <paper-checkbox checked=[[selected]]></paper-checkbox>
@@ -95,9 +95,12 @@
 
       is: "nu-message-item",
 
-      _formatDate: function(stamp) {
+      formatDate: function(stamp) {
         return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
       },
+
+      onToggleFavorite: function(event) {
+      }
 
     });
 
