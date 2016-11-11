@@ -92,7 +92,7 @@
             index              = "[[index]]"
             selected           = "[[selected]]"
             on-toggle-selected = "toggleSelected"
-            on-tap-action-menu = "showOverlay">
+            on-tap-action-menu = "showActionOverlay">
           </nu-message-item>
         </div>
       </template>
@@ -116,10 +116,7 @@
 
       is: "nu-message-list",
 
-      isEmpty: function(x) {
-        console.log(x.length);
-        return !!x.length;
-      },
+      /*
 
       _init: function(ids, messages) {
         ids.forEach(function(id) {
@@ -163,14 +160,6 @@
         }.bind(this);
       },
 
-      showOverlay: function(event) {
-        actions.open();
-      },
-
-      toggleSelected: function(event) {
-        this.$.messageList.toggleSelectionForItem(event.model.item);
-      },
-
       fetchMessages: function() {
         this.set('loading', true);
         this._ws.send(JSON.stringify({
@@ -181,6 +170,16 @@
             count: 1100
           }
         }));
+      },
+
+      */
+
+      showActionOverlay: function(event) {
+        actions.open();
+      },
+
+      toggleSelected: function(event) {
+        this.$.messageList.toggleSelectionForItem(event.model.item);
       },
 
       properties: {
