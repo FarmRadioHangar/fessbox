@@ -42,8 +42,7 @@
 
       <app-drawer-layout force-narrow>
 
-        <app-drawer id="drawer" align="right">
-        </app-drawer>
+        <app-drawer id="drawer" align="right"></app-drawer>
 
         <app-header-layout>
 
@@ -87,6 +86,27 @@
     Polymer({
 
       is: "nu-app",
+
+      _socket: null,
+
+      ready: function() {
+        this._socket = new WebSocket('ws://192.168.1.7:19998');
+        this._socket.onerror = this.onError.bind(this);
+        this._socket.onopen = this.onOpen.bind(this);
+        this._socket.onmessage = this.onMessage.bind(this);
+      },
+
+      onError: function(event) {
+        console.log('error');
+      },
+
+      onOpen: function(event) {
+        console.log('open');
+      },
+
+      onMessage: function(event) {
+        console.log('message');
+      },
 
       handleHamburgerTap: function(event) {
         drawer.toggle();
