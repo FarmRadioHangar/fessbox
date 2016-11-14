@@ -7,6 +7,7 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="nu-add-contact-dialog.html">
 <link rel="import" href="nu-call-dialog.html">
@@ -83,6 +84,25 @@
   </template>
 
   <script>
+
+    var store = Redux.createStore(function(state, action) {
+      if (!state) {
+        return {
+          messages: []
+        }
+      }
+      switch (action.type) {
+        case 'MESSAGE_LIST_INIT':
+          console.dir(action.ids);
+          return state;
+          break;
+        default:
+          return state;
+      }
+    });
+
+    var ReduxBehavior = PolymerRedux(store);
+
     Polymer({
 
       is: "nu-app",
@@ -96,16 +116,52 @@
         this._socket.onmessage = this.onMessage.bind(this);
       },
 
+      /*
+      created: function() {
+        var state = this.getState();
+        console.log(state);
+      },
+      */
+
+      _fetchMessages: function() {
+        this._socket.send(JSON.stringify({
+          event: 'inboxFetch',
+          data: {
+            filter: [], 
+            after_id: null,
+            count: 1100
+          }
+        }));
+      },
+
       onError: function(event) {
         console.log('error');
       },
 
       onOpen: function(event) {
-        console.log('open');
+        this._fetchMessages();
       },
 
       onMessage: function(event) {
-        console.log('message');
+        var response;
+
+        try {
+          response = JSON.parse(event.data);
+        } catch(e) {
+          console.error(e);
+          return;
+        }
+        if (response.event == "inboxMessages") {
+          window.setTimeout(function() {
+            this.dispatch({
+              type: 'MESSAGE_LIST_INIT',
+              ids: response.data.ids,
+              messages: response.data.messages
+            });
+          }.bind(this), 700); 
+        } else {
+          console.log(response.event);
+        }
       },
 
       handleHamburgerTap: function(event) {
@@ -116,7 +172,7 @@
         topicDialog.open();
       },
 
-      behaviors: [Polymer.AppNetworkStatusBehavior]
+      behaviors: [Polymer.AppNetworkStatusBehavior, ReduxBehavior]
 
     });
 
