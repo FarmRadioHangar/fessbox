@@ -1,0 +1,29 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="poly-app">
+  <template>
+    <style>
+      :host {
+      }
+    </style>
+
+    <div>
+      Hello app!
+    </div>
+  </template>
+
+  <script>
+    class App {
+      beforeRegister() {
+        this.is = 'poly-app';
+        this.properties = {};
+      }
+      created() {}
+      ready() {}
+      attached() {}
+      detached() {}
+      attributeChanged() {}
+    }
+    Polymer(App);
+  </script>
+</dom-module>
