@@ -13,13 +13,21 @@
   </template>
 
   <script>
+    const store = Redux.createStore((state, action) => {
+      return state;
+    });
+
+    const ReduxBehavior = PolymerRedux(store);
+
     class App {
       beforeRegister() {
         this.is = 'poly-app';
         this.properties = {};
+        this.behaviors = [ ReduxBehavior ];
       }
       created() {}
-      ready() {}
+      ready() {
+      }
       attached() {}
       detached() {}
       attributeChanged() {}
