@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
@@ -31,6 +32,11 @@
         --paper-tab-ink: rgba(255, 255, 255, 0.7);
       }
 
+      paper-badge {
+        --paper-badge-margin-left: -66px;
+        --paper-badge-margin-bottom: 19px;
+      }
+
     </style>
 
     <app-toolbar>
@@ -52,6 +58,7 @@
       </paper-tab>
       <paper-tab>
         <poly-tab label="MESSAGES" icon="communication:chat"></poly-tab>
+        <paper-badge for="number" label="4"></paper-badge>
       </paper-tab>
       <paper-tab>
         <poly-tab label="CALL HISTORY" icon="history"></poly-tab>
