@@ -11,7 +11,8 @@
     "paper-elements": "PolymerElements/paper-elements#^1.0.7",
     "app-layout": "PolymerElements/app-layout#^0.10.6",
     "polymer-redux": "^0.3.0",
-    "app-storage": "PolymerElements/app-storage#^0.9.7"
+    "app-storage": "PolymerElements/app-storage#^0.9.7",
+    "redux": "https://cdnjs.cloudflare.com/ajax/libs/redux/3.0.4/redux.js"
   },
   "devDependencies": {
     "web-component-tester": "^5.0.0"
