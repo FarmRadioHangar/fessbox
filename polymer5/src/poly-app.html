@@ -1,20 +1,60 @@
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-header.html">
 
 <dom-module id="poly-app">
   <template>
+
     <style>
-      :host {
+
+      :host {}
+
+      app-header {
+        height: 113px;
       }
+
     </style>
 
-    <div>
-      Apzz
-    </div>
+    <app-drawer-layout force-narrow>
+
+      <app-drawer id="drawer" align="right"></app-drawer>
+
+      <app-header-layout>
+
+        <app-header fixed>
+          <poly-header></poly-header>
+        </app-header fixed>
+
+        <div style="height: 800px;">
+          pages
+        </div>
+
+      </app-header-layout>
+
+    </app-drawer-layout>
+
   </template>
 
   <script>
+    const store = Redux.createStore((state, action) => {
+      return state;
+    });
+
+    const ReduxBehavior = PolymerRedux(store);
+
     Polymer({
+
       is: 'poly-app',
+
+      behaviors: [
+        Polymer.AppNetworkStatusBehavior, ReduxBehavior
+      ]
+
     });
   </script>
 </dom-module>
