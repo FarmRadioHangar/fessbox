@@ -1,0 +1,16 @@
+{
+  "name": "voxbox-polymer-frontend",
+  "authors": [
+    "Farm Radio International"
+  ],
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.7.0",
+    "iron-elements": "PolymerElements/iron-elements#^1.0.10",
+    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7"
+  },
+  "devDependencies": {
+    "web-component-tester": "^5.0.0"
+  }
+}
