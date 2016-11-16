@@ -30,9 +30,7 @@
           <poly-header></poly-header>
         </app-header fixed>
 
-        <div style="height: 800px;">
-          pages
-        </div>
+        <div style="height: 800px;">pages</div>
 
       </app-header-layout>
 
@@ -41,18 +39,34 @@
   </template>
 
   <script>
-    const store = Redux.createStore((state, action) => {
-      return state;
+    const initialState = [];
+
+    function messageReducer(state = initialState, action) {
+      switch (action.type) {
+        default:
+          console.log('action: ' + action.type);
+          return state;
+      }
+    }
+
+    const rootReducer = Redux.combineReducers({
+      messageReducer,
     });
 
-    const ReduxBehavior = PolymerRedux(store);
+    const store = Redux.createStore(rootReducer);
 
     Polymer({
 
       is: 'poly-app',
 
+      ready() {
+        this.dispatch({
+          'type': 'XXX'
+        });
+      },
+
       behaviors: [
-        Polymer.AppNetworkStatusBehavior, ReduxBehavior
+        Polymer.AppNetworkStatusBehavior, PolymerRedux(store)
       ]
 
     });
