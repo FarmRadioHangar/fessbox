@@ -1,6 +1,6 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/poly-app.html",
   "fragments": [
   ],
   "sourceGlobs": [
@@ -10,6 +10,7 @@
   ],
   "includeDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
+    "bower_components/redux/index.js"
   ]
 }
