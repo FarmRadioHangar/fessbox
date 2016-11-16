@@ -1,0 +1,69 @@
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-tab.html">
+
+<dom-module id="poly-header">
+  <template>
+
+    <style>
+
+      :host {}
+
+      app-toolbar {
+        background-color: rgb(0, 188, 212); 
+        color: white;
+        font-weight: lighter;
+        --app-toolbar-font-size: 24px;
+      }
+
+      paper-tabs {
+        background-color: #1a88ae;
+        color: #fff;
+        width: 100vw;
+        --paper-tabs-selection-bar-color: var(--paper-pink-a200); 
+      }
+
+      paper-tab {
+        --paper-tab-ink: rgba(255, 255, 255, 0.7);
+      }
+
+    </style>
+
+    <app-toolbar>
+      <div main-title>VoxBox</div>
+    </app-toolbar>
+
+    <paper-tabs selected="{{selected}}">
+      <paper-tab>
+        <poly-tab label="MIXER" icon="av:volume-up"></poly-tab>
+      </paper-tab>
+      <paper-tab>
+        <poly-tab label="MESSAGES" icon="communication:chat"></poly-tab>
+      </paper-tab>
+      <paper-tab>
+        <poly-tab label="CALL HISTORY" icon="history"></poly-tab>
+      </paper-tab>
+      <paper-tab>
+        <poly-tab label="CONTACTS" icon="communication:import-contacts"></poly-tab>
+      </paper-tab>
+    </paper-tabs>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-header',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+      },
+
+    });
+  </script>
+</dom-module>
