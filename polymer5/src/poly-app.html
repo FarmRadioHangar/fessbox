@@ -33,8 +33,9 @@
 
         <app-header fixed>
           <poly-header
-            selected = "{{selected}}"
-            online   = "[[online]]">
+            selected        = "{{selected}}"
+            online          = "[[online]]"
+            on-tap-settings = "handleToggleSettings">
           </poly-header>
         </app-header fixed>
 
@@ -126,6 +127,10 @@
 
       ready() {
         new MessageHandler(this.dispatch);
+      },
+
+      handleToggleSettings() {
+        this.$.drawer.toggle();
       },
 
       behaviors: [

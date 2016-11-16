@@ -46,7 +46,7 @@
         <iron-icon id="offline-indicator" icon="warning"></iron-icon>
       </template>
 
-      <paper-icon-button icon="settings"></paper-icon-button>
+      <paper-icon-button id="settings" on-tap="handleTap" icon="settings"></paper-icon-button>
       <paper-tooltip for="offline-indicator" offset="0">
         No connection
       </paper-tooltip>
@@ -74,6 +74,12 @@
     Polymer({
 
       is: 'poly-header',
+
+      handleTap(event) {
+        if ('settings' === event.target.id) {
+          this.fire('tap-settings');
+        }
+      },
       
       properties: {
         selected: {
