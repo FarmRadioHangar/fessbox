@@ -3,9 +3,14 @@
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-channel-list.html">
+<link rel="import" href="poly-contacts.html">
 <link rel="import" href="poly-header.html">
+<link rel="import" href="poly-logs.html">
+<link rel="import" href="poly-message-list.html">
 
 <dom-module id="poly-app">
   <template>
@@ -27,10 +32,18 @@
       <app-header-layout>
 
         <app-header fixed>
-          <poly-header></poly-header>
+          <poly-header
+            selected = "{{selected}}"
+            online   = "[[online]]">
+          </poly-header>
         </app-header fixed>
 
-        <div style="height: 800px;">pages</div>
+        <iron-pages selected=[[selected]]>
+          <poly-channel-list></poly-channel-list>
+          <poly-message-list></poly-message-list>
+          <poly-logs></poly-logs>
+          <poly-contacts></poly-contacts>
+        </iron-pages>
 
       </app-header-layout>
 
@@ -42,31 +55,30 @@
     const initialState = [];
 
     function messageReducer(state = initialState, action) {
+      console.log('Action received: <' + action.type + '>');
       switch (action.type) {
         default:
-          console.log('action: ' + action.type);
           return state;
       }
     }
 
-    const rootReducer = Redux.combineReducers({
+    const store = Redux.createStore(Redux.combineReducers({
       messageReducer,
-    });
-
-    const store = Redux.createStore(rootReducer);
+    }));
 
     Polymer({
 
       is: 'poly-app',
 
       ready() {
-        this.dispatch({
-          'type': 'XXX'
-        });
+        //this.dispatch({
+        //  'type': 'XXX'
+        //});
       },
 
       behaviors: [
-        Polymer.AppNetworkStatusBehavior, PolymerRedux(store)
+        Polymer.AppNetworkStatusBehavior, 
+        PolymerRedux(store)
       ]
 
     });
