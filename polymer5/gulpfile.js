@@ -48,7 +48,7 @@ global.config = {
 const clean = require('./gulp-tasks/clean.js');
 const images = require('./gulp-tasks/images.js');
 const project = require('./gulp-tasks/project.js');
-const babel = require('./gulp-tasks/babel.js');
+const babel   = require('gulp-babel');
 
 // The source task will split all of your source files into one
 // big ReadableStream. Source files are those in src/** as well as anything
@@ -60,7 +60,9 @@ const babel = require('./gulp-tasks/babel.js');
 function source() {
   return project.splitSource()
     // Add your own build tasks here!
-    .pipe(babel.transpile())
+    .pipe(gulpif('*.js', babel({
+      presets: ['es2015']
+    })))
     .pipe(gulpif('**/*.{png,gif,jpg,svg}', images.minify()))
     .pipe(project.rejoin()); // Call rejoin when you're finished
 }
