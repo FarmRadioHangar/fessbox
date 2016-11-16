@@ -1,5 +1,8 @@
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="poly-tab.html">
 
@@ -32,6 +35,15 @@
 
     <app-toolbar>
       <div main-title>VoxBox</div>
+
+      <template is="dom-if" if="[[!online]]">
+        <iron-icon id="offline-indicator" icon="warning"></iron-icon>
+      </template>
+
+      <paper-icon-button icon="settings"></paper-icon-button>
+      <paper-tooltip for="offline-indicator" offset="0">
+        No connection
+      </paper-tooltip>
     </app-toolbar>
 
     <paper-tabs selected="{{selected}}">
@@ -55,13 +67,17 @@
     Polymer({
 
       is: 'poly-header',
-
+      
       properties: {
         selected: {
           type: Number,
           value: 0,
           notify: true
         },
+        online: {
+          type: Boolean,
+          value: true
+        }
       },
 
     });
