@@ -23,8 +23,8 @@ global.config = {
 };
 
 // A task should return either a WriteableStream or a Promise
-const clean = require('./gulp-tasks/clean.js');
-const images = require('./gulp-tasks/images.js');
+const clean   = require('./gulp-tasks/clean.js');
+const images  = require('./gulp-tasks/images.js');
 const project = require('./gulp-tasks/project.js');
 const babel   = require('gulp-babel');
 
