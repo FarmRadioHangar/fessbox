@@ -1,0 +1,55 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="poly-message-hander">
+  <template>
+    <style>
+    </style>
+
+    <span></span>
+  </template>
+
+  <script>
+    class MessageHandler {
+
+      beforeRegister() {
+        this.is = 'poly-message-handler';
+        this.properties = {};
+      }
+
+      ready() {
+        console.log('MessageHandler:ready');
+        this.socket = new WebSocket('ws://192.168.1.7:19998');
+        this.socket.onerror   = this.onError.bind(this);
+        this.socket.onopen    = this.onOpen.bind(this);
+        this.socket.onclose   = this.onClose.bind(this);
+        this.socket.onmessage = this.onMessage.bind(this);
+      }
+
+      onError(event) {
+        this.fire('error');
+      }
+
+      onOpen(event) {
+        this.fire('open');
+      }
+
+      onClose(event) {
+        this.fire('close');
+      }
+
+      onMessage(event) {
+        let response = null;
+        try {
+          response = JSON.parse(event.data);
+        } catch(e) {
+          console.error(e);
+          return;
+        }
+        this.fire('message', response);
+      }
+
+    }
+
+    Polymer(MessageHandler);
+  </script>
+</dom-module>
