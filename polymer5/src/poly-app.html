@@ -10,6 +10,7 @@
 <link rel="import" href="poly-contacts.html">
 <link rel="import" href="poly-header.html">
 <link rel="import" href="poly-logs.html">
+<link rel="import" href="poly-message-handler.html">
 <link rel="import" href="poly-message-list.html">
 
 <dom-module id="poly-app">
@@ -24,6 +25,13 @@
       }
 
     </style>
+
+    <poly-message-handler
+      on-open    = "handleConnectionOpened"
+      on-close   = "handleConnectionClosed"
+      on-message = "handleMessage"
+      on-error   = "handleError">
+    </poly-message-handler>
 
     <app-drawer-layout force-narrow>
 
@@ -53,94 +61,46 @@
   </template>
 
   <script>
-
-    class MessageHandler {
-
-      constructor(dispatcher) {
-        if (!dispatcher) {
-          console.error('MessageHandler: No Redux dispatch function provided.');
-          return;
-        }
-        if ('function' !== typeof dispatcher) {
-          console.error('MessageHandler: Invalid Redux dispatch function.');
-          return;
-        }
-        this.dispatch = dispatcher;
-        this.socket = new WebSocket('ws://192.168.1.7:19998');
-        this.socket.onerror = this.onError.bind(this);
-        this.socket.onopen = this.onOpen.bind(this);
-        this.socket.onclose = this.onClose.bind(this);
-        this.socket.onmessage = this.onMessage.bind(this);
-      }
-
-      onError(event) {
-        console.log('error');
-      }
-
-      onOpen(event) {
-        console.log('open');
-      }
-
-      onClose(event) {
-        console.log('close');
-      }
-
-      onMessage(event) {
-        let response = null;
-        try {
-          response = JSON.parse(event.data);
-        } catch(e) {
-          console.error(e);
-          return;
-        }
-        switch (response.event) {
-          case 'initialize':
-            /* @TODO */
-            break;
-          case 'inboxMessages':
-            /* @TODO */
-            break;
-          default:
-            console.warn('Unhandled message type: ' + response.event);
-        }
-      }
-
-    }
-
-    const initialState = [];
-
-    function messageReducer(state = initialState, action) {
-      console.log('Redux action received: <' + action.type + '>');
-      switch (action.type) {
-        default:
-          return state;
-      }
-    }
-
-    const store = Redux.createStore(Redux.combineReducers({
-      messageReducer,
-    }));
-
-    window.ReduxBehavior = PolymerRedux(store);
-
     Polymer({
 
       is: 'poly-app',
 
-      ready() {
-        new MessageHandler(this.dispatch);
-      },
+      ready() {},
 
       handleToggleSettings() {
         this.$.drawer.toggle();
       },
 
+      handleConnectionOpened() {
+        console.log('handleConnectionOpened');
+      },
+
+      handleConnectionClosed() {
+        console.log('handleConnectionClosed');
+      },
+
+      handleMessage(event, response) {
+        switch (response.event) {
+          case 'initialize':
+            console.log('initialize');
+            break;
+          case 'inboxMessages':
+            console.log('inboxMessages');
+            break;
+          default:
+            console.warn('Unhandled message type: ' + response.event);
+        }
+      },
+
+      handleError() {
+        console.log('handleError');
+      },
+
       behaviors: [
         Polymer.AppNetworkStatusBehavior, 
-        ReduxBehavior
+        PolymerRedux(store)
       ]
 
     });
-
   </script>
 </dom-module>
