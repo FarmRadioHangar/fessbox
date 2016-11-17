@@ -1,13 +1,19 @@
-const initialState = [];
+const initialState = {};
 
-function messageReducer(state = initialState, action) {
+function messages(state = initialState, action) {
   console.log('Redux action received: <' + action.type + '>');
   switch (action.type) {
+    case 'INBOX_MESSAGES':
+      const { ids, messages } = action.data
+      return {
+        ids,
+        messages
+      };
     default:
       return state;
   }
 }
 
 const store = Redux.createStore(Redux.combineReducers({
-  messageReducer,
+  messages,
 }));

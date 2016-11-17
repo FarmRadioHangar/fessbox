@@ -26,7 +26,8 @@
 
     </style>
 
-    <poly-message-handler
+    <poly-message-handler 
+      id         = "messagehandler"
       on-open    = "handleConnectionOpened"
       on-close   = "handleConnectionClosed"
       on-message = "handleMessage"
@@ -65,7 +66,8 @@
 
       is: 'poly-app',
 
-      ready() {},
+      ready() {
+      },
 
       handleToggleSettings() {
         this.$.drawer.toggle();
@@ -73,6 +75,15 @@
 
       handleConnectionOpened() {
         console.log('handleConnectionOpened');
+
+        this.$.messagehandler.send({
+          event: 'inboxFetch',
+          data: {
+            filter: [], 
+            after_id: null,
+            count: 100
+          }
+        });
       },
 
       handleConnectionClosed() {
@@ -85,7 +96,10 @@
             console.log('initialize');
             break;
           case 'inboxMessages':
-            console.log('inboxMessages');
+            this.dispatch({
+              type: 'INBOX_MESSAGES',
+              data: response.data
+            });
             break;
           default:
             console.warn('Unhandled message type: ' + response.event);

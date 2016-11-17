@@ -48,6 +48,10 @@
         this.fire('message', response);
       }
 
+      send(json) {
+        this.socket.send(JSON.stringify(json));
+      }
+
     }
 
     Polymer(MessageHandler);
