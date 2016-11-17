@@ -1,23 +1,69 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
 
 <dom-module id="poly-message-list">
   <template>
 
     <style>
 
-      :host {}
+      :host {
+        display: block;
+        height: calc(100vh - 115px);
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+      }
+
+      iron-list {
+        flex: 1 1 auto;
+      }
 
     </style>
 
-    <div>
-      Message list
-    </div>
+    <iron-list
+      id             = "message-list"
+      items          = "[[items]]"
+      selected-items = "{{selectedItems}}"
+      selection-enabled 
+      multi-selection
+      grid>
+
+      <template>
+
+        <div>
+          template
+        </div>
+
+      </template>
+
+    </iron-list>
 
   </template>
 
   <script>
     Polymer({
+
       is: 'poly-message-list',
+
+      properties: {
+        items: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+        loading: {
+          type: Boolean,
+          value: false
+        },
+        selectedItems: {
+          type: Object
+        }
+      },
+
+      behaviors: [
+        ReduxBehavior
+      ]
+
     });
   </script>
 </dom-module>
