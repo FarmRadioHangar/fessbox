@@ -54,20 +54,6 @@
 
   <script>
 
-    const initialState = [];
-
-    function messageReducer(state = initialState, action) {
-      console.log('Redux action received: <' + action.type + '>');
-      switch (action.type) {
-        default:
-          return state;
-      }
-    }
-
-    const store = Redux.createStore(Redux.combineReducers({
-      messageReducer,
-    }));
-
     class MessageHandler {
 
       constructor(dispatcher) {
@@ -121,6 +107,22 @@
 
     }
 
+    const initialState = [];
+
+    function messageReducer(state = initialState, action) {
+      console.log('Redux action received: <' + action.type + '>');
+      switch (action.type) {
+        default:
+          return state;
+      }
+    }
+
+    const store = Redux.createStore(Redux.combineReducers({
+      messageReducer,
+    }));
+
+    window.ReduxBehavior = PolymerRedux(store);
+
     Polymer({
 
       is: 'poly-app',
@@ -135,7 +137,7 @@
 
       behaviors: [
         Polymer.AppNetworkStatusBehavior, 
-        PolymerRedux(store)
+        ReduxBehavior
       ]
 
     });
