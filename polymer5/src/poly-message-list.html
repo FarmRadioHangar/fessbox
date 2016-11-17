@@ -1,5 +1,6 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="poly-message-list">
   <template>
@@ -61,10 +62,9 @@
       },
 
       behaviors: [
-        ReduxBehavior
+        PolymerRedux(store)
       ]
 
     });
   </script>
 </dom-module>
-
