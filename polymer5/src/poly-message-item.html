@@ -1,0 +1,96 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="poly-message-item">
+  <template>
+
+    <style include="iron-flex"></style>
+
+    <style>
+
+      :host {
+      }
+
+      paper-material {
+        height: 210px;
+        margin: 10px;
+        background: white;
+        padding: 0 12px;
+      }
+
+      paper-item-body {
+        justify-content: initial;
+        padding: 12px 12px 12px 0;
+      }
+
+      .item {
+        @apply(--layout-vertical);
+      }
+
+      .meta {
+        @apply(--layout-horizontal);
+        align-items: top;
+      }
+
+      .content {
+        min-height: 100px; 
+        padding: 0;
+      }
+
+      .controls {
+        align-self: flex-end;
+        @apply(--layout-horizontal);
+      }
+
+    </style>
+
+    <paper-material>
+      <div class="item">
+
+        <div class="meta">
+          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]">
+          </paper-checkbox>
+          <paper-item-body>
+            <div secondary class="date">[[formatDate(item.timestamp)]]</div>
+            <div>[[item.endpoint]]</div>
+          </paper-item-body>
+        </div>
+
+        <div class="content">
+          content
+        </div>
+
+        <div class="controls">
+          controls
+        </div>
+
+      </div>
+    </paper-material>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-message-item',
+
+      formatDate(stamp) {
+        return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
+      },
+
+      toggleSelected(event) {
+        this.fire('toggle-selected');
+      },
+
+      properties: {
+        selected: {
+          type: Boolean,
+          value: false
+        }
+      }
+
+    });
+  </script>
+</dom-module>
+    

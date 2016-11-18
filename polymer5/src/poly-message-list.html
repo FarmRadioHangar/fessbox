@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-message-item.html">
 
 <dom-module id="poly-message-list">
   <template>
@@ -19,6 +20,11 @@
         flex: 1 1 auto;
       }
 
+      .list-item {
+        height: 230px;
+        width: 290px;
+      }
+
     </style>
 
     <iron-list
@@ -31,8 +37,13 @@
 
       <template>
 
-        <div>
-          template
+        <div class="list-item">
+          <poly-message-item 
+            item               = "[[item]]"
+            index              = "[[index]]"
+            selected           = "[[selected]]"
+            on-toggle-selected = "handleToggleSelected">
+          </poly-message-item>
         </div>
 
       </template>
@@ -58,6 +69,10 @@
         selectedItems: {
           type: Object
         }
+      },
+
+      handleToggleSelected: function(event) {
+        this.$.messageList.toggleSelectionForItem(event.model.item);
       },
 
       behaviors: [

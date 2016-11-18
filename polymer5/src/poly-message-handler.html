@@ -18,8 +18,8 @@
 
       ready() {
         console.log('MessageHandler:ready');
-        //this.socket = new WebSocket('ws://192.168.1.7:19998');
-        this.socket = new WebSocket('ws://thehangar.farmradio.org:51234');
+        this.socket = new WebSocket('ws://192.168.1.7:19998');
+        //this.socket = new WebSocket('ws://thehangar.farmradio.org:51234');
         this.socket.onerror   = this.onError.bind(this);
         this.socket.onopen    = this.onOpen.bind(this);
         this.socket.onclose   = this.onClose.bind(this);
