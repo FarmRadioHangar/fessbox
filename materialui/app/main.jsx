@@ -20,7 +20,9 @@ import Root from './modules/root.jsx'
 import getUrlParam from './urlparams'
 
 const userId  = getUrlParam('user_id') 
-const hostUrl = getUrlParam('host_url')  
+const hostUrl = getUrlParam('host_url') || (window.location.hostname + ':19998');
+
+console.log('ws url: ' + hostUrl);
 
 const ws = new ReconnectingWebSocket(`ws://${hostUrl}/${userId ? `?user_id=${userId}` : ''}`) 
 
