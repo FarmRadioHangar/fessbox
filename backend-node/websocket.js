@@ -47,7 +47,7 @@ exports.startListening = function(options) {
 					ws.send(serializeEvent("input_error", "message format error, should be { event: String, data: Object }"));
 				} else {
 					// debug: return to sender and print
-					ws.send(serializeEvent("echo", message));
+					//ws.send(serializeEvent("echo", message));
 
 					if (!eventHandlers[message.event]) {
 						myLib.consoleLog('debug', 'websocket::input_error', "event handler not found", message);
@@ -55,7 +55,9 @@ exports.startListening = function(options) {
 					} else {
 						eventHandlers[message.event](location.query.user_id, message.data, function (event, data, target) {
 							data = serializeEvent(event, data);
-							myLib.consoleLog('debug', 'websocket::emitEvent', target, data);
+							if (event !== 'pong') {
+								myLib.consoleLog('debug', 'websocket::emitEvent', target, data);
+							}
 							switch (target) {
 								case 'self':
 									ws.send(data);

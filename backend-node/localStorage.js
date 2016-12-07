@@ -1,6 +1,5 @@
 var fs = require("fs");
-var redis = require("redis"),
-	redisClient = redis.createClient();
+var redisClient = require("./redisClient");
 var astConf = require("./config/asterisk.json");
 var stateFile = __dirname + "/state/snapshot.json";
 
@@ -215,13 +214,30 @@ function saveChannel(channel_id, cb) {
    */
 }
 
-function messageTagAdd(message_ids, tag, cb) {
-	redisClient.sadd("msgTags:" + tag, message_ids, cb);
+function messageTagAdd(message_ids, tags, cb) {
+	var redisMulti = redisClient.multi();
+	tags.forEach(function(tag){
+		redisMulti().sadd("msgTags:" + tag, message_ids);
+	});
+	redisMulti.exec(cb);
 }
 
-function messageTagRemove(message_ids, tag, cb) {
-	redisClient.srem("msgTags:" + tag, message_ids, cb);
+function messageTagRemove(message_ids, tags, cb) {
+	var redisMulti = redisClient.multi();
+	tags.forEach(function(tag){
+		redisMulti().srem("msgTags:" + tag, message_ids);
+	});
+	redisMulti.exec(cb);
+	//redisClient.srem("msgTags:" + tag, message_ids, cb);
 }
+
+function messagesUpdate(message_ids, properties) {
+	var redisMulti = redisClient.multi();
+	message_ids.forEach(function(message_id){
+		redisMulti().hmset("inbox." + message_id, properties);
+	});
+	redisMulti.exec(cb);
+};
 
 function messageSave(message_id, message) {
 	/*

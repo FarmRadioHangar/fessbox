@@ -271,7 +271,6 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 				var old_mode = channel.mode;
 				if (mixerLib.channelMode(channel_id, { mode: new_mode })) {
 					mixerLib.channelUpdateEvent([channel_id]);
-					console.error("channel mode", old_mode, new_mode);
 					if (old_mode === 'ring' && new_mode === 'master') {
 						myLib.jsonLog({
 							endpoint: channel.contact.number,

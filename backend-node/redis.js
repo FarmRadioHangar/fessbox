@@ -11,6 +11,6 @@ exports.set = function(key, value) {
 exports.fetch = function(key, count, from_id, cb) {
 
 	client.lrange(key, 0, count, function(err, reply) {
-		    console.log(reply); // ['angularjs', 'backbone']
+		    console.error(reply); // ['angularjs', 'backbone']
 	});
 };

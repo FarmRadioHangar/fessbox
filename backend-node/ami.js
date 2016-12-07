@@ -11,8 +11,8 @@ var ami = new require('asterisk-manager')(amiConf.port, amiConf.host, amiConf.us
 ami.keepConnected();
 
 	s.asterisk = {
-	//	hosts: {},
-		sms_out: {},
+		sms_out: {}, // map for storing pending outgoing sms
+		sms_in: new Map(), // map for storing multipart incoming sms
 		channels: {},
 		conference: {
 //			input: null,
@@ -84,7 +84,7 @@ ami.on('devicestatelistcomplete', function(evt) {
 
 	ami.action({
 		action: "ConfbridgeList",
-		conference: astConf.virtual.master
+		conference: astConf.virtual.master.split('@')[0]
 	}, function(err, res) {
 		// { response: 'Success', actionid: '1447157967259', eventlist: 'start', message: 'Confbridge user list will follow' }
 		if (!err && res.response === 'Success') { // 'confbridgelist' events will follow
@@ -260,7 +260,7 @@ ami.on('coreshowchannel', function (evt) {
 // shoud happen only on init
 ami.on('confbridgelist', function (evt) {
 //	{"event":"ConfbridgeList","actionid":"1447157967259","conference":"2663","calleridnum":"703","calleridname":"Damjan Laptop","channel":"SIP/703-00000009","admin":"No","markeduser":"No","muted":"No"}
-	if (evt.conference == astConf.virtual.master) {
+	if (evt.conference == astConf.virtual.master.split('@')[0]) {
 		var channelInfo = evt.channel.split(/[\/-]/, 3);
 		if (channelInfo[0] === 'ALSA') {
 			s.asterisk.conference.on_air = evt.channel;
@@ -337,15 +337,44 @@ ami.on('donglecallstatechange', function(evt) {
 });
 
 ami.on('donglenewsmsbase64', function(evt) {
-	var prefix = new RegExp('^\\' + amiConf.country_prefix);
-	engineApi.inboxUpdate({
-		type: 'sms_in',
-		timestamp: Date.now(),
-		channel_id: evt.device,
-		endpoint: evt.from.replace(prefix, '0'),
-		content: new Buffer(evt.message, 'base64').toString("utf8")
-	});
 //	console.error(JSON.stringify(evt));
+	var prefix = new RegExp('^\\' + amiConf.country_prefix);
+	var timeout = 19900; // number of mili-seconds to wait for next part of sms
+	var sms_max_length = 204; // 204 is the length of the base64 encoded 160 chars
+	var inboxUpdateMultipart = function () {
+		engineApi.inboxUpdate(s.asterisk.sms_in.get(evt.from).data);
+		s.asterisk.sms_in.delete(evt.from);
+	};
+
+	// update previos part of multipart sms if exists
+	if (s.asterisk.sms_in.has(evt.from)) {
+		clearTimeout(s.asterisk.sms_in.get(evt.from).timeout);
+		s.asterisk.sms_in.get(evt.from).data.content += new Buffer(evt.message, 'base64').toString("utf8");
+		s.asterisk.sms_in.get(evt.from).data.timestamp = Date.now();
+		//check if message has potentialy more parts
+		if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
+			s.asterisk.sms_in.get(evt.from).timeout = setTimeout(inboxUpdateMultipart, timeout);
+		} else {
+			inboxUpdateMultipart();
+		}
+	} else {
+		var data = {
+			type: 'sms_in',
+			timestamp: Date.now(),
+			channel_id: evt.device,
+			endpoint: evt.from.replace(prefix, '0'),
+			content: new Buffer(evt.message, 'base64').toString("utf8")
+		};
+
+		if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
+			s.asterisk.sms_in.set(evt.from, {
+				data: data,
+				timeout: setTimeout(inboxUpdateMultipart, timeout)
+			});
+		} else {
+			engineApi.inboxUpdate(data);
+		}
+	}
 });
 
 //todo: get user info via addressBook api call on newchannel event instead of using this event
@@ -440,16 +469,29 @@ ami.on('hanguprequest', function(evt) {
 	}
 });
 
+ami.on("confbridgestart", function(evt) {
+//	{"event":"ConfbridgeStart","privilege":"call,all","conference":"2663","bridgeuniqueid":"511f57cb-9d48-422e-94e3-4ef85974272d","bridgetype":"base","bridgetechnology":"softmix","bridgecreator":"ConfBridge","bridgename":"2663","bridgenumchannels":"0"}
+	if (evt.conference === astConf.virtual.master.split('@')[0]) {
+		if (evt.bridgenumchannels == "0") {
+			consoleToMaster();
+		}
+
+		console.error("ConfbridgeStart", evt.bridgenumchannels);
+	}
+});
+
 ami.on('confbridgejoin', function(evt) {
 //	{"event":"ConfbridgeJoin","privilege":"call,all","channel":"SIP/703-00000000","uniqueid":"1444910756.0","conference":"2663","calleridnum":"703","calleridname":"Damjan Laptop"}
 //	{"event":"ConfbridgeJoin","privilege":"call,all","conference":"2663","bridgeuniqueid":"e245cfd0-8b0b-45ca-98e1-7e45e1f3aea4","bridgetype":"base","bridgetechnology":"softmix","bridgecreator":"ConfBridge","bridgename":"2663","bridgenumchannels":"0","channel":"Dongle/airtel1-0100000003","channelstate":"6","channelstatedesc":"Up","calleridnum":"+38975562837","calleridname":"airtel1","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-internal","exten":"STARTMEETME","priority":"5","uniqueid":"1471239540.45","linkedid":"1471239540.45","admin":"No"}
-	if (evt.conference === astConf.virtual.master) {
+	if (evt.conference === astConf.virtual.master.split('@')[0]) {
 		var channelInfo = evt.channel.split(/[\/-]/, 3);
 
 		if (s.asterisk.channels[channelInfo[1]]) {
-			if (!evt.bridgenumchannels == "0") {
+/* moved to "confbridgestart" event
+			if (evt.bridgenumchannels == "0") {
 				consoleToMaster();
 			}
+*/
 			s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 			engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
 		} else if (channelInfo[0] === 'ALSA') {
@@ -500,8 +542,9 @@ ami.on('dialend', function (evt) {
 	var  channelInfo = evt.destchannel.split(/[\/-]/, 3);
 	if (channelInfo[0] === 'Dongle' && s.ui.mixer.channels[channelInfo[1]]) {
 		if (evt.dialstatus === "ANSWER") {
-			var localChannel = evt.channel.split(/[\/@]/, 3);
-			if (localChannel[1] === astConf.virtual.master) {
+			//var localChannel = evt.channel.split(/[\/@]/, 3);
+			//if (localChannel[1] === astConf.virtual.master) {
+			if (evt.channel.indexOf(astConf.virtual.master) !== -1) {
 				engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
 			}
 		}
@@ -688,6 +731,7 @@ function getVar(channel, variable, cb) {
 	});
 }
 
+/*
 function amiConnectToMaster(channel) {
 /*
 	ACTION: Redirect
@@ -695,7 +739,7 @@ function amiConnectToMaster(channel) {
 	Context: default
 	Exten: 5558530
 	Priority: 1
-*/
+
 	ami.action({
 		action: "Redirect",
 		channel: channel,
@@ -710,7 +754,7 @@ function amiConnectToMaster(channel) {
 		}
 	});
 };
-
+*/
 function connectNumbers(number1, number2) {
 //var number1 = "0687754487";
 //var number2 = "0786082881";
@@ -841,11 +885,12 @@ function amiOriginate(channel, destination, cb) {
 
 function amiRedirect(channel, destination, cb) {
 	myLib.consoleLog('debug', 'amiRedirect', [channel, destination]);
+	destination = destination.split('@');
 	ami.action({
 		action: "Redirect",
 		channel: channel,
-		context: "from-internal",
-		exten: destination,
+		context: destination[1] ? destination[1] : "from-internal",
+		exten: destination[0],
 		priority: 1
 	}, function(err, res) {
 		if (!err) {
@@ -895,7 +940,7 @@ exports.originateLocal = function (number, destination, channel_id, cb) {
 	}
    */
 	if (destination === 'master') {
-		destination = "Local/" + astConf.virtual[destination] + "@ext-meetme";
+		destination = "Local/" + astConf.virtual[destination];
 	} else {
 		destination = "SIP/" + destination;
 	}
@@ -1078,9 +1123,11 @@ exports.setMasterRecording = function (value, cb) {
 };
 
 exports.sendContent = function(data, cb) {
-	var dongle_id = data.channel_id ? data.channel_id : astConf.defaultSMS;
+	if (!data.channel_id) {
+		data.channel_id = astConf.defaultSMS;
+	}
 	var timeout = 40; //seconds
-	sendSMS(dongle_id, data.endpoint, data.content, function(err, key){
+	sendSMS(data.channel_id, data.endpoint, data.content, function(err, key){
 		if (!err) {
 			s.asterisk.sms_out[key] = {
 				data: data,
@@ -1202,7 +1249,7 @@ ami.on('peerstatus', function(evt) {
 var consoleToMaster = function() {
 	ami.action({
 		action: "Command",
-		command: "console dial " + astConf.virtual.master + "@ext-meetme" // todo: dial different context with appropriete confbridge properties
+		command: "console dial " + astConf.virtual.master // todo: dial different context with appropriete confbridge properties
 	}, function(err, res) {
 		myLib.consoleLog('debug', "console dial", res);
 		if (!err) {

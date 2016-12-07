@@ -45,6 +45,7 @@ exports.inboxUpdate = function (data) {
 		var msgType = data.type.split('_');
 		myLib.jsonLog({
 			endpoint: data.endpoint,
+			channel_id: data.channel_id,
 			type: msgType[0],
 			direction: msgType[1]
 		}, ["telegraf"], ["inbox"], { message: { value: 1 }}, data.content);
