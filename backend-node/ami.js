@@ -11,8 +11,8 @@ var ami = new require('asterisk-manager')(amiConf.port, amiConf.host, amiConf.us
 ami.keepConnected();
 
 	s.asterisk = {
-	//	hosts: {},
-		sms_out: {},
+		sms_out: {}, // map for storing pending outgoing sms
+		sms_in: new Map(), // map for storing multipart incoming sms
 		channels: {},
 		conference: {
 //			input: null,
@@ -84,7 +84,7 @@ ami.on('devicestatelistcomplete', function(evt) {
 
 	ami.action({
 		action: "ConfbridgeList",
-		conference: astConf.virtual.master
+		conference: astConf.virtual.master.split('@')[0]
 	}, function(err, res) {
 		// { response: 'Success', actionid: '1447157967259', eventlist: 'start', message: 'Confbridge user list will follow' }
 		if (!err && res.response === 'Success') { // 'confbridgelist' events will follow
@@ -97,36 +97,14 @@ ami.on('devicestatelistcomplete', function(evt) {
 //					module: 'chan_alsa'
 					action: "Command",
 					command: 'core show channeltype console'
-				},  function(err, res) {
-						myLib.consoleLog('debug', "ModuleCheck", [err, res]);
+				}, function(err, res) {
+					myLib.consoleLog('debug', "ModuleCheck", [err, res]);
 					if (err) {
 						myLib.consoleLog('error', "ModuleCheck", err);
 						s.ui.mixer.master.in = null;
 						s.ui.mixer.master.out = null;
-						eventCallbacks.initialized();
-					} else {
-						ami.action({
-							action: "Command",
-							command: "console dial " + astConf.virtual.master + "@from-internal" // todo: dial different context with appropriete confbridge properties
-						}, function(err, res) {
-							myLib.consoleLog('debug',  "console dial", res);
-							if (!err) {
-								myLib.consoleLog('log', 'init', "Console connected to master");
-								s.ui.mixer.master.on_air = true;
-								if (astConf.console.in) {
-									//s.ui.mixer.master.in = s.loadSettings("master.in");
-									//s.ui.mixer.host = s.loadSettings("master.in"); // obsolete
-								}
-								if (astConf.console.out) {
-									//s.ui.mixer.master.out = s.loadSettings("master.out");
-								}
-							} else {
-								s.ui.mixer.master.in = null;
-								s.ui.mixer.master.out = null;
-								eventCallbacks.initialized();
-							}
-						});
 					}
+					eventCallbacks.initialized();
 				});
 			}
 		}
@@ -257,7 +235,7 @@ ami.on('coreshowchannel', function (evt) {
 //		case 'Local':
 		case 'SIP':
 			if (astConf.operators.indexOf(channelInfo[1]) !== -1) {
-					console.log('internal name set', evt.channel);
+					console.error('internal name set', evt.channel);
 				s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 				if (evt.application === "ConfBridge") { //todo: make sure is the 'master' conference
 					s.ui.mixer.channels[channelInfo[1]].mode = 'master';
@@ -282,12 +260,12 @@ ami.on('coreshowchannel', function (evt) {
 // shoud happen only on init
 ami.on('confbridgelist', function (evt) {
 //	{"event":"ConfbridgeList","actionid":"1447157967259","conference":"2663","calleridnum":"703","calleridname":"Damjan Laptop","channel":"SIP/703-00000009","admin":"No","markeduser":"No","muted":"No"}
-	if (evt.conference == astConf.virtual.master) {
+	if (evt.conference == astConf.virtual.master.split('@')[0]) {
 		var channelInfo = evt.channel.split(/[\/-]/, 3);
 		if (channelInfo[0] === 'ALSA') {
 			s.asterisk.conference.on_air = evt.channel;
 		} else {
-			//console.log(s.ui.mixer.channels, channelInfo[1]);
+			//console.error(s.ui.mixer.channels, channelInfo[1]);
 			//s.asterisk.conference.members[channelInfo[1]] = evt.channel;
 			s.ui.mixer.channels[channelInfo[1]].mode = 'master';
 			s.ui.mixer.channels[channelInfo[1]].muted = evt.muted === "No" ? false : true;
@@ -359,15 +337,44 @@ ami.on('donglecallstatechange', function(evt) {
 });
 
 ami.on('donglenewsmsbase64', function(evt) {
-	var prefix = new RegExp('^\\' + amiConf.country_prefix);
-	engineApi.inboxUpdate({
-		type: 'sms_in',
-		timestamp: Date.now(),
-		channel_id: evt.device,
-		endpoint: evt.from.replace(prefix, '0'),
-		content: new Buffer(evt.message, 'base64').toString("utf8")
-	});
 //	console.error(JSON.stringify(evt));
+	var prefix = new RegExp('^\\' + amiConf.country_prefix);
+	var timeout = 19900; // number of mili-seconds to wait for next part of sms
+	var sms_max_length = 204; // 204 is the length of the base64 encoded 160 chars
+	var inboxUpdateMultipart = function () {
+		engineApi.inboxUpdate(s.asterisk.sms_in.get(evt.from).data);
+		s.asterisk.sms_in.delete(evt.from);
+	};
+
+	// update previos part of multipart sms if exists
+	if (s.asterisk.sms_in.has(evt.from)) {
+		clearTimeout(s.asterisk.sms_in.get(evt.from).timeout);
+		s.asterisk.sms_in.get(evt.from).data.content += new Buffer(evt.message, 'base64').toString("utf8");
+		s.asterisk.sms_in.get(evt.from).data.timestamp = Date.now();
+		//check if message has potentialy more parts
+		if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
+			s.asterisk.sms_in.get(evt.from).timeout = setTimeout(inboxUpdateMultipart, timeout);
+		} else {
+			inboxUpdateMultipart();
+		}
+	} else {
+		var data = {
+			type: 'sms_in',
+			timestamp: Date.now(),
+			channel_id: evt.device,
+			endpoint: evt.from.replace(prefix, '0'),
+			content: new Buffer(evt.message, 'base64').toString("utf8")
+		};
+
+		if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
+			s.asterisk.sms_in.set(evt.from, {
+				data: data,
+				timeout: setTimeout(inboxUpdateMultipart, timeout)
+			});
+		} else {
+			engineApi.inboxUpdate(data);
+		}
+	}
 });
 
 //todo: get user info via addressBook api call on newchannel event instead of using this event
@@ -420,6 +427,9 @@ ami.on('musiconholdstart', function(evt) {
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	if (s.asterisk.channels[channelInfo[1]]) {
 		engineApi.channelUpdate(channelInfo[1], { mode: 'on_hold' });
+	} else if (channelInfo[0] === 'ALSA') {
+		consoleHangup();
+		s.asterisk.conference.on_air = null;
 	}
 });
 
@@ -459,11 +469,29 @@ ami.on('hanguprequest', function(evt) {
 	}
 });
 
+ami.on("confbridgestart", function(evt) {
+//	{"event":"ConfbridgeStart","privilege":"call,all","conference":"2663","bridgeuniqueid":"511f57cb-9d48-422e-94e3-4ef85974272d","bridgetype":"base","bridgetechnology":"softmix","bridgecreator":"ConfBridge","bridgename":"2663","bridgenumchannels":"0"}
+	if (evt.conference === astConf.virtual.master.split('@')[0]) {
+		if (evt.bridgenumchannels == "0") {
+			consoleToMaster();
+		}
+
+		console.error("ConfbridgeStart", evt.bridgenumchannels);
+	}
+});
+
 ami.on('confbridgejoin', function(evt) {
 //	{"event":"ConfbridgeJoin","privilege":"call,all","channel":"SIP/703-00000000","uniqueid":"1444910756.0","conference":"2663","calleridnum":"703","calleridname":"Damjan Laptop"}
-	if (evt.conference === astConf.virtual.master) {
+//	{"event":"ConfbridgeJoin","privilege":"call,all","conference":"2663","bridgeuniqueid":"e245cfd0-8b0b-45ca-98e1-7e45e1f3aea4","bridgetype":"base","bridgetechnology":"softmix","bridgecreator":"ConfBridge","bridgename":"2663","bridgenumchannels":"0","channel":"Dongle/airtel1-0100000003","channelstate":"6","channelstatedesc":"Up","calleridnum":"+38975562837","calleridname":"airtel1","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-internal","exten":"STARTMEETME","priority":"5","uniqueid":"1471239540.45","linkedid":"1471239540.45","admin":"No"}
+	if (evt.conference === astConf.virtual.master.split('@')[0]) {
 		var channelInfo = evt.channel.split(/[\/-]/, 3);
+
 		if (s.asterisk.channels[channelInfo[1]]) {
+/* moved to "confbridgestart" event
+			if (evt.bridgenumchannels == "0") {
+				consoleToMaster();
+			}
+*/
 			s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 			engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
 		} else if (channelInfo[0] === 'ALSA') {
@@ -474,7 +502,7 @@ ami.on('confbridgejoin', function(evt) {
 			if (s.ui.mixer.master.out && typeof s.ui.mixer.master.out.muted === 'boolean') {
 				setAmiChannelMuted(evt.channel, s.ui.mixer.master.out.muted, 'out', function() {});
 			}
-			eventCallbacks.initialized();
+			//eventCallbacks.initialized();
 			/*
 					//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
 					exports.setChannelVolume(channelInfo[1], s.ui.mixer.channels[channelInfo[1]].level, function() {});
@@ -514,8 +542,9 @@ ami.on('dialend', function (evt) {
 	var  channelInfo = evt.destchannel.split(/[\/-]/, 3);
 	if (channelInfo[0] === 'Dongle' && s.ui.mixer.channels[channelInfo[1]]) {
 		if (evt.dialstatus === "ANSWER") {
-			var localChannel = evt.channel.split(/[\/@]/, 3);
-			if (localChannel[1] === astConf.virtual.master) {
+			//var localChannel = evt.channel.split(/[\/@]/, 3);
+			//if (localChannel[1] === astConf.virtual.master) {
+			if (evt.channel.indexOf(astConf.virtual.master) !== -1) {
 				engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
 			}
 		}
@@ -527,7 +556,7 @@ ami.on('newchannel', function(evt) {
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-input","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.1"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-output","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.2"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Dongle/airtel2-0100000000","channelstate":"4","channelstatedesc":"Ring","calleridnum":"+255682120818","calleridname":"airtel2","accountcode":"","exten":"+255788333330","context":"from-trunk","uniqueid":"1446819272.2"}
-	console.log(JSON.stringify(evt, null, 4));
+	console.error(JSON.stringify(evt, null, 4));
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	var newChannel = {};
 	switch (channelInfo[0]) {
@@ -547,8 +576,8 @@ ami.on('newchannel', function(evt) {
 								name:  evt.calleridname
 							}
 						});
-						console.log("xxx", channelInfo[1], s.ui.mixer.channels);
-						console.log("setting initial chan volume", s.ui.mixer.channels[channelInfo[1]].level);
+						console.error("xxx", channelInfo[1], s.ui.mixer.channels);
+						console.error("setting initial chan volume", s.ui.mixer.channels[channelInfo[1]].level);
 						//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
 						exports.setChannelVolume(channelInfo[1], s.ui.mixer.channels[channelInfo[1]].level, function() {});
 						if (s.ui.mixer.channels[channelInfo[1]].muted) {
@@ -620,13 +649,13 @@ function amiSimpleAction(action, channel, cb) {
 			if (cb) {
 				cb(res);
 			} else {
-				console.log(JSON.stringify(res));
+				console.error(JSON.stringify(res));
 			}
 		} else {
 			if (cb) {
 				cb(err,res);
 			} else {
-				console.log(JSON.stringify(err));
+				console.error(JSON.stringify(err));
 			}
 		}
 	});
@@ -638,13 +667,13 @@ function amiAction(options, cb) {
 			if (cb) {
 				cb(res);
 			} else {
-				console.log(JSON.stringify(res));
+				console.error(JSON.stringify(res));
 			}
 		} else {
 			if (cb) {
 				cb(err,res);
 			} else {
-				console.log(JSON.stringify(err));
+				console.error(JSON.stringify(err));
 			}
 		}
 	});
@@ -660,13 +689,13 @@ function amiSimpleCommand(command, cb) {
 			if (cb) {
 				cb(res);
 			} else {
-				console.log(JSON.stringify(res));
+				console.error(JSON.stringify(res));
 			}
 		} else {
 			if (cb) {
 				cb(err,res);
 			} else {
-				console.log(JSON.stringify(err));
+				console.error(JSON.stringify(err));
 			}
 		}
 	});
@@ -680,9 +709,9 @@ function setVar(channel, variable, value) {
 		value: value
 	}, function(err, res) {
 		if (!err) {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(err.toString());
+			console.error(err.toString());
 		}
 	});
 }
@@ -695,13 +724,14 @@ function getVar(channel, variable, cb) {
 	}, function(err, res) {
 		if (!err) {
 			cb(res.value);
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(err.toString());
+			console.error(err.toString());
 		}
 	});
 }
 
+/*
 function amiConnectToMaster(channel) {
 /*
 	ACTION: Redirect
@@ -709,7 +739,7 @@ function amiConnectToMaster(channel) {
 	Context: default
 	Exten: 5558530
 	Priority: 1
-*/
+
 	ami.action({
 		action: "Redirect",
 		channel: channel,
@@ -718,13 +748,13 @@ function amiConnectToMaster(channel) {
 		priority: 1
 	}, function(err, res) {
 		if (!err) {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		}
 	});
 };
-
+*/
 function connectNumbers(number1, number2) {
 //var number1 = "0687754487";
 //var number2 = "0786082881";
@@ -744,9 +774,9 @@ function connectNumbers(number1, number2) {
 		}
 	}, function(err, res) {
 		if (!err) {
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
-			console.log(err.toString());
+			console.error(err.toString());
 		}
 	});
 }
@@ -769,7 +799,7 @@ function setAmiChannelMuted(channel, value, direction, cb) {
 function setAmiChannelVolume(channel, level, direction, cb) {
 	if (channel) { // temp
 		var variable = 'VOLUME(' + direction + ')';
-		console.log("setting chan volume!", channel, variable, level);
+		console.error("setting chan volume!", channel, variable, level);
 		// todo: use the setVar function
 		ami.action({
 			action: 'Setvar',
@@ -798,7 +828,7 @@ function sendSMS(device, number, content, cb) {
 	}, function(err, res) {
 		if (!err) {
 			// {"response":"Success","actionid":"1458358510030","message":"[airtel1] SMS queued for send","id":"0x73c4dcc8"}
-			console.log('sms ok', JSON.stringify(res));
+			console.error('sms ok', JSON.stringify(res));
 			cb(null, res.id);
 		} else {
 			// {"response":"Error","actionid":"1458491768683","message":"Number not specified"}
@@ -845,7 +875,7 @@ function amiOriginate(channel, destination, cb) {
 	}, function(err, res) {
 		if (!err) {
 			cb();
-			console.log("originate sucess!!", JSON.stringify(res));
+			console.error("originate sucess!!", JSON.stringify(res));
 		} else {
 			cb(["originate error", channel, destination, res.message].join('::'));
 		}
@@ -855,11 +885,12 @@ function amiOriginate(channel, destination, cb) {
 
 function amiRedirect(channel, destination, cb) {
 	myLib.consoleLog('debug', 'amiRedirect', [channel, destination]);
+	destination = destination.split('@');
 	ami.action({
 		action: "Redirect",
 		channel: channel,
-		context: "from-internal",
-		exten: destination,
+		context: destination[1] ? destination[1] : "from-internal",
+		exten: destination[0],
 		priority: 1
 	}, function(err, res) {
 		if (!err) {
@@ -867,7 +898,7 @@ function amiRedirect(channel, destination, cb) {
 		} else {
 			cb(JSON.stringify(res));
 		}
-		console.log(JSON.stringify(res));
+		console.error(JSON.stringify(res));
 	});
 }
 
@@ -886,10 +917,10 @@ function amiRedirectBoth(channel, destination, channel2, destination2, cb) {
 //		{"response":"Success","actionid":"1448369953448","message":"Dual Redirect successful"}
 		if (!err) {
 			cb();
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		} else {
 			cb(JSON.stringify(res));
-			console.log(JSON.stringify(res));
+			console.error(JSON.stringify(res));
 		}
 	});
 }
@@ -909,7 +940,7 @@ exports.originateLocal = function (number, destination, channel_id, cb) {
 	}
    */
 	if (destination === 'master') {
-		destination = "Local/" + astConf.virtual[destination] + "@ext-meetme";
+		destination = "Local/" + astConf.virtual[destination];
 	} else {
 		destination = "SIP/" + destination;
 	}
@@ -1075,8 +1106,8 @@ exports.setChanModes = function (channel_id, destination, channel_id2, destinati
 	if (astConf.virtual[destination2]) {
 		destination2 = astConf.virtual[destination2];
 	}
-	console.log("exports.setChanModes", channel_id, destination, channel_id2, destination2);
-	console.log("exports.setChanModes", s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2);
+	console.error("exports.setChanModes", channel_id, destination, channel_id2, destination2);
+	console.error("exports.setChanModes", s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2);
 	amiRedirectBoth(s.asterisk.channels[channel_id].internalName, destination, s.asterisk.channels[channel_id2].internalName, destination2, cb);
 };
 
@@ -1092,9 +1123,11 @@ exports.setMasterRecording = function (value, cb) {
 };
 
 exports.sendContent = function(data, cb) {
-	var dongle_id = data.channel_id ? data.channel_id : astConf.defaultSMS;
+	if (!data.channel_id) {
+		data.channel_id = astConf.defaultSMS;
+	}
 	var timeout = 40; //seconds
-	sendSMS(dongle_id, data.endpoint, data.content, function(err, key){
+	sendSMS(data.channel_id, data.endpoint, data.content, function(err, key){
 		if (!err) {
 			s.asterisk.sms_out[key] = {
 				data: data,
@@ -1213,3 +1246,25 @@ ami.on('peerstatus', function(evt) {
 });
 */
 
+var consoleToMaster = function() {
+	ami.action({
+		action: "Command",
+		command: "console dial " + astConf.virtual.master // todo: dial different context with appropriete confbridge properties
+	}, function(err, res) {
+		myLib.consoleLog('debug', "console dial", res);
+		if (!err) {
+			myLib.consoleLog('log', 'init', "Console connected to master");
+		} else {
+			myLib.consoleLog('panic', 'init', "Console NOT connected to master!");
+		}
+	});
+};
+
+var consoleHangup = function() {
+	ami.action({
+		action: "Command",
+		command: "console hangup"
+	}, function(err, res) {
+		myLib.consoleLog('debug', "console hangup", res);
+	});
+};

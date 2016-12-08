@@ -39,6 +39,58 @@ exports.messageSend = function(operator_id, data, cb) {
 	}
 };
 
+exports.messageFavoriteSet = function(operator_id, data, cb) {
+	userApi.messagesFavoriteSet(data, function(err, updated) {
+		if (err) {
+			cb("event_error", {
+				event: "messageTagsAdd",
+				msg: err
+			}, 'self');
+		} else {
+			cb("inboxUpdate", updated, "others");
+		}
+	});
+};
+
+exports.messageFavoriteUnset = function(operator_id, data, cb) {
+	userApi.messagesFavoriteUnset(data, function(err, updated) {
+		if (err) {
+			cb("event_error", {
+				event: "messageTagsRemove",
+				msg: err
+			}, 'self');
+		} else {
+			cb("inboxUpdate", updated, "others");
+		}
+	});
+};
+
+exports.messageTagsAdd = function(operator_id, data, cb) {
+	userApi.messagesTag(data, function(err, updated) {
+		if (err) {
+			cb("event_error", {
+				event: "messageTagsAdd",
+				msg: err
+			}, 'self');
+		} else {
+			cb("inboxUpdate", updated, "others");
+		}
+	});
+};
+
+exports.messageTagsRemove = function(operator_id, data, cb) {
+	userApi.messagesUntag(data, function(err, updated) {
+		if (err) {
+			cb("event_error", {
+				event: "messageTagsRemove",
+				msg: err
+			}, 'self');
+		} else {
+			cb("inboxUpdate", updated, "others");
+		}
+	});
+};
+
 exports.messageDelete = function(operator_id, data, cb) {
 	// todo: consider sending to all from userApi when really deleted, instead of updating only others right away
 	// current version is more responsive and less consistent
