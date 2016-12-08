@@ -9,4 +9,4 @@ log
 pipes
 config/*.json
 *.log
-.*.m.swp
+*.swp
