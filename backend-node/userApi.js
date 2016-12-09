@@ -278,7 +278,7 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 							type: channel.type,
 							direction: channel.direction,
 							status: 'answered'
-						}, ["telegraf"], ["mixer"], { calls: { value: 1 }}, "");
+						}, ["telegraf"], ["mixer"], { call: { value: 1 }}, "");
 					}
 				}
 			}
