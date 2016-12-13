@@ -132,6 +132,14 @@ ami.on('dongledeviceentry', function(evt) {
 				}
 				s.ui.mixer.channels[evt.device].error = "number on sim not matching: " + evt.subscribernumber;
 			}
+
+			s.ui.mixer.channels[evt.device].connection = {
+				rssi: evt.rssi,
+				mode: evt.mode,
+				submode: evt.submode,
+				provider: evt.providername
+			};
+
 				// default dongle mode is 'defunct'
 				var dongleState = evt.state.toLowerCase();
 				switch (dongleState) {
