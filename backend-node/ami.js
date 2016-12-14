@@ -42,7 +42,9 @@ exports.on = function (event, callback) {
 // this code is executed when our app (re)connects to Asterisk
 ami.on('fullybooted', function(evt) {
 	myLib.consoleLog('log', "init", "Asterisk interface ready!");
-	s.ui.mixer.channels = {}; //clear previous channel properties
+	//clear previous channel properties
+	s.ui.mixer.channels = {};
+	s.asterisk.channels = {};
 
 	if (astConf.dongles && Object.keys(astConf.dongles).length > 0) {
 		// we want all configured dongle channels to be present
@@ -55,12 +57,21 @@ ami.on('fullybooted', function(evt) {
 			s.asterisk.channels[dongleName] = {};
 		}
 
+		//clear previous dongle update job
+		if (s.asterisk.dongleInfoUpdate) {
+			clearInterval(s.asterisk.dongleInfoUpdate);
+			s.asterisk.dongleInfoUpdate = null;
+		}
+
 		ami.action({
 			action: "DongleShowDevices"
 		}, function(err, res) {
 			//{"response":"Success","actionid":"1446811737040","eventlist":"start","message":"Device status list will follow"}
 			if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow, ends with 'DongleShowDevicesComplete'
 				myLib.consoleLog('log', "init", 'Dongle driver is talking');
+				s.asterisk.dongleInfoUpdate = setInterval(function() {
+					ami.action({ action: "DongleShowDevices" });
+				}, 69000);
 			} else {
 				myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
 			}
