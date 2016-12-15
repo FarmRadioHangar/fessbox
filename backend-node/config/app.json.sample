@@ -3,6 +3,14 @@
 	"wsPort": 19998,
 	"wsLogsPort": 19997,
 	"pbxProvider": "ami",
-	"addressBook": "iAddressBook"
+	"addressBook": "iAddressBook",
+	"country_prefix": "+255",
+	"country_digits": "12",
+	"networks": {
+		"airtel": "^0[67]8[0-9]{7}$",
+		"vodacom": "^0[67]5[0-9]{7}$",
+		"tigo": "",
+		"halotel": ""
+	}
 }
  

@@ -1,5 +1,6 @@
-var amiConf = require("./config/ami.json");
+var appConf = require("./config/app.json");
 var astConf = require("./config/asterisk.json");
+var amiConf = astConf.ami;
 
 var myLib = require("./myLib");
 var engineApi = require("./engineApi");
@@ -69,9 +70,11 @@ ami.on('fullybooted', function(evt) {
 			//{"response":"Success","actionid":"1446811737040","eventlist":"start","message":"Device status list will follow"}
 			if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow, ends with 'DongleShowDevicesComplete'
 				myLib.consoleLog('log', "init", 'Dongle driver is talking');
-				s.asterisk.dongleInfoUpdate = setInterval(function() {
-					ami.action({ action: "DongleShowDevices" });
-				}, 69000);
+				if (astConf.DongleInfoInterval) {
+					s.asterisk.dongleInfoUpdate = setInterval(function() {
+						ami.action({ action: "DongleShowDevices" });
+					}, astConf.DongleInfoInterval * 1000);
+				}
 			} else {
 				myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
 			}
@@ -151,7 +154,7 @@ ami.on('dongledeviceentry', function(evt) {
 					myLib.consoleLog('error', "sim number not configured", evt.device);
 				} else {
 					if (!s.ui.mixer.channels[evt.device].label) {
-						var prefix = new RegExp('^\\' + amiConf.country_prefix);
+						var prefix = new RegExp('^\\' + appConf.country_prefix);
 						s.ui.mixer.channels[evt.device].label = evt.subscribernumber.replace(prefix, '0');
 					}
 				}
@@ -363,7 +366,7 @@ ami.on('donglecallstatechange', function(evt) {
 
 ami.on('donglenewsmsbase64', function(evt) {
 //	console.error(JSON.stringify(evt));
-	var prefix = new RegExp('^\\' + amiConf.country_prefix);
+	var prefix = new RegExp('^\\' + appConf.country_prefix);
 	var timeout = 19900; // number of mili-seconds to wait for next part of sms
 	var sms_max_length = 204; // 204 is the length of the base64 encoded 160 chars
 	var inboxUpdateMultipart = function () {
