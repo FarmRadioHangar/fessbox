@@ -4,10 +4,8 @@ After=run-user-0.mount asterisk.service
 
 [Service]
 Restart=always
-WorkingDirectory=/home/fri/fessbox/backend-node
-ExecStart=/bin/sh -c '/usr/local/bin/node --use-strict index.js >> log/app.log 2>> log/debug.log'
-PIDFile=/home/fri/fessbox/backend-node/run/fessbox.pid
-SyslogIdentifier=fessbox-node
+WorkingDirectory=/home/fri/fessbox
+ExecStart=/bin/sh -c 'exec /usr/local/bin/node --use-strict index.js >> log/app.log 2>> log/debug.log'
 User=fri
 Group=fri
 Environment=NODE_ENV=production
