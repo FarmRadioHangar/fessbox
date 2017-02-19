@@ -6,7 +6,7 @@ public functions throw exceptions when called in a wrong way.
 
 */
 
-var uuid = require("node-uuid");
+var uuid = require("uuid");
 
 //var appConfig = require("./config/app.json");
 //var addressBook = require("./" + appConfig.addressBook);

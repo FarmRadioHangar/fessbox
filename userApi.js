@@ -1,4 +1,4 @@
-var uuid = require("node-uuid");
+var uuid = require("uuid");
 
 var appConfig = require("./config/app.json");
 var pbxProvider = require("./" + appConfig.pbxProvider);
