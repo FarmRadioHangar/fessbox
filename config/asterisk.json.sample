@@ -1,26 +1,32 @@
 {
+	"ami": {
+		"port": "5038",
+		"host": "127.0.0.1",
+		"username": "admin",
+		"password": "amp111"
+	},
 	"dongles": {
 		"airtel1": {
-			"number": "+255689514544",
-			"network": "airtel",
-			"sms": "disable"
-		},
-		"airtel2": {
-			"number": "+255788333330",
+			"label": "Displayed instead of number from SIM (if specified)",
 			"network": "airtel",
 			"sms": "own"
 		},
+		"airtel2": {
+			"network": "airtel",
+			"sms": "disable"
+		},
 		"vodacom1": {
-			"number": "+255758123098",
 			"network": "vodacom",
 			"sms": "any"
 		}
 	},
+	"dongleInfoInterval": 69,
 	"hosts": ["707"],
 	"operators": ["701", "703", "705"],
 	"external": ["702", "704"],
 	"virtual": {
-		"master": "2663",
+		"master": "2663@ext-local",
+		"host": "194",
 		"ivr": "191",
 		"on_hold": "196",
 		"free": "SIP/197@from-internal",

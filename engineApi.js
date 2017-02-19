@@ -25,8 +25,8 @@ exports.channelUpdate = function (channel_id, channel) {
 		myLib.consoleLog('panic', 'engineApi::channelUpdate', "invalid input", channel);
 	} else if (mixerLib.channelCreate(channel_id, channel) || mixerLib.channelMode(channel_id, channel) || mixerLib.channelUpdateProperties(channel_id, channel)) {
 		mixerLib.channelUpdateEvent([channel_id]);
-	} else {
-		myLib.consoleLog('debug', 'engineApi::channelUpdate', "nothing to do", channel);
+//	} else {
+//		myLib.consoleLog('debug', 'engineApi::channelUpdate', "nothing to do for " + channel_id, channel);
 	}
 };
 //

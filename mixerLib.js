@@ -61,7 +61,15 @@ exports.channelUpdateProperties = function (channel_id, data) {
 	} else {
 		for (var key in data) {
 			//if (key == 'mode' || s.ui.mixer.channels[channel_id][key] !== data[key]) { // temp. solution to a bug
-			if (s.ui.mixer.channels[channel_id][key] !== data[key]) {
+			if (s.ui.mixer.channels[channel_id][key] !== null && typeof s.ui.mixer.channels[channel_id][key] === 'object') {
+				var data2 = data[key];
+				for(var key2 in data2) {
+					if (s.ui.mixer.channels[channel_id][key][key2] !== data2[key2]) {
+						s.ui.mixer.channels[channel_id][key][key2] = data2[key2];
+						changed = true;
+					}
+				}
+			} else if (s.ui.mixer.channels[channel_id][key] !== data[key]) {
 				s.ui.mixer.channels[channel_id][key] = data[key];
 				changed = true;
 			} else {

@@ -1,5 +1,6 @@
-var amiConf = require("./config/ami.json");
+var appConf = require("./config/app.json");
 var astConf = require("./config/asterisk.json");
+var amiConf = astConf.ami;
 
 var myLib = require("./myLib");
 var engineApi = require("./engineApi");
@@ -42,7 +43,9 @@ exports.on = function (event, callback) {
 // this code is executed when our app (re)connects to Asterisk
 ami.on('fullybooted', function(evt) {
 	myLib.consoleLog('log', "init", "Asterisk interface ready!");
-	s.ui.mixer.channels = {}; //clear previous channel properties
+	//clear previous channel properties
+	s.ui.mixer.channels = {};
+	s.asterisk.channels = {};
 
 	if (astConf.dongles && Object.keys(astConf.dongles).length > 0) {
 		// we want all configured dongle channels to be present
@@ -50,9 +53,15 @@ ami.on('fullybooted', function(evt) {
 			//s.ui.mixer.channels[dongleName] = mixerLib.createChannel('dongle', astConf.dongles[dongleName].number);
 			engineApi.channelUpdate(dongleName, {
 				type: 'dongle',
-				label: astConf.dongles[dongleName].number
+				label: astConf.dongles[dongleName].label
 			});
 			s.asterisk.channels[dongleName] = {};
+		}
+
+		//clear previous dongle update job
+		if (s.asterisk.dongleInfoUpdate) {
+			clearInterval(s.asterisk.dongleInfoUpdate);
+			s.asterisk.dongleInfoUpdate = null;
 		}
 
 		ami.action({
@@ -61,6 +70,11 @@ ami.on('fullybooted', function(evt) {
 			//{"response":"Success","actionid":"1446811737040","eventlist":"start","message":"Device status list will follow"}
 			if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow, ends with 'DongleShowDevicesComplete'
 				myLib.consoleLog('log', "init", 'Dongle driver is talking');
+				if (astConf.DongleInfoInterval) {
+					s.asterisk.dongleInfoUpdate = setInterval(function() {
+						ami.action({ action: "DongleShowDevices" });
+					}, astConf.DongleInfoInterval * 1000);
+				}
 			} else {
 				myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
 			}
@@ -111,27 +125,41 @@ ami.on('devicestatelistcomplete', function(evt) {
 	});
 });
 
-// shoud happen only on init
 ami.on('dongledeviceentry', function(evt) {
 //	{"event":"dongledeviceentry","actionid":"1446811737040","device":"airtel1","audiosetting":"","datasetting":"","imeisetting":"354369047238739","imsisetting":"","channellanguage":"mk","context":"from-trunk","exten":"+1234567890","group":"0","rxgain":"4","txgain":"1","u2diag":"0","usecallingpres":"yes","defaultcallingpres":"presentation allowed, passed screen","autodeletesms":"yes","disablesms":"no","resetdongle":"yes","smspdu":"yes","callwaitingsetting":"disabled","dtmf":"relax","minimaldtmfgap":"45","minimaldtmfduration":"80","minimaldtmfinterval":"200","state":"free","audiostate":"/dev/ttyusb4","datastate":"/dev/ttyusb5","voice":"yes","sms":"yes","manufacturer":"huawei","model":"e1731","firmware":"11.126.16.04.284","imeistate":"354369047238739","imsistate":"640050939309334","gsmregistrationstatus":"registered, home network","rssi":"11, -91 dbm","mode":"wcdma","submode":"wcdma","providername":"celtel","locationareacode":"50","cellid":"bbe887e","subscribernumber":"+255689514544","smsservicecenter":"+255780000004","useucs2encoding":"yes","ussduse7bitencoding":"no","ussduseucs2decoding":"yes","tasksinqueue":"0","commandsinqueue":"0","callwaitingstate":"disabled","currentdevicestate":"start","desireddevicestate":"start","callschannels":"0","active":"0","held":"0","dialing":"0","alerting":"0","incoming":"0","waiting":"0","releasing":"0","initializing":"0"}
 //	{"event":"dongledeviceentry","actionid":"1448708202036","device":"airtel2","audiosetting":"","datasetting":"","imeisetting":"354369047217469","imsisetting":"","channellanguage":"mk","context":"from-trunk","exten":"+1234567890","group":"0","rxgain":"4","txgain":"1","u2diag":"0","usecallingpres":"yes","defaultcallingpres":"presentation allowed, passed screen","autodeletesms":"yes","disablesms":"no","resetdongle":"yes","smspdu":"yes","callwaitingsetting":"disabled","dtmf":"relax","minimaldtmfgap":"45","minimaldtmfduration":"80","minimaldtmfinterval":"200","state":"gsm not registered","audiostate":"/dev/ttyusb1","datastate":"/dev/ttyusb2","voice":"yes","sms":"yes","manufacturer":"huawei","model":"e1731","firmware":"11.126.16.04.284","imeistate":"354369047217469","imsistate":"640050938039425","gsmregistrationstatus":"registration denied","rssi":"15, -83 dbm","mode":"wcdma","submode":"wcdma","providername":"none","locationareacode":"50","cellid":"bbe8881","subscribernumber":"+255788333330","smsservicecenter":"+255780000004","useucs2encoding":"yes","ussduse7bitencoding":"no","ussduseucs2decoding":"yes","tasksinqueue":"0","commandsinqueue":"0","callwaitingstate":"disabled","currentdevicestate":"start","desireddevicestate":"start","callschannels":"0","active":"0","held":"0","dialing":"0","alerting":"0","incoming":"0","waiting":"0","releasing":"0","initializing":"0"}
+
 	if (astConf.dongles[evt.device] ) { // check if device is configured in fessbox
 		if (!s.ui.mixer.channels[evt.device]) { // sanity check
 			myLib.consoleLog('panic', 'ami::on-dongledeviceentry', 'channel not found in mixer', evt.device);
 		} else {
-			//todo: is this the right place to to this?
-			s.ui.mixer.channels[evt.device].direction = astConf.operators.indexOf(evt.device) !== -1 ? 'operator' : null;
-			s.ui.mixer.channels[evt.device].number = astConf.dongles[evt.device].number;
+			var connectionInfo = {
+				rssi: evt.rssi,
+				mode: evt.mode,
+				submode: evt.submode,
+				provider: evt.providername
+			};
 
-			if (astConf.dongles[evt.device].number !== evt.subscribernumber) {
-				// todo: send email to admin
-				if (evt.subscribernumber) {
-					myLib.consoleLog('error', 'number on sim card not same as number in config', evt.subscribernumber);
+			//if number is configured, only update connection info, else assume this is initialization
+			if (s.ui.mixer.channels[evt.device].number) {
+				engineApi.channelUpdate(evt.device, { connection: connectionInfo });
+			} else {
+				s.ui.mixer.channels[evt.device].connection = connectionInfo;
+				//todo: is this the right place to do this?
+				s.ui.mixer.channels[evt.device].direction = astConf.operators.indexOf(evt.device) !== -1 ? 'operator' : null;
+
+				if (evt.subscribernumber === 'Unknown') {
+					// todo: send email to admin?
+					s.ui.mixer.channels[evt.device].error = "sim number not configured";
+					myLib.consoleLog('error', "sim number not configured", evt.device);
 				} else {
-					myLib.consoleLog('error', "can't read number from sim", evt.device);
+					if (!s.ui.mixer.channels[evt.device].label) {
+						var prefix = new RegExp('^\\' + appConf.country_prefix);
+						s.ui.mixer.channels[evt.device].label = evt.subscribernumber.replace(prefix, '0');
+					}
 				}
-				s.ui.mixer.channels[evt.device].error = "number on sim not matching: " + evt.subscribernumber;
-			}
+				s.ui.mixer.channels[evt.device].number = evt.subscribernumber;
+
 				// default dongle mode is 'defunct'
 				var dongleState = evt.state.toLowerCase();
 				switch (dongleState) {
@@ -174,7 +202,7 @@ ami.on('dongledeviceentry', function(evt) {
 						myLib.consoleLog('error', "ami::on-dongledeviceentry", 'dongleState', dongleState);
 						s.ui.mixer.channels[evt.device].error = dongleState;
 				}
-
+			}
 		}
 	}
 	console.error(JSON.stringify(evt));
@@ -201,7 +229,7 @@ ami.on('coreshowchannel', function (evt) {
 				switch (channelState) {
 					case 'ring':
 						s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
-						engineApi.channelUpdate({
+						engineApi.channelUpdate(channelInfo[1], {
 							mode: 'ring',
 							direction: 'incoming',
 							timestamp: Date.now() - myLib.msecDuration(evt.duration),
@@ -338,7 +366,7 @@ ami.on('donglecallstatechange', function(evt) {
 
 ami.on('donglenewsmsbase64', function(evt) {
 //	console.error(JSON.stringify(evt));
-	var prefix = new RegExp('^\\' + amiConf.country_prefix);
+	var prefix = new RegExp('^\\' + appConf.country_prefix);
 	var timeout = 19900; // number of mili-seconds to wait for next part of sms
 	var sms_max_length = 204; // 204 is the length of the base64 encoded 160 chars
 	var inboxUpdateMultipart = function () {
