@@ -3,7 +3,7 @@
 	"recording" : false,
 	"delay"     : 0,
 	"in" : {
-		"level"     : 67,
+		"level"     : 75,
 		"muted"     : false
 	},
 	"out" : {

@@ -20,11 +20,19 @@ redisClient.on("error",  function(err) {
 		operators: {}
 	};
 
-	exports.ui.mixer.master = require("./state/master.json");
-	exports.ui.mixer.master.out = require("./state/master_out.json");
-	exports.ui.mixer.master.in = require("./state/host.json");
-	exports.ui.mixer.host = exports.ui.mixer.master.in;
-	
+redisClient.on('connect', function() {
+	myLib.consoleLog('info', "redis", "connection established");
+	redisClient.get("master", function(err, res) {
+		if (res) {
+			exports.ui.mixer.master = JSON.parse(res);
+		} else {
+			exports.ui.mixer.master = require("./config/defaults/master.json");
+		}
+		exports.ui.mixer.host = exports.ui.mixer.master.in; // temp
+	});
+});
+
+/*
 var saveDefaults = function() {
 };
 
@@ -71,6 +79,7 @@ var loadDefaults = function() {
 	}
 
 };
+*/
 
 function saveSnapshot(exit) {
 	var myData = {
@@ -89,7 +98,7 @@ function saveSnapshot(exit) {
 		}
 	});
 }
-
+/*
 function loadSnapshot() {
 	if (fs.existsSync(stateFile)) {
 		var myData = require(stateFile);
@@ -104,7 +113,7 @@ function loadSnapshot() {
 		loadDefaults();
 	}
 }
-
+*/
 function loadOperator(channel_id) {
 	redisClient.hgetall("operator." + channel_id, function (err, res) {
 		if (0 && !err) { // disabled until moved to mixerLib
@@ -272,6 +281,7 @@ function messageFetch(count, reference_id, cb) {
 			//todo: add watch(reference_id);
 			for(var index in message_ids) {
 				messagesMulti.hgetall(message_ids[index]);
+				//messagesMulti.smembers();
 			}
 			messagesMulti.exec(function (err, message_objects) {
 				if (!err) {
@@ -322,10 +332,9 @@ function contactFetch(contact_key, cb) {
 exports.saveSnapshot = saveSnapshot;
 exports.saveOperator = saveOperator;
 exports.saveChannel = saveChannel;
-exports.loadSnapshot = loadSnapshot;
+//exports.loadSnapshot = loadSnapshot;
 exports.loadOperator = loadOperator;
 exports.loadChannel = loadChannel;
-exports.loadSnapshot = loadSnapshot;
 exports.messages = {
 	tag: messageTagAdd,
 	untag: messageTagRemove,
