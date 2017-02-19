@@ -1,11 +1,9 @@
 bower_components
 static
-state
 node_modules
 test
 run
 trash
-log
 pipes
 config/*.json
 *.log
