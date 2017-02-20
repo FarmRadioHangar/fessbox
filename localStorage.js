@@ -114,23 +114,36 @@ function loadSnapshot() {
 	}
 }
 */
-function loadOperator(channel_id) {
-	redisClient.hgetall("operator." + channel_id, function (err, res) {
-		if (0 && !err) { // disabled until moved to mixerLib
-			exports.ui.operators[channel_id] = res;
-			myLib.consoleLog('debug', "loadOperator - data loaded from redis", channel_id);
-			return true;
+
+function loadOperator(channel_id, cb) {
+	var loadFromFile = function () {
+		var usersPath = __dirname + "/config/defaults/users/";
+		var userFile = usersPath + channel_id + ".json";
+		var myData;
+		if (!fs.existsSync(userFile)) {
+			myData = require(usersPath + "default.json");
 		} else {
-			var userFile = __dirname + "/config/defaults/operators/" + channel_id + ".json";
-			if (fs.existsSync(userFile)) {
-				var myData = require(userFile);
-				exports.ui.operators[channel_id] = myData;
-				myLib.consoleLog('debug', "loadOperator - data loaded from disk", channel_id);
-				return true;
+			myData = require(userFile);
+		}
+
+		exports.ui.operators[channel_id] = myData;
+		if (typeof cb === 'function') {
+			cb();
+		} else {
+			myLib.consoleLog('debug', "loadOperator - data loaded from disk", channel_id);
+		}
+	};
+
+	redisClient.hgetall("operator." + channel_id, function (err, res) {
+		if (!err) {
+			if (typeof cb === 'function') {
+				cb(null, res);
 			} else {
-				myLib.consoleLog('error', "loadOperator - not found", userFile);
-				return false;
+				exports.ui.operators[channel_id] = res;
+				myLib.consoleLog('debug', "loadOperator - data loaded from redis", channel_id);
 			}
+		} else {
+			loadFromFile();
 		}
 	});
 }
@@ -151,9 +164,15 @@ function saveOperator(channel_id, cb) {
 
 function loadChannel(channel_id, cb) {
 	var loadFromFile = function () {
-		var channelFile = __dirname + "/config/defaults/channels/" + channel_id + ".json";
-		if (fs.existsSync(channelFile)) {
-			var myData = require(channelFile);
+		var channelsPath = __dirname + "/config/defaults/channels/";
+		var channelFile = channelsPath + channel_id + ".json";
+		var myData;
+		if (!fs.existsSync(channelFile)) {
+			myData = require(channelsPath + "default.json");
+		} else {
+			myData = require(channelFile);
+		}
+
 			exports.ui.mixer.channels[channel_id] = myData;
 			exports.ui.mixer.channels[channel_id].mode = 'defunct';
 			exports.ui.mixer.channels[channel_id].timestamp = null;
@@ -164,14 +183,6 @@ function loadChannel(channel_id, cb) {
 			} else {
 				myLib.consoleLog('debug', "loadChannel", ["data loaded from disk", channel_id]);
 			}
-		} else {
-			var errorMsg = "loadChannel - file not found";
-			if (typeof cb === 'function') {
-				cb("file not found " + channelFile);
-			} else {
-				myLib.consoleLog('error', "loadChannel", ["file not found", channelFile]);
-			}
-		}
 	};
 
 	redisClient.hgetall("channel." + channel_id, function (err, res) {
