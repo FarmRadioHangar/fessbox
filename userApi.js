@@ -51,17 +51,17 @@ exports.messageSend = function (data, cb) {
 
 exports.messagesFavoriteSet = function (data, cb) {
 	// data is array of message ids
-	s.messages.tag(data.message_ids, data.tags, function(err, result) {
-		myLib.jsonLog(data, ['debug'], ['messageTags'], result);
-		cb();
+	s.messages.favoriteSet(data, function(err, result) {
+		myLib.jsonLog(data, ['debug'], ['messageFavSet'], result);
+		cb(err, result);
 	});
 };
 
 exports.messagesFavoriteUnset = function (data, cb) {
 	// data is array of message ids
-	s.messages.untag(data.message_ids, data.tags, function(err, result) {
-		myLib.jsonLog(data, ['debug'], ['messageTags'], result);
-		cb();
+	s.messages.favoriteUnset(data, function(err, result) {
+		myLib.jsonLog(data, ['debug'], ['messageFavUnset'], result);
+		cb(err, result);
 	});
 };
 

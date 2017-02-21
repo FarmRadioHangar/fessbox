@@ -43,7 +43,7 @@ exports.messageFavoriteSet = function(operator_id, data, cb) {
 	userApi.messagesFavoriteSet(data, function(err, updated) {
 		if (err) {
 			cb("event_error", {
-				event: "messageTagsAdd",
+				event: "messageFavoriteSet",
 				msg: err
 			}, 'self');
 		} else {
@@ -56,7 +56,7 @@ exports.messageFavoriteUnset = function(operator_id, data, cb) {
 	userApi.messagesFavoriteUnset(data, function(err, updated) {
 		if (err) {
 			cb("event_error", {
-				event: "messageTagsRemove",
+				event: "messageFavoriteUnset",
 				msg: err
 			}, 'self');
 		} else {

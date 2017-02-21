@@ -234,12 +234,70 @@ function saveChannel(channel_id, cb) {
    */
 }
 
+function messageFavoriteSet(message_ids, cb) {
+	redisClient.sadd("msgTags:favorite", message_ids);
+	var redisMulti = redisClient.multi();
+	message_ids.forEach(function(message_id){
+		redisMulti().hset(message_id, "favorite", 1);
+	});
+	redisMulti.exec(function(err, res) {
+		if (!err) {
+			var messageList = {};
+			var updated = [];
+			var messagesMulti = redisClient.multi();
+			for(var index in message_ids) {
+				if (res[index]) {
+					messagesMulti.hgetall(message_ids[index]);
+					updated.push(message_ids[index]);
+				}
+			}
+			messagesMulti.exec(function (err, message_objects) {
+				for(index in updated) {
+					messageList[updated[index]] = message_objects[index];
+				}
+				cb(null, messageList);
+			});
+		} else {
+			cb(err);
+		}
+	});
+}
+
 function messageTagAdd(message_ids, tags, cb) {
 	var redisMulti = redisClient.multi();
 	tags.forEach(function(tag){
 		redisMulti().sadd("msgTags:" + tag, message_ids);
 	});
 	redisMulti.exec(cb);
+}
+
+function messageFavoriteUnset(message_ids, cb) {
+	redisClient.srem("msgTags:favorite", message_ids);
+	redisMulti = redisClient.multi();
+	for(var index in message_ids) {
+		redisMulti.hdel(message_ids[index], "favorite");
+	}
+	redisMulti.exec(function(err, res) {
+		if (!err) {
+			var messageList = {};
+			var updated = [];
+			var messagesMulti = redisClient.multi();
+			for(var index in message_ids) {
+				if (res[index]) {
+					messagesMulti.hgetall(message_ids[index]);
+					updated.push(message_ids[index]);
+				}
+			}
+			messagesMulti.exec(function (err, message_objects) {
+				for(index in updated) {
+					messageList[updated[index]] = message_objects[index];
+				}
+				cb(null, messageList);
+			});
+		} else {
+			cb(err);
+		}
+	});
 }
 
 function messageTagRemove(message_ids, tags, cb) {
@@ -251,7 +309,7 @@ function messageTagRemove(message_ids, tags, cb) {
 	//redisClient.srem("msgTags:" + tag, message_ids, cb);
 }
 
-function messagesUpdate(message_ids, properties) {
+function messagesUpdate(message_ids, properties, cb) {
 	var redisMulti = redisClient.multi();
 	message_ids.forEach(function(message_id){
 		redisMulti().hmset("inbox." + message_id, properties);
@@ -349,6 +407,8 @@ exports.loadChannel = loadChannel;
 exports.messages = {
 	tag: messageTagAdd,
 	untag: messageTagRemove,
+	favoriteSet: messageFavoriteSet,
+	favoriteUnset: messageFavoriteUnset,
 	save: messageSave,
 	delete: messageDelete,
 	fetch: messageFetch
