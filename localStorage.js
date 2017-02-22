@@ -238,7 +238,7 @@ function messageFavoriteSet(message_ids, cb) {
 	redisClient.sadd("msgTags:favorite", message_ids);
 	var redisMulti = redisClient.multi();
 	message_ids.forEach(function(message_id){
-		redisMulti().hset(message_id, "favorite", 1);
+		redisMulti.hset(message_id, "favorite", 1);
 	});
 	redisMulti.exec(function(err, res) {
 		if (!err) {
