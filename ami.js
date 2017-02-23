@@ -202,6 +202,16 @@ ami.on('dongledeviceentry', function(evt) {
 						myLib.consoleLog('error', "ami::on-dongledeviceentry", 'dongleState', dongleState);
 						s.ui.mixer.channels[evt.device].error = dongleState;
 				}
+
+				// delete stored sms from modem
+				switch (dongleState) {
+					case 'free':
+					case 'ring':
+					case 'dialing':
+					case 'incoming':
+					case 'outgoing':
+						deleteStoredSms(evt.device);
+				}
 			}
 		}
 	}
@@ -366,41 +376,49 @@ ami.on('donglecallstatechange', function(evt) {
 
 ami.on('donglenewsmsbase64', function(evt) {
 //	console.error(JSON.stringify(evt));
-	var prefix = new RegExp('^\\' + appConf.country_prefix);
-	var timeout = 19900; // number of mili-seconds to wait for next part of sms
-	var sms_max_length = 204; // 204 is the length of the base64 encoded 160 chars
-	var inboxUpdateMultipart = function () {
-		engineApi.inboxUpdate(s.asterisk.sms_in.get(evt.from).data);
-		s.asterisk.sms_in.delete(evt.from);
-	};
-
-	// update previos part of multipart sms if exists
-	if (s.asterisk.sms_in.has(evt.from)) {
-		clearTimeout(s.asterisk.sms_in.get(evt.from).timeout);
-		s.asterisk.sms_in.get(evt.from).data.content += new Buffer(evt.message, 'base64').toString("utf8");
-		s.asterisk.sms_in.get(evt.from).data.timestamp = Date.now();
-		//check if message has potentialy more parts
-		if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
-			s.asterisk.sms_in.get(evt.from).timeout = setTimeout(inboxUpdateMultipart, timeout);
-		} else {
-			inboxUpdateMultipart();
+	// check if dongle is configured in fessbox
+	if (astConf.dongles[evt.device]) {
+		//delete internal sms storage on every XX received messages
+		if (++s.asterisk.channels[evt.device].sms_count > 50) {
+			deleteStoredSms(evt.device);
 		}
-	} else {
-		var data = {
-			type: 'sms_in',
-			timestamp: Date.now(),
-			channel_id: evt.device,
-			endpoint: evt.from.replace(prefix, '0'),
-			content: new Buffer(evt.message, 'base64').toString("utf8")
+
+		var prefix = new RegExp('^\\' + appConf.country_prefix);
+		var timeout = 19900; // number of mili-seconds to wait for next part of sms
+		var sms_max_length = 204; // 204 is the length of the base64 encoded 160 chars
+		var inboxUpdateMultipart = function () {
+			engineApi.inboxUpdate(s.asterisk.sms_in.get(evt.from).data);
+			s.asterisk.sms_in.delete(evt.from);
 		};
 
-		if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
-			s.asterisk.sms_in.set(evt.from, {
-				data: data,
-				timeout: setTimeout(inboxUpdateMultipart, timeout)
-			});
+		// update previos part of multipart sms if exists
+		if (s.asterisk.sms_in.has(evt.from)) {
+			clearTimeout(s.asterisk.sms_in.get(evt.from).timeout);
+			s.asterisk.sms_in.get(evt.from).data.content += new Buffer(evt.message, 'base64').toString("utf8");
+			s.asterisk.sms_in.get(evt.from).data.timestamp = Date.now();
+			//check if message has potentialy more parts
+			if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
+				s.asterisk.sms_in.get(evt.from).timeout = setTimeout(inboxUpdateMultipart, timeout);
+			} else {
+				inboxUpdateMultipart();
+			}
 		} else {
-			engineApi.inboxUpdate(data);
+			var data = {
+				type: 'sms_in',
+				timestamp: Date.now(),
+				channel_id: evt.device,
+				endpoint: evt.from.replace(prefix, '0'),
+				content: new Buffer(evt.message, 'base64').toString("utf8")
+			};
+
+			if (evt.message.length === sms_max_length && evt.message[sms_max_length - 1] !== '=') {
+				s.asterisk.sms_in.set(evt.from, {
+					data: data,
+					timeout: setTimeout(inboxUpdateMultipart, timeout)
+				});
+			} else {
+				engineApi.inboxUpdate(data);
+			}
 		}
 	}
 });
@@ -1273,6 +1291,16 @@ ami.on('peerstatus', function(evt) {
 	console.error(JSON.stringify(evt));
 });
 */
+
+var deleteStoredSms = function (dongleId) {
+	s.asterisk.channels[dongleId].sms_count = 0;
+	ami.action({
+		action: "Command",
+		command: "dongle cmd " + dongleId + " AT+CMGD=1,4",
+	}, function(err, res) {
+		myLib.consoleLog('debug', "deleteStoredSms", res);
+	});
+};
 
 var consoleToMaster = function() {
 	ami.action({
