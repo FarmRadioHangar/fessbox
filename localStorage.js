@@ -273,23 +273,23 @@ function messageTagAdd(message_ids, tags, cb) {
 
 function messageFavoriteUnset(message_ids, cb) {
 	redisClient.srem("msgTags:favorite", message_ids);
-	redisMulti = redisClient.multi();
-	for(var index in message_ids) {
+	let redisMulti = redisClient.multi();
+	for(let index in message_ids) {
 		redisMulti.hdel(message_ids[index], "favorite");
 	}
 	redisMulti.exec(function(err, res) {
 		if (!err) {
-			var messageList = {};
-			var updated = [];
-			var messagesMulti = redisClient.multi();
-			for(var index in message_ids) {
+			let messageList = {};
+			let updated = [];
+			let messagesMulti = redisClient.multi();
+			for(let index in message_ids) {
 				if (res[index]) {
 					messagesMulti.hgetall(message_ids[index]);
 					updated.push(message_ids[index]);
 				}
 			}
 			messagesMulti.exec(function (err, message_objects) {
-				for(index in updated) {
+				for(let index in updated) {
 					messageList[updated[index]] = message_objects[index];
 				}
 				cb(null, messageList);

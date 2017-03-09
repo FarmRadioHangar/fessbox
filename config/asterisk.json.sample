@@ -21,6 +21,11 @@
 		}
 	},
 	"dongleInfoInterval": 69,
+	"host": true,
+	"console": {
+		"in": true,
+		"out": true
+	},
 	"hosts": ["707"],
 	"operators": ["701", "703", "705"],
 	"external": ["702", "704"],
