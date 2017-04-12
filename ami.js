@@ -868,7 +868,7 @@ function sendSMS(device, number, content, cb) {
 	ami.action({
 		action: 'DongleSendSMS',
 		Device: device,
-		"Number": number,
+		"Number": number.replace(/^0/, appConf.country_prefix),
 		Message: content.replace('\n', '\\n'),
 		Report: 'yes'
 	}, function(err, res) {
