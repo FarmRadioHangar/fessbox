@@ -471,7 +471,8 @@ ami.on('donglestatus', function(evt) {
 ami.on('musiconholdstart', function(evt) {
 //	{"event":"MusicOnHoldStart","privilege":"call,all","channel":"Dongle/airtel1-0100000003","channelstate":"6","channelstatedesc":"Up","calleridnum":"<unknown>","calleridname":"airtel1","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-internal","exten":"196","priority":"2","uniqueid":"1458909247.56","linkedid":"1458909247.56","class":"default"}
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
-	if (s.asterisk.channels[channelInfo[1]]) {
+	// temporary fix: change  mode to on-hold only when explicitly redirected to on_hold extension
+	if (s.asterisk.channels[channelInfo[1]] && evt.exten === astConf.virtual.on_hold) {
 		engineApi.channelUpdate(channelInfo[1], { mode: 'on_hold' });
 	} else if (channelInfo[0] === 'ALSA') {
 		consoleHangup();
@@ -479,14 +480,17 @@ ami.on('musiconholdstart', function(evt) {
 	}
 });
 
-// asterisk 11 event
+/*
+// asterisk 11 event, implementation not up to date. 
 ami.on('musiconhold', function(evt) {
 //	{"event":"MusicOnHold","privilege":"call,all","state":"Stop","channel":"ALSA/hw:0,0","uniqueid":"1448348233.0"}
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
-	if (s.asterisk.channels[channelInfo[1]] && evt.state === "Start") {
+	// temporary fix: change  mode to on-hold only when explicitly redirected to on_hold extension
+	if (s.asterisk.channels[channelInfo[1]] && evt.state === "Start" && evt.exten === astConf.virtual.on_hold) {
 		engineApi.channelUpdate(channelInfo[1], { mode: 'on_hold' });
 	}
 });
+*/
 
 // when dialing out
 ami.on('dialbegin', function(evt) {
