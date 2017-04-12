@@ -120,6 +120,9 @@ ami.on('devicestatelistcomplete', function(evt) {
 					}
 					eventCallbacks.initialized();
 				});
+			} else {
+				myLib.consoleLog('warning', "console channel disabled", "audio input/output will not work");
+				eventCallbacks.initialized();
 			}
 		}
 	});
