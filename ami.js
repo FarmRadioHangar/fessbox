@@ -140,7 +140,7 @@ ami.on('dongledeviceentry', function(evt) {
 				rssi: evt.rssi,
 				mode: evt.mode,
 				submode: evt.submode,
-				provider: evt.providername
+				provider: astConf.dongles[evt.device].network ? astConf.dongles[evt.device].network : evt.providername,
 			};
 
 			//if number is configured, only update connection info, else assume this is initialization
