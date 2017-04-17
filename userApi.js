@@ -29,7 +29,8 @@ exports.getCurrentState = function (operator_id, cb) {
 			mixer: s.ui.mixer,
 			users: operators, // deprecated
 			operators: operators,
-			inbox: messages,
+			inbox: messages, // deprecated
+			server_version: 'v0.2.1,
 			server_time: Date.now()
 		};
 		cb(null, currentState);
