@@ -1,6 +1,7 @@
 [Unit]
 Description=fessbox backend
-After=run-user-0.mount asterisk.service
+After=run-user-0.mount
+After=asterisk.service
 
 [Service]
 Restart=always
