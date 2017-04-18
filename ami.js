@@ -70,10 +70,10 @@ ami.on('fullybooted', function(evt) {
 			//{"response":"Success","actionid":"1446811737040","eventlist":"start","message":"Device status list will follow"}
 			if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow, ends with 'DongleShowDevicesComplete'
 				myLib.consoleLog('log', "init", 'Dongle driver is talking');
-				if (astConf.DongleInfoInterval) {
+				if (astConf.dongleInfoInterval) {
 					s.asterisk.dongleInfoUpdate = setInterval(function() {
 						ami.action({ action: "DongleShowDevices" });
-					}, astConf.DongleInfoInterval * 1000);
+					}, astConf.dongleInfoInterval * 1000);
 				}
 			} else {
 				myLib.consoleLog('error', 'init Dongle', JSON.stringify(err) + " " + JSON.stringify(res));
@@ -201,6 +201,7 @@ ami.on('dongledeviceentry', function(evt) {
 							}
 						});
 					case 'not connected':
+					case 'not initialized':
 					default:
 						myLib.consoleLog('error', "ami::on-dongledeviceentry", 'dongleState', dongleState);
 						s.ui.mixer.channels[evt.device].error = dongleState;
