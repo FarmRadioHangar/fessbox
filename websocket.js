@@ -55,7 +55,8 @@ exports.startListening = function(options) {
 					} else {
 						eventHandlers[message.event](location.query.user_id, message.data, function (event, data, target) {
 							data = serializeEvent(event, data);
-							if (event !== 'pong') {
+							//if (event !== 'pong') {
+							if (["pong", "inboxMessages"].indexOf(event) === -1) {
 								myLib.consoleLog('debug', 'websocket::emitEvent', target, data);
 							}
 							switch (target) {

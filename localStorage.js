@@ -2,7 +2,7 @@ var fs = require("fs");
 var redisClient = require("./redisClient");
 var astConf = require("./config/asterisk.json");
 var stateFile = __dirname + "/state/snapshot.json";
-
+var engineApi = require("./engineApi");
 var myLib = require("./myLib");
 
 redisClient.on("error",  function(err) {
@@ -82,6 +82,13 @@ var loadDefaults = function() {
 */
 
 function saveSnapshot(exit) {
+	//handle gracefully partialy received multipart sms messages
+	exports.asterisk.sms_in.forEach((value) => {
+		clearTimeout(value.timeout);
+		engineApi.inboxUpdate(value.data);
+	});
+	exports.asterisk.sms_in = null;
+
 	var myData = {
 		mixer: exports.ui.mixer,
 		operators: exports.ui.operators,

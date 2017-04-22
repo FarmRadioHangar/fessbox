@@ -12,7 +12,6 @@ var ami = new require('asterisk-manager')(amiConf.port, amiConf.host, amiConf.us
 ami.keepConnected();
 
 	s.asterisk = {
-		sms_out: {}, // map for storing pending outgoing sms
 		sms_in: new Map(), // map for storing multipart incoming sms
 		channels: {},
 		conference: {
@@ -25,6 +24,8 @@ ami.keepConnected();
 		}
 	};
 
+var sms_out_pending = new Map(); // map for storing outgoing sms while waiting for confirmation
+var dongleInfoUpdate;
 
 var eventCallbacks = {
 	'initialized': function () {}
@@ -59,9 +60,9 @@ ami.on('fullybooted', function(evt) {
 		}
 
 		//clear previous dongle update job
-		if (s.asterisk.dongleInfoUpdate) {
-			clearInterval(s.asterisk.dongleInfoUpdate);
-			s.asterisk.dongleInfoUpdate = null;
+		if (dongleInfoUpdate) {
+			clearInterval(dongleInfoUpdate);
+			dongleInfoUpdate = null;
 		}
 
 		ami.action({
@@ -71,7 +72,7 @@ ami.on('fullybooted', function(evt) {
 			if (!err && res.response === 'Success') { // 'dongledeviceentry' events will follow, ends with 'DongleShowDevicesComplete'
 				myLib.consoleLog('log', "init", 'Dongle driver is talking');
 				if (astConf.dongleInfoInterval) {
-					s.asterisk.dongleInfoUpdate = setInterval(function() {
+					dongleInfoUpdate = setInterval(() => {
 						ami.action({ action: "DongleShowDevices" });
 					}, astConf.dongleInfoInterval * 1000);
 				}
@@ -424,6 +425,10 @@ ami.on('donglenewsmsbase64', function(evt) {
 				engineApi.inboxUpdate(data);
 			}
 		}
+
+		// alternative solution for multipart is for all messages to send update to UI right away,
+		// and if another one comes before timeout, update the previus msg. This can be handled in
+		// engineApi, because we'll need to know the uuid of the previous message.
 	}
 });
 
@@ -1183,14 +1188,14 @@ exports.sendContent = function(data, cb) {
 	var timeout = 40; //seconds
 	sendSMS(data.channel_id, data.endpoint, data.content, function(err, key){
 		if (!err) {
-			s.asterisk.sms_out[key] = {
+			sms_out_pending.set(key, {
 				data: data,
 				cb: cb,
 				timeout: setTimeout(function() {
-					s.asterisk.sms_out[key].cb("Timeout");
-					delete s.asterisk.sms_out[key];
+					sms_out_pending.get(key).cb("Timeout");
+					sms_out_pending.delete(key);
 				}, timeout * 1000)
-			};
+			});
 		} else {
 			cb(err);
 		}
@@ -1245,17 +1250,17 @@ ami.on('donglesmsstatus', function(evt) {
 //	{"event":"DongleSMSStatus","privilege":"call,all","device":"airtel1","id":"0x73c4dcc8","status":"NotSent"}
 //	{"event":"DongleSMSStatus","privilege":"call,all","device":"airtel1","id":"0x7392f0e8","status":"Sent"}
 	console.error(JSON.stringify(evt));
-	if (s.asterisk.sms_out[evt.id]) {
-		clearTimeout(s.asterisk.sms_out[evt.id].timeout);
+	if (sms_out_pending.has(evt.id)) {
+		clearTimeout(sms_out_pending.get(evt.id).timeout);
 		if (evt.status !== "Sent") {
-			s.asterisk.sms_out[evt.id].cb("Message not sent");
+			sms_out_pending.get(evt.id).cb("Message not sent");
 		} else {
 			//todo: Use .endpoint instead of .contact_id and .source
-			s.asterisk.sms_out[evt.id].data.timestamp = Date.now();
-			s.asterisk.sms_out[evt.id].cb();
-			engineApi.inboxUpdate(s.asterisk.sms_out[evt.id].data);
+			sms_out_pending.get(evt.id).data.timestamp = Date.now();
+			sms_out_pending.get(evt.id).cb();
+			engineApi.inboxUpdate(sms_out_pending.get(evt.id).data);
 		}
-		delete s.asterisk.sms_out[evt.id];
+		sms_out_pending.delete(evt.id);
 	}
 });
 
