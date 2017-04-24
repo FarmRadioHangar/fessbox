@@ -6,6 +6,8 @@ var myLib = require("./myLib");
 var engineApi = require("./engineApi");
 var s = require("./localStorage");
 
+var prefixRegExp = new RegExp('^\\' + appConf.country_prefix);
+
 var ami = new require('asterisk-manager')(amiConf.port, amiConf.host, amiConf.username, amiConf.password, true);
 // https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+AMI+Events
 // https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+AMI+Actions
@@ -158,8 +160,7 @@ ami.on('dongledeviceentry', function(evt) {
 					myLib.consoleLog('error', "sim number not configured", evt.device);
 				} else {
 					if (!s.ui.mixer.channels[evt.device].label) {
-						var prefix = new RegExp('^\\' + appConf.country_prefix);
-						s.ui.mixer.channels[evt.device].label = evt.subscribernumber.replace(prefix, '0');
+						s.ui.mixer.channels[evt.device].label = evt.subscribernumber.replace(prefixRegExp, '0');
 					}
 				}
 				s.ui.mixer.channels[evt.device].number = evt.subscribernumber;
@@ -388,7 +389,6 @@ ami.on('donglenewsmsbase64', function(evt) {
 			deleteStoredSms(evt.device);
 		}
 
-		var prefix = new RegExp('^\\' + appConf.country_prefix);
 		var timeout = 19900; // number of mili-seconds to wait for next part of sms
 		var sms_max_length = 204; // 204 is the length of the base64 encoded 160 chars
 		var inboxUpdateMultipart = function () {
@@ -412,7 +412,7 @@ ami.on('donglenewsmsbase64', function(evt) {
 				type: 'sms_in',
 				timestamp: Date.now(),
 				channel_id: evt.device,
-				endpoint: evt.from.replace(prefix, '0'),
+				endpoint: evt.from.replace(prefixRegExp, '0'),
 				content: new Buffer(evt.message, 'base64').toString("utf8")
 			};
 
@@ -431,10 +431,12 @@ ami.on('donglenewsmsbase64', function(evt) {
 		// engineApi, because we'll need to know the uuid of the previous message.
 	}
 });
-
+/*
 //todo: get user info via addressBook api call on newchannel event instead of using this event
 ami.on('newcallerid', function(evt) {
-//	{"event":"NewCallerid","privilege":"call,all","channel":"Dongle/airtel2-0100000004","calleridnum":"+255688755855","calleridname":"airtel2-xxx","uniqueid":"1449483797.31","cid-callingpres":"0 (Presentation Allowed, Not Screened)"}
+//11	{"event":"NewCallerid","privilege":"call,all","channel":"Dongle/airtel2-0100000004","calleridnum":"+255688755855","calleridname":"airtel2-xxx","uniqueid":"1449483797.31","cid-callingpres":"0 (Presentation Allowed, Not Screened)"}
+//13	{"event":"NewCallerid","privilege":"call,all","channel":"Dongle/airtel1-0100000008","channelstate":"0","channelstatedesc":"Down","calleridnum":"075562837","calleridname":"<unknown>","connectedlinenum":"+255689514544","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-trunk","exten":"075562837","priority":"1","uniqueid":"1492837705.458","linkedid":"1492837705.452","cid-callingpres":"0 (Presentation Allowed, Not Screened)"}
+
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	if (s.ui.mixer.channels[channelInfo[1]]) {
 		engineApi.channelUpdate(channelInfo[1], { contact: {
@@ -443,7 +445,7 @@ ami.on('newcallerid', function(evt) {
 		}});
 	}
 });
-
+*/
 ami.on('donglestatus', function(evt) {
 //	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Free"}
 //	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Disconnect"}
@@ -511,7 +513,7 @@ ami.on('dialbegin', function(evt) {
 			mode: 'ring',
 			direction: 'outgoing',
 			contact: {
-				number: evt.destcalleridnum,
+				number: evt.dialstring.split('/')[1].replace(prefixRegExp, '0'),
 				name: evt.destcalleridname !== "<unknown>" ? evt.destcalleridname : null
 			}
 		});
@@ -942,6 +944,23 @@ function amiOriginate(channel, destination, cb) {
 
 }
 
+function amiOriginateViaTrunk(channel, destination, cb) {
+	ami.action({
+		action: "Originate",
+		channel: channel,
+		application: "Dial",
+		data: destination
+	}, function(err, res) {
+		if (!err) {
+			cb();
+			console.error("originate sucess!!", JSON.stringify(res));
+		} else {
+			cb(["originate error", channel, destination, res.message].join('::'));
+		}
+	});
+
+}
+
 function amiRedirect(channel, destination, cb) {
 	myLib.consoleLog('debug', 'amiRedirect', [channel, destination]);
 	destination = destination.split('@');
@@ -1003,11 +1022,23 @@ exports.originateLocal = function (number, destination, channel_id, cb) {
 	} else {
 		destination = "SIP/" + destination;
 	}
-	amiOriginate(destination, number, cb);
+	if (channel_id) {
+		if (s.ui.mixer.channels[channel_id].type === 'dongle' ) {
+			amiOriginateViaTrunk(destination, ["Dongle", channel_id, number].join('/'), cb);
+		} else {
+			cb("PANIC::originateLocal - someone better implement this! " + s.ui.mixer.channels[channel_id].type)
+		}
+	} else {
+		amiOriginate(destination, number, cb);
+	}
 };
 
 exports.originateRemote = function (number, destination, channel_id, cb) {
-	amiOriginate(["Dongle", channel_id, number].join('/'), astConf.virtual[destination], cb);
+	if (channel_id && s.ui.mixer.channels[channel_id].type === 'dongle' ) {
+		amiOriginate(["Dongle", channel_id, number].join('/'), astConf.virtual[destination], cb);
+	} else {
+		cb("PANIC::originateRemote - someone better implement this! " + channel_id)
+	}
 };
 
 exports.setChannelRecording = function (channel_id, value, cb) {

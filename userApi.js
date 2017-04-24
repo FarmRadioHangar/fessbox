@@ -30,7 +30,7 @@ exports.getCurrentState = function (operator_id, cb) {
 			users: operators, // deprecated
 			operators: operators,
 			inbox: messages, // deprecated
-			server_version: 'v0.2.1',
+			server_version: 'v0.2.2',
 			server_time: Date.now()
 		};
 		cb(null, currentState);
