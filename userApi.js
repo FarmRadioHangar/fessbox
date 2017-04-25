@@ -187,11 +187,24 @@ exports.setChannelProperty = function (channel_id, name, value, cbErr) {
 	}
 };
 
+// this is a very temporary solution, until we figure out how to handle contacts
+// only 'data.name' field is currently saved
 exports.setChannelContactInfo = function (channel_id, data, cbErr) {
-	for (key in data) {
-		s.ui.mixer.channels[channel_id].contact[key] = data[key];
+	let channel = s.ui.mixer.channels[channel_id];
+	if (channel && ["free", "defunct"].indexOf(channel.mode) === -1) {
+		let modified = false;
+		for (let key in data) {
+			if (channel.contact[key] !== data[key]) {
+				channel.contact[key] = data[key];
+				modified = true;
+			}
+		}
+		if (modified) {
+			pbxProvider.setPhoneBookEntry(channel.contact.number, channel.contact.name);
+		}
+	} else {
+		cb("Channel not active, operation can't be completed");
 	}
-	s.ui.mixer.channels[channel_id].contact.modified = true;
 };
 
 exports.setChannelMuted = function (channel_id, value, cbErr) {

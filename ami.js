@@ -250,7 +250,7 @@ ami.on('coreshowchannel', function (evt) {
 							direction: 'incoming',
 							timestamp: Date.now() - myLib.msecDuration(evt.duration),
 							contact: {
-								number: evt.calleridnum,
+								number: evt.calleridnum.replace(prefixRegExp, '0'),
 								name: evt.calleridname
 							}
 						});
@@ -266,7 +266,7 @@ ami.on('coreshowchannel', function (evt) {
 									direction: 'incoming',
 									timestamp: Date.now() - myLib.msecDuration(evt.duration),
 									contact: {
-										number: evt.calleridnum,
+										number: evt.calleridnum.replace(prefixRegExp, '0'),
 										name: evt.calleridname
 									}
 								});
@@ -431,7 +431,7 @@ ami.on('donglenewsmsbase64', function(evt) {
 		// engineApi, because we'll need to know the uuid of the previous message.
 	}
 });
-/*
+
 //todo: get user info via addressBook api call on newchannel event instead of using this event
 ami.on('newcallerid', function(evt) {
 //11	{"event":"NewCallerid","privilege":"call,all","channel":"Dongle/airtel2-0100000004","calleridnum":"+255688755855","calleridname":"airtel2-xxx","uniqueid":"1449483797.31","cid-callingpres":"0 (Presentation Allowed, Not Screened)"}
@@ -439,13 +439,19 @@ ami.on('newcallerid', function(evt) {
 
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	if (s.ui.mixer.channels[channelInfo[1]]) {
-		engineApi.channelUpdate(channelInfo[1], { contact: {
-			name: evt.calleridname,
-			number: evt.calleridnum
-		}});
+		if (!s.ui.mixer.channels[channelInfo[1]].contact) {
+			engineApi.channelUpdate(channelInfo[1], { contact: {
+				name: evt.calleridname,
+				number: evt.calleridnum.replace(prefixRegExp, '0'),
+			}});
+		} else if (s.ui.mixer.channels[channelInfo[1]].contact.name !== evt.calleridname) {
+			engineApi.channelUpdate(channelInfo[1], { contact: {
+				name: evt.calleridname,
+			}});
+		}
 	}
 });
-*/
+
 ami.on('donglestatus', function(evt) {
 //	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Free"}
 //	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Disconnect"}
@@ -628,12 +634,12 @@ ami.on('newchannel', function(evt) {
 				switch (evt.channelstatedesc) {
 					case 'Ring':
 						engineApi.channelUpdate(channelInfo[1], {
-							type: channelInfo[0],
+//							type: channelInfo[0].toLowerCase(),
 							mode: 'ring',
 							direction: 'incoming',
 							timestamp: Date.now(),
 							contact: {
-								number: evt.calleridnum,
+								number: evt.calleridnum.replace(prefixRegExp, '0'),
 								name:  evt.calleridname
 							}
 						});
@@ -941,7 +947,6 @@ function amiOriginate(channel, destination, cb) {
 			cb(["originate error", channel, destination, res.message].join('::'));
 		}
 	});
-
 }
 
 function amiOriginateViaTrunk(channel, destination, cb) {
@@ -949,7 +954,8 @@ function amiOriginateViaTrunk(channel, destination, cb) {
 		action: "Originate",
 		channel: channel,
 		application: "Dial",
-		data: destination
+		data: destination,
+		async: true,
 	}, function(err, res) {
 		if (!err) {
 			cb();
@@ -958,7 +964,6 @@ function amiOriginateViaTrunk(channel, destination, cb) {
 			cb(["originate error", channel, destination, res.message].join('::'));
 		}
 	});
-
 }
 
 function amiRedirect(channel, destination, cb) {
@@ -1024,16 +1029,18 @@ exports.originateLocal = function (number, destination, channel_id, cb) {
 	}
 	if (channel_id) {
 		if (s.ui.mixer.channels[channel_id].type === 'dongle' ) {
-			amiOriginateViaTrunk(destination, ["Dongle", channel_id, number].join('/'), cb);
+			amiOriginateViaTrunk(destination, ["Dongle", channel_id, number.replace(/^0/, appConf.country_prefix)].join('/'), number, cb);
 		} else {
 			cb("PANIC::originateLocal - someone better implement this! " + s.ui.mixer.channels[channel_id].type)
 		}
 	} else {
-		amiOriginate(destination, number, cb);
+		// must dial local format because of some dial-plan issue
+		amiOriginate(destination, number.replace(prefixRegExp, '0'), cb);
 	}
 };
 
 exports.originateRemote = function (number, destination, channel_id, cb) {
+	number = number.replace(/^0/, appConf.country_prefix);
 	if (channel_id && s.ui.mixer.channels[channel_id].type === 'dongle' ) {
 		amiOriginate(["Dongle", channel_id, number].join('/'), astConf.virtual[destination], cb);
 	} else {
@@ -1206,7 +1213,7 @@ exports.setChanFree = function (channel_id, cb) {
 };
 
 exports.setPhoneBookEntry = function (number, label, cb) {
-	amiSimpleCommand('database put cidname ' + number + ' "' + label + '"', cb);
+	amiSimpleCommand('database put cidname ' + number.replace(/^0/, appConf.country_prefix) + ' "' + label + '"', cb);
 };
 
 exports.setMasterRecording = function (value, cb) {
