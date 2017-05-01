@@ -2,6 +2,7 @@
 	"adminEmail": "damjan@farmradio.org",
 	"wsPort": 19998,
 	"wsLogsPort": 19997,
+	"restPort": 19990,
 	"pbxProvider": "ami",
 	"addressBook": "iAddressBook",
 	"country_prefix": "+255",

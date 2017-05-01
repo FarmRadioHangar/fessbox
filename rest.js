@@ -10,6 +10,37 @@ exports.connectNumbers = function (response, params) {
 	myLib.httpGeneric(200, result, response, "DEBUG::connectNumbers");
 };
 */
+exports.restartAsterisk = function (response, params) {
+};
+
+exports.resetModems = function (response, params) {
+	if (params.name) {
+		if (s.ui.mixer.channels[params.name] && s.ui.mixer.channels[params.name].mode !== 'defunct') {
+			myLib.httpGeneric(200, '', response, "DEBUG::resetModems " + params.name);
+			ami.command("dongle reset " + params.name);
+		} else {
+			myLib.httpGeneric(422, '', response, "DEBUG::resetModems " + params.name);
+		}
+	} else {
+		myLib.httpGeneric(200, '', response, "DEBUG::resetModems");
+		Object.keys(s.ui.mixer.channels).forEach((channel_id) => {
+			let channel = s.ui.mixer.channels[channel_id];
+			if (channel.type === 'dongle' && channel.mode !== 'defunct') {
+				ami.command("dongle reset " + channel_id);
+			}
+		});
+	}
+};
+
+exports.dongleCommand = function (response, params) {
+	if (params.cmd && s.ui.mixer.channels[params.name] && s.ui.mixer.channels[params.name].mode !== 'defunct') {
+		let command = ["dongle cmd", params.name, params.cmd].join(' ');
+		myLib.httpGeneric(200, command, response, "DEBUG::dongleCommand " + params.name);
+		ami.command(command);
+	} else {
+		myLib.httpGeneric(422, '', response, "DEBUG::dongleCommand " + params.name);
+	}
+};
 
 exports.channelProperty = function (response, params) {
 	userApi.setChannelProperty(params.channel_id, params.name, params.value, function (err) {

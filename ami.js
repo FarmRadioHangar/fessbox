@@ -714,7 +714,7 @@ function amiSimpleAction(action, channel, cb) {
 	}, function(err, res) {
 		if (!err) {
 			if (cb) {
-				cb(res);
+				cb(null,res);
 			} else {
 				console.error(JSON.stringify(res));
 			}
@@ -732,7 +732,7 @@ function amiAction(options, cb) {
 	ami.action(options, function(err, res) {
 		if (!err) {
 			if (cb) {
-				cb(res);
+				cb(null,res);
 			} else {
 				console.error(JSON.stringify(res));
 			}
@@ -754,7 +754,7 @@ function amiSimpleCommand(command, cb) {
 	}, function(err, res) {
 		if (!err) {
 			if (cb) {
-				cb(res);
+				cb(null,res);
 			} else {
 				console.error(JSON.stringify(res));
 			}
@@ -783,6 +783,7 @@ function setVar(channel, variable, value) {
 	});
 }
 
+/*
 function getVar(channel, variable, cb) {
 	ami.action({
 		action: 'Getvar',
@@ -790,7 +791,7 @@ function getVar(channel, variable, cb) {
 		variable: variable
 	}, function(err, res) {
 		if (!err) {
-			cb(res.value);
+			cb(null,res.value);
 			console.error(JSON.stringify(res));
 		} else {
 			console.error(err.toString());
@@ -798,7 +799,6 @@ function getVar(channel, variable, cb) {
 	});
 }
 
-/*
 function amiConnectToMaster(channel) {
 /*
 	ACTION: Redirect
@@ -1247,6 +1247,9 @@ ami.on('managerevent', function(evt) {
 	}
 	// else console.error(JSON.stringify(evt));
 });
+
+// debug: expose ami command
+exports.command = amiSimpleCommand;
 
 // debug: track interesting events
 /*

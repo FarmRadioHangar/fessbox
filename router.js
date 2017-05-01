@@ -13,7 +13,7 @@ function route(apiHandler, request, response) {
 		myLib.httpGeneric(404, "not found", response, "ERROR::router - no request handler found for " + urlParts.pathname);
 	} else {
 		// DEBUG LOG
-		requestParams = request.url.split(/[&?]/);
+		let requestParams = request.url.split(/[&?]/);
 		console.error(ip + "\t  __ ======\n=" + new Date().toISOString() + ' = ' + requestParams.join("   "));
 
 		if (request.method === 'POST') {
