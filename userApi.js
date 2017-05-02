@@ -191,7 +191,7 @@ exports.setChannelProperty = function (channel_id, name, value, cbErr) {
 // only 'data.name' field is currently saved
 exports.setChannelContactInfo = function (channel_id, data, cbErr) {
 	let channel = s.ui.mixer.channels[channel_id];
-	if (channel && ["free", "defunct"].indexOf(channel.mode) === -1) {
+	if (channel && channel.contact) {
 		let modified = false;
 		for (let key in data) {
 			if (channel.contact[key] !== data[key]) {

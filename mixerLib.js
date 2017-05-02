@@ -26,7 +26,9 @@ exports.channelMode = function (channel_id, channel) {
 					if (s.ui.mixer.channels[channel_id].direction !== 'operator') {
 						channel.direction = null;
 					}
-					channel.contact = null;
+					//temp: do not clear channel contact info to let editing contact info after hangup
+					//channel.contact = null;
+
 					if (s.ui.mixer.channels[channel_id].contact && s.ui.mixer.channels[channel_id].contact.modified) {
 						//pbxProvider.setPhoneBookEntry(s.ui.mixer.channels[channel_id].contact.number, s.ui.mixer.channels[channel_id].contact.name);
 						//addressBook.setContactInfo(s.ui.mixer.channels[channel_id].contact);
