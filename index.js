@@ -1,6 +1,6 @@
 console.error("==========================++++++++++++++============================");
 var myLib = require("./myLib");
-var appConfig = require("./config/app.json");
+var appConfig = require("./etc/app.json");
 var s = require("./localStorage");
 var ami = require("./ami");
 var websocket = require("./websocket");

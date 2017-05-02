@@ -1,5 +1,5 @@
-var appConf = require("./config/app.json");
-var astConf = require("./config/asterisk.json");
+var appConf = require("./etc/app.json");
+var astConf = require("./etc/asterisk.json");
 var amiConf = astConf.ami;
 
 var myLib = require("./myLib");

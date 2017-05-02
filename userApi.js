@@ -1,6 +1,6 @@
 var uuid = require("uuid");
 
-var appConfig = require("./config/app.json");
+var appConfig = require("./etc/app.json");
 var pbxProvider = require("./" + appConfig.pbxProvider);
 var addressBook = require("./" + appConfig.addressBook);
 

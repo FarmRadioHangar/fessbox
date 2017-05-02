@@ -1,5 +1,5 @@
 var emailjs = require("emailjs");
-var mailConfig = require("./config/email.json");
+var mailConfig = require("./etc/email.json");
 
 function mailSend(subject, body, addressTo) {
 	var server = emailjs.server.connect({

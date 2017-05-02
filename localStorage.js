@@ -1,6 +1,6 @@
 var fs = require("fs");
 var redisClient = require("./redisClient");
-var astConf = require("./config/asterisk.json");
+var astConf = require("./etc/asterisk.json");
 var stateFile = __dirname + "/state/snapshot.json";
 var engineApi = require("./engineApi");
 var myLib = require("./myLib");
@@ -26,7 +26,7 @@ redisClient.on('connect', function() {
 		if (res) {
 			exports.ui.mixer.master = JSON.parse(res);
 		} else {
-			exports.ui.mixer.master = require("./config/defaults/master.json");
+			exports.ui.mixer.master = require("./etc/defaults/master.json");
 		}
 		exports.ui.mixer.host = exports.ui.mixer.master.in; // temp
 	});
@@ -124,7 +124,7 @@ function loadSnapshot() {
 
 function loadOperator(channel_id, cb) {
 	var loadFromFile = function () {
-		var usersPath = __dirname + "/config/defaults/users/";
+		var usersPath = __dirname + "/etc/defaults/users/";
 		var userFile = usersPath + channel_id + ".json";
 		var myData;
 		if (!fs.existsSync(userFile)) {
@@ -158,7 +158,7 @@ function loadOperator(channel_id, cb) {
 function saveOperator(channel_id, cb) {
 	redisClient.hmset("operator." + channel_id, exports.ui.operators[channel_id], cb);
 	/*
-	var userFile = __dirname + "/config/defaults/operators/" + channel_id + ".json";
+	var userFile = __dirname + "/etc/defaults/operators/" + channel_id + ".json";
 	fs.writeFile(userFile, JSON.stringify(exports.ui.operators[channel_id]), "utf8", function (err) {
 		if (err) {
 			console.error("ERROR::saveOperator - " + JSON.stringify(err));
@@ -171,7 +171,7 @@ function saveOperator(channel_id, cb) {
 
 function loadChannel(channel_id, cb) {
 	var loadFromFile = function () {
-		var channelsPath = __dirname + "/config/defaults/channels/";
+		var channelsPath = __dirname + "/etc/defaults/channels/";
 		var channelFile = channelsPath + channel_id + ".json";
 		var myData;
 		if (!fs.existsSync(channelFile)) {
