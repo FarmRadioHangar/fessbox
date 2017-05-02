@@ -9,15 +9,27 @@ exports.connectNumbers = function (response, params) {
 	var result = ami.connectNumbers(params.number1, params.number2);
 	myLib.httpGeneric(200, result, response, "DEBUG::connectNumbers");
 };
-*/
 exports.restartAsterisk = function (response, params) {
+};
+*/
+
+var resetDongle = function (dongleName, reason) {
+	ami.command("dongle reset " + dongleName);
+	if (reason) {
+		myLib.jsonLog({
+			name: dongleName,
+			reason: reason,
+		}, ["telegraf", "notice"], ["bulletproof"], { modemResetRequests: {
+			value: 1
+		}});
+	}
 };
 
 exports.resetModems = function (response, params) {
 	if (params.name) {
 		if (s.ui.mixer.channels[params.name] && s.ui.mixer.channels[params.name].mode !== 'defunct') {
 			myLib.httpGeneric(200, '', response, "DEBUG::resetModems " + params.name);
-			ami.command("dongle reset " + params.name);
+			resetDongle(params.name, params.reason);
 		} else {
 			myLib.httpGeneric(422, '', response, "DEBUG::resetModems " + params.name);
 		}
@@ -26,7 +38,7 @@ exports.resetModems = function (response, params) {
 		Object.keys(s.ui.mixer.channels).forEach((channel_id) => {
 			let channel = s.ui.mixer.channels[channel_id];
 			if (channel.type === 'dongle' && channel.mode !== 'defunct') {
-				ami.command("dongle reset " + channel_id);
+				resetDongle(channel_id, params.reason);
 			}
 		});
 	}
