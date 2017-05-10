@@ -17,6 +17,7 @@ if (args.indexOf("defaults") !== -1) {
 websocket.startLogListener({ port: appConfig.wsLogsPort });
 
 ami.on("initialized", function () {
+	require("./restServer");
 	websocket.startListening({ port: appConfig.wsPort });
 	console.error(new Date().toLocaleString() + " - FessBox Node Server has started!");
 });
@@ -45,7 +46,7 @@ process.on('uncaughtException', function (err) {
 
 /*
 start web server, for debuging rest interface
-*/
+
 var http = require("http");
 var apiHandler = require("./rest");
 var router = require("./router");
@@ -58,7 +59,7 @@ function startAPI(route, apiHandler) {
 }
 
 startAPI(router.route, apiHandler);
-/*
+
 end debug code
 */
 

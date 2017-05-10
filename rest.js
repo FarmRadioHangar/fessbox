@@ -5,11 +5,11 @@ var ami = require("./ami");
 var s = require("./localStorage");
 
 /*
-exports.connectNumbers = function (response, params) {
+exports.connectNumbers = function (params, reply) {
 	var result = ami.connectNumbers(params.number1, params.number2);
-	myLib.httpGeneric(200, result, response, "DEBUG::connectNumbers");
+	reply(200, result);
 };
-exports.restartAsterisk = function (response, params) {
+exports.restartAsterisk = function (params, reply) {
 };
 */
 
@@ -25,16 +25,16 @@ var resetDongle = function (dongleName, reason) {
 	}
 };
 
-exports.resetModems = function (response, params) {
+exports.resetModems = function (params, reply) {
 	if (params.name) {
 		if (s.ui.mixer.channels[params.name] && s.ui.mixer.channels[params.name].mode !== 'defunct') {
-			myLib.httpGeneric(200, '', response, "DEBUG::resetModems " + params.name);
+			reply(200, '');
 			resetDongle(params.name, params.reason);
 		} else {
-			myLib.httpGeneric(422, '', response, "DEBUG::resetModems " + params.name);
+			reply(422, '');
 		}
 	} else {
-		myLib.httpGeneric(200, '', response, "DEBUG::resetModems");
+		reply(200, '');
 		Object.keys(s.ui.mixer.channels).forEach((channel_id) => {
 			let channel = s.ui.mixer.channels[channel_id];
 			if (channel.type === 'dongle' && channel.mode !== 'defunct') {
@@ -44,59 +44,59 @@ exports.resetModems = function (response, params) {
 	}
 };
 
-exports.dongleCommand = function (response, params) {
+exports.dongleCommand = function (params, reply) {
 	if (params.cmd && s.ui.mixer.channels[params.name] && s.ui.mixer.channels[params.name].mode !== 'defunct') {
 		let command = ["dongle cmd", params.name, params.cmd].join(' ');
-		myLib.httpGeneric(200, command, response, "DEBUG::dongleCommand " + params.name);
+		reply(200, command);
 		ami.command(command);
 	} else {
-		myLib.httpGeneric(422, '', response, "DEBUG::dongleCommand " + params.name);
+		reply(422, '');
 	}
 };
 
-exports.channelProperty = function (response, params) {
+exports.channelProperty = function (params, reply) {
 	userApi.setChannelProperty(params.channel_id, params.name, params.value, function (err) {
 		if (err) {
 			myLib.consoleLog('debug', 'setChannelProperty', err);
 		}
 	});
-	myLib.httpGeneric(200, '', response, "DEBUG::setChannelProperty");
+	reply(200, '');
 };
 
-exports.getCurrentState = function (response, params) {
+exports.getCurrentState = function (params, reply) {
 	userApi.getCurrentState(params.user_id, function (err, currentState) {
 		if (err) {
-			myLib.httpGeneric(513, err, response, "DEBUG::getCurrentState");
+			reply(513, err);
 		} else {
-			myLib.httpGeneric(200, JSON.stringify(currentState), response, "DEBUG::getCurrentState");
+			reply(200, JSON.stringify(currentState));
 		}
 	});
 };
 
-exports.messageSend = function (response, params) {
+exports.messageSend = function (params, reply) {
 	userApi.messageSend(params, function (err) {
 		if (err) {
-			myLib.httpGeneric(513, err, response, "DEBUG::messageSend");
+			reply(513, err);
 		} else {
-			myLib.httpGeneric(200, "ok", response, "DEBUG::messageSend");
+			reply(200, "ok");
 		}
 	});
 };
 
-exports.callNumber = function (response, params) {
+exports.callNumber = function (params, reply) {
 	userApi.callNumber(params.number, params.mode, params.channel_id, function (err) {
 		if (err) {
 			myLib.consoleLog('debug', 'callNumber', err);
 		}
 	});
-	myLib.httpGeneric(200, "ok", response, "DEBUG::callNumber");
+	reply(200, "ok");
 };
 
-exports.getObjects = function (response, params) {
+exports.getObjects = function (params, reply) {
 	var path = params.name.split('.');
 	var objects = s[path[0]];
 	for(var i = 1; i < path.length; i++) {
 		 objects = objects[path[i]];
 	}
-	myLib.httpGeneric(200,  JSON.stringify(objects, null, 4), response, "DEBUG::getObjects");
+	reply(200,  JSON.stringify(objects, null, 4));
 };
