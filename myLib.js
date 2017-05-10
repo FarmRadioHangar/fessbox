@@ -1,5 +1,30 @@
 var emailjs = require("emailjs");
 var mailConfig = require("./etc/email.json");
+var child_process = require('child_process');
+
+function sysExec(path, args, cb) {
+	console.log('appExec', path, args);
+	let app = child_process.spawn(path, args);
+	let output = '';
+	app.on('close', (code) => {
+		if (code !== 0) {
+			console.error(`process exited with code ${code}`);
+			cb(code, output);
+		} else {
+			cb(null, output);
+		}
+	});
+	app.on('error', (err) => {
+		console.error(`Failed to start child process. ${err}`);
+	});
+	app.stdout.on('data', (data) => {
+		output += data;
+	});
+
+	app.stderr.on('data', (data) => {
+		output += data;
+	});
+};
 
 function mailSend(subject, body, addressTo) {
 	var server = emailjs.server.connect({
@@ -140,3 +165,4 @@ exports.msecDuration = function(hms) {
 	var a = hms.split(':'); // split it at the colons
 	return ((+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2])) * 1000; 
 };
+exports.sysExec = sysExec;

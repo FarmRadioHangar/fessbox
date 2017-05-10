@@ -1,4 +1,3 @@
-
 var myLib = require("./myLib");
 var userApi = require("./userApi");
 var ami = require("./ami");
@@ -23,6 +22,12 @@ var resetDongle = function (dongleName, reason) {
 			value: 1
 		}});
 	}
+};
+
+exports.systemRestart = function (params, reply) {
+	myLib.sysExec("/usr/bin/sudo", ["/usr/bin/shutdown", "-r", "now"], (err, output) => {
+		reply(err ? 503 : 200, output);
+	});
 };
 
 exports.resetModems = function (params, reply) {
