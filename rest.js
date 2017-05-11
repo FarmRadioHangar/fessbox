@@ -12,25 +12,32 @@ exports.restartAsterisk = function (params, reply) {
 };
 */
 
-var resetDongle = function (dongleName, reason) {
-	ami.command("dongle reset " + dongleName);
-	if (reason) {
+exports.systemRestart = function (params, reply) {
+	myLib.sysExec("/usr/bin/sudo", ["/usr/bin/shutdown", "-r", "now"], (err, output) => {
+		reply(err ? 503 : 200, output);
+	});
+	if (params.reason) {
 		myLib.jsonLog({
-			name: dongleName,
 			reason: reason,
-		}, ["telegraf", "notice"], ["bulletproof"], { modemResetRequests: {
+		}, ["telegraf", "notice"], ["bulletproof"], { systemRestartRequests: {
 			value: 1
 		}});
 	}
 };
 
-exports.systemRestart = function (params, reply) {
-	myLib.sysExec("/usr/bin/sudo", ["/usr/bin/shutdown", "-r", "now"], (err, output) => {
-		reply(err ? 503 : 200, output);
-	});
-};
-
 exports.resetModems = function (params, reply) {
+	var resetDongle = function (dongleName, reason) {
+		ami.command("dongle reset " + dongleName);
+		if (reason) {
+			myLib.jsonLog({
+				name: dongleName,
+				reason: reason,
+			}, ["telegraf", "notice"], ["bulletproof"], { modemResetRequests: {
+				value: 1
+			}});
+		}
+	};
+
 	if (params.name) {
 		if (s.ui.mixer.channels[params.name] && s.ui.mixer.channels[params.name].mode !== 'defunct') {
 			reply(200, '');
