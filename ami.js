@@ -147,24 +147,8 @@ ami.on('dongledeviceentry', function(evt) {
 			};
 
 			//if number is configured, only update connection info, else assume this is initialization
-			if (s.ui.mixer.channels[evt.device].number) {
-				engineApi.channelUpdate(evt.device, { connection: connectionInfo });
-			} else {
-				s.ui.mixer.channels[evt.device].connection = connectionInfo;
-				//todo: is this the right place to do this?
-				s.ui.mixer.channels[evt.device].direction = astConf.operators.indexOf(evt.device) !== -1 ? 'operator' : null;
-
-				if (evt.subscribernumber === 'Unknown') {
-					// todo: send email to admin?
-					s.ui.mixer.channels[evt.device].error = "sim number not configured";
-					myLib.consoleLog('error', "sim number not configured", evt.device);
-				} else {
-					if (!s.ui.mixer.channels[evt.device].label) {
-						s.ui.mixer.channels[evt.device].label = evt.subscribernumber.replace(prefixRegExp, '0');
-					}
-				}
-				s.ui.mixer.channels[evt.device].number = evt.subscribernumber;
-
+			if (!s.ui.mixer.channels[evt.device].number) {
+				s.ui.mixer.channels[evt.device].error = null;
 				// default dongle mode is 'defunct'
 				var dongleState = evt.state.toLowerCase();
 				switch (dongleState) {
@@ -209,6 +193,18 @@ ami.on('dongledeviceentry', function(evt) {
 						s.ui.mixer.channels[evt.device].error = dongleState;
 				}
 
+				if (dongleState !== 'not connected') {
+					if (evt.subscribernumber === 'Unknown') {
+						// todo: send email to admin?
+						myLib.consoleLog('error', "sim number not configured", evt.device);
+					} else {
+						if (!s.ui.mixer.channels[evt.device].label) {
+							s.ui.mixer.channels[evt.device].label = evt.subscribernumber.replace(prefixRegExp, '0');
+						}
+					}
+					s.ui.mixer.channels[evt.device].number = evt.subscribernumber;
+				}
+
 				// delete stored sms from modem
 				switch (dongleState) {
 					case 'free':
@@ -219,9 +215,10 @@ ami.on('dongledeviceentry', function(evt) {
 						deleteStoredSms(evt.device);
 				}
 			}
+			engineApi.channelUpdate(evt.device, { connection: connectionInfo });
 		}
 	}
-	console.error(JSON.stringify(evt));
+	//console.error(JSON.stringify(evt));
 });
 
 // initialize live channels on application boot
@@ -385,8 +382,12 @@ ami.on('donglenewsmsbase64', function(evt) {
 	// check if dongle is configured in fessbox
 	if (astConf.dongles[evt.device]) {
 		//delete internal sms storage on every XX received messages
-		if (++s.asterisk.channels[evt.device].sms_count > 50) {
+		if (++s.asterisk.channels[evt.device].sms_count > 25) {
 			deleteStoredSms(evt.device);
+		}
+		//log debug info to help find out why modem sms storage gets full
+		if (s.asterisk.channels[evt.device].sms_count % 11 === 0) {
+			amiSimpleCommand(["dongle cmd", evt.device, "AT+CPMS?"].join(' '));
 		}
 
 		var timeout = 19900; // number of mili-seconds to wait for next part of sms
@@ -453,11 +454,8 @@ ami.on('newcallerid', function(evt) {
 });
 
 ami.on('donglestatus', function(evt) {
-//	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Free"}
-//	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Disconnect"}
-//	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Connect"}
-//	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Initialize"}
-//	{"event":"DongleStatus","privilege":"call,all","device":"airtel2","status":"Used"}
+// evt.status: "Free" | "Disconnect" | "Connect" | "Initialize" | "Used" | "Unregister" | "Register"
+
 	if (s.asterisk.channels[evt.device] && s.ui.mixer.channels[evt.device]) {
 		switch (evt.status) {
 			case 'Free':
@@ -756,13 +754,13 @@ function amiSimpleCommand(command, cb) {
 			if (cb) {
 				cb(null,res);
 			} else {
-				console.error(JSON.stringify(res));
+				console.error("ami command", command, JSON.stringify(res));
 			}
 		} else {
 			if (cb) {
 				cb(err,res);
 			} else {
-				console.error(JSON.stringify(err));
+				console.error("ami command", command, JSON.stringify(err));
 			}
 		}
 	});
@@ -1243,9 +1241,9 @@ exports.sendContent = function(data, cb) {
 // debug: catch all AMI events
 ami.on('managerevent', function(evt) {
 	if (evt.event != "ConfbridgeTalking" && evt.event != 'Newexten' && evt.event != 'VarSet' && evt.event.indexOf("Dongle") !== 0 && evt.event.indexOf("RTCP") !== 0) {
-		console.error('*  ' +JSON.stringify(evt));
+		console.error('* ', JSON.stringify(evt));
 	}
-	// else console.error(JSON.stringify(evt));
+	//else console.error('** ', JSON.stringify(evt));
 });
 
 // debug: expose ami command
@@ -1304,11 +1302,11 @@ ami.on('donglesmsstatus', function(evt) {
 		sms_out_pending.delete(evt.id);
 	}
 });
-
+/*
 ami.on('dongleshowdevicescomplete', function(evt) {
 	console.error(JSON.stringify(evt));
 });
-
+*/
 /*
 // deprecated, received after AMI action 'SIPpeers'
 ami.on('peerentry', function(evt) {
