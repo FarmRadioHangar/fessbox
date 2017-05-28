@@ -26,7 +26,7 @@ var broadcastEvent = function (event, data) {
 		var payload = serializeEvent(event, data);
 		wss.broadcast(payload);
 		//myLib.consoleLog('debug', 'websocket::broadcastEvent', payload);
-		myLib.jsonLog({}, ['ws-out'], ['websocket'], payload, "broadcast");
+		myLib.jsonLog({ initiator: "system" }, ['ws-out'], ['websocket'], payload, "broadcast");
 	}
 };
 exports.broadcastEvent = broadcastEvent;
@@ -42,6 +42,10 @@ exports.startListening = function(options) {
 
 			ws.on('message', function incoming(message) {
 				//myLib.consoleLog('debug', 'websocket::receivedEvent', message);
+				myLib.jsonLog({
+					url: ws.upgradeReq.url,
+					"user-agent": ws.upgradeReq.headers["user-agent"],
+				}, ['ws-in'], ['websocket'], message, remoteIp);
 				message = JSON.parse(message);
 				if (!message.event) {
 					ws.send(serializeEvent("input_error", "message format error, should be { event: String, data: Object }"));
@@ -57,7 +61,12 @@ exports.startListening = function(options) {
 							data = serializeEvent(event, data);
 							//if (event !== 'pong') {
 							if (["pong", "inboxMessages"].indexOf(event) === -1) {
-								myLib.consoleLog('debug', 'websocket::emitEvent', target, data);
+								//myLib.consoleLog('debug', 'websocket::emitEvent', target, data);
+								myLib.jsonLog({
+									initiator: remoteIp,
+									url: ws.upgradeReq.url,
+									"user-agent": ws.upgradeReq.headers["user-agent"],
+								}, ['ws-out'], ['websocket'], data, target || "broadcast");
 							}
 							switch (target) {
 								case 'self':
