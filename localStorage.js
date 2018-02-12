@@ -193,7 +193,7 @@ function loadChannel(channel_id, cb) {
 	};
 
 	redisClient.hgetall("channel." + channel_id, function (err, res) {
-		if (!err) {
+		if (!res) {
 			if (typeof cb === 'function') {
 				cb(null, res);
 			} else {

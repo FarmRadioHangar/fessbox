@@ -18,7 +18,7 @@ exports.systemRestart = function (params, reply) {
 	});
 	if (params.reason) {
 		myLib.jsonLog({
-			reason: reason,
+			reason: params.reason,
 		}, ["telegraf", "notice"], ["bulletproof"], { systemRestartRequests: {
 			value: 1
 		}});
