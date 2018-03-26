@@ -1,165 +1,164 @@
-var eventHandlers = require("./eventHandlers");
-var myLib = require("./myLib");
-
+var logger = new (require("./logger"))(__filename);
 var url = require("url");
-
-var WebSocketServer = require('ws').Server;
-
-WebSocketServer.prototype.broadcast = function (data) {
-	this.clients.forEach(function each(client) {
-		client.send(data);
-	});
-};
-
-var serializeEvent = function (event, data) {
-	// maybe should be optimized as { eventName: data } ?
-	return JSON.stringify({
-		event: event,
-		data: data
-	});
-};
-
-var broadcastEvent = function (event, data) {
-	if (!wss) {
-		myLib.jsonLog({}, ['debug'], ['websocket'], 'wss not initialized', ['broadcast', event, data]);
-	} else {
-		var payload = serializeEvent(event, data);
-		wss.broadcast(payload);
-		//myLib.consoleLog('debug', 'websocket::broadcastEvent', payload);
-		myLib.jsonLog({ initiator: "system" }, ['ws-out'], ['websocket'], payload, "broadcast");
-	}
-};
-exports.broadcastEvent = broadcastEvent;
+var WebSocket = require('./operatorServer');
 
 var wss;
-exports.startListening = function(options) {
-	if (!wss) {
-		wss = new WebSocketServer(options);
+var eventHandlers = {
+	pong: () => null,
+	noop: () => null,
+	ping: function (operator_id, data, cb) {
+		cb("pong", data, 'self');
+	},
+	//debug
+	echo: function (operator_id, data, cb) {
+		cb(data.event, data.data, 'self');
+	},
+};
 
-		wss.on('connection', function connection(ws) {
-			var location = url.parse(ws.upgradeReq.url, true);
-			var remoteIp = ws.upgradeReq.headers['x-forwarded-for'] || ws.upgradeReq.headers["x-real-ip"] || ws.upgradeReq.connection.remoteAddress;
+exports.connectedOperators = (...args) => {
+	if (wss && wss.connectedOperators) return wss.connectedOperators(...args);
+	else logger.warning("Operator Server not initialized"); //temp
+};
+exports.unicastEvent = (...args) => {
+	if (wss && wss.unicastEvent) return wss.unicastEvent(...args);
+	else logger.warning("Operator Server not initialized"); //temp
+};
+exports.broadcastEvent = (...args) => {
+	if (wss && wss.broadcastEvent) return wss.broadcastEvent(...args);
+	else logger.warning("Operator Server not initialized"); //temp
+};
 
-			ws.on('message', function incoming(message) {
-				//myLib.consoleLog('debug', 'websocket::receivedEvent', message);
-				myLib.jsonLog({
-					url: ws.upgradeReq.url,
-					"user-agent": ws.upgradeReq.headers["user-agent"],
-				}, ['ws-in'], ['websocket'], message, remoteIp);
-				message = JSON.parse(message);
-				if (!message.event) {
-					ws.send(serializeEvent("input_error", "message format error, should be { event: String, data: Object }"));
+/*additional options: {
+	allowOrigin: (string), // allow connections only from this origin
+}*/
+exports.init = (options, callback) => {
+	if (wss) { //temp
+		logger.warning("Operator Server already initialized");
+		callback("Operator Server already initialized");
+		return;
+	}
+/*
+	// executed during handshake, before upgrade to websocket
+	// on error, code and message not visible to browser js (only generic 1006)
+	// on success, 'operator_id' is added to the request object (info.req)
+	function verifyClient (info, cb) { // cb(verified, code, message)
+		//logger.debug('verifyClient');
+		let logTitle = "Verify dispatcher client";
+		let remoteIp = info.req.headers['x-forwarded-for'] || info.req.headers["x-real-ip"] || info.req.connection.remoteAddress;
+		if (this.allowOrigin && this.allowOrigin !== info.origin) {
+			let err = "unknown origin";
+			cb(false, 406, err);
+			logger.warning(logTitle, err, remoteIp, info.req.url, info.req.headers["user-agent"]);
+		} else {
+			let location = url.parse(info.req.url, true);
+			if (!location.query.operator_id) {
+				cb(true);
+			} else {
+				let operator_id = parseInt(location.query.operator_id);
+				// disallow < 1 (rezerved for system use)
+				if (isNaN(operator_id) || operator_id < 1) {
+					let err = "invalid operator_id";
+					cb(false, 400, err);
+					logger.error(logTitle, err, remoteIp, location.pathname, location.query, info.req.headers["user-agent"]);
+				} else if (!eventHandlers.access.checkOperator(operator_id)) {
+					let err = "unauthorized";
+					cb(false, 401, err);
+					logger.error(logTitle, err, remoteIp, location.pathname, location.query, info.req.headers["user-agent"]);
 				} else {
-					// debug: return to sender and print
-					//ws.send(serializeEvent("echo", message));
+					info.req.operator_id = operator_id;
+					cb(true);
+				}
+			}
+		}
+	}
+*/
+	// load eventHandlers after ws server is instantiated
+	function cb() {
+		callback();
+		setTimeout(() => Object.assign(eventHandlers, require("./eventHandlers")), 0);
+	}
 
-					if (!eventHandlers[message.event]) {
-						myLib.consoleLog('debug', 'websocket::input_error', "event handler not found", message);
-						ws.send(serializeEvent("input_error", "event handler not found: " + message.event));
+	wss = new WebSocket.OperatorServer(Object.assign({
+		pongTimeout: 1500,
+		//verifyClient,
+	}, options), cb);
+
+	wss.on('client:init', function login(ws, operator_id, options) {
+		let operator = operator_id ? "Operator " + operator_id : "Anonymous";
+		if (operator_id && this.options.validOperators) {
+			operator += ": " + this.options.validOperators.get(operator_id);
+		}
+		logger.notice(operator, "connected");
+
+		let eventCallback = (name, data, target) => {
+			switch (target) {
+				case 'self':
+					if (ws.readyState === WebSocket.OPEN) {
+						let silentEvents = ["pong", "call:list", "contact:info", "initialize", "inboxUpdate"];
+						if (!silentEvents.includes(name)) {
+							logger.debug("ws-out ==>>>>", operator_id, name, data);
+						}
+						ws.sendEvent(name, data);
+					}
+					break;
+				case 'others':
+				default: // if target not specified, broadcast to all
+					this.broadcastEvent(name, data, operator_id, target);
+			}
+		};
+
+		eventHandlers.initialize(operator_id, options, eventCallback);
+
+		logger.json(options.clientInfo, ["telegraf", "debug"], ["websocket"], { websocket: {
+			count: wss.clients.length,
+			value: 1
+		}}, "connected");
+
+		ws.on('close', function(code, reason) {
+			logger.notice(operator, "disconnected", code, reason);
+
+			logger.json(options.clientInfo, ["telegraf", "debug"], ["websocket"], { websocket: {
+					count: wss.clients.length,
+					value: 0
+			}}, "disconnected");
+
+			if (operator_id) {
+				//eventHandlers['client:exit'](operator_id, null, eventCallback);
+			}
+		});
+
+		ws.on('event', function (name, data) {
+			/*var eventCallback = function (event, data, target) {
+				if (target === 'error') {
+					target = 'self';
+					data = Object.assign(message, {msg: data});
+				}
+				eventDispatcher(event, data, target);
+			};*/
+			try { // temp
+				if (typeof eventHandlers[name] === 'function') {
+					eventHandlers[name](operator_id, data, eventCallback, name);
+				} else {
+					let module, action;
+					[module, action] = name.split(':', 2);
+					if (action && eventHandlers[module] && typeof eventHandlers[module][action] === 'function') {
+						eventHandlers[module][action](operator_id, data, eventCallback, action);
 					} else {
-						eventHandlers[message.event](location.query.user_id, message.data, function (event, data, target) {
-							data = serializeEvent(event, data);
-							//if (event !== 'pong') {
-							if (["pong", "inboxMessages"].indexOf(event) === -1) {
-								//myLib.consoleLog('debug', 'websocket::emitEvent', target, data);
-								myLib.jsonLog({
-									initiator: remoteIp,
-									url: ws.upgradeReq.url,
-									"user-agent": ws.upgradeReq.headers["user-agent"],
-								}, ['ws-out'], ['websocket'], data, target || "broadcast");
-							}
-							switch (target) {
-								case 'self':
-									ws.send(data);
-									break;
-								case 'others':
-									wss.clients.forEach(function each(client) {
-										if (client !== ws) {
-											client.send(data);
-										}
-									});
-									break;
-								default:
-									wss.broadcast(data);
-							}
+						let err = "unknown event";
+						logger.debug("websocket-in", operator_id, err, name, data);
+						ws.sendEvent("client:error", {
+							event: name,
+							data: data,
+							msg: err,
 						});
 					}
 				}
-			});
-
-			eventHandlers.initialize(location.query.user_id, null, function (event, initState) {
-				ws.on('close', function () {
-					myLib.jsonLog({
-						ip: remoteIp,
-						url: ws.upgradeReq.url,
-						"user-agent": ws.upgradeReq.headers["user-agent"]
-					}, ["telegraf", "debug"], ["websocket"], { websocket: {
-							count: wss.clients.length,
-							value: 0
-					}}, "disconnected");
-				});
-				ws.send(serializeEvent("initialize", initState));
-				myLib.jsonLog({
-					ip: remoteIp,
-					url: ws.upgradeReq.url,
-					"user-agent": ws.upgradeReq.headers["user-agent"]
-				}, ["telegraf", "debug"], ["websocket"], { websocket: {
-					count: wss.clients.length,
-					value: 1
-				}}, "connected");
-				//myLib.consoleLog("debug", "websocket::on-connection", "initialize", initState);
-			});
-		});
-	}
-};
-
-var logListener;
-exports.startLogListener = function(options) {
-	logListener = new WebSocketServer(options);
-	logListener.on('connection', function connection(ws) {
-		var location = url.parse(ws.upgradeReq.url, true);
-		if (location.query.back) {
-			var logPath = __dirname + "/log/debug.log";
-			fs.readFile(logPath, function (err, data) {
-				if (err) {
-					console.error("log file read error: " + err.toString());
-				} else {
-					//create buffer to store events created while the backlog was sent to user
-					ws.buf = [];
-					var bufferString = data.toString();
-					var lines = bufferString.split('\n');
-					var offset = lines.length > location.query.back ? lines.length - location.query.back : 0;
-					var limit = lines.length;
-					if (location.query.count) {
-						ws.silent = true;
-						if (offset + location.query.count < lines.length) {
-							limit = offset + location.query.count;
-						}
-					}
-					for (var i = offset; i < limit; i++) {
-						ws.send(lines[i]);
-					}
-					//myLib.consoleLog("alert", "displayed log entries from history", location.query.back, limit - offset);
-					ws.buf.forEach(function(debugEntry) {
-						ws.send(debugEntry);
-					});
-					ws.buf = null;
-				}
-			});
-		}
-	});
-};
-
-exports.emitDebugEvent = function(data) {
-	if (logListener) {
-		logListener.clients.forEach(function each(client) {
-			if (!client.silent) {
-				if (client.buf) {
-					client.buf.push(data);
-				} else {
-					client.send(data);
-				}
+			} catch (e) {
+				logger.error("websocket-in", "unhandled eventHandler exception", name, data, e);
+				logger.email("unhandled eventHandler exception", name, data, e);
 			}
 		});
-	}
+	});
+
+	return module.exports;
 };
