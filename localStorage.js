@@ -20,8 +20,8 @@ redisClient.on("error",  function(err) {
 		operators: {}
 	};
 
-redisClient.on('connect', function() {
-	myLib.consoleLog('info', "redis", "connection established");
+redisClient.on('ready', function() {
+	//myLib.consoleLog('info', "redis", "connection established");
 	redisClient.get("master", function(err, res) {
 		if (res) {
 			exports.ui.mixer.master = JSON.parse(res);
@@ -245,7 +245,7 @@ function messageFavoriteSet(message_ids, cb) {
 	redisClient.sadd("msgTags:favorite", message_ids);
 	var redisMulti = redisClient.multi();
 	message_ids.forEach(function(message_id){
-		redisMulti.hset(message_id, "favorite", 1);
+		redisMulti.hset('inbox.' + message_id, "favorite", 1);
 	});
 	redisMulti.exec(function(err, res) {
 		if (!err) {
@@ -254,13 +254,15 @@ function messageFavoriteSet(message_ids, cb) {
 			var messagesMulti = redisClient.multi();
 			for(var index in message_ids) {
 				if (res[index]) {
-					messagesMulti.hgetall(message_ids[index]);
+					messagesMulti.hgetall('inbox.' + message_ids[index]);
 					updated.push(message_ids[index]);
 				}
 			}
 			messagesMulti.exec(function (err, message_objects) {
 				for(index in updated) {
-					messageList[updated[index]] = message_objects[index];
+					message_objects[index].id = updated[index]; //temp
+					messageList[(message_objects[index].type === 'sms_in' ? 'inbox.' : 'outbox.') +  updated[index]] = message_objects[index];
+					//messageList[updated[index]] = message_objects[index];
 				}
 				cb(null, messageList);
 			});
@@ -282,7 +284,7 @@ function messageFavoriteUnset(message_ids, cb) {
 	redisClient.srem("msgTags:favorite", message_ids);
 	let redisMulti = redisClient.multi();
 	for(let index in message_ids) {
-		redisMulti.hdel(message_ids[index], "favorite");
+		redisMulti.hdel('inbox.' + message_ids[index], "favorite");
 	}
 	redisMulti.exec(function(err, res) {
 		if (!err) {
@@ -291,13 +293,14 @@ function messageFavoriteUnset(message_ids, cb) {
 			let messagesMulti = redisClient.multi();
 			for(let index in message_ids) {
 				if (res[index]) {
-					messagesMulti.hgetall(message_ids[index]);
+					messagesMulti.hgetall('inbox.' + message_ids[index]);
 					updated.push(message_ids[index]);
 				}
 			}
 			messagesMulti.exec(function (err, message_objects) {
 				for(let index in updated) {
-					messageList[updated[index]] = message_objects[index];
+					message_objects[index].id = updated[index]; //temp
+					messageList[(message_objects[index].type === 'sms_in' ? 'inbox.' : 'outbox.') +  updated[index]] = message_objects[index];
 				}
 				cb(null, messageList);
 			});
@@ -344,6 +347,7 @@ function messageSave(message_id, message) {
 }
 
 function messageDelete(message_ids, cb) {
+	message_ids = message_ids.map((message_id) => ('inbox.' + message_id)); //temp
 	redisClient.multi().
 		zrem("inbox", message_ids).
 		del(message_ids).
@@ -361,14 +365,16 @@ function messageFetch(count, reference_id, cb) {
 			}
 			messagesMulti.exec(function (err, message_objects) {
 				if (!err) {
-					var messages = {};
+					//var messages = {};
 					for(index in message_ids) {
-						messages[message_ids[index]] = message_objects[index];
+						//messages[message_ids[index]] = message_objects[index];
+						message_objects[index].id = message_ids[index].split('.')[1]; //temp
 					}
 					cb(null, {
 						reference_id: reference_id,
-						ids: message_ids,
-						messages: messages
+						//ids: message_ids,
+						//messages: messages,
+						messages: message_objects,
 					});
 				} else {
 					cb(err);
