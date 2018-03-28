@@ -28,7 +28,7 @@ ami.on("initialized", function () {
 		process.on('uncaughtException', function (err) {
 			logger.error("uncaughtException", err.stack);
 		});
-
+/*
 		process.on("SIGHUP", function () {
 			logger.notice("SIGHUP received:", "config reload");
 		});
@@ -36,7 +36,7 @@ ami.on("initialized", function () {
 		process.on("SIGUSR1", function () {
 			logger.notice("SIGUSR1 received:", "scheduled maintenance");
 		});
-
+*/
 		process.on("SIGTERM", function () {
 			logger.notice("SIGTERM received:", "exiting process");
 			s.saveSnapshot(process.exit);

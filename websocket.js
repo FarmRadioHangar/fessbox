@@ -88,13 +88,13 @@ exports.init = (options, callback) => {
 		if (operator_id && this.options.validOperators) {
 			operator += ": " + this.options.validOperators.get(operator_id);
 		}
-		logger.notice(operator, "connected");
+		logger.notice(operator, "connected, total:", this.clients.size);
 
 		let eventCallback = (name, data, target) => {
 			switch (target) {
 				case 'self':
 					if (ws.readyState === WebSocket.OPEN) {
-						let silentEvents = ["pong", "call:list", "contact:info", "initialize", "inboxUpdate"];
+						let silentEvents = ["pong", "call:list", "contact:info", "initialize", "inboxMessages"];
 						if (!silentEvents.includes(name)) {
 							logger.debug("ws-out ==>>>>", operator_id, name, data);
 						}
@@ -103,7 +103,7 @@ exports.init = (options, callback) => {
 					break;
 				case 'others':
 				default: // if target not specified, broadcast to all
-					this.broadcastEvent(name, data, operator_id, target);
+					this.broadcastEvent(name, data, operator_id ? operator_id : ws, target);
 			}
 		};
 

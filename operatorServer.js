@@ -55,6 +55,7 @@ class OperatorServer extends WebSocket.Server {
 				}
 
 				ws.on('message', function parse(data) {
+					//logger.debug("ws-raw <<<<==", data);
 					/*
 					let message = false;
 					try {
@@ -157,8 +158,9 @@ class OperatorServer extends WebSocket.Server {
 	}
 
 	// operator_id: if specified, exclude from broadcast
+	// if not number, then operator_id is the WebSocket client
 	_broadcast (data, operator_id) {
-		let exclude = operator_id ? this.operators.get(operator_id) : null;
+		let exclude = typeof operator_id === 'number' ? this.operators.get(operator_id) : operator_id;
 		let count = 0;
 		this.clients.forEach((client) => {
 			if (client.readyState === WebSocket.OPEN && client !== exclude) {
@@ -188,6 +190,7 @@ class OperatorServer extends WebSocket.Server {
 	broadcastEvent (eventName, data, operator_id, excludeSelf) {
 		let payload = this.serializeEvent(eventName, data);
 		let reach = this._broadcast(payload, excludeSelf ? operator_id : null);
+		if (operator_id && typeof operator_id !== 'number') operator_id = '*';
 		logger.debug("ws-out ==>>>>", operator_id ? operator_id : 'system', excludeSelf ? 'multicast to' : 'broadcast to', reach, eventName, data);
 		return reach;
 	}
