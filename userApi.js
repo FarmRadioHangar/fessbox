@@ -1,5 +1,5 @@
 var uuid = require("uuid");
-
+var logger = new (require("./logger"))(__filename);
 var appConfig = require("./etc/app.json");
 var pbxProvider = require("./" + appConfig.pbxProvider);
 var addressBook = require("./" + appConfig.addressBook);
@@ -13,7 +13,7 @@ var s = require("./localStorage");
 var wss = require("./websocket");
 
 exports.getCurrentState = function (operator_id, cb) {
-	//console.error('operators', operator_id, JSON.stringify(s.ui.operators[operator_id]));
+	//logger.error('operators', operator_id, JSON.stringify(s.ui.operators[operator_id]));
 	var operators;
 	if (operator_id) {
 		operators = {};
@@ -23,14 +23,14 @@ exports.getCurrentState = function (operator_id, cb) {
 	}
 	s.messages.fetch(50, null, function (err, messages) {
 		if (err) {
-			myLib.consoleLog('error', "messages.fetch", err);
+			logger.error('getCurrentState', "messages.fetch", err);
 		}
 		var currentState = {
 			mixer: s.ui.mixer,
 			users: operators, // deprecated
 			operators: operators,
 			inbox: messages, // deprecated
-			server_version: 'v0.3.0',
+			server_version: 'v' + require("./package").version,
 			server_time: Date.now()
 		};
 		cb(null, currentState);
@@ -138,11 +138,11 @@ exports.setChannelVolume = function (channel_id, value, cb) {
 		} else {
 			switch (s.ui.mixer.channels[channel_id].mode) {
 				case 'free':
-				case 'ring':
 				case 'defunct':
 					s.ui.mixer.channels[channel_id].level = value;
 					cb();
 					break;
+				case 'ring':
 				default:
 					pbxProvider.setChannelVolume(channel_id, value, function (err) {
 						if (!err) {
@@ -220,12 +220,12 @@ exports.setChannelMuted = function (channel_id, value, cbErr) {
 					cbErr('not applicable in IVR mode');
 					break;
 				case 'free':
-				case 'ring':
 				case 'defunct':
-				case 'on_hold':
 					s.ui.mixer.channels[channel_id].muted = value;
 					mixerLib.channelUpdateEvent([channel_id]);
 					break;
+				case 'ring':
+				case 'on_hold':
 				default:
 					pbxProvider.setChannelMuted(channel_id, value, function (err) {
 						if (err) {
@@ -252,12 +252,12 @@ exports.setChannelRecording = function (channel_id, value, cbErr) {
 					cbErr('not applicable in IVR mode');
 					break;
 				case 'free':
-				case 'ring':
 				case 'defunct':
-				case 'on_hold':
 					s.ui.mixer.channels[channel_id].recording = value;
 					mixerLib.channelUpdateEvent([channel_id]);
 					break;
+				case 'on_hold':
+				case 'ring':
 				default:
 					pbxProvider.setChannelRecording(channel_id, value, function (err) {
 						if (err) {
@@ -273,20 +273,28 @@ exports.setChannelRecording = function (channel_id, value, cbErr) {
 
 exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 	var channel = s.ui.mixer.channels[channel_id];
-	myLib.consoleLog('debug', "setChannelMode", "setting " + channel_id + " from " + channel.mode + " to " + new_mode);
-	var errorMsg;
+	function userError(msg) {
+		logger.warning('setChannelMode', msg);
+		cbErr(msg);
+	}
 	if (!channel) {
-		errorMsg = 'channel not found';
+		userError('channel not found');
 	} else {
+		logger.debug("setChannelMode on", channel_id, "from", channel.mode, "to", new_mode);
+		function invalidMode(errorMsg) {
+			userError(errorMsg || "invalid mode, can't change " + channel.type + " from " + channel.mode + " to " + new_mode);
+		}
 		var cb = function (err) {
 			if (err) {
 				cbErr(err);
+			} else if (!new_mode) {
+				mixerLib.channelUpdateProperties(channel_id, null) && mixerLib.channelUpdateEvent([channel_id]);
 			} else {
 				var old_mode = channel.mode;
 				if (mixerLib.channelMode(channel_id, { mode: new_mode })) {
 					mixerLib.channelUpdateEvent([channel_id]);
 					if (old_mode === 'ring' && new_mode === 'master') {
-						myLib.jsonLog({
+						logger.json({
 							endpoint: channel.contact.number,
 							label: channel.label,
 							type: channel.type,
@@ -299,34 +307,41 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 		};
 		switch (channel.mode) {
 			case new_mode:
-				errorMsg = "channel mode already set to " + new_mode;
+				invalidMode("channel mode already set to " + new_mode);
 				break;
 			case 'defunct':
-				errorMsg = "can't change defunct channel";
+				if (channel.type === 'dongle') {
+					invalidMode("can't change defunct dongle channel");
+				} else if (!new_mode) {
+					cb();
+				}
 				break;
 			case 'free':
-				if (channel.direction === 'operator' && new_mode === 'master') {
+				if (!new_mode) {
+					channel.type === 'dongle' ? invalidMode() : cb();
+				} else if (channel.direction === 'operator' && new_mode === 'master') {
 					pbxProvider.userToMaster(channel_id, cb);
 				} else {
-					errorMsg = "invalid mode, cannot change from " + channel.mode + " to " + new_mode;
+					invalidMode();
 				}
 				break;
 			case 'ivr':
 			case 'dial':
-				if (new_mode === 'free') {
+				if (!new_mode || new_mode === 'free') {
 					pbxProvider.setChanFree(channel_id, cb);
 				} else {
-					errorMsg = "invalid mode, cannot change from " + channel.mode + " to " + new_mode;
+					invalidMode();
 				}
 				break;
 			case 'ring':
-				if (new_mode !== 'free' && channel.direction === 'outgoing') {
-					errorMsg = "invalid mode, cannot change from " + channel.mode + " to " + new_mode;
+				if (new_mode && new_mode !== 'free' && channel.direction === 'outgoing') {
+					invalidMode();
 					break;
 				}
 			case 'on_hold':
 			case 'master':
 				switch (new_mode) {
+					case null:
 					case 'free':
 						pbxProvider.setChanFree(channel_id, cb);
 						break;
@@ -337,12 +352,12 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 						break;
 					default:
 						if (!s.ui.mixer.channels[new_mode]) {
-							errorMsg = "invalid mode, cannot change from " + channel.mode + " to " + new_mode;
+							invalidMode();
 						} else {
 							switch (s.ui.mixer.channels[new_mode].mode) { // mode of the channel that we're connecting to
 								case 'defunct':
 								case 'ivr':
-									errorMsg = "can't connect to channel in " + s.ui.mixer.channels[new_mode].mode + " mode";
+									invalidMode("can't connect to channel in " + s.ui.mixer.channels[new_mode].mode + " mode");
 									break;
 								case 'free':
 									pbxProvider.setChanMode(channel_id, new_mode, function (err) {
@@ -389,7 +404,7 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 				}
 				break;
 			default: // channel_id is currently connected to other channel.
-				console.error(channel_id + ' is currently connected to other channel', channel.direction, new_mode);
+				logger.debug('setChannelMode', channel_id, 'is currently connected to other channel', channel.direction, new_mode);
 
 				if (channel.direction === 'operator') {
 					if (new_mode === 'master') {
@@ -404,7 +419,7 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 							}
 						});
 					} else {
-						errorMsg = "invalid mode, cannot change operator from " + channel.mode + " to " + new_mode;
+						invalidMode();
 					}
 				} else {
 					switch (new_mode) {
@@ -417,14 +432,11 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 							if (valid || s.ui.mixer.channels[new_mode]) {
 								pbxProvider.setChanMode(channel_id, new_mode, cb);
 							} else {
-								errorMsg = "invalid mode, cannot change from " + channel.mode + " to " + new_mode;
+								invalidMode();
 							}
 					}
 				}
 		}
-	}
-	if (errorMsg) {
-		cbErr(errorMsg);
 	}
 }
 
