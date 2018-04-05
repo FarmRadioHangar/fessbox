@@ -1,5 +1,6 @@
 var appConf = require("./etc/app.json");
 var astConf = require("./etc/asterisk.json");
+var logger = new (require("./logger"))(__filename);
 var amiConf = astConf.ami;
 
 var myLib = require("./myLib");
@@ -320,9 +321,7 @@ ami.on('confbridgelistcomplete', function(evt) {
 // end initialization code
 
 ami.on('devicestatechange', function(evt) {
-//	{"event":"DeviceStateChange","privilege":"call,all","device":"SIP/702","state":"NOT_INUSE"}
-//	{"event":"DeviceStateChange","privilege":"call,all","device":"SIP/702","state":"UNAVAILABLE"}
-//	{"event":"DeviceStateChange","privilege":"call,all","device":"SIP/702","state":"INUSE"}
+//	{"event":"DeviceStateChange","privilege":"call,all","device":"SIP/702","state":"NOT_INUSE" | "INUSE" | "UNAVAILABLE"}
 //	console.error(JSON.stringify(evt));
 	var channelInfo = evt.device.split(/[\/-]/, 2);
 	// check if extension is configured in fessbox
@@ -433,13 +432,53 @@ ami.on('donglenewsmsbase64', function(evt) {
 	}
 });
 
+// used to signal incoming dongle call
 //todo: get user info via addressBook api call on newchannel event instead of using this event
 ami.on('newcallerid', function(evt) {
 //11	{"event":"NewCallerid","privilege":"call,all","channel":"Dongle/airtel2-0100000004","calleridnum":"+255688755855","calleridname":"airtel2-xxx","uniqueid":"1449483797.31","cid-callingpres":"0 (Presentation Allowed, Not Screened)"}
 //13	{"event":"NewCallerid","privilege":"call,all","channel":"Dongle/airtel1-0100000008","channelstate":"0","channelstatedesc":"Down","calleridnum":"075562837","calleridname":"<unknown>","connectedlinenum":"+255689514544","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-trunk","exten":"075562837","priority":"1","uniqueid":"1492837705.458","linkedid":"1492837705.452","cid-callingpres":"0 (Presentation Allowed, Not Screened)"}
+/*
+{ event: 'NewCallerid',
+  privilege: 'call,all',
+  channel: 'Dongle/vip1-010000000e',
+  channelstate: '4',
+  channelstatedesc: 'Ring',
+  calleridnum: '+38975562837',
+  calleridname: 'dam-mob2',
+  connectedlinenum: '<unknown>',
+  connectedlinename: '<unknown>',
+  language: 'en',
+  accountcode: '',
+  context: 'cidlookup',
+  exten: 'cidlookup_5',
+  priority: '1',
+  uniqueid: '1522651325.994',
+  linkedid: '1522651325.994',
+  'cid-callingpres': '0 (Presentation Allowed, Not Screened)' }*/
 
-	var channelInfo = evt.channel.split(/[\/-]/, 3);
-	if (s.ui.mixer.channels[channelInfo[1]]) {
+	let [chanType, chanName] = evt.channel.split(/[\/-]/, 3);
+	if (chanType === 'Dongle' && s.ui.mixer.channels[chanName]) {
+		if (evt.channelstatedesc === 'Ring') {
+			s.asterisk.channels[chanName].internalName = evt.channel;
+			engineApi.channelUpdate(chanName, {
+//				type: chanType.toLowerCase(), // 'dongle'
+				mode: evt.channelstatedesc.toLowerCase(), // 'ring'
+				direction: 'incoming',
+				timestamp: Date.now(),
+				contact: {
+					number: evt.calleridnum.replace(prefixRegExp, '0'),
+					name:  evt.calleridname
+				}
+			});
+			//console.error("xxx", chanName, s.ui.mixer.channels);
+			console.error("setting initial chan volume", s.ui.mixer.channels[chanName].level);
+			//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[chanName].level, 'RX', function() {});
+			exports.setChannelVolume(chanName, s.ui.mixer.channels[chanName].level, function() {});
+			if (s.ui.mixer.channels[chanName].muted) {
+				setAmiChannelMuted(evt.channel, true, 'in', function() {});
+			}
+		}
+/*
 		if (!s.ui.mixer.channels[channelInfo[1]].contact) {
 			engineApi.channelUpdate(channelInfo[1], { contact: {
 				name: evt.calleridname,
@@ -450,6 +489,51 @@ ami.on('newcallerid', function(evt) {
 				name: evt.calleridname,
 			}});
 		}
+*/
+	}
+});
+
+// used for SIP ringing notification, both incoming and outgoing
+ami.on('newstate', function(evt) {
+/*
+{ event: 'Newstate',
+  privilege: 'call,all',
+  channel: 'SIP/389002-00000003',
+  channelstate: '4',
+  channelstatedesc: 'Ring',
+  calleridnum: '222',
+  calleridname: 'Damjan Janevski',
+  connectedlinenum: '<unknown>',
+  connectedlinename: '<unknown>',
+  language: 'en',
+  accountcode: '',
+  context: 'from-trunk',
+  exten: '389002',
+  priority: '1',
+  uniqueid: '1522262483.112',
+  linkedid: '1522262483.112' }*/
+
+	let [chanType, chanName] = evt.channel.split(/[\/-]/, 3);
+	if (chanType === 'SIP' && astConf.extensions.includes(chanName) && ['Ring', 'Ringing'].includes(evt.channelstatedesc)) {
+		let channel_id = [chanName, evt.calleridnum ? evt.calleridnum : 'unknown'].join('_');
+		s.asterisk.channels[channel_id] = { internalName: evt.channel };
+		//engineApi.channelCreate(channel_id, {...});
+		engineApi.channelUpdate(channel_id, {
+			type: chanType.toLowerCase(),
+			number: chanName,
+		//	level: 67,
+			direction: evt.channelstatedesc === 'Ringing' ? 'outgoing' : 'incoming',
+			label: 'Extension',
+			mode: 'ring',
+		//	muted: false,
+		//	timestamp: Date.now(),
+		//	autoanswer: null,
+			contact: {
+				number: evt.calleridnum,
+				name:  evt.calleridname,
+			},
+		//	recording: false,
+		});
 	}
 });
 
@@ -458,8 +542,8 @@ ami.on('donglestatus', function(evt) {
 
 	if (s.asterisk.channels[evt.device] && s.ui.mixer.channels[evt.device]) {
 		switch (evt.status) {
-			case 'Free':
-			case 'Initialize': // meybe not needed
+			//case 'Free':
+			case 'Initialize':
 				s.asterisk.channels[evt.device].internalName = null;
 				engineApi.channelUpdate(evt.device, { mode: 'free' });
 /*				if (s.ui.mixer.channels[evt.device].mode !== 'free') {
@@ -507,30 +591,54 @@ ami.on('musiconhold', function(evt) {
 });
 */
 
-// when dialing out
+// signal ringing when dialing out via dongle. should be moved on originate success
 ami.on('dialbegin', function(evt) {
 //	{"event":"DialBegin","privilege":"call,all","channel":"Local/2663@ext-meetme-00000005;1","channelstate":"6","channelstatedesc":"Up","calleridnum":"+255689514544","calleridname":"<unknown>","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"macro-dialout-trunk","exten":"s","priority":"30","uniqueid":"1463896754.63","linkedid":"1463896754.63","destchannel":"Dongle/airtel1-0100000001","destchannelstate":"0","destchannelstatedesc":"Down","destcalleridnum":"0687754487","destcalleridname":"<unknown>","destconnectedlinenum":"+255689514544","destconnectedlinename":"<unknown>","destlanguage":"en","destaccountcode":"","destcontext":"from-trunk","destexten":"0687754487","destpriority":"1","destuniqueid":"1463896754.69","destlinkedid":"1463896754.63","dialstring":"airtel1/0687754487"}
-	var channelInfo = evt.destchannel.split(/[\/-]/, 3);
-	if (channelInfo[0] === 'Dongle' && s.asterisk.channels[channelInfo[1]]) {
-		s.asterisk.channels[channelInfo[1]].internalName = evt.destchannel;
-		engineApi.channelUpdate(channelInfo[1], {
+	let [chanType, chanName] = evt.destchannel.split(/[\/-]/, 3);
+	if (chanType === 'Dongle' && s.asterisk.channels[chanName]) {
+		s.asterisk.channels[chanName].internalName = evt.destchannel;
+		let channel = s.ui.mixer.channels[chanName];
+		let callerId = evt.dialstring.split('/')[1].replace(prefixRegExp, '0')
+		let update = {
 			mode: 'ring',
 			direction: 'outgoing',
-			contact: {
-				number: evt.dialstring.split('/')[1].replace(prefixRegExp, '0'),
+		};
+		if (!channel.contact || channel.contact.number !== callerId) {
+			Object.assign(update, { contact: {
+				number: callerId,
 				name: evt.destcalleridname !== "<unknown>" ? evt.destcalleridname : null
-			}
-		});
+			}});
+		} else if (evt.destcalleridname !== "<unknown>" && evt.destcalleridname !== channel.contact.name) {
+			Object.assign(update, { contact: {
+				number: callerId,
+				name: evt.destcalleridname,
+			}});
+		}
+		engineApi.channelUpdate(chanName, update);
 	}
 });
 
+// this is triggered when hangup is not initiated by operator
 ami.on('hanguprequest', function(evt) {
 //	{"event":"HangupRequest","privilege":"call,all","channel":"Dongle/airtel1-0100000011","channelstate":"6","channelstatedesc":"Up","calleridnum":"+255687754487","calleridname":"airtel1 hello","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-internal","exten":"196","priority":"2","uniqueid":"1464214922.165","linkedid":"1464214922.165"}
 //	{"event":"Hangup","privilege":"call,all","channel":"Dongle/airtel1-0100000006","uniqueid":"1448369795.17","calleridnum":"+255687754487","calleridname":"airtel1","connectedlinenum":"707","connectedlinename":"host galaxy tab","accountcode":"","cause":"17","cause-txt":"Operator busy"}
-	var channelInfo = evt.channel.split(/[\/-]/, 3);
-	if (channelInfo[0] !== 'Dongle' && s.asterisk.channels[channelInfo[1]]) {
-		s.asterisk.channels[channelInfo[1]].internalName = null;
-		engineApi.channelUpdate(channelInfo[1], { mode: 'free' });
+	//var channelInfo = evt.channel.split(/[\/-]/, 3);
+	//if (channelInfo[0] !== 'Dongle' && s.asterisk.channels[channelInfo[1]]) {
+	//	s.asterisk.channels[channelInfo[1]].internalName = null;
+	//	engineApi.channelUpdate(channelInfo[1], { mode: 'free' });
+	//}
+
+	let [chanType, chanName] = evt.channel.split(/[\/-]/, 3);
+	if (chanType === 'Dongle' && s.asterisk.channels[chanName]) {
+		s.asterisk.channels[chanName].internalName = null;
+		engineApi.channelUpdate(chanName, { mode: 'free' });
+	} else
+	// hanging up external sip call
+	if (chanType === 'SIP' && astConf.extensions.includes(chanName)) {
+		let channel_id = [chanName, evt.calleridnum ? evt.calleridnum : 'unknown'].join('_');
+		s.asterisk.channels[channel_id] = null;
+		engineApi.channelUpdate(channel_id, { mode: 'free' });
+		//engineApi.channelDestroy(channel_id);
 	}
 });
 
@@ -604,13 +712,51 @@ ami.on('confbridgeleave', function(evt) {
 // handling remote answer in special case when dialing out with originateLocal
 ami.on('dialend', function (evt) {
 //	{"event":"DialEnd","privilege":"call,all","channel":"Local/2663@ext-meetme-00000005;1","channelstate":"6","channelstatedesc":"Up","calleridnum":"+255689514544","calleridname":"<unknown>","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"macro-dialout-trunk","exten":"s","priority":"30","uniqueid":"1465851477.78","linkedid":"1465851477.78","destchannel":"Dongle/airtel1-0100000004","destchannelstate":"6","destchannelstatedesc":"Up","destcalleridnum":"0687754487","destcalleridname":"<unknown>","destconnectedlinenum":"+255689514544","destconnectedlinename":"<unknown>","destlanguage":"en","destaccountcode":"","destcontext":"from-trunk","destexten":"","destpriority":"1","destuniqueid":"1465851477.84","destlinkedid":"1465851477.78","dialstatus":"ANSWER"}
-	var  channelInfo = evt.destchannel.split(/[\/-]/, 3);
-	if (channelInfo[0] === 'Dongle' && s.ui.mixer.channels[channelInfo[1]]) {
-		if (evt.dialstatus === "ANSWER") {
+/*
+{ event: 'DialEnd',
+  privilege: 'call,all',
+  channel: 'Local/2663@ext-meetme-0000002e;1',
+  channelstate: '6',
+  channelstatedesc: 'Up',
+  calleridnum: '<unknown>',
+  calleridname: '<unknown>',
+  connectedlinenum: '222',
+  connectedlinename: 'Damjan Janevski',
+  language: 'en',
+  accountcode: '',
+  context: 'ext-meetme',
+  exten: '2663',
+  priority: '1',
+  uniqueid: '1522645419.664',
+  linkedid: '1522645419.664',
+  destchannel: 'SIP/389002-0000000e',
+  destchannelstate: '6',
+  destchannelstatedesc: 'Up',
+  destcalleridnum: '222',
+  destcalleridname: 'Damjan Janevski',
+  destconnectedlinenum: '<unknown>',
+  destconnectedlinename: '<unknown>',
+  destlanguage: 'en',
+  destaccountcode: '',
+  destcontext: 'from-trunk',
+  destexten: '',
+  destpriority: '1',
+  destuniqueid: '1522645419.670',
+  destlinkedid: '1522645419.664',
+  dialstatus: 'ANSWER' }*/
+
+	if (evt.dialstatus === "ANSWER") {
+		let [chanType, chanName] = evt.destchannel.split(/[\/-]/, 3);
+		if (chanType === 'Dongle' && s.ui.mixer.channels[chanName]) {
 			//var localChannel = evt.channel.split(/[\/@]/, 3);
 			//if (localChannel[1] === astConf.virtual.master) {
 			if (evt.channel.indexOf(astConf.virtual.master) !== -1) {
-				engineApi.channelUpdate(channelInfo[1], { mode: 'master' });
+				engineApi.channelUpdate(chanName, { mode: 'master' });
+			}
+		} else if (chanType === 'SIP' && astConf.extensions.includes(chanName)) {
+			let channel_id = [chanName, evt.destcalleridnum ? evt.destcalleridnum : 'unknown'].join('_');
+			if (evt.channel.indexOf(astConf.virtual.master) !== -1) {
+				engineApi.channelUpdate(channel_id, { mode: 'master' });
 			}
 		}
 	}
@@ -621,12 +767,30 @@ ami.on('newchannel', function(evt) {
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-input","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.1"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Bridge/0xd5656c-output","channelstate":"6","channelstatedesc":"Up","calleridnum":"","calleridname":"","accountcode":"","exten":"","context":"","uniqueid":"1445360467.2"}
 //{"event":"Newchannel","privilege":"call,all","channel":"Dongle/airtel2-0100000000","channelstate":"4","channelstatedesc":"Ring","calleridnum":"+255682120818","calleridname":"airtel2","accountcode":"","exten":"+255788333330","context":"from-trunk","uniqueid":"1446819272.2"}
-	console.error(JSON.stringify(evt, null, 4));
+//{"event":"Newchannel","privilege":"call,all","channel":"SIP/389002-00000000","channelstate":"0","channelstatedesc":"Down","calleridnum":"222","calleridname":"Damjan Janevski","connectedlinenum":"<unknown>","connectedlinename":"<unknown>","language":"en","accountcode":"","context":"from-trunk","exten":"389002","priority":"1","uniqueid":"1522260256.92","linkedid":"1522260256.92"}
+/*{ event: 'Newchannel',
+  privilege: 'call,all',
+  channel: 'SIP/389002-0000000d',
+  channelstate: '0',
+  channelstatedesc: 'Down',
+  calleridnum: '<unknown>',
+  calleridname: '<unknown>',
+  connectedlinenum: '<unknown>',
+  connectedlinename: '<unknown>',
+  language: 'en',
+  accountcode: '',
+  context: 'from-trunk',
+  exten: 's',
+  priority: '1',
+  uniqueid: '1522643513.571',
+  linkedid: '1522643513.566' }*/
+
+	//console.error(JSON.stringify(evt, null, 4));
 	var channelInfo = evt.channel.split(/[\/-]/, 3);
 	var newChannel = {};
 	switch (channelInfo[0]) {
 		case 'Dongle':
-			if (s.ui.mixer.channels[channelInfo[1]]) {
+/*			if (s.ui.mixer.channels[channelInfo[1]]) {
 				//myLib.consoleLog('debug', "New dongle channel internal name", [channelInfo[1], evt.channel]);
 				s.asterisk.channels[channelInfo[1]].internalName = evt.channel;
 				switch (evt.channelstatedesc) {
@@ -641,7 +805,7 @@ ami.on('newchannel', function(evt) {
 								name:  evt.calleridname
 							}
 						});
-						console.error("xxx", channelInfo[1], s.ui.mixer.channels);
+						//console.error("xxx", channelInfo[1], s.ui.mixer.channels);
 						console.error("setting initial chan volume", s.ui.mixer.channels[channelInfo[1]].level);
 						//setAmiChannelVolume(evt.channel, s.ui.mixer.channels[channelInfo[1]].level, 'RX', function() {});
 						exports.setChannelVolume(channelInfo[1], s.ui.mixer.channels[channelInfo[1]].level, function() {});
@@ -650,10 +814,10 @@ ami.on('newchannel', function(evt) {
 						}
 						break;
 				}
-			}
+			}*/
 
 			break;
-		case 'SIP':
+/*		case 'SIP':
 //		case 'Local':
 			//todo : where is this channel dialing?
 //			if (evt.exten === astConf.virtual.ring) {
@@ -686,9 +850,34 @@ ami.on('newchannel', function(evt) {
 				}
 //			}
 			//s.channels[evt.calleridnum] = evt;
-			break;
+			break;*/
 		default:
 	}
+
+/*	let [chanType, chanName] = evt.channel.split(/[\/-]/, 3);
+	//logger.debug("XXX", evt.event, chanType, chanName, astConf.extensions);
+	// incoming external sip call
+	if (chanType === 'SIP' && astConf.extensions.includes(chanName) && evt.exten !== 's') {
+		let channel_id = [chanName, evt.calleridnum ? evt.calleridnum : 'unknown'].join('_');
+		s.asterisk.channels[channel_id] = { internalName: evt.channel };
+		//engineApi.channelCreate(channel_id, {...});
+		engineApi.channelUpdate(channel_id, {
+			type: chanType.toLowerCase(),
+			number: chanName,
+		//	level: 67,
+			direction: 'incoming',
+			label: 'Extension',
+			mode: 'ring',
+		//	muted: false,
+		//	timestamp: Date.now(),
+		//	autoanswer: null,
+			contact: {
+				number: evt.calleridnum,
+				name:  evt.calleridname,
+			},
+		//	recording: false,
+		});
+	}*/
 });
 
 ami.on('confbridgestoprecord', function (evt) {
@@ -1026,10 +1215,13 @@ exports.originateLocal = function (number, destination, channel_id, cb) {
 		destination = "SIP/" + destination;
 	}
 	if (channel_id) {
-		if (s.ui.mixer.channels[channel_id].type === 'dongle' ) {
-			amiOriginateViaTrunk(destination, ["Dongle", channel_id, number.replace(/^0/, appConf.country_prefix)].join('/'), number, cb);
+		let channel = s.ui.mixer.channels[channel_id];
+		if (channel.type === 'dongle') {
+			amiOriginateViaTrunk(destination, ["Dongle", channel_id, number.replace(/^0/, appConf.country_prefix)].join('/'), cb);
+		} else if (channel.type === 'sip') {
+			amiOriginateViaTrunk(destination, ["SIP", channel.number, number].join('/'), cb);
 		} else {
-			cb("PANIC::originateLocal - someone better implement this! " + s.ui.mixer.channels[channel_id].type)
+			cb("PANIC::originateLocal - someone better implement this! " + channel.type);
 		}
 	} else {
 		// must dial local format because of some dial-plan issue
@@ -1240,8 +1432,10 @@ exports.sendContent = function(data, cb) {
 
 // debug: catch all AMI events
 ami.on('managerevent', function(evt) {
-	if (evt.event != "ConfbridgeTalking" && evt.event != 'Newexten' && evt.event != 'VarSet' && evt.event.indexOf("Dongle") !== 0 && evt.event.indexOf("RTCP") !== 0) {
-		console.error('* ', JSON.stringify(evt));
+	let silentEvents = ["ConfbridgeTalking", 'Newexten', 'VarSet', 'Registry'];
+	if (!silentEvents.includes(evt.event) && evt.event.indexOf("Dongle") !== 0 && evt.event.indexOf("RTCP") !== 0) {
+		//console.error('* ', JSON.stringify(evt));
+		logger.debug("managerevent", evt);
 	}
 	//else console.error('** ', JSON.stringify(evt));
 });
@@ -1266,11 +1460,11 @@ exports.command = amiSimpleCommand;
     DongleNewSMSBase64
     DonglePortFail
 */
-
+/*
 ami.on('softhanguprequest', function(evt) {
-	console.error(JSON.stringify(evt));
+	//console.error(JSON.stringify(evt));
 });
-
+*/
 ami.on('donglenewsms', function(evt) {
 	console.error(JSON.stringify(evt));
 });
