@@ -1,5 +1,5 @@
 var requestJson = require('request-json');
-var api = require('./api');
+var api = require('./includes/api');
 var unirest = require('unirest');
 
 // var ZAMMAD_API_TOKEN = process.env.ZAMMAD_API_TOKEN || 'VxGcORyujvgYwmVgXLjHewnAR8Jp0ek_q5LhW0AgkJ6_vAanQog_we9LX7_j82Z6';
