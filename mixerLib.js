@@ -1,3 +1,4 @@
+var logger = new (require("./logger"))(__filename);
 var myLib = require("./myLib");
 var s = require("./localStorage");
 var wss = require("./websocket");
@@ -80,7 +81,7 @@ exports.channelUpdateProperties = function (channel_id, data) {
 		}
 	}
 	if (!changed) {
-		myLib.consoleLog('warning', "mixerLib::channelUpdateProperties", "all values already set for " + channel_id, data);
+		logger.debug("channelUpdateProperties", "all values already set for", channel_id, data);
 	}
 	return changed;
 };
@@ -89,7 +90,7 @@ exports.channelCreate = function (channel_id, defaults) {
 	if (s.ui.mixer.channels[channel_id]) {
 		return false;
 	} else if (!myLib.checkObjectProperties(defaults, ["type"])) {
-		throw Error('invalid input'); 
+		throw Error('invalid input');
 	} else {
 		var channel = {
 			type       : null,

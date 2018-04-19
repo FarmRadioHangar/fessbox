@@ -94,15 +94,18 @@ exports.init = (options, callback) => {
 			switch (target) {
 				case 'self':
 					if (ws.readyState === WebSocket.OPEN) {
-						let silentEvents = ["pong", "call:list", "contact:info", "initialize", "inboxMessages"];
+						//let silentEvents = ["pong", "call:list", "contact:info", "initialize", "inboxMessages"];
+						let silentEvents = ["pong", "contact:info"];
 						if (!silentEvents.includes(name)) {
-							logger.debug("ws-out ==>>>>", operator_id, name, data);
+							let mutedEvents = ["call:list", "inboxMessages"];
+							logger.debug("ws-out ==>>>>", operator_id, name, !mutedEvents.includes(name) ? data : '~');
 						}
 						ws.sendEvent(name, data);
 					}
 					break;
 				case 'others':
 				default: // if target not specified, broadcast to all
+					// if operator_id is not set, use WebSocket as client reference
 					this.broadcastEvent(name, data, operator_id ? operator_id : ws, target);
 			}
 		};
@@ -115,7 +118,7 @@ exports.init = (options, callback) => {
 		}}, "connected");
 
 		ws.on('close', function(code, reason) {
-			logger.notice(operator, "disconnected", code, reason);
+			logger.notice(operator, "disconnected, total:", wss.clients.size, code, reason);
 
 			logger.json(options.clientInfo, ["telegraf", "debug"], ["websocket"], { websocket: {
 					count: wss.clients.length,

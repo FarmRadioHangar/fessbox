@@ -1,4 +1,5 @@
 var path = require('path');
+var chalk = require('chalk'); // env FORCE_COLOR=1 must be set
 var myLib = require('./myLib');
 var appConfig = require("./etc/app.json");
 var production = process.env.NODE_ENV === 'production';
@@ -6,10 +7,10 @@ var production = process.env.NODE_ENV === 'production';
 var logstamp = function(timestamp) {
 	let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 	let localISOTime = (new Date(timestamp - tzoffset)).toISOString();
-	return localISOTime.slice(0, -1).replace('T', ' ');
+	return localISOTime.slice(0, production ? -5 : -1).replace('T', ' ');
 };
 
-console.error(logstamp(Date.now()), '*', production ? "PRODUCTION" : "DEVELOPMENT", "ENV * node", process.version, "initialized with pid", process.pid, "in", __dirname);
+console.error(chalk.bold(logstamp(Date.now())), '*', production ? chalk.green("PRODUCTION") : chalk.magenta("DEVELOPMENT"), "ENV * node", chalk.cyan(process.version), "initialized with pid", process.pid, "in", chalk.yellow(__dirname));
 
 module.exports = function (filename, debugEnabled) {
 	if (typeof debugEnabled !== 'boolean') {
@@ -17,19 +18,19 @@ module.exports = function (filename, debugEnabled) {
 	}
 	var scriptName = path.basename(filename) + ":";
 
-/*	Disabled not to interfere with json output
+/*     Disabled not to interfere with json output
 	var info = function (title, ...data) {
 		console.log("···", logstamp(Date.now()), debugEnabled ? scriptName : 'INFO', title, ...data);
 	};
 	this.info = info; */
 
 	var notice = function (title, ...data) {
-		console.error("···", logstamp(Date.now()), debugEnabled ? 'NOTICE' : '*', scriptName, title, ...data);
+		console.error(chalk.green.inverse("···"), logstamp(Date.now()), chalk.green.bold(debugEnabled ? 'NOTICE' : '\u2714'), chalk.yellow(scriptName), chalk.bold(title), ...data);
 	};
 	this.notice = notice;
 
 	var debug = function (title, ...data) {
-		console.error("***", logstamp(Date.now()), 'DEBUG', scriptName, title, ...data);
+		console.error(chalk.bold("***"), logstamp(Date.now()), chalk.bold('DEBUG'), chalk.white(scriptName), chalk.cyan(title), ...data);
 		return true;
 	};
 	this.debug = debugEnabled ? debug : () => false;
@@ -53,12 +54,12 @@ module.exports = function (filename, debugEnabled) {
 		if (!debugEnabled) {
 			email(title, ...data);
 		}
-		console.error('!!!', logstamp(Date.now()), 'ERROR', scriptName, title, ...data);
+		console.error(chalk.red.inverse('==='), logstamp(Date.now()), chalk.red.bold('ERROR'), chalk.yellow(scriptName), chalk.bold(title), ...data);
 	};
 	this.error = error;
 
 	var warning = function (title, ...data) {
-		console.error('---', logstamp(Date.now()), 'WARNING', scriptName, title, ...data);
+		console.error(chalk.magenta.inverse('---'), logstamp(Date.now()), chalk.magenta.bold('WARNING'), chalk.yellow(scriptName), chalk.bold(title), ...data);
 	};
 	this.warning = warning;
 
