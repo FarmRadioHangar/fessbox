@@ -11,6 +11,9 @@ var mixerLib = require("./mixerLib");
 var myLib = require("./myLib");
 var s = require("./localStorage");
 var wss = require("./websocket");
+var qa = require('./q_a');
+
+pbxProvider.on('test', (data) => logger.debug('QQQQ', data));
 
 exports.getCurrentState = function (operator_id, cb) {
 	//logger.error('operators', operator_id, JSON.stringify(s.ui.operators[operator_id]));
@@ -26,13 +29,15 @@ exports.getCurrentState = function (operator_id, cb) {
 			logger.error('getCurrentState', "messages.fetch", err);
 		}
 		var currentState = {
+			lines: pbxProvider.lines,
 			mixer: s.ui.mixer,
-			users: operators, // deprecated
 			operators: operators,
 			inbox: messages, // deprecated
 			server_version: 'v' + require("./package").version,
 			server_time: Date.now()
 		};
+		//todo: configure this somewhere
+		currentState.lines["uliza_fm"].agents = qa.getAgents();
 		cb(null, currentState);
 	});
 };
@@ -84,9 +89,30 @@ exports.messageDelete = function (data, cbErr) {
 	s.messages.delete(Object.keys(data), cbErr);
 };
 
-exports.callNumber = function (number, mode, channel_id, cbErr) {
-	function cb (err, data) {
+exports.callNumber = function (data, cbErr) {
+	let line = pbxProvider.lines[data.line_id];
+	function cb (err) {
 		if (!err) {
+
+			let channel_id = line.type === 'dongle' ? data.line_id : [data.line_id, data.number].join(':');
+			let channel = {
+				type: line.type,
+				number: line.number,
+				level: 67,
+				direction: 'outgoing',
+				label: line.name,
+				mode: 'ring',
+				muted: false,
+				timestamp: Date.now(),
+				contact: {
+					number: data.number,
+					//name:  s.ui.mixer[channel_id].contact.name;
+				},
+				recording: false,
+			};
+			if (mixerLib.channelCreate(channel_id, channel) || mixerLib.channelUpdateProperties(channel_id, channel)) {
+				mixerLib.channelUpdateEvent([channel_id]);
+			}
 			/*
 			myLib.jsonLog({
 				endpoint: data.endpoint,
@@ -99,30 +125,30 @@ exports.callNumber = function (number, mode, channel_id, cbErr) {
 		cbErr(err);
 	}
 
-	if (channel_id) {
-		if (!s.ui.mixer.channels[channel_id]) {
-			cbErr('channel not found');
-		} else if (s.ui.mixer.channels[channel_id].mode !== 'free') {
-			cbErr(channel_id + ' is currently busy');
+	if (data.line_id) {
+		if (!line) {
+			return cbErr('line not found');
+		} else if (line.status !== 'free') {
+			return cbErr(data.line_id + ' is currently ' + line.status);
 		}
 	}
 	// check if destination mode is valid
-	switch (mode) {
+	switch (data.mode) {
 		case "ivr":
 		case "on_hold":
-			pbxProvider.originateRemote(number, mode, channel_id, cb);
+			pbxProvider.originate(data.number, data.mode, data.line_id, true, cb);
 			break;
 		case "master":
-			pbxProvider.originateLocal(number, mode, channel_id, cb);
+			pbxProvider.originate(data.number, data.mode, data.line_id, data.waitAnswer, cb);
 			break;
 		// operator_id (channel_id) of local endpoint
 		default:
-			if (!s.ui.operators[mode]) {
+			if (!s.ui.operators[data.mode]) {
 				cbErr('invalid call-out mode');
-			} else if (s.ui.mixer.channels[mode].mode !== 'free') {
-				cbErr(mode + " is currently busy");
+			} else if (s.ui.mixer.channels[data.mode].mode !== 'free') {
+				cbErr("operator " + data.mode + " is currently busy");
 			} else {
-				pbxProvider.originateLocal(number, mode, channel_id, cb);
+				pbxProvider.originate(data.number, data.mode, data.line_id, false, cb);
 			}
 	}
 };
@@ -701,4 +727,41 @@ exports.setMasterRecording = function (value, cbErr) {
 	}
 }
 
+exports.questionsFetch = function(count, reference_id, cb) {
+	if (!count) {
+		count = 50;
+	}
 
+	qa.getTickets().then(tickets => {
+		let response = tickets.map(ticket => ({ id: ticket.id, data: ticket }));
+		cb(null, response);
+		// let count = tickets.length;
+		// tickets.forEach(ticket => {
+		// 	response[ticket.id] = ticket;
+		// 	if (--count === 0) {
+		// 		cb(null, response);
+		// 	}
+		// });
+	});
+}
+
+exports.questionFavorite = function(data, cb) {
+	qa.setFavorite(data, 1).then(updated => {
+		cb(null, updated);
+	})
+	.catch(error => cb(error, null));
+}
+
+exports.questionUnfavorite = function(data, cb) {
+	qa.setFavorite(data, 0).then(updated => {
+		cb(null, updated);
+	})
+	.catch(error => cb(error, null));
+}
+
+exports.questionDelete = function(data, cb) {
+	qa.deleteTickets(data).then(deleted => {
+		cb(null, deleted);
+	})
+	.catch(error => cb(error, null));
+}

@@ -13,7 +13,7 @@ exports.ping = function (operator_id, data, cb) {
 exports.noop = function () {};
 
 exports.callNumber = function (operator_id, data, cb) {
-	userApi.callNumber(data.number, data.mode, data.channel_id, function (err) {
+	userApi.callNumber(data, function (err) {
 		if (err) {
 			cb("event_error", {
 				event: "callNumber",
@@ -292,3 +292,54 @@ exports.masterOnAir = function(operator_id, data, cb) {
 	});
 };
 
+exports.questionsFetch = function(operator_id, data, cb) {
+	userApi.questionsFetch(data.count, data.reference_id, function(err, tickets) {
+		if (err) {
+			cb("event_error", {
+				event: "questionsFetch",
+				msg: err
+			}, 'self');
+		} else {
+			cb("questionsUpdate", tickets, 'self');
+		}
+	});
+};
+
+exports.questionFavorite = function(operator_id, data, cb) {
+	userApi.questionFavorite(data, function(error, updated) {
+		if (error) {
+			cb("event_error", {
+				event: "questionFavorite",
+				msg: error
+			}, 'self');
+		} else {
+			cb("questionsUpdate", updated);
+		}
+	});
+}
+
+exports.questionUnfavorite = function(operator_id, data, cb) {
+	userApi.questionUnfavorite(data, function(error, updated) {
+		if (error) {
+			cb("event_error", {
+				event: "questionUnfavorite",
+				msg: error
+			}, 'self');
+		} else {
+			cb("questionsUpdate", updated);
+		}
+	});
+}
+
+exports.questionDelete = function(operator_id, data, cb) {
+	userApi.questionDelete(data, function(error, deleted) {
+		if (error) {
+			cb("event_error", {
+				event: "questionDelete",
+				msg: error
+			}, 'self');
+		} else {
+			cb("questionsUpdate", deleted);
+		}
+	});
+}
