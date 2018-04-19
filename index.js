@@ -15,6 +15,8 @@ if (args.indexOf("defaults") !== -1) {
 */
 //websocket.startLogListener({ port: appConfig.wsLogsPort });
 
+if (process.env.WS_PORT) appConfig.wsPort = process.env.WS_PORT;
+
 ami.on("initialized", function () {
 	require("./websocket").init({
 		port: appConfig.wsPort,
