@@ -2,7 +2,6 @@ var fsPath		= require('fs-path');
 var logger 		= new (require("./logger"))(__filename);
 var engineApi	= require('./engineApi');
 var redisClient	= require('./redisClient');
-var api			= require('./includes/api');
 var db			= require('./db');
 var zammad		= require('./zammad');
 var wss 		= require("./websocket");
@@ -307,10 +306,12 @@ db.init()
 });
 
 redisClient.get('cachedAgents', (err, reply) => {
-	if (!err) {
+	if (!err && reply) {
 		cachedAgents = JSON.parse(reply);
+	} else {
+		getAgents((err, agents) => { if (!err) cachedAgents = agents });
 	}
-})
+});
 
 module.exports.getAgents = getAgents;
 module.exports.getTickets = getTickets;
