@@ -14,7 +14,7 @@ var FS_ATTACHEMENTS_PATH			= process.env.FS_ATTACHEMENTS_PATH || '/srv/http/answ
 var cachedAgents = [];
 var lastZammadPoll = null;
 
-logger.debug('Connecting to Zammad service');
+//logger.debug('Connecting to Zammad service');
 
 function dateDifferenceInSeconds(date1, date2) {
 	var diff = Math.abs(date1 - date2);
@@ -175,7 +175,7 @@ function getTickets() {
 				pollZammad();
 			}
 		}).catch(error => {
-			logger.debug(['Failed to get tickets from database!', error]);
+			logger.debug('Failed to get tickets from database!', error);
 		});
 	});
 }
@@ -212,14 +212,14 @@ function pollZammad() {
 		return logger.debug('Zammad was already polled in the past ' + ZAMMAD_POLLING_BREAK + ' minutes', lastZammadPoll);
 	}
 	lastZammadPoll = Date.now();
-	logger.debug(['Polling Zammad']);
+	logger.debug('Polling Zammad');
 	getTicketsFromZammad().then(newTickets => {
 		let count = newTickets.length;
 		let tickets = [];
 		newTickets.forEach(ticket => {
 			tickets.push({ id: ticket.id, data: ticket });
 			if (--count === 0) {
-				logger.debug(['New tickets fetched from Zammad!', newTickets]);
+				logger.debug('New tickets fetched from Zammad!', newTickets);
 				wss.broadcastEvent('questionsUpdate', tickets);
 			}
 		});
@@ -242,11 +242,7 @@ function setFavorite(ids, favorite) {
 						Object.assign(ticket, ticketData);
 						updated.push({ id: ticket.id, data: ticket });
 						if (--count === 0) {
-							if (favorite) {
-								redisClient.sadd("ticketTags:favorite", ids);
-							} else {
-								redisClient.srem("ticketTags:favorite", ids);
-							}
+							redisClient[favorite ? 'sadd' : 'srem']("ticketTags:favorite", ids);
 							resolve(updated);
 						}
 					});
@@ -254,21 +250,21 @@ function setFavorite(ids, favorite) {
 			});
 		})
 		.catch(error => {
-			logger.debug(['Query Error!', error]);
+			logger.debug('Query Error!', error);
 			reject(error);
 		});
 	});
 }
 
 function deleteTickets(ids) {
-	logger.debug(['Delete tickets..', ids]);
+	logger.debug('Delete tickets..', ids);
 	return new Promise((resolve, reject) => {
 		let redisMulti = redisClient.multi();
 		let count = ids.length;
 		let deleted = [];
 		db.deleteTickets(ids).then((results) => {
 			resolve(deleted);
-			logger.debug(['Tickets deleted..']);
+			logger.debug('Tickets deleted..');
 			redisMulti.srem('ticketTags:favorite', ids);
 			ids.forEach(id => {
 				deleted.push({ id: id, data: null });
@@ -281,7 +277,7 @@ function deleteTickets(ids) {
 					logger.debug('Removed file..');
 				}
 				catch(error) {
-					logger.debug(['Failed to delete ticket from file system!', error]);
+					logger.debug('Failed to delete ticket from file system!', error);
 				}
 				if (--count === 0) {
 					redisMulti.exec((err, reply) => {
@@ -290,7 +286,7 @@ function deleteTickets(ids) {
 				}
 			});
 		}).catch(error => {
-			logger.debug(['Failed to delete tickets!', error]);
+			logger.debug('Failed to delete tickets!', error);
 			reject(error);
 		});
 	});
@@ -298,11 +294,11 @@ function deleteTickets(ids) {
 
 db.init()
 .then(() => {
-	logger.debug('Database initialized successfully!');
+	logger.notice('SQLite database initialized successfully!');
 	setInterval(pollZammad, ZAMMAD_POLLING_INTERVAL * 60 * 1000);
 })
 .catch(error => {
-	logger.debug(['Database initialization failed!', error]);
+	logger.error('SQLite database initialization failed!', error);
 });
 
 redisClient.get('cachedAgents', (err, reply) => {

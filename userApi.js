@@ -1,4 +1,3 @@
-var uuid = require("uuid");
 var logger = new (require("./logger"))(__filename);
 var appConfig = require("./etc/app.json");
 var pbxProvider = require("./" + appConfig.pbxProvider);
@@ -8,12 +7,9 @@ var contentProviders = {
 	'sms_out': pbxProvider
 };
 var mixerLib = require("./mixerLib");
-var myLib = require("./myLib");
 var s = require("./localStorage");
 var wss = require("./websocket");
 var qa = require('./q_a');
-
-pbxProvider.on('test', (data) => logger.debug('QQQQ', data));
 
 exports.getCurrentState = function (operator_id, cb) {
 	//logger.error('operators', operator_id, JSON.stringify(s.ui.operators[operator_id]));
@@ -58,7 +54,7 @@ exports.messageSend = function (data, cb) {
 exports.messagesFavoriteSet = function (data, cb) {
 	// data is array of message ids
 	s.messages.favoriteSet(data, function(err, result) {
-		myLib.jsonLog(data, ['debug'], ['messageFavSet'], result);
+		//logger.debug(data, ['messageFavSet'], result);
 		cb(err, result);
 	});
 };
@@ -66,21 +62,21 @@ exports.messagesFavoriteSet = function (data, cb) {
 exports.messagesFavoriteUnset = function (data, cb) {
 	// data is array of message ids
 	s.messages.favoriteUnset(data, function(err, result) {
-		myLib.jsonLog(data, ['debug'], ['messageFavUnset'], result);
+		//logger.debug(data, ['messageFavUnset'], result);
 		cb(err, result);
 	});
 };
 
 exports.messagesTag = function (data, cb) {
 	s.messages.tag(data.message_ids, data.tags, function(err, result) {
-		myLib.jsonLog(data, ['debug'], ['messageTags'], result);
+		//logger.debug(data, ['messageTags'], result);
 		cb();
 	});
 };
 
 exports.messagesUntag = function (data, cb) {
 	s.messages.untag(data.message_ids, data.tags, function(err, result) {
-		myLib.jsonLog(data, ['debug'], ['messageTags'], result);
+		//logger.debug(data, ['messageTags'], result);
 		cb();
 	});
 };
@@ -114,7 +110,7 @@ exports.callNumber = function (data, cbErr) {
 				mixerLib.channelUpdateEvent([channel_id]);
 			}
 			/*
-			myLib.jsonLog({
+			logger.json({
 				endpoint: data.endpoint,
 				channel_id: data.channel_id,
 				type: "dongle", //channel type
@@ -416,7 +412,7 @@ exports.setChannelMode = function (channel_id, new_mode, cbErr) {
 										if (err) {
 											cbErr(err);
 										} else {
-											myLib.consoleLog('debug', 'parking', JSON.stringify(res));
+											logger.debug('parking', JSON.stringify(res));
 											pbxProvider.setChanMode(channel_id, new_mode, cb);
 											//pbxProvider.setChanMode(channel_id, "71", cb);
 										}

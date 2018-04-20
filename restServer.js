@@ -1,3 +1,4 @@
+const logger = new (require("./logger"))(__filename, false);
 const appConfig = require("./etc/app.json");
 const hapi = require('hapi');
 const server = new hapi.Server();
@@ -33,6 +34,6 @@ server.start((err) => {
 	if (err) {
 		throw err;
 	}
-	console.error(`Server running at: ${server.info.uri}`);
+	logger.notice(`HTTP Server running at: ${server.info.uri}`);
 });
 
