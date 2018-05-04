@@ -1,3 +1,4 @@
+var logger = new (require("./logger"))(__filename);
 var fs = require("fs");
 var redisClient = require("./redisClient");
 var astConf = require("./etc/asterisk.json");
@@ -394,6 +395,49 @@ function messageFetch(count, reference_id, cb) {
 	}
 }
 
+function messageList (filter, cb) {
+	var fetchMessageIds = function (err, message_ids) {
+		if (!err) {
+			logger.debug('messageList:fetchMessageIds', message_ids);
+			var messagesMulti = redisClient.multi();
+			//todo: add watch(reference_id);
+			for(var index in message_ids) {
+				messagesMulti.hgetall(message_ids[index]);
+				//messagesMulti.smembers();
+			}
+			messagesMulti.exec(function (err, message_objects) {
+				if (!err) {
+					//var messages = {};
+					for(index in message_ids) {
+						//messages[message_ids[index]] = message_objects[index];
+						message_objects[index].id = message_ids[index].split('.')[1]; //temp
+					}
+					cb(null, {
+						//reference_id: reference_id,
+						//ids: message_ids,
+						//messages: messages,
+						messages: message_objects,
+					});
+				} else {
+					cb(err);
+				}
+			});
+		} else {
+			cb(err);
+		}
+	};
+
+	let max = filter.to ? +filter.to : Date.now();
+	let min = filter.from ? +filter.from : 0;
+	let rangeMsgIds = !filter.tags ? fetchMessageIds : (err, message_ids) => {
+		redisClient.sinter(...filter.tags.map(tag => ('msgTags:' + tag)), (err, tagged_ids) => {
+			if (err) cb(err);
+			else fetchMessageIds(null, [message_ids, tagged_ids].reduce((a, b) => a.filter(c => b.includes(c))));
+		});
+	};
+	redisClient.zrevrangebyscore("inbox", max, min, rangeMsgIds);
+}
+
 function contactUpdate(contact_key, data, cb) {
 	var contactArray = [];
 	for(var key in data) {
@@ -424,6 +468,7 @@ exports.messages = {
 	favoriteUnset: messageFavoriteUnset,
 	save: messageSave,
 	delete: messageDelete,
+	list: messageList,
 	fetch: messageFetch
 };
 exports.contacts = {

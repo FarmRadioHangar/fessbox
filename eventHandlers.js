@@ -118,6 +118,19 @@ exports.inboxFetch = function(operator_id, data, cb) {
 	});
 };
 
+exports.inboxFetchRange = function(operator_id, data, cb) {
+	userApi.inboxFetchRange(data, function (err, messages) {
+		if (err) {
+			cb("event_error", {
+				event: "inboxFetchRange",
+				msg: err
+			}, 'self');
+		} else {
+			cb("inboxMessages", messages, 'self');
+		}
+	});
+};
+
 exports.channelContactInfo = function(operator_id, data, cb) {
 	cb("channelContactInfo", data, 'others');
 	for(var channel_id in data) {

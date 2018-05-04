@@ -47,6 +47,10 @@ exports.inboxFetch = function (count, reference_id, cb) {
 	s.messages.fetch(count, reference_id, cb);
 };
 
+exports.inboxFetchRange = function (filter, cb) {
+	s.messages.list(filter, cb);
+};
+
 exports.messageSend = function (data, cb) {
 	contentProviders[data.type].sendContent(data, cb);
 };

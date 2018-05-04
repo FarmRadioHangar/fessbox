@@ -37,9 +37,10 @@ exports.inboxUpdate = function (data) {
 	if (!myLib.checkObjectProperties(data, required)) {
 		myLib.consoleLog('panic', 'engineApi::inboxUpdate', "invalid input", data);
 	} else {
-		var key = "inbox." + uuid.v1();
-		s.messages.save(key, data);
+		var key = uuid.v1();
+		s.messages.save('inbox.' + key, data);
 		var newMessage = {};
+		data.id = key;
 		newMessage[key] = data;
 		wss.broadcastEvent("inboxUpdate", newMessage);
 		var msgType = data.type.split('_');
