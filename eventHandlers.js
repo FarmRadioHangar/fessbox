@@ -22,8 +22,8 @@ exports.callNumber = function (operator_id, data, cb) {
 		}
 	});
 };
-
-exports.messageSend = function(operator_id, data, cb) {
+//exports.messageSend = function(operator_id, data, cb) {
+exports['message:send'] = function(operator_id, data, cb) {
 	for (var temp_id in data) {
 		userApi.messageSend(data[temp_id], function (err) {
 			if (err) {
@@ -33,13 +33,15 @@ exports.messageSend = function(operator_id, data, cb) {
 					msg: err
 				}, 'self');
 			} else {
-				cb("messageSent", temp_id, 'self');
+				// cb("messageSent", temp_id, 'self');
+				cb("message:sent", temp_id, 'self');
 			}
 		});
 	}
 };
 
-exports.messageFavoriteSet = function(operator_id, data, cb) {
+//exports.messageFavoriteSet = function(operator_id, data, cb) {
+exports['message:favorite'] = function(operator_id, data, cb) {
 	userApi.messagesFavoriteSet(data, function(err, updated) {
 		if (err) {
 			cb("event_error", {
@@ -47,12 +49,14 @@ exports.messageFavoriteSet = function(operator_id, data, cb) {
 				msg: err
 			}, 'self');
 		} else {
-			cb("inboxUpdate", updated, "others");
+			// cb("inboxUpdate", updated, "others");
+			cb("message:update", updated, "others");
 		}
 	});
 };
 
-exports.messageFavoriteUnset = function(operator_id, data, cb) {
+//exports.messageFavoriteUnset = function(operator_id, data, cb) {
+exports['message:unfavorite'] = function(operator_id, data, cb) {
 	userApi.messagesFavoriteUnset(data, function(err, updated) {
 		if (err) {
 			cb("event_error", {
@@ -60,12 +64,14 @@ exports.messageFavoriteUnset = function(operator_id, data, cb) {
 				msg: err
 			}, 'self');
 		} else {
-			cb("inboxUpdate", updated, "others");
+			// cb("inboxUpdate", updated, "others");
+			cb("message:update", updated, "others");
 		}
 	});
 };
 
-exports.messageTagsAdd = function(operator_id, data, cb) {
+//exports.messageTagsAdd = function(operator_id, data, cb) {
+exports['message:addTags'] = function(operator_id, data, cb) {
 	userApi.messagesTag(data, function(err, updated) {
 		if (err) {
 			cb("event_error", {
@@ -73,12 +79,14 @@ exports.messageTagsAdd = function(operator_id, data, cb) {
 				msg: err
 			}, 'self');
 		} else {
-			cb("inboxUpdate", updated, "others");
+			// cb("inboxUpdate", updated, "others");
+			cb("message:update", updated, "others");
 		}
 	});
 };
 
-exports.messageTagsRemove = function(operator_id, data, cb) {
+//exports.messageTagsRemove = function(operator_id, data, cb) {
+exports['message:removeTags'] = function(operator_id, data, cb) {
 	userApi.messagesUntag(data, function(err, updated) {
 		if (err) {
 			cb("event_error", {
@@ -86,15 +94,17 @@ exports.messageTagsRemove = function(operator_id, data, cb) {
 				msg: err
 			}, 'self');
 		} else {
-			cb("inboxUpdate", updated, "others");
+			// cb("inboxUpdate", updated, "others");
+			cb("message:update", updated, "others");
 		}
 	});
 };
 
-exports.messageDelete = function(operator_id, data, cb) {
+//exports.messageDelete = function(operator_id, data, cb) {
+exports['message:delete'] = function(operator_id, data, cb) {
 	// todo: consider sending to all from userApi when really deleted, instead of updating only others right away
 	// current version is more responsive and less consistent
-	cb("inboxUpdate", data, 'others');
+	cb("message:update", data, 'others');
 	userApi.messageDelete(data, function (err) {
 		if (err) {
 			cb("event_error", {
@@ -105,6 +115,8 @@ exports.messageDelete = function(operator_id, data, cb) {
 	});
 };
 
+/**
+[*] DEPRECATED FUNCTION
 exports.inboxFetch = function(operator_id, data, cb) {
 	userApi.inboxFetch(data.count, data.reference_id, function (err, messages) {
 		if (err) {
@@ -117,8 +129,11 @@ exports.inboxFetch = function(operator_id, data, cb) {
 		}
 	});
 };
+[*] DEPRECATED FUNCTION
+**/
 
-exports.inboxFetchRange = function(operator_id, data, cb) {
+//exports.inboxFetchRange = function(operator_id, data, cb) {
+exports['message:fetch'] = function(operator_id, data, cb) {
 	userApi.inboxFetchRange(data, function (err, messages) {
 		if (err) {
 			cb("event_error", {
@@ -126,7 +141,8 @@ exports.inboxFetchRange = function(operator_id, data, cb) {
 				msg: err
 			}, 'self');
 		} else {
-			cb("inboxMessages", messages, 'self');
+			// cb("inboxMessages", messages, 'self');
+			cb("message:list", messages, 'self');
 		}
 	});
 };
@@ -146,7 +162,7 @@ exports.channelContactInfo = function(operator_id, data, cb) {
 	}
 };
 
-// stable 
+// stable
 
 exports.masterProperty = function(operator_id, data, cb) {
 	userApi.setMasterProperty(data.name,  data.value, function (err) {
@@ -305,20 +321,23 @@ exports.masterOnAir = function(operator_id, data, cb) {
 	});
 };
 
-exports.questionsFetch = function(operator_id, data, cb) {
-	userApi.questionsFetch(data.count, data.reference_id, function(err, tickets) {
+//exports.questionsFetch = function(operator_id, data, cb) {
+exports['questions:fetch'] = function(operator_id, data, cb) {
+	userApi.questionsFetch(data, function(err, tickets) {
 		if (err) {
 			cb("event_error", {
 				event: "questionsFetch",
 				msg: err
 			}, 'self');
 		} else {
-			cb("questionsUpdate", tickets, 'self');
+			// cb("questionsUpdate", tickets, 'self');
+			cb("questions:list", tickets, 'self');
 		}
 	});
 };
 
-exports.questionFavorite = function(operator_id, data, cb) {
+// exports.questionFavorite = function(operator_id, data, cb) {
+exports['questions:favorite'] = function(operator_id, data, cb) {
 	userApi.questionFavorite(data, function(error, updated) {
 		if (error) {
 			cb("event_error", {
@@ -326,12 +345,14 @@ exports.questionFavorite = function(operator_id, data, cb) {
 				msg: error
 			}, 'self');
 		} else {
-			cb("questionsUpdate", updated);
+			// cb("questionsUpdate", updated);
+			cb("questions:update", updated);
 		}
 	});
 }
 
-exports.questionUnfavorite = function(operator_id, data, cb) {
+// exports.questionUnfavorite = function(operator_id, data, cb) {
+exports['questions:unfavorite'] = function(operator_id, data, cb) {
 	userApi.questionUnfavorite(data, function(error, updated) {
 		if (error) {
 			cb("event_error", {
@@ -339,12 +360,14 @@ exports.questionUnfavorite = function(operator_id, data, cb) {
 				msg: error
 			}, 'self');
 		} else {
-			cb("questionsUpdate", updated);
+			// cb("questionsUpdate", updated);
+			cb("questions:update", updated);
 		}
 	});
 }
 
-exports.questionDelete = function(operator_id, data, cb) {
+// exports.questionDelete = function(operator_id, data, cb) {
+exports['questions:delete'] = function(operator_id, data, cb) {
 	userApi.questionDelete(data, function(error, deleted) {
 		if (error) {
 			cb("event_error", {
@@ -352,7 +375,65 @@ exports.questionDelete = function(operator_id, data, cb) {
 				msg: error
 			}, 'self');
 		} else {
-			cb("questionsUpdate", deleted);
+			// cb("questionsUpdate", deleted);
+			cb("questions:update", deleted);
 		}
 	});
 }
+
+// Call History Handlers
+exports['calls:fetch'] = function(operator_id, data, cb) {
+	userApi.callsFetch(data, function(error, calls) {
+		if (error) {
+			cb("event_error", {
+				event: "calls:fetch",
+				msg: error
+			}, 'self');
+		} else {
+			cb("calls:list", calls, 'self');
+		}
+	});
+};
+exports['calls:favorite'] = function(operator_id, data, cb) {
+	userApi.callsFavorite(data, function(error, updated) {
+		if (error) {
+			cb("event_error", {
+				event: "calls:favorite",
+				msg: error
+			}, 'self');
+		} else {
+			cb("calls:update", updated);
+		}
+	});
+};
+exports['calls:unfavorite'] = function(operator_id, data, cb) {
+	userApi.callsUnfavorite(data, function(error, updated) {
+		if (error) {
+			cb("event_error", {
+				event: "calls:unfavorite",
+				msg: error
+			}, 'self');
+		} else {
+			cb("calls:update", updated);
+		}
+	});
+};
+exports['calls:delete'] = function(operator_id, data, cb) {
+	userApi.callsDelete(data, function(error, deleted) {
+		if (error) {
+			cb("event_error", {
+				event: "calls:delete",
+				msg: error
+			}, 'self');
+		} else {
+			let deletedCalls = {};
+			data.map(id => {
+				deletedCalls[id] = null;
+			});
+			cb("calls:update", deletedCalls);
+		}
+	});
+};
+exports['calls:play'] = function(operator_id, data, cb) {
+	console.error('Play calls on air!');
+};

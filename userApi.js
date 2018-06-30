@@ -20,22 +20,25 @@ exports.getCurrentState = function (operator_id, cb) {
 			operators[operator_id] = s.ui.operators[operator_id];
 		}
 	}
-	s.messages.fetch(50, null, function (err, messages) {
+	//s.messages.fetch(50, null, function (err, messages) {
+	qa.getAgents(function(err, agents) {
 		if (err) {
-			logger.error('getCurrentState', "messages.fetch", err);
+			logger.error('getCurrentState', "getAgents", err);
+			agents = qa.getAgents();
 		}
 		var currentState = {
 			lines: pbxProvider.lines,
 			mixer: s.ui.mixer,
 			operators: operators,
-			inbox: messages, // deprecated
+			//inbox: messages, // deprecated
 			server_version: 'v' + require("./package").version,
 			server_time: Date.now()
 		};
 		//todo: configure this somewhere
-		currentState.lines["uliza_fm"].agents = qa.getAgents();
+		currentState.lines["uliza_fm"].agents = agents;
 		cb(null, currentState);
 	});
+	//});
 };
 
 // inbox
@@ -727,12 +730,9 @@ exports.setMasterRecording = function (value, cbErr) {
 	}
 }
 
-exports.questionsFetch = function(count, reference_id, cb) {
-	if (!count) {
-		count = 50;
-	}
+exports.questionsFetch = function(filter, cb) {
 
-	qa.getTickets().then(tickets => {
+	qa.getTickets(filter).then(tickets => {
 		let response = tickets.map(ticket => ({ id: ticket.id, data: ticket }));
 		cb(null, response);
 		// let count = tickets.length;
@@ -765,3 +765,43 @@ exports.questionDelete = function(data, cb) {
 	})
 	.catch(error => cb(error, null));
 }
+
+exports.callsFetch = function(filter, cb) {
+	s.calls.list(filter, function(err, calls) {
+		if (!err) {
+			cb(null, calls);
+		} else {
+			cb(err, null);
+		}
+	});
+};
+
+exports.callsFavorite = function(call_ids, cb) {
+	s.calls.favoriteSet(call_ids, function(err, updated) {
+		if (!err) {
+			cb(null, updated);
+		} else {
+			cb(err, null);
+		}
+	});
+};
+
+exports.callsUnfavorite = function(call_ids, cb) {
+	s.calls.favoriteUnset(call_ids, function(err, updated) {
+		if (!err) {
+			cb(null, updated);
+		} else {
+			cb(err, null);
+		}
+	});
+};
+
+exports.callsDelete = function(call_ids, cb) {
+	s.calls.delete(call_ids, function(err, deleted) {
+		if (!err) {
+			cb(null, deleted);
+		} else {
+			cb(err, null);
+		}
+	});
+};

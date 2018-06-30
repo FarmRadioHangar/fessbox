@@ -158,9 +158,9 @@ function getRedisDataForTicket(id) {
 }
 
 
-function getTickets() {
+function getTickets(filter) {
 	return new Promise((resolve, reject) => {
-		db.getTickets().then(tickets => {
+		db.getTickets(filter).then(tickets => {
 			let count = tickets.length;
 			tickets.forEach(ticket => {
 				getRedisDataForTicket(ticket.id).then(ticketData => {
@@ -172,6 +172,7 @@ function getTickets() {
 				});
 			});
 			if (!tickets.length) {
+				resolve([]);
 				pollZammad();
 			}
 		}).catch(error => {
@@ -181,6 +182,7 @@ function getTickets() {
 }
 
 function getAgents(cb) {
+	logger.debug('Get agents from Zammad!');
 	if (!cb) return cachedAgents;
 	zammad.get('users/search', {
 		query: '(active:true AND role_ids:2 AND phone:>0)',
@@ -220,7 +222,7 @@ function pollZammad() {
 			tickets.push({ id: ticket.id, data: ticket });
 			if (--count === 0) {
 				logger.debug('New tickets fetched from Zammad!', newTickets);
-				wss.broadcastEvent('questionsUpdate', tickets);
+				wss.broadcastEvent('questions:update', tickets);
 			}
 		});
 	})
@@ -231,7 +233,8 @@ function pollZammad() {
 
 function setFavorite(ids, favorite) {
 	return new Promise((resolve, reject) => {
-		db.getTickets(ids).then((tickets) => {
+		let filter = { ids };
+		db.getTickets(filter).then((tickets) => {
 			let ids = [];
 			let updated = [];
 			let count = tickets.length;

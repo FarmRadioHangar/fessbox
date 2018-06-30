@@ -34,11 +34,24 @@ module.exports = {
     );
   },
 
-  getTickets: function(ids) {
-    if (ids && ids.length) {
-      return db.all(['SELECT * FROM tickets WHERE id IN', _parseIdsForQuery(ids), 'ORDER BY DATE(closed_at)'].join(' '));
+  getTickets: function(filter) {
+    let query = ['SELECT * FROM tickets'];
+    if (filter) {
+      query.push('WHERE');
+      let where = [];
+      if (filter.ids) {
+        where.push(['id IN', _parseIdsForQuery(filter.ids)].join(' '));
+      }
+      if (filter.from) {
+        where.push(["DATE(closed_at)", ">=", "DATE(" + filter.from / 1000 + ", 'unixepoch', 'localtime')"].join(' '));
+      }
+      if (filter.to) {
+        where.push(["DATE(closed_at)", "<=", "DATE(" + filter.to / 1000 + ", 'unixepoch', 'localtime')"].join(' '));
+      }
+      query.push(where.join(where.length > 1 ? ' AND ' : ' '));
     }
-    return db.all('SELECT * FROM tickets ORDER BY DATE(closed_at)');
+    query.push('ORDER BY DATE(closed_at)');
+    return db.all(query.join(' '));
   },
 
   deleteTickets: function(ids) {

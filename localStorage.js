@@ -245,7 +245,7 @@ function saveChannel(channel_id, cb) {
 function messageFavoriteSet(message_ids, cb) {
 	redisClient.sadd("msgTags:favorite", message_ids);
 	var redisMulti = redisClient.multi();
-	message_ids.forEach(function(message_id){
+	message_ids.forEach(function(message_id) {
 		redisMulti.hset('inbox.' + message_id, "favorite", 1);
 	});
 	redisMulti.exec(function(err, res) {
@@ -438,6 +438,142 @@ function messageList (filter, cb) {
 	redisClient.zrevrangebyscore("inbox", max, min, rangeMsgIds);
 }
 
+/**
+ * Call History
+ */
+
+function callFavoriteSet(call_ids, cb) {
+	redisClient.sadd("callTags:favorite", call_ids);
+	var redisMulti = redisClient.multi();
+	call_ids.forEach(function(call_id) {
+        redisMulti.hset(['call', call_id].join(':'), "favorite", 1);
+	});
+	redisMulti.exec(function(err, res) {
+		if (!err) {
+			var callList = {};
+			var updated = [];
+			var callsMulti = redisClient.multi();
+			for(var index in call_ids) {
+				if (res[index]) {
+					callsMulti.hgetall(['call', call_ids[index]].join(':'));
+					updated.push(call_ids[index]);
+				}
+			}
+			callsMulti.exec(function (err, call_objects) {
+				for(index in updated) {
+					let id = updated[index];
+					callList[id] = call_objects[index];
+				}
+				cb(null, callList);
+			});
+		} else {
+			cb(err);
+		}
+	});
+}
+
+function callFavoriteUnset(call_ids, cb) {
+	redisClient.srem("callTags:favorite", call_ids);
+	let redisMulti = redisClient.multi();
+	for(let index in call_ids) {
+		redisMulti.hdel(['call', call_ids[index]].join(':'), "favorite");
+	}
+	redisMulti.exec(function(err, res) {
+		if (!err) {
+			let callList = {};
+			let updated = [];
+			let callsMulti = redisClient.multi();
+			for(let index in call_ids) {
+				if (res[index]) {
+					callsMulti.hgetall(['call', call_ids[index]].join(':'));
+					updated.push(call_ids[index]);
+				}
+			}
+			callsMulti.exec(function (err, call_objects) {
+				for(let index in updated) {
+					let id = updated[index];	
+					callList[id] = call_objects[index];
+				}
+				cb(null, callList);
+			});
+		} else {
+			cb(err);
+		}
+	});
+}
+
+function callTagAdd(call_ids, tags, cb) {
+	var redisMulti = redisClient.multi();
+	tags.forEach(function(tag){
+		redisMulti().sadd("callTags:" + tag, call_ids);
+	});
+	redisMulti.exec(cb);
+}
+
+function callTagRemove(call_ids, tags, cb) {
+	var redisMulti = redisClient.multi();
+	tags.forEach(function(tag){
+		redisMulti().srem("callTags:" + tag, call_ids);
+	});
+	redisMulti.exec(cb);
+}
+
+function callSave(call_id, call) {
+	redisClient.multi().
+		hmset(['call', call_id].join(':'), call).
+		zadd("call", Date.now(), call_id).
+		exec(function (err) {
+			if (err) {
+				myLib.consoleLog('error', callSave, err);
+			}
+		});
+}
+
+function callDelete(call_ids, cb) {
+	redisClient.multi().
+		zrem("call", call_ids).
+		del(['call', call_ids].join(':')).
+		exec(cb);
+}
+
+function callList (filter, cb) {
+	var fetchCallIds = function (err, call_ids) {
+		if (!err) {
+			logger.debug('callList:fetchCallIds', call_ids);
+			var callsMulti = redisClient.multi();
+			//todo: add watch(reference_id);
+			for(var index in call_ids) {
+				callsMulti.hgetall(['call', call_ids[index]].join(':'));
+			}
+			callsMulti.exec(function (err, call_objects) {
+				if (!err) {
+					cb(null, {
+						calls: call_objects,
+					});
+				} else {
+					cb(err);
+				}
+			});
+		} else {
+			cb(err);
+		}
+	};
+
+	let max = filter.to ? +filter.to : Date.now();
+	let min = filter.from ? +filter.from : 0;
+	let rangeCallIds = !filter.tags ? fetchCallIds : (err, call_ids) => {
+		redisClient.sinter(...filter.tags.map(tag => ('callTags:' + tag)), (err, tagged_ids) => {
+			if (err) cb(err);
+			else fetchCallIds(null, [call_ids, tagged_ids].reduce((a, b) => a.filter(c => b.includes(c))));
+		});
+	};
+	redisClient.zrevrangebyscore("call", max, min, rangeCallIds);
+}
+
+/**
+ * Call History END
+ */
+
 function contactUpdate(contact_key, data, cb) {
 	var contactArray = [];
 	for(var key in data) {
@@ -470,6 +606,15 @@ exports.messages = {
 	delete: messageDelete,
 	list: messageList,
 	fetch: messageFetch
+};
+exports.calls = {
+	tag: callTagAdd,
+	untag: callTagRemove,
+	favoriteSet: callFavoriteSet,
+	favoriteUnset: callFavoriteUnset,
+	save: callSave,
+	delete: callDelete,
+	list: callList
 };
 exports.contacts = {
 	update: contactUpdate,

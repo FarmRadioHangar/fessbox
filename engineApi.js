@@ -42,7 +42,8 @@ exports.inboxUpdate = function (data) {
 		var newMessage = {};
 		data.id = key;
 		newMessage[key] = data;
-		wss.broadcastEvent("inboxUpdate", newMessage);
+		//wss.broadcastEvent("inboxUpdate", newMessage);
+		wss.broadcastEvent("message:update", newMessage);
 		var msgType = data.type.split('_');
 		myLib.jsonLog({
 			endpoint: data.endpoint,
@@ -53,4 +54,20 @@ exports.inboxUpdate = function (data) {
 	}
 };
 
+exports.callUpdate = function(data) {
+	let required = ["number", "name", "timestamp", "filename"];
+	if (!myLib.checkObjectProperties(data, required)) {
+		myLib.consoleLog('panic', 'engineApi::callUpdate', "invalid input", data);
+	} else {
+		data.id = uuid.v1();
+		s.calls.save(data.id, data);
+		wss.broadcastEvent("calls:update", { [data.id]: data });
 
+		/*let call = Object.assign({}, data);
+		call.id = uuid.v1();
+		s.calls.save(call.id, call);
+		let newCall = {};
+		newCall[call.id] = call;
+		wss.broadcastEvent("calls:update", newCall);*/
+	}
+};
