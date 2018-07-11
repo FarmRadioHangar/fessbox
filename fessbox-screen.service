@@ -1,0 +1,24 @@
+[Unit]
+Description=fessbox backend
+After=run-user-0.mount
+After=asterisk.service
+
+[Service]
+Type=forking
+Restart=on-failure
+WorkingDirectory=/home/fri/fessbox_dev
+#ExecStart=/bin/sh -c 'exec /usr/local/bin/node --use-strict index.js >> log/app.log 2>> log/debug.log'
+#ExecStart=/usr/bin/screen -D -m -S fessbox 'su -c "APP_NAME=fessbox APP_PATH=/home/fri/fessbox_dev /home/fri/fessbox_dev/scripts/run" - fri'
+ExecStart=/usr/bin/screen -d -m -S fessbox su -c "APP_NAME=fessbox APP_PATH=/home/fri/fessbox_dev /home/fri/fessbox_dev/scripts/run" - fri
+ExecStartPost=/usr/bin/screen -S fessbox -X caption always "fessbox /home/fri/fessbox_dev"
+
+#User=fri
+#Group=fri
+#Environment=NODE_ENV=production
+Environment=APP_NAME=fessbox
+Environment=APP_PATH=/home/fri/fessbox_dev
+Environment=APP_USER=fri
+#Environment=APP_ENV=production
+
+[Install]
+WantedBy=multi-user.target

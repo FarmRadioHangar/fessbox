@@ -1,0 +1,17 @@
+#!/bin/bash
+
+PIDFILE=/dev/shm/$APP_NAME.pid
+APP_PID=`cat $PIDFILE`
+NODE_PATH=/usr/local/bin/node
+if ! kill -0 $APP_PID > /dev/null 2>&1; then
+        test -z $NODE_PATH && echo '$NODE_PATH is missing' && exit 2
+        cd $APP_PATH
+        #export PGDATABASE="traksi-live" PGHOST=/var/run/postgresql
+        #export REDIS_DB=0
+        export FORCE_COLOR=1 # for chalk
+        echo $$ > $PIDFILE
+        exec -a "node-$APP_NAME" $NODE_PATH index.js > >(tee -a logs/app.log) 2> >(tee -a logs/debug.log >&2)
+else
+        echo exiting: app $APP_NAME already running
+        exit 1
+fi
