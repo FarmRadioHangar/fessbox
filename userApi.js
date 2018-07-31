@@ -34,6 +34,13 @@ exports.getCurrentState = function (operator_id, cb) {
 			server_version: 'v' + require("./package").version,
 			server_time: Date.now()
 		};
+		if (process.env.WAZO_USER && process.env.WAZO_PASS) {
+			currentState.wazoConfig = {
+				user: process.env.WAZO_USER,
+				pass: process.env.WAZO_PASS,
+				server: process.env.WAZO_SERVER
+			};
+		}
 		//todo: configure this somewhere
 		currentState.lines["uliza_fm"].agents = agents;
 		cb(null, currentState);

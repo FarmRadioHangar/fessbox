@@ -43,7 +43,7 @@ exports.inboxUpdate = function (data) {
 		data.id = key;
 		newMessage[key] = data;
 		//wss.broadcastEvent("inboxUpdate", newMessage);
-		wss.broadcastEvent("message:update", newMessage);
+		wss.broadcastEvent("messages:update", newMessage);
 		var msgType = data.type.split('_');
 		myLib.jsonLog({
 			endpoint: data.endpoint,

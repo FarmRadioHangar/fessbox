@@ -9,6 +9,9 @@ if ! kill -0 $APP_PID > /dev/null 2>&1; then
         #export PGDATABASE="traksi-live" PGHOST=/var/run/postgresql
         #export REDIS_DB=0
         export FORCE_COLOR=1 # for chalk
+		export WAZO_USER="3891001"
+		export WAZO_PASS="uapederi"
+		export WAZO_SERVER="wazo.uliza.fm"
         echo $$ > $PIDFILE
         exec -a "node-$APP_NAME" $NODE_PATH index.js > >(tee -a logs/app.log) 2> >(tee -a logs/debug.log >&2)
 else

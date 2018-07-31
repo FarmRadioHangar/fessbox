@@ -6,6 +6,8 @@ var stateFile = __dirname + "/state/snapshot.json";
 var engineApi = require("./engineApi");
 var myLib = require("./myLib");
 
+var MONITOR_PATH = process.env.MONITOR_PATH || "/var/spool/asterisk/monitor/test";
+
 redisClient.on("error",  function(err) {
 	myLib.consoleLog('error', "redis", err);
 });
@@ -530,10 +532,63 @@ function callSave(call_id, call) {
 }
 
 function callDelete(call_ids, cb) {
-	redisClient.multi().
-		zrem("call", call_ids).
-		del(['call', call_ids].join(':')).
-		exec(cb);
+	let redisMulti = redisClient.multi();
+	let ids = call_ids.map(id => {
+		id = ['call', id].join(':');
+		redisMulti.hgetall(id);
+		return id;
+	});
+
+	redisMulti.exec((error, calls) => {
+		let remove = [];
+		let count = 0;
+		calls = calls.map(call => ({ filename: call.filename, id: call.id })).forEach((call, index, calls) => {
+			let path = [MONITOR_PATH, call.filename].join('/');
+			fs.unlink(path, (error) => {
+				if (error && error.code === 'ENOENT' || !error) {
+					logger.debug('File "' + path + '" not found!', error);
+					remove.push(call.id);
+					if (count=== calls.length - 1) {
+						logger.debug('we got final remove list.', remove);
+						redisClient.
+						multi().
+						zrem("call", remove).
+						del(remove.map(call => (['call', call.id].join(':')))).
+						exec((error) => {
+							if (error) {
+								logger.error(error);
+							}
+							logger.debug(remove.length + ' calls removed!', remove);
+							cb(error, remove);
+						});
+					}
+				} else {
+					logger.error('Failed to remove file!', error);
+				}
+				count++;
+			});
+		});
+
+	//	let files = calls.filter(call => {
+		//	if(call.filename && call.filename.length) return true;
+		//	idsWithoutFiles.push(['call', call.id].join(':'));
+		//	return false;
+		//}).map(call => (call.filename));
+		//let count = 0;
+		//files.forEach(file => {
+		//	let path = [MONITOR_PATH, file].join('/');
+		//	fs.unlink(path + 'test', (error) => {
+		//		if (error) {
+		//			my
+		//		}
+		//	});
+		//});
+	});
+
+	//redisClient.multi().
+	//	zrem("call", call_ids).
+	//	del(call_ids).
+	//	exec(cb);
 }
 
 function callList (filter, cb) {

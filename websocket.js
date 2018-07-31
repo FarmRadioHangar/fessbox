@@ -94,10 +94,10 @@ exports.init = (options, callback) => {
 			switch (target) {
 				case 'self':
 					if (ws.readyState === WebSocket.OPEN) {
-						//let silentEvents = ["pong", "call:list", "contact:info", "initialize", "inboxMessages"];
+						//let silentEvents = ["pong", "calls:list", "contact:info", "initialize", "inboxMessages"];
 						let silentEvents = ["pong", "contact:info"];
 						if (!silentEvents.includes(name)) {
-							let mutedEvents = ["call:list", "inboxMessages"];
+							let mutedEvents = ["calls:list", "inboxMessages"];
 							logger.debug("ws-out ==>>>>", operator_id, name, !mutedEvents.includes(name) ? data : '~');
 						}
 						ws.sendEvent(name, data);
